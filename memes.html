@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All memes · Whamr</title>
+  <meta name="description" content="Browse all 78 memes on Whamr. Search, filter, save, and share to any app." />
+  <meta name="theme-color" content="#0a0a0f" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+  <script>window.__WHAMR_PAGE = "library";</script>
+</head>
+<body>
+
+  <!-- Page-level top nav (replaces hero on this page) -->
+  <nav class="page-nav">
+    <a href="index.html" class="page-nav-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      <span>Home</span>
+    </a>
+    <a href="index.html" class="page-nav-brand">
+      <div class="logo">whamr<span class="logo-dot">.</span></div>
+    </a>
+    <div class="page-nav-links">
+      <a href="how-it-works.html" class="hero-nav-link">How it works</a>
+    </div>
+  </nav>
+
+  <!-- Library header -->
+  <section class="library-header">
+    <div class="section-inner">
+      <div class="library-head-content">
+        <div class="section-eyebrow">The full library</div>
+        <h1 class="library-title">All <span class="library-title-num">78</span> memes</h1>
+        <p class="section-sub">Search, filter, or scroll. Tap a meme to preview and share.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sticky search + filter -->
+  <header class="header">
+    <div class="header-top">
+      <div class="brand brand-compact">
+        <div class="logo">whamr<span class="logo-dot">.</span></div>
+        <div class="tagline">send the wham.</div>
+      </div>
+
+      <div class="search-wrap">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="search" id="search" placeholder="Search memes, tags..." autocomplete="off" />
+      </div>
+
+      <div class="header-actions">
+        <label class="upload-btn" for="upload">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          <span>Upload</span>
+          <input type="file" id="upload" accept="video/mp4,image/gif" multiple hidden />
+        </label>
+      </div>
+    </div>
+
+    <div class="filter-bar">
+      <div class="filter-pills" id="filters" role="tablist" aria-label="Category filters"></div>
+      <div class="meme-count" id="count">0 memes</div>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="grid" id="grid" aria-live="polite"></div>
+
+    <div class="empty-state" id="empty" hidden>
+      <div class="empty-icon">✦</div>
+      <h2 id="empty-title">No memes found</h2>
+      <p id="empty-sub">Try a different search, switch categories, or upload your own.</p>
+    </div>
+
+    <div class="loading-state" id="loading">
+      <div class="loading-spinner"></div>
+      <p>Loading memes...</p>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="logo footer-logo">whamr<span class="logo-dot">.</span></div>
+        <p class="footer-tag">Send the wham.</p>
+      </div>
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="how-it-works.html">How it works</a>
+      </div>
+      <div class="footer-meta">
+        <p>built for the send · <span id="total-count">78</span> in the vault</p>
+        <p class="footer-version">v2.1 · prototype</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared modals -->
+  <div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-backdrop" id="modal-backdrop"></div>
+    <div class="modal-content">
+      <button class="modal-close" id="modal-close" aria-label="Close preview">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+      <div class="modal-media" id="modal-media"></div>
+      <div class="modal-info">
+        <div class="modal-header">
+          <h2 class="modal-title" id="modal-title"></h2>
+          <div class="modal-meta">
+            <span class="modal-category" id="modal-category"></span>
+            <span class="modal-type" id="modal-type"></span>
+          </div>
+        </div>
+        <div class="modal-tags" id="modal-tags"></div>
+        <div class="modal-actions">
+          <button class="btn btn-primary" id="btn-share">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+            Share
+          </button>
+          <button class="btn" id="btn-favorite">
+            <svg id="fav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            <span id="fav-label">Save</span>
+          </button>
+          <button class="btn" id="btn-download">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Download
+          </button>
+          <button class="btn btn-danger" id="btn-delete" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"></path></svg>
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="share-sheet" id="share-sheet" hidden role="dialog" aria-modal="true" aria-labelledby="share-title">
+    <div class="share-backdrop" id="share-backdrop"></div>
+    <div class="share-content">
+      <div class="share-handle"></div>
+      <h3 class="share-title" id="share-title">Send the wham</h3>
+      <p class="share-sub">Share this meme anywhere</p>
+      <div class="share-grid" id="share-grid"></div>
+      <button class="share-close" id="share-close">Cancel</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
