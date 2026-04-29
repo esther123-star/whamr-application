@@ -5,7 +5,10 @@
     "type": "mp4",
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776727438/Ini_de_beningi_bcahhw.mp4",
     "category": "naija",
-    "tags": []
+    "tags": [
+      "naija",
+      "nigerian"
+    ]
   },
   {
     "id": "m002",
@@ -21,7 +24,10 @@
     "type": "mp4",
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726996/I_will_like_to_be_a_terorist_sd3lzc.mp4",
     "category": "naija",
-    "tags": []
+    "tags": [
+      "naija",
+      "nigerian"
+    ]
   },
   {
     "id": "m004",
@@ -30,8 +36,10 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726993/Funke_akindele_hehehe_with_why_are_u_running_juczky.mp4",
     "category": "laughing",
     "tags": [
-      "nollywood",
-      "laugh"
+      "funke-akindele",
+      "funny",
+      "laugh",
+      "nollywood"
     ]
   },
   {
@@ -40,7 +48,10 @@
     "type": "mp4",
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726953/Wedding_Crashers_WHAT_AN_IDIOT_u4e6zu.mp4",
     "category": "reactions",
-    "tags": []
+    "tags": [
+      "reaction",
+      "wedding"
+    ]
   },
   {
     "id": "m006",
@@ -49,7 +60,9 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726931/Unbreakable_Kimmy_Schmidt_LOL_nwin2s.mp4",
     "category": "laughing",
     "tags": [
-      "laugh"
+      "funny",
+      "laugh",
+      "sitcom"
     ]
   },
   {
@@ -59,8 +72,9 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726925/Twilight_Aros_Laugh_qqlelc.mp4",
     "category": "laughing",
     "tags": [
-      "twilight",
-      "laugh"
+      "funny",
+      "laugh",
+      "twilight"
     ]
   },
   {
@@ -70,7 +84,9 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726925/Training_Day_LOL_sse1p0.mp4",
     "category": "laughing",
     "tags": [
-      "laugh"
+      "funny",
+      "laugh",
+      "movie"
     ]
   },
   {
@@ -80,6 +96,7 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726923/The_Simpsons_Homer_disappears_into_bushes_nfg9it.mp4",
     "category": "random",
     "tags": [
+      "cartoon",
       "simpsons"
     ]
   },
@@ -90,8 +107,11 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726923/Spongebob_Squarepants_Everyone_laughing_at_Spongebob_cnhmal.mp4",
     "category": "laughing",
     "tags": [
-      "spongebob",
-      "laugh"
+      "cartoon",
+      "funny",
+      "greeting",
+      "laugh",
+      "spongebob"
     ]
   },
   {
@@ -100,7 +120,11 @@
     "type": "mp4",
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726920/Stephen_A_Smith_We_have_a_problem_cvtv42.mp4",
     "category": "awkward",
-    "tags": []
+    "tags": [
+      "awkward",
+      "sports",
+      "tv"
+    ]
   },
   {
     "id": "m012",
@@ -109,8 +133,11 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726913/PeeWees_Big_Adventure_PeeWee_Laughing_zzhbd4.mp4",
     "category": "laughing",
     "tags": [
-      "peewee",
-      "laugh"
+      "funny",
+      "greeting",
+      "laugh",
+      "movie",
+      "peewee"
     ]
   },
   {
@@ -120,8 +147,9 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726912/SNL_LOL_e6amaf.mp4",
     "category": "laughing",
     "tags": [
-      "snl",
-      "laugh"
+      "funny",
+      "laugh",
+      "snl"
     ]
   },
   {
@@ -131,8 +159,11 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726908/Old_Spice_LOL_cfxowh.mp4",
     "category": "laughing",
     "tags": [
-      "oldspice",
-      "laugh"
+      "ad",
+      "commercial",
+      "funny",
+      "laugh",
+      "oldspice"
     ]
   },
   {
@@ -150,7 +181,10 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726905/Nicki_Minaj_Um_yikes_epxns8.mp4",
     "category": "reactions",
     "tags": [
-      "nicki"
+      "celebrity",
+      "nicki",
+      "nicki-minaj",
+      "reaction"
     ]
   },
   {
@@ -160,8 +194,9 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726900/Muppets_Most_Wanted_Evil_Kermit_Appears_bmd8lq.mp4",
     "category": "random",
     "tags": [
-      "muppets",
-      "kermit"
+      "evil",
+      "kermit",
+      "muppets"
     ]
   },
   {
@@ -170,7 +205,9 @@
     "type": "mp4",
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726884/Meme_Missed_the_mark_r3st6f.mp4",
     "category": "awkward",
-    "tags": []
+    "tags": [
+      "awkward"
+    ]
   },
   {
     "id": "m019",
@@ -178,7 +215,9 @@
     "type": "mp4",
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726873/Meme_Caught_Stealing_Money_rsgphv.mp4",
     "category": "awkward",
-    "tags": []
+    "tags": [
+      "awkward"
+    ]
   },
   {
     "id": "m020",
@@ -196,7 +235,10 @@
     "type": "mp4",
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726867/Meme_I_dont_think_you_have_the_facilities_for_that_big_man_thvcec.mp4",
     "category": "awkward",
-    "tags": []
+    "tags": [
+      "awkward",
+      "greeting"
+    ]
   },
   {
     "id": "m022",
@@ -205,7 +247,8 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726864/Meme_Ariana_Grande_with_dark_mode_oqc03w.mp4",
     "category": "random",
     "tags": [
-      "ariana"
+      "ariana",
+      "celebrity"
     ]
   },
   {
@@ -214,7 +257,9 @@
     "type": "mp4",
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726861/Little_Kid_Dont_worry_about_it_sweetheart_c0mnvk.mp4",
     "category": "awkward",
-    "tags": []
+    "tags": [
+      "awkward"
+    ]
   },
   {
     "id": "m024",
@@ -231,8 +276,12 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726854/Kung_Fu_Panda_Panda_Laughing_kphmmm.mp4",
     "category": "laughing",
     "tags": [
-      "panda",
-      "laugh"
+      "cartoon",
+      "funny",
+      "greeting",
+      "kung-fu-panda",
+      "laugh",
+      "panda"
     ]
   },
   {
@@ -242,6 +291,8 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726852/Jesus_is_lord_screem_pidr9d.mp4",
     "category": "laughing",
     "tags": [
+      "funny",
+      "laugh",
       "scream"
     ]
   },
@@ -252,6 +303,7 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726850/Jurassic_Park_Jeff_Goldblum_laugh_ccqocx.mp4",
     "category": "laughing",
     "tags": [
+      "funny",
       "jurassic",
       "laugh"
     ]
@@ -263,8 +315,9 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726848/Joker_Stairs_Dancing_Scene_n1f7oi.mp4",
     "category": "dance",
     "tags": [
-      "joker",
-      "dance"
+      "celebration",
+      "dance",
+      "joker"
     ]
   },
   {
@@ -273,7 +326,9 @@
     "type": "mp4",
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726826/Jasmine_Masters_And_I_oop_kzduyx.mp4",
     "category": "awkward",
-    "tags": []
+    "tags": [
+      "awkward"
+    ]
   },
   {
     "id": "m030",
@@ -281,7 +336,9 @@
     "type": "mp4",
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726823/Jeopardy_What_is_ok_boomer_pc8acs.mp4",
     "category": "reactions",
-    "tags": []
+    "tags": [
+      "reaction"
+    ]
   },
   {
     "id": "m031",
@@ -290,6 +347,7 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726821/Jalaiah_Harmon_Renegade_Dance_ko4ykv.mp4",
     "category": "dance",
     "tags": [
+      "celebration",
       "dance"
     ]
   },
@@ -300,6 +358,8 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726820/Hmmmm_Pawpaw_lrkzve.mp4",
     "category": "naija",
     "tags": [
+      "naija",
+      "nigerian",
       "pawpaw"
     ]
   },
@@ -318,7 +378,10 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726764/Gerraof_this_place....damn_bloody_fool_pawpaw_jzkgj9.mp4",
     "category": "reactions",
     "tags": [
-      "pawpaw"
+      "greeting",
+      "naija",
+      "pawpaw",
+      "reaction"
     ]
   },
   {
@@ -346,6 +409,8 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726701/ehn...ehn_pawpaw_wsb0fl.mp4",
     "category": "naija",
     "tags": [
+      "naija",
+      "nigerian",
       "pawpaw"
     ]
   },
@@ -357,6 +422,7 @@
     "category": "laughing",
     "tags": [
       "family-guy",
+      "funny",
       "laugh"
     ]
   },
@@ -374,7 +440,10 @@
     "type": "mp4",
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726583/Fairly_Odd_Parents_Doug_Dimmadome_Meme_aqlts5.mp4",
     "category": "reactions",
-    "tags": []
+    "tags": [
+      "angry",
+      "reaction"
+    ]
   },
   {
     "id": "m041",
@@ -393,6 +462,7 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726551/Dancing_Pallbearers_Funeral_dance_alapv7.mp4",
     "category": "dance",
     "tags": [
+      "celebration",
       "dance"
     ]
   },
@@ -402,7 +472,9 @@
     "type": "mp4",
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726549/Doja_Cat_So_uhhhhh_ia6s3n.mp4",
     "category": "awkward",
-    "tags": []
+    "tags": [
+      "awkward"
+    ]
   },
   {
     "id": "m044",
@@ -410,7 +482,9 @@
     "type": "mp4",
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726543/damn_bloody_fool_abopmz.mp4",
     "category": "reactions",
-    "tags": []
+    "tags": [
+      "reaction"
+    ]
   },
   {
     "id": "m045",
@@ -419,6 +493,7 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726528/Dinner_for_Schmucks_LOL_bwxfnx.mp4",
     "category": "laughing",
     "tags": [
+      "funny",
       "laugh"
     ]
   },
@@ -429,6 +504,10 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726509/Bigger_screem_patience_ozokwo_utrwve.mp4",
     "category": "laughing",
     "tags": [
+      "funny",
+      "laugh",
+      "nollywood",
+      "patience-ozokwo",
       "scream"
     ]
   },
@@ -439,6 +518,7 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726502/Dancing_Pallbearers_Coffin_Carry_xa94hy.mp4",
     "category": "dance",
     "tags": [
+      "celebration",
       "dance"
     ]
   },
@@ -449,7 +529,9 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726490/Can_i_see_you_Mr_ibu_paqhzg.mp4",
     "category": "naija",
     "tags": [
-      "mr-ibu"
+      "mr-ibu",
+      "naija",
+      "nigerian"
     ]
   },
   {
@@ -458,7 +540,9 @@
     "type": "mp4",
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726488/Cybil_Shepherd_Fake_polite_clap_usfy4t.mp4",
     "category": "awkward",
-    "tags": []
+    "tags": [
+      "awkward"
+    ]
   },
   {
     "id": "m050",
@@ -467,8 +551,9 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726485/Chewbacca_Mom_LOL_d46j2t.mp4",
     "category": "laughing",
     "tags": [
-      "starwars",
-      "laugh"
+      "funny",
+      "laugh",
+      "starwars"
     ]
   },
   {
@@ -478,6 +563,8 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726480/5000_naira_pawpaw_tlnhqd.mp4",
     "category": "naija",
     "tags": [
+      "naija",
+      "nigerian",
       "pawpaw"
     ]
   },
@@ -487,7 +574,10 @@
     "type": "mp4",
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726477/Charles_Barkley_Thats_so_dumb_it_makes_me_mad_gdrcmi.mp4",
     "category": "reactions",
-    "tags": []
+    "tags": [
+      "angry",
+      "reaction"
+    ]
   },
   {
     "id": "m053",
@@ -497,6 +587,7 @@
     "category": "dance",
     "tags": [
       "caddyshack",
+      "celebration",
       "dance"
     ]
   },
@@ -508,6 +599,7 @@
     "category": "dance",
     "tags": [
       "broadcity",
+      "celebration",
       "dance"
     ]
   },
@@ -518,8 +610,9 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726469/Big_Laugh_Jide_kosoko_e8virj.mp4",
     "category": "laughing",
     "tags": [
-      "nollywood",
-      "laugh"
+      "funny",
+      "laugh",
+      "nollywood"
     ]
   },
   {
@@ -529,6 +622,7 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726422/Bravest_Warriors_Dance_Party_v9iziq.mp4",
     "category": "dance",
     "tags": [
+      "celebration",
       "dance"
     ]
   },
@@ -538,7 +632,9 @@
     "type": "mp4",
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726374/Bored_Dog_Snoring_k0kllg.mp4",
     "category": "random",
-    "tags": []
+    "tags": [
+      "reject"
+    ]
   },
   {
     "id": "m058",
@@ -548,6 +644,8 @@
     "category": "dance",
     "tags": [
       "adam-sandler",
+      "angry",
+      "celebration",
       "dance"
     ]
   },
@@ -557,7 +655,10 @@
     "type": "mp4",
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726350/Bill_Belichick_Meme_Patriots_QB_will_be_dwq47l.mp4",
     "category": "sports",
-    "tags": []
+    "tags": [
+      "greeting",
+      "sports"
+    ]
   },
   {
     "id": "m060",
@@ -565,7 +666,9 @@
     "type": "mp4",
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726339/Andy_Reid_Next_year_were_coming_right_back_here_rmiz6g.mp4",
     "category": "sports",
-    "tags": []
+    "tags": [
+      "sports"
+    ]
   },
   {
     "id": "m061",
@@ -581,7 +684,10 @@
     "type": "mp4",
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726330/Andy_Reid_How_bout_those_Chiefs_tgluyl.mp4",
     "category": "sports",
-    "tags": []
+    "tags": [
+      "greeting",
+      "sports"
+    ]
   },
   {
     "id": "m063",
@@ -590,6 +696,7 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726325/Auntie_Mame_LOL_k51ymw.mp4",
     "category": "laughing",
     "tags": [
+      "funny",
       "laugh"
     ]
   },
@@ -601,6 +708,8 @@
     "category": "laughing",
     "tags": [
       "anchorman",
+      "funny",
+      "greeting",
       "laugh"
     ]
   },
@@ -611,7 +720,9 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726322/Ariana_Grande_Meme_Throwing_Chair_c9atj9.mp4",
     "category": "reactions",
     "tags": [
-      "ariana"
+      "ariana",
+      "celebrity",
+      "reaction"
     ]
   },
   {
@@ -621,7 +732,9 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726319/Annoying_Orange_Annoying_Orange_Laugh_fdhd8b.mp4",
     "category": "laughing",
     "tags": [
-      "laugh"
+      "funny",
+      "laugh",
+      "reject"
     ]
   },
   {
@@ -639,7 +752,8 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726316/Anchorman_Rage_dsctel.mp4",
     "category": "reactions",
     "tags": [
-      "anchorman"
+      "anchorman",
+      "reaction"
     ]
   },
   {
@@ -649,6 +763,8 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726315/Ahhhhh_Screem_fjlr4v.mp4",
     "category": "laughing",
     "tags": [
+      "funny",
+      "laugh",
       "scream"
     ]
   },
@@ -667,7 +783,11 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726300/Anchorman_Hysterical_crying_o33obg.mp4",
     "category": "laughing",
     "tags": [
-      "anchorman"
+      "anchorman",
+      "funny",
+      "laugh",
+      "reaction",
+      "sad"
     ]
   },
   {
@@ -676,7 +796,10 @@
     "type": "mp4",
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726277/Alex_Bregman_Im_really_sorry_about_the_choices_that_were_made_qno6h1.mp4",
     "category": "reactions",
-    "tags": []
+    "tags": [
+      "angry",
+      "reaction"
+    ]
   },
   {
     "id": "m073",
@@ -694,7 +817,10 @@
     "type": "mp4",
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726271/Aki_Iss_igigsn.mp4",
     "category": "naija",
-    "tags": []
+    "tags": [
+      "naija",
+      "nigerian"
+    ]
   },
   {
     "id": "m075",
@@ -710,7 +836,10 @@
     "type": "mp4",
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726239/African_kid_crying_meme_ciste1.mp4",
     "category": "sad",
-    "tags": []
+    "tags": [
+      "reaction",
+      "sad"
+    ]
   },
   {
     "id": "m077",
@@ -718,7 +847,9 @@
     "type": "mp4",
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726231/Adrien_Broner_He_got_cooked_vmjdvf.mp4",
     "category": "reactions",
-    "tags": []
+    "tags": [
+      "reaction"
+    ]
   },
   {
     "id": "m078",
@@ -727,8 +858,10 @@
     "src": "https://res.cloudinary.com/dhozqjboa/video/upload/v1776726229/A_Madea_Family_Funeral_Lol_z2u1jd.mp4",
     "category": "laughing",
     "tags": [
-      "madea",
-      "laugh"
+      "angry",
+      "funny",
+      "laugh",
+      "madea"
     ]
   }
 ]
