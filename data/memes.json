@@ -863,5 +863,2116 @@
       "laugh",
       "madea"
     ]
+  },
+  {
+    "id": "st001",
+    "title": "Grinning",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F600.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "happy",
+      "smile",
+      "joy"
+    ]
+  },
+  {
+    "id": "st002",
+    "title": "Beaming",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F601.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "happy",
+      "joy",
+      "smile"
+    ]
+  },
+  {
+    "id": "st003",
+    "title": "Tears of joy",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F602.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "laugh",
+      "funny",
+      "crying-laughing"
+    ]
+  },
+  {
+    "id": "st004",
+    "title": "Big smile",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F603.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "happy",
+      "joy",
+      "smile"
+    ]
+  },
+  {
+    "id": "st005",
+    "title": "Smiling eyes",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F604.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "happy",
+      "joy",
+      "smile"
+    ]
+  },
+  {
+    "id": "st006",
+    "title": "Sweat smile",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F605.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "nervous",
+      "phew",
+      "happy"
+    ]
+  },
+  {
+    "id": "st007",
+    "title": "Laughing",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F606.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "laugh",
+      "funny",
+      "lmao"
+    ]
+  },
+  {
+    "id": "st008",
+    "title": "Rolling laugh",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F923.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "laugh",
+      "funny",
+      "rofl"
+    ]
+  },
+  {
+    "id": "st009",
+    "title": "Slight smile",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F642.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "smile",
+      "okay"
+    ]
+  },
+  {
+    "id": "st010",
+    "title": "Upside down",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F643.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "sarcastic",
+      "ironic",
+      "weird"
+    ]
+  },
+  {
+    "id": "st011",
+    "title": "Blushing",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F60A.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "happy",
+      "shy",
+      "smile"
+    ]
+  },
+  {
+    "id": "st012",
+    "title": "Yum",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F60B.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "tasty",
+      "delicious",
+      "food"
+    ]
+  },
+  {
+    "id": "st013",
+    "title": "Relieved",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F60C.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "calm",
+      "peaceful",
+      "relief"
+    ]
+  },
+  {
+    "id": "st014",
+    "title": "Heart eyes",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F60D.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "love",
+      "crush",
+      "amazing"
+    ]
+  },
+  {
+    "id": "st015",
+    "title": "Smiling hearts",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F970.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "love",
+      "adorable",
+      "cute"
+    ]
+  },
+  {
+    "id": "st016",
+    "title": "Blow kiss",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F618.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "kiss",
+      "love",
+      "bye"
+    ]
+  },
+  {
+    "id": "st017",
+    "title": "Kiss face",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F617.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "kiss",
+      "love"
+    ]
+  },
+  {
+    "id": "st018",
+    "title": "Kiss smile",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F619.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "kiss",
+      "love"
+    ]
+  },
+  {
+    "id": "st019",
+    "title": "Kiss closed",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F61A.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "kiss",
+      "love"
+    ]
+  },
+  {
+    "id": "st020",
+    "title": "Hand over mouth",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F92D.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "oops",
+      "shocked",
+      "laugh"
+    ]
+  },
+  {
+    "id": "st021",
+    "title": "Shushing",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F92B.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "quiet",
+      "secret",
+      "shh"
+    ]
+  },
+  {
+    "id": "st022",
+    "title": "Thinking",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F914.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "think",
+      "hmm",
+      "wonder"
+    ]
+  },
+  {
+    "id": "st023",
+    "title": "Raised brow",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F928.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "skeptical",
+      "doubt",
+      "really"
+    ]
+  },
+  {
+    "id": "st024",
+    "title": "Eye roll",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F644.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "annoyed",
+      "whatever",
+      "ugh"
+    ]
+  },
+  {
+    "id": "st025",
+    "title": "Monocle",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F9D0.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "inspect",
+      "examine",
+      "investigate"
+    ]
+  },
+  {
+    "id": "st026",
+    "title": "Nerd",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F913.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "smart",
+      "geek",
+      "study"
+    ]
+  },
+  {
+    "id": "st027",
+    "title": "Sunglasses",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F60E.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "cool",
+      "awesome",
+      "boss"
+    ]
+  },
+  {
+    "id": "st028",
+    "title": "Neutral",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F636.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "meh",
+      "no-mouth",
+      "blank"
+    ]
+  },
+  {
+    "id": "st029",
+    "title": "Expressionless",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F610.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "meh",
+      "annoyed",
+      "blank"
+    ]
+  },
+  {
+    "id": "st030",
+    "title": "No expression",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F611.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "disapprove",
+      "blank"
+    ]
+  },
+  {
+    "id": "st031",
+    "title": "Grimacing",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F62C.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "awkward",
+      "yikes",
+      "uncomfortable"
+    ]
+  },
+  {
+    "id": "st032",
+    "title": "Melting",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1FAE0.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "awkward",
+      "embarrassed",
+      "yikes"
+    ]
+  },
+  {
+    "id": "st033",
+    "title": "Open eyes",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1FAE2.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "wow",
+      "shock",
+      "amazed"
+    ]
+  },
+  {
+    "id": "st034",
+    "title": "Peeking",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1FAE3.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "shy",
+      "scared",
+      "embarrassed"
+    ]
+  },
+  {
+    "id": "st035",
+    "title": "Diagonal mouth",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1FAE4.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "awkward",
+      "uncertain"
+    ]
+  },
+  {
+    "id": "st036",
+    "title": "Open mouth",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F62E.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "surprised",
+      "wow",
+      "shocked"
+    ]
+  },
+  {
+    "id": "st037",
+    "title": "Hushed",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F62F.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "quiet",
+      "shocked",
+      "wow"
+    ]
+  },
+  {
+    "id": "st038",
+    "title": "Astonished",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F632.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "shocked",
+      "wow",
+      "amazed"
+    ]
+  },
+  {
+    "id": "st039",
+    "title": "Flushed",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F633.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "embarrassed",
+      "shy",
+      "blush"
+    ]
+  },
+  {
+    "id": "st040",
+    "title": "Dizzy",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F635.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "confused",
+      "knocked-out",
+      "stunned"
+    ]
+  },
+  {
+    "id": "st041",
+    "title": "Worried",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F61F.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "sad",
+      "concerned",
+      "anxious"
+    ]
+  },
+  {
+    "id": "st042",
+    "title": "Crying",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F622.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "sad",
+      "tears",
+      "upset"
+    ]
+  },
+  {
+    "id": "st043",
+    "title": "Sob",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F62D.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "crying",
+      "sad",
+      "tears"
+    ]
+  },
+  {
+    "id": "st044",
+    "title": "Disappointed",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F61E.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "sad",
+      "down"
+    ]
+  },
+  {
+    "id": "st045",
+    "title": "Pensive",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F614.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "sad",
+      "thinking",
+      "sorrowful"
+    ]
+  },
+  {
+    "id": "st046",
+    "title": "Tired sad",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F625.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "exhausted",
+      "sad",
+      "stressed"
+    ]
+  },
+  {
+    "id": "st047",
+    "title": "Tired",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F62B.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "exhausted",
+      "sleepy"
+    ]
+  },
+  {
+    "id": "st048",
+    "title": "Weary",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F629.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "tired",
+      "exhausted",
+      "done"
+    ]
+  },
+  {
+    "id": "st049",
+    "title": "Sweat",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F613.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "stressed",
+      "nervous",
+      "anxious"
+    ]
+  },
+  {
+    "id": "st050",
+    "title": "Angry",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F620.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "angry",
+      "mad",
+      "upset"
+    ]
+  },
+  {
+    "id": "st051",
+    "title": "Pouting",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F621.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "furious",
+      "mad",
+      "rage"
+    ]
+  },
+  {
+    "id": "st052",
+    "title": "Cursing",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F92C.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "angry",
+      "swearing",
+      "mad"
+    ]
+  },
+  {
+    "id": "st053",
+    "title": "Steam nose",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F624.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "angry",
+      "frustrated",
+      "mad"
+    ]
+  },
+  {
+    "id": "st054",
+    "title": "Unamused",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F612.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "annoyed",
+      "side-eye",
+      "meh"
+    ]
+  },
+  {
+    "id": "st055",
+    "title": "Fearful",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F628.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "scared",
+      "afraid",
+      "shocked"
+    ]
+  },
+  {
+    "id": "st056",
+    "title": "Scream",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F631.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "shocked",
+      "horror",
+      "scared"
+    ]
+  },
+  {
+    "id": "st057",
+    "title": "Anxious sweat",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F630.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "nervous",
+      "scared",
+      "worried"
+    ]
+  },
+  {
+    "id": "st058",
+    "title": "Anguished",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F627.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "worried",
+      "shocked"
+    ]
+  },
+  {
+    "id": "st059",
+    "title": "Frowning open",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F626.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "sad",
+      "worried"
+    ]
+  },
+  {
+    "id": "st060",
+    "title": "Sleepy",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F62A.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "tired",
+      "sleep"
+    ]
+  },
+  {
+    "id": "st061",
+    "title": "Sleeping",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F634.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "sleep",
+      "zzz",
+      "tired"
+    ]
+  },
+  {
+    "id": "st062",
+    "title": "Thumbs up",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F44D.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "approve",
+      "yes",
+      "good"
+    ]
+  },
+  {
+    "id": "st063",
+    "title": "Thumbs down",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F44E.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "disapprove",
+      "no",
+      "bad"
+    ]
+  },
+  {
+    "id": "st064",
+    "title": "Okay hand",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F44C.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "okay",
+      "perfect",
+      "good"
+    ]
+  },
+  {
+    "id": "st065",
+    "title": "Clap",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F44F.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "applause",
+      "yes",
+      "celebrate"
+    ]
+  },
+  {
+    "id": "st066",
+    "title": "Raise hands",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F64C.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "celebrate",
+      "praise",
+      "yes"
+    ]
+  },
+  {
+    "id": "st067",
+    "title": "Folded hands",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F64F.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "please",
+      "thanks",
+      "pray"
+    ]
+  },
+  {
+    "id": "st068",
+    "title": "Handshake",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F91D.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "deal",
+      "agree",
+      "partnership"
+    ]
+  },
+  {
+    "id": "st069",
+    "title": "Peace",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/270C.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "peace",
+      "victory",
+      "two"
+    ]
+  },
+  {
+    "id": "st070",
+    "title": "Crossed fingers",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F91E.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "luck",
+      "hope",
+      "fingers-crossed"
+    ]
+  },
+  {
+    "id": "st071",
+    "title": "Love you",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F91F.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "love",
+      "rock-on"
+    ]
+  },
+  {
+    "id": "st072",
+    "title": "Rock on",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F918.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "rock",
+      "metal",
+      "cool"
+    ]
+  },
+  {
+    "id": "st073",
+    "title": "Call me",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F919.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "call",
+      "phone"
+    ]
+  },
+  {
+    "id": "st074",
+    "title": "Wave",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F44B.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "hi",
+      "bye",
+      "hello",
+      "greeting"
+    ]
+  },
+  {
+    "id": "st075",
+    "title": "Hand spread",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F590.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "hi",
+      "stop",
+      "high-five"
+    ]
+  },
+  {
+    "id": "st076",
+    "title": "Raised hand",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/270B.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "stop",
+      "high-five",
+      "wait"
+    ]
+  },
+  {
+    "id": "st077",
+    "title": "Fist bump",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F44A.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "fist-bump",
+      "bro",
+      "respect"
+    ]
+  },
+  {
+    "id": "st078",
+    "title": "Raised fist",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/270A.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "power",
+      "solidarity",
+      "fist"
+    ]
+  },
+  {
+    "id": "st079",
+    "title": "Flex",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F4AA.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "strong",
+      "muscle",
+      "power"
+    ]
+  },
+  {
+    "id": "st080",
+    "title": "Middle finger",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F595.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "middle-finger",
+      "rude"
+    ]
+  },
+  {
+    "id": "st081",
+    "title": "Point up",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F446.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "look",
+      "attention"
+    ]
+  },
+  {
+    "id": "st082",
+    "title": "Point down",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F447.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "look-down",
+      "attention"
+    ]
+  },
+  {
+    "id": "st083",
+    "title": "Point left",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F448.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "point-left"
+    ]
+  },
+  {
+    "id": "st084",
+    "title": "Point right",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F449.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "point-right"
+    ]
+  },
+  {
+    "id": "st085",
+    "title": "Pinched fingers",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F90C.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "small",
+      "italian",
+      "what"
+    ]
+  },
+  {
+    "id": "st086",
+    "title": "Pinching",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F90F.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "small",
+      "tiny"
+    ]
+  },
+  {
+    "id": "st087",
+    "title": "Back of hand",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F91A.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "wave"
+    ]
+  },
+  {
+    "id": "st088",
+    "title": "Left fist",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F91B.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "fist"
+    ]
+  },
+  {
+    "id": "st089",
+    "title": "Right fist",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F91C.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "fist"
+    ]
+  },
+  {
+    "id": "st090",
+    "title": "Red heart",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/2764.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "love",
+      "heart"
+    ]
+  },
+  {
+    "id": "st091",
+    "title": "Orange heart",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F9E1.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "love",
+      "heart"
+    ]
+  },
+  {
+    "id": "st092",
+    "title": "Yellow heart",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F49B.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "love",
+      "heart"
+    ]
+  },
+  {
+    "id": "st093",
+    "title": "Green heart",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F49A.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "love",
+      "heart"
+    ]
+  },
+  {
+    "id": "st094",
+    "title": "Blue heart",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F499.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "love",
+      "heart"
+    ]
+  },
+  {
+    "id": "st095",
+    "title": "Purple heart",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F49C.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "love",
+      "heart"
+    ]
+  },
+  {
+    "id": "st096",
+    "title": "Black heart",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F5A4.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "love",
+      "dark",
+      "goth"
+    ]
+  },
+  {
+    "id": "st097",
+    "title": "White heart",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F90D.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "love",
+      "pure"
+    ]
+  },
+  {
+    "id": "st098",
+    "title": "Brown heart",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F90E.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "love"
+    ]
+  },
+  {
+    "id": "st099",
+    "title": "Cupid heart",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F498.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "love",
+      "heart-arrow"
+    ]
+  },
+  {
+    "id": "st100",
+    "title": "Heart ribbon",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F49D.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "love",
+      "gift"
+    ]
+  },
+  {
+    "id": "st101",
+    "title": "Two hearts",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F495.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "love"
+    ]
+  },
+  {
+    "id": "st102",
+    "title": "Sparkling heart",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F496.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "love",
+      "sparkle"
+    ]
+  },
+  {
+    "id": "st103",
+    "title": "Growing heart",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F497.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "love"
+    ]
+  },
+  {
+    "id": "st104",
+    "title": "Revolving hearts",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F49E.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "love"
+    ]
+  },
+  {
+    "id": "st105",
+    "title": "Heart decoration",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F49F.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "love"
+    ]
+  },
+  {
+    "id": "st106",
+    "title": "Broken heart",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F494.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "sad",
+      "heartbreak",
+      "love"
+    ]
+  },
+  {
+    "id": "st107",
+    "title": "Party popper",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F389.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "party",
+      "celebration",
+      "yay"
+    ]
+  },
+  {
+    "id": "st108",
+    "title": "Confetti",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F38A.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "party",
+      "celebration",
+      "yay"
+    ]
+  },
+  {
+    "id": "st109",
+    "title": "Balloon",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F388.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "party",
+      "birthday"
+    ]
+  },
+  {
+    "id": "st110",
+    "title": "Gift",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F381.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "birthday",
+      "present",
+      "gift"
+    ]
+  },
+  {
+    "id": "st111",
+    "title": "Cake",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F382.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "birthday",
+      "celebrate"
+    ]
+  },
+  {
+    "id": "st112",
+    "title": "Fireworks",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F386.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "celebrate",
+      "party"
+    ]
+  },
+  {
+    "id": "st113",
+    "title": "Sparkler",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F387.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "celebrate",
+      "fireworks"
+    ]
+  },
+  {
+    "id": "st114",
+    "title": "Sparkles",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/2728.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "sparkle",
+      "magic",
+      "shiny"
+    ]
+  },
+  {
+    "id": "st115",
+    "title": "100",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F4AF.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "perfect",
+      "score",
+      "best"
+    ]
+  },
+  {
+    "id": "st116",
+    "title": "Fire",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F525.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "fire",
+      "lit",
+      "hot"
+    ]
+  },
+  {
+    "id": "st117",
+    "title": "Glowing star",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F31F.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "star",
+      "shine"
+    ]
+  },
+  {
+    "id": "st118",
+    "title": "Star",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/2B50.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "star",
+      "favorite"
+    ]
+  },
+  {
+    "id": "st119",
+    "title": "Trophy",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F3C6.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "winner",
+      "award",
+      "champion"
+    ]
+  },
+  {
+    "id": "st120",
+    "title": "Medal",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F3C5.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "winner",
+      "award"
+    ]
+  },
+  {
+    "id": "st121",
+    "title": "Gold medal",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F947.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "winner",
+      "first"
+    ]
+  },
+  {
+    "id": "st122",
+    "title": "Silver medal",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F948.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "second",
+      "medal"
+    ]
+  },
+  {
+    "id": "st123",
+    "title": "Bronze medal",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F949.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "third",
+      "medal"
+    ]
+  },
+  {
+    "id": "st124",
+    "title": "Skull",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F480.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "dead",
+      "rip",
+      "skull"
+    ]
+  },
+  {
+    "id": "st125",
+    "title": "Ghost",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F47B.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "spooky",
+      "ghost",
+      "boo"
+    ]
+  },
+  {
+    "id": "st126",
+    "title": "Pile of poo",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F4A9.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "poo",
+      "yuck"
+    ]
+  },
+  {
+    "id": "st127",
+    "title": "Clown",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F921.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "clown",
+      "ridiculous",
+      "joke"
+    ]
+  },
+  {
+    "id": "st128",
+    "title": "Zzz",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F4A4.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "sleep",
+      "tired",
+      "zzz"
+    ]
+  },
+  {
+    "id": "st129",
+    "title": "Speech",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F4AC.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "talk",
+      "chat",
+      "speak"
+    ]
+  },
+  {
+    "id": "st130",
+    "title": "Thought",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F4AD.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "think",
+      "thought",
+      "idea"
+    ]
+  },
+  {
+    "id": "st131",
+    "title": "Light bulb",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F4A1.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "idea",
+      "smart",
+      "thought"
+    ]
+  },
+  {
+    "id": "st132",
+    "title": "Check mark",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/2705.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "yes",
+      "done",
+      "correct"
+    ]
+  },
+  {
+    "id": "st133",
+    "title": "Cross mark",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/274C.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "no",
+      "wrong",
+      "cancel"
+    ]
+  },
+  {
+    "id": "st134",
+    "title": "Question",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/2753.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "question",
+      "what",
+      "huh"
+    ]
+  },
+  {
+    "id": "st135",
+    "title": "Exclamation",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/2757.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "alert",
+      "important",
+      "warning"
+    ]
+  },
+  {
+    "id": "st136",
+    "title": "No entry",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F6AB.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "no",
+      "stop",
+      "forbidden"
+    ]
+  },
+  {
+    "id": "st137",
+    "title": "Warning",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/26A0.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "warning",
+      "caution"
+    ]
+  },
+  {
+    "id": "st138",
+    "title": "SOS",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F198.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "help",
+      "emergency"
+    ]
+  },
+  {
+    "id": "st139",
+    "title": "Dog face",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F436.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "dog",
+      "puppy",
+      "cute"
+    ]
+  },
+  {
+    "id": "st140",
+    "title": "Cat face",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F431.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "cat",
+      "kitten",
+      "cute"
+    ]
+  },
+  {
+    "id": "st141",
+    "title": "Lion",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F981.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "lion",
+      "strong"
+    ]
+  },
+  {
+    "id": "st142",
+    "title": "Monkey",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F412.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "monkey",
+      "funny"
+    ]
+  },
+  {
+    "id": "st143",
+    "title": "See no evil",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F648.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "monkey",
+      "no-look",
+      "shy"
+    ]
+  },
+  {
+    "id": "st144",
+    "title": "Hear no evil",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F649.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "monkey",
+      "no-listen"
+    ]
+  },
+  {
+    "id": "st145",
+    "title": "Speak no evil",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F64A.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "monkey",
+      "no-talk",
+      "secret"
+    ]
+  },
+  {
+    "id": "st146",
+    "title": "Frog",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F438.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "frog",
+      "kermit"
+    ]
+  },
+  {
+    "id": "st147",
+    "title": "Snake",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F40D.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "snake",
+      "sneaky"
+    ]
+  },
+  {
+    "id": "st148",
+    "title": "Chick",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F424.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "bird",
+      "chick",
+      "cute"
+    ]
+  },
+  {
+    "id": "st149",
+    "title": "Popcorn",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F37F.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "popcorn",
+      "drama",
+      "watching"
+    ]
+  },
+  {
+    "id": "st150",
+    "title": "Champagne",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F37E.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "celebrate",
+      "drink",
+      "party"
+    ]
+  },
+  {
+    "id": "st151",
+    "title": "Cocktail",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F378.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "drink",
+      "party",
+      "cocktail"
+    ]
+  },
+  {
+    "id": "st152",
+    "title": "Beers",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F37B.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "beer",
+      "cheers",
+      "drink"
+    ]
+  },
+  {
+    "id": "st153",
+    "title": "Grapes",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F347.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "grape",
+      "fruit"
+    ]
+  },
+  {
+    "id": "st154",
+    "title": "Burger",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F354.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "food",
+      "burger"
+    ]
+  },
+  {
+    "id": "st155",
+    "title": "Pizza",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F355.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "food",
+      "pizza"
+    ]
+  },
+  {
+    "id": "st156",
+    "title": "Camera flash",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F4F8.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "photo",
+      "picture"
+    ]
+  },
+  {
+    "id": "st157",
+    "title": "Camera",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F4F7.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "photo",
+      "picture"
+    ]
+  },
+  {
+    "id": "st158",
+    "title": "Clapper",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F3AC.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "movie",
+      "action",
+      "drama"
+    ]
+  },
+  {
+    "id": "st159",
+    "title": "Mic",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F3A4.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "sing",
+      "speak",
+      "mic"
+    ]
+  },
+  {
+    "id": "st160",
+    "title": "Music note",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F3B5.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "music",
+      "song"
+    ]
+  },
+  {
+    "id": "st161",
+    "title": "Music notes",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F3B6.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "music",
+      "song"
+    ]
+  },
+  {
+    "id": "st162",
+    "title": "Money bag",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F4B0.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "money",
+      "rich",
+      "win"
+    ]
+  },
+  {
+    "id": "st163",
+    "title": "Money fly",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F4B8.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "money",
+      "spending",
+      "flying"
+    ]
+  },
+  {
+    "id": "st164",
+    "title": "Crown",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F451.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "king",
+      "queen",
+      "boss",
+      "winner"
+    ]
+  },
+  {
+    "id": "st165",
+    "title": "Rainbow",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F308.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "rainbow",
+      "pride"
+    ]
+  },
+  {
+    "id": "st166",
+    "title": "Wave",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F30A.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "water",
+      "wave",
+      "sea"
+    ]
+  },
+  {
+    "id": "st167",
+    "title": "Fog",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/1F32B.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "foggy"
+    ]
+  },
+  {
+    "id": "st168",
+    "title": "Lightning",
+    "type": "png",
+    "src": "https://raw.githubusercontent.com/hfg-gmuend/openmoji/master/color/618x618/26A1.png",
+    "category": "stickers",
+    "tags": [
+      "sticker",
+      "fast",
+      "power",
+      "shock"
+    ]
   }
 ]
