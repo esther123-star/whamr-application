@@ -1228,6 +1228,29 @@ a { color: inherit; }
   border-color: var(--accent);
 }
 
+.pill.stickers-pill {
+  color: var(--accent-yellow);
+  border-color: rgba(255, 227, 77, 0.25);
+}
+
+.pill.stickers-pill.active {
+  background: var(--accent-yellow);
+  color: #2a2300;
+  border-color: var(--accent-yellow);
+}
+
+.pill.stickers-pill:hover:not(.active) {
+  color: var(--accent-yellow);
+  border-color: var(--accent-yellow);
+}
+
+/* Sticker badges on cards */
+.card-badge.png,
+.card-badge.webp {
+  background: rgba(255, 227, 77, 0.95);
+  color: #2a2300;
+}
+
 .meme-count {
   font-size: 12px;
   color: var(--text-muted);
@@ -1282,6 +1305,13 @@ a { color: inherit; }
   object-fit: cover;
   display: block;
   background: var(--bg);
+}
+
+/* Stickers — fit instead of cover, lighter background, padding around image */
+.card[data-cat="stickers"] .card-media {
+  object-fit: contain;
+  padding: 12%;
+  background: linear-gradient(135deg, #1c1c26, #14141c);
 }
 
 .card-overlay {
@@ -2094,6 +2124,23 @@ a { color: inherit; }
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
+}
+
+.footer-attribution {
+  font-size: 11px;
+  color: var(--text-subtle);
+  margin-top: 8px !important;
+}
+
+.footer-attribution a {
+  color: var(--text-muted);
+  text-decoration: none;
+  border-bottom: 1px dotted var(--text-subtle);
+}
+
+.footer-attribution a:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
 }
 
 /* ============================================
