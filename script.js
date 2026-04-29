@@ -190,6 +190,7 @@
       const btn = document.createElement("button");
       btn.className = "pill" + (cat === state.activeCategory ? " active" : "");
       if (cat === "favorites") btn.classList.add("favorites-pill");
+      if (cat === "stickers") btn.classList.add("stickers-pill");
       if (cat === "favorites") {
         btn.innerHTML = `
           <svg viewBox="0 0 24 24" fill="${state.activeCategory === "favorites" ? "currentColor" : "none"}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -197,6 +198,14 @@
           </svg>
           <span>Favorites</span>
           <span class="pill-count">${state.favorites.size}</span>
+        `;
+      } else if (cat === "stickers") {
+        btn.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15.5 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3z"></path>
+            <path d="M15 3v6h6"></path>
+          </svg>
+          <span>Stickers</span>
         `;
       } else {
         btn.textContent = cat;
@@ -240,7 +249,10 @@
     const list = (IS_HOME) ? state.memes : getFilteredMemes(); // home shows all featured (no filter UI)
     el.grid.innerHTML = "";
 
-    if (el.count) el.count.textContent = list.length === 1 ? "1 meme" : `${list.length} memes`;
+    if (el.count) {
+      const noun = state.activeCategory === "stickers" ? "sticker" : "meme";
+      el.count.textContent = list.length === 1 ? `1 ${noun}` : `${list.length} ${noun}s`;
+    }
     if (el.loading) el.loading.hidden = true;
 
     if (list.length === 0) {
@@ -266,6 +278,7 @@
   function createCard(meme, index) {
     const card = document.createElement("article");
     card.className = "card";
+    if (meme.category) card.setAttribute("data-cat", meme.category);
     card.style.animationDelay = Math.min(index * 30, 400) + "ms";
     card.tabIndex = 0;
     card.setAttribute("role", "button");
@@ -571,13 +584,22 @@
     if (!files.length) return;
     let added = 0;
     for (const file of files) {
-      const isMp4 = file.type === "video/mp4" || file.name.toLowerCase().endsWith(".mp4");
-      const isGif = file.type === "image/gif" || file.name.toLowerCase().endsWith(".gif");
-      if (!isMp4 && !isGif) continue;
+      const name = file.name.toLowerCase();
+      const isMp4 = file.type === "video/mp4" || name.endsWith(".mp4");
+      const isGif = file.type === "image/gif" || name.endsWith(".gif");
+      const isPng = file.type === "image/png" || name.endsWith(".png");
+      const isWebp = file.type === "image/webp" || name.endsWith(".webp");
+      if (!isMp4 && !isGif && !isPng && !isWebp) continue;
       const id = "u_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8);
-      const type = isMp4 ? "mp4" : "gif";
+      let type = "mp4";
+      if (isGif) type = "gif";
+      else if (isPng) type = "png";
+      else if (isWebp) type = "webp";
       const title = file.name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ");
-      const item = { id, title, type, blob: file, category: "uploads", tags: ["uploaded"] };
+      // Stickers (PNG/WebP) go in stickers category, videos/gifs go in uploads
+      const category = (isPng || isWebp) ? "stickers" : "uploads";
+      const tags = (isPng || isWebp) ? ["uploaded", "sticker"] : ["uploaded"];
+      const item = { id, title, type, blob: file, category, tags };
       try {
         await dbAdd(item);
         state.uploadedMemes.unshift({ ...item, src: URL.createObjectURL(file), uploaded: true });
@@ -588,7 +610,7 @@
     renderFilters();
     renderGrid();
     e.target.value = "";
-    if (added) showToast(`Added ${added} meme${added > 1 ? "s" : ""}`);
+    if (added) showToast(`Added ${added} item${added > 1 ? "s" : ""}`);
   }
 
   /* ============================================
