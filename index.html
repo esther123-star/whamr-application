@@ -40,6 +40,20 @@
     button.hero-nav-cta {
       cursor: pointer;
     }
+    /* Remove hover effect on Sign Up button - keep Whamr brand color stable */
+    button.auth-btn.hero-nav-cta,
+    button.auth-btn.hero-nav-cta:hover,
+    button.auth-btn.hero-nav-cta:focus,
+    button.auth-btn.hero-nav-cta:active {
+      transform: none !important;
+      transition: none !important;
+      filter: none !important;
+      opacity: 1 !important;
+      box-shadow: none !important;
+    }
+    button.auth-btn.hero-nav-link:hover {
+      opacity: 0.7;
+    }
   </style>
   <script>window.__WHAMR_PAGE = "home";</script>
 </head>
@@ -383,6 +397,83 @@
     type="text/javascript"
   ></script>
   <script>
+    // Inject custom CSS to style the Clerk modal
+    const clerkStyles = document.createElement("style");
+    clerkStyles.textContent = `
+      .cl-rootBox, .cl-card {
+        background-color: #0a0a0f !important;
+        color: #ffffff !important;
+        border: 1px solid #1a1a22 !important;
+        font-family: 'Poppins', system-ui, sans-serif !important;
+      }
+      .cl-headerTitle, .cl-headerSubtitle, .cl-formFieldLabel,
+      .cl-identityPreviewText, .cl-formFieldInput,
+      .cl-socialButtonsBlockButtonText, .cl-formHeaderTitle,
+      .cl-formHeaderSubtitle, .cl-userButtonPopoverActionButtonText,
+      .cl-userPreviewMainIdentifier, .cl-userPreviewSecondaryIdentifier {
+        color: #ffffff !important;
+      }
+      .cl-headerSubtitle, .cl-formFieldHintText, .cl-footerActionText,
+      .cl-dividerText, .cl-formFieldInputShowPasswordButton {
+        color: #a0a0a8 !important;
+      }
+      .cl-formFieldInput, .cl-input, input.cl-formFieldInput {
+        background-color: #1a1a22 !important;
+        color: #ffffff !important;
+        border: 1px solid #2a2a32 !important;
+      }
+      .cl-formFieldInput::placeholder {
+        color: #6a6a72 !important;
+      }
+      .cl-socialButtonsBlockButton {
+        background-color: #1a1a22 !important;
+        border: 1px solid #2a2a32 !important;
+        color: #ffffff !important;
+      }
+      .cl-socialButtonsBlockButton:hover {
+        background-color: #22222c !important;
+      }
+      .cl-formButtonPrimary, button.cl-formButtonPrimary {
+        background-color: #c8ff00 !important;
+        background-image: none !important;
+        color: #000000 !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        border: none !important;
+      }
+      .cl-formButtonPrimary:hover, button.cl-formButtonPrimary:hover {
+        background-color: #b8ee00 !important;
+        color: #000000 !important;
+      }
+      .cl-footerActionLink, a.cl-footerActionLink {
+        color: #c8ff00 !important;
+      }
+      .cl-footerActionLink:hover {
+        color: #b8ee00 !important;
+      }
+      .cl-dividerLine {
+        background-color: #2a2a32 !important;
+      }
+      .cl-footer, .cl-internal-1bki1pd {
+        background-color: #0a0a0f !important;
+      }
+      .cl-modalBackdrop {
+        background-color: rgba(0, 0, 0, 0.8) !important;
+      }
+      .cl-modalContent {
+        background-color: #0a0a0f !important;
+      }
+      .cl-userButtonPopoverCard {
+        background-color: #0a0a0f !important;
+        border: 1px solid #1a1a22 !important;
+      }
+      .cl-userButtonPopoverActionButton:hover {
+        background-color: #1a1a22 !important;
+      }
+    `;
+    document.head.appendChild(clerkStyles);
+
     window.addEventListener("load", async function () {
       if (typeof Clerk === "undefined") return;
       await Clerk.load();
@@ -404,8 +495,12 @@
         area.innerHTML =
           '<button class="hero-nav-link auth-btn" id="auth-sign-in">Sign In</button>' +
           '<button class="hero-nav-cta auth-btn" id="auth-sign-up">Sign Up</button>';
-        document.getElementById("auth-sign-in").addEventListener("click", function () { Clerk.openSignIn(); });
-        document.getElementById("auth-sign-up").addEventListener("click", function () { Clerk.openSignUp(); });
+        document.getElementById("auth-sign-in").addEventListener("click", function () {
+          Clerk.openSignIn();
+        });
+        document.getElementById("auth-sign-up").addEventListener("click", function () {
+          Clerk.openSignUp();
+        });
       }
     }
   </script>
