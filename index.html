@@ -16,6 +16,7 @@
 
   <link rel="stylesheet" href="style.css" />
   <style>
+    /* Auth area - desktop default */
     #auth-area {
       display: inline-flex;
       align-items: center;
@@ -40,19 +41,59 @@
     button.hero-nav-cta {
       cursor: pointer;
     }
-    /* Remove hover effect on Sign Up button - keep Whamr brand color stable */
-    button.auth-btn.hero-nav-cta,
+
+    /* Override the pink/colored hover on the Sign Up button - keep it stable */
+    button.auth-btn.hero-nav-cta {
+      background: #c8ff00 !important;
+      color: #000000 !important;
+      transition: none !important;
+    }
     button.auth-btn.hero-nav-cta:hover,
     button.auth-btn.hero-nav-cta:focus,
     button.auth-btn.hero-nav-cta:active {
+      background: #c8ff00 !important;
+      color: #000000 !important;
       transform: none !important;
-      transition: none !important;
       filter: none !important;
       opacity: 1 !important;
       box-shadow: none !important;
+      border-color: #c8ff00 !important;
     }
+
+    /* Subtle hover on Sign In link */
     button.auth-btn.hero-nav-link:hover {
       opacity: 0.7;
+    }
+
+    /* MOBILE: make sure auth buttons stay visible even when nav links hide */
+    @media (max-width: 768px) {
+      .hero-nav-links {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+      }
+      /* Hide secondary nav links on mobile to make room for auth buttons */
+      .hero-nav-links > .hero-nav-link,
+      .hero-nav-links > a.hero-nav-cta {
+        display: none !important;
+      }
+      /* Keep auth area visible on mobile */
+      #auth-area {
+        display: inline-flex !important;
+        gap: 8px !important;
+        margin-left: 0 !important;
+      }
+      #auth-area button.auth-btn {
+        font-size: 13px !important;
+        padding: 6px 12px !important;
+      }
+      button.auth-btn.hero-nav-cta {
+        padding: 6px 14px !important;
+        border-radius: 6px !important;
+      }
+      .auth-greeting {
+        font-size: 13px !important;
+      }
     }
   </style>
   <script>window.__WHAMR_PAGE = "home";</script>
