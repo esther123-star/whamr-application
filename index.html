@@ -20,8 +20,8 @@
     #auth-area {
       display: inline-flex;
       align-items: center;
-      gap: 12px;
-      margin-left: 8px;
+      gap: 14px;
+      margin-left: 10px;
     }
     .auth-greeting {
       font-size: 14px;
@@ -31,65 +31,72 @@
     .auth-btn {
       background: none;
       border: none;
-      padding: 0;
       margin: 0;
       cursor: pointer;
       font-family: inherit;
-      font-size: inherit;
       color: inherit;
     }
-    button.hero-nav-cta {
-      cursor: pointer;
-    }
 
-    /* Override the pink/colored hover on the Sign Up button - keep it stable */
-    button.auth-btn.hero-nav-cta {
-      background: #c8ff00 !important;
-      color: #000000 !important;
+    /* Sign In - plain text link, no hover */
+    button.auth-btn.auth-sign-in {
+      padding: 8px 4px;
+      font-size: 14px;
+      font-weight: 500;
       transition: none !important;
     }
-    button.auth-btn.hero-nav-cta:hover,
-    button.auth-btn.hero-nav-cta:focus,
-    button.auth-btn.hero-nav-cta:active {
-      background: #c8ff00 !important;
-      color: #000000 !important;
+    button.auth-btn.auth-sign-in:hover,
+    button.auth-btn.auth-sign-in:focus,
+    button.auth-btn.auth-sign-in:active {
+      opacity: 1 !important;
+      color: inherit !important;
+      background: none !important;
+      transform: none !important;
+      filter: none !important;
+      text-decoration: none !important;
+    }
+
+    /* Sign Up - matches Browse memes pink CTA, with padding, NO hover */
+    button.auth-btn.auth-sign-up {
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: none !important;
+    }
+    button.auth-btn.auth-sign-up,
+    button.auth-btn.auth-sign-up:hover,
+    button.auth-btn.auth-sign-up:focus,
+    button.auth-btn.auth-sign-up:active {
       transform: none !important;
       filter: none !important;
       opacity: 1 !important;
       box-shadow: none !important;
-      border-color: #c8ff00 !important;
     }
 
-    /* Subtle hover on Sign In link */
-    button.auth-btn.hero-nav-link:hover {
-      opacity: 0.7;
-    }
-
-    /* MOBILE: make sure auth buttons stay visible even when nav links hide */
+    /* MOBILE: hide secondary nav links, keep auth buttons */
     @media (max-width: 768px) {
       .hero-nav-links {
         display: flex !important;
         align-items: center !important;
         gap: 8px !important;
       }
-      /* Hide secondary nav links on mobile to make room for auth buttons */
       .hero-nav-links > .hero-nav-link,
       .hero-nav-links > a.hero-nav-cta {
         display: none !important;
       }
-      /* Keep auth area visible on mobile */
       #auth-area {
         display: inline-flex !important;
-        gap: 8px !important;
+        gap: 10px !important;
         margin-left: 0 !important;
       }
-      #auth-area button.auth-btn {
+      button.auth-btn.auth-sign-in {
+        padding: 6px 4px !important;
         font-size: 13px !important;
-        padding: 6px 12px !important;
       }
-      button.auth-btn.hero-nav-cta {
-        padding: 6px 14px !important;
-        border-radius: 6px !important;
+      button.auth-btn.auth-sign-up {
+        padding: 9px 18px !important;
+        font-size: 13px !important;
       }
       .auth-greeting {
         font-size: 13px !important;
@@ -534,8 +541,8 @@
         Clerk.mountUserButton(document.getElementById("auth-user-button"));
       } else {
         area.innerHTML =
-          '<button class="hero-nav-link auth-btn" id="auth-sign-in">Sign In</button>' +
-          '<button class="hero-nav-cta auth-btn" id="auth-sign-up">Sign Up</button>';
+          '<button class="auth-btn auth-sign-in" id="auth-sign-in">Sign In</button>' +
+          '<button class="auth-btn hero-nav-cta auth-sign-up" id="auth-sign-up">Sign Up</button>';
         document.getElementById("auth-sign-in").addEventListener("click", function () {
           Clerk.openSignIn();
         });
