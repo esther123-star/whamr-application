@@ -148,6 +148,28 @@
     shareClose: $("share-close"),
     shareGrid: $("share-grid"),
     toast: $("toast"),
+    modalTabs: $("modal-tabs") ? document.querySelectorAll(".modal-tab") : null,
+    tabShare: $("tab-share"),
+    tabDiscuss: $("tab-discuss"),
+    tabOrigin: $("tab-origin"),
+    tabVariants: $("tab-variants"),
+    discussList: $("discuss-list"),
+    discussForm: $("discuss-form"),
+    discussName: $("discuss-name"),
+    discussText: $("discuss-text"),
+    discussCount: $("discuss-count"),
+    originBody: $("origin-body"),
+    originEditBtn: $("origin-edit-btn"),
+    originForm: $("origin-form"),
+    originYear: $("origin-year"),
+    originSource: $("origin-source"),
+    originText: $("origin-text"),
+    originCancel: $("origin-cancel"),
+    variantsList: $("variants-list"),
+    variantForm: $("variant-form"),
+    variantTitle: $("variant-title"),
+    variantUrl: $("variant-url"),
+    variantsCount: $("variants-count"),
   };
 
   /* ============================================
@@ -339,7 +361,7 @@
     if (hint) {
       const intent = detectIntent(q);
       if (intent && matched.length > 0) {
-        hint.textContent = `✦ AI matched: ${intent} — ${matched.length} result${matched.length !== 1 ? "s" : ""}`;
+        hint.textContent = `✦ AI matched: ${intent} — ${matched.length} result${matched.length !== 1 ? "s" : ""} · results match by title & tags, not video content`;
         hint.style.display = "block";
       } else {
         hint.style.display = "none";
@@ -518,6 +540,117 @@
   }
 
   /* ============================================
+     Community data (localStorage per meme)
+     ============================================ */
+  function communityKey(id) { return "whamr-community-" + id; }
+
+  function getCommunity(id) {
+    try {
+      const raw = localStorage.getItem(communityKey(id));
+      return raw ? JSON.parse(raw) : { discussions: [], origin: null, variants: [] };
+    } catch { return { discussions: [], origin: null, variants: [] }; }
+  }
+
+  function saveCommunity(id, data) {
+    try { localStorage.setItem(communityKey(id), JSON.stringify(data)); } catch {}
+  }
+
+  function timeAgo(ts) {
+    const d = (Date.now() - ts) / 1000;
+    if (d < 60)   return "just now";
+    if (d < 3600) return Math.floor(d / 60) + "m ago";
+    if (d < 86400) return Math.floor(d / 3600) + "h ago";
+    return Math.floor(d / 86400) + "d ago";
+  }
+
+  function renderDiscussTab(meme) {
+    const data = getCommunity(meme.id);
+    const list = el.discussList;
+    if (!list) return;
+    if (el.discussCount) el.discussCount.textContent = data.discussions.length || "";
+
+    if (!data.discussions.length) {
+      list.innerHTML = '<div class="discuss-empty">No discussion yet. Be the first to share context or a reaction.</div>';
+      return;
+    }
+    list.innerHTML = "";
+    [...data.discussions].reverse().forEach(post => {
+      const div = document.createElement("div");
+      div.className = "discuss-post";
+      const initial = (post.author || "A").charAt(0).toUpperCase();
+      div.innerHTML = `
+        <div class="discuss-post-header">
+          <div class="discuss-avatar">${initial}</div>
+          <span class="discuss-name">${post.author || "Anonymous"}</span>
+          <span class="discuss-time">${timeAgo(post.ts)}</span>
+        </div>
+        <div class="discuss-text">${post.text.replace(/</g,"&lt;")}</div>
+      `;
+      list.appendChild(div);
+    });
+  }
+
+  function renderOriginTab(meme) {
+    const data = getCommunity(meme.id);
+    const body = el.originBody;
+    if (!body) return;
+
+    if (!data.origin || !data.origin.text) {
+      body.innerHTML = '<p class="origin-empty">No origin info yet — do you know where this meme came from? Add context below.</p>';
+      return;
+    }
+    const o = data.origin;
+    body.innerHTML = `
+      <div class="origin-entry">
+        <div class="origin-meta">
+          ${o.year ? `<span class="origin-chip">${o.year}</span>` : ""}
+          ${o.source ? `<span class="origin-chip">${o.source}</span>` : ""}
+        </div>
+        <div class="origin-text">${o.text.replace(/</g,"&lt;").replace(/\n/g,"<br>")}</div>
+        ${o.editedAt ? `<div class="origin-edited">Last edited ${timeAgo(o.editedAt)}</div>` : ""}
+      </div>
+    `;
+  }
+
+  function renderVariantsTab(meme) {
+    const data = getCommunity(meme.id);
+    const list = el.variantsList;
+    if (!list) return;
+    if (el.variantsCount) el.variantsCount.textContent = data.variants.length || "";
+
+    if (!data.variants.length) {
+      list.innerHTML = '<div class="variants-empty">No variants linked yet. Know a remix, extended cut, or parody? Add the link below.</div>';
+      return;
+    }
+    list.innerHTML = "";
+    data.variants.forEach(v => {
+      let host = "";
+      try { host = new URL(v.url).hostname.replace("www.", ""); } catch {}
+      const a = document.createElement("a");
+      a.className = "variant-item";
+      a.href = v.url;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      a.innerHTML = `
+        <span class="variant-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+        </span>
+        <span class="variant-title">${v.title.replace(/</g,"&lt;")}</span>
+        <span class="variant-host">${host}</span>
+      `;
+      list.appendChild(a);
+    });
+  }
+
+  function openCommunityTab(tabName) {
+    document.querySelectorAll(".modal-tab").forEach(t => t.classList.toggle("active", t.dataset.tab === tabName));
+    const panels = { share: el.tabShare, discuss: el.tabDiscuss, origin: el.tabOrigin, variants: el.tabVariants };
+    Object.entries(panels).forEach(([name, panel]) => {
+      if (panel) panel.hidden = (name !== tabName);
+    });
+  }
+
+  /* ============================================
      Modal
      ============================================ */
   function openModal(meme, options = {}) {
@@ -542,6 +675,11 @@
     }
 
     updateFavoriteButton(meme);
+    // Render community tabs
+    if (el.tabShare) openCommunityTab("share");
+    renderDiscussTab(meme);
+    renderOriginTab(meme);
+    renderVariantsTab(meme);
     if (el.btnDelete) el.btnDelete.hidden = !meme.uploaded;
     el.modal.hidden = false;
     document.body.style.overflow = "hidden";
@@ -842,6 +980,95 @@
         closeModal();
       }
     });
+
+    // Tab switching
+    document.querySelectorAll(".modal-tab").forEach(tab => {
+      tab.addEventListener("click", () => openCommunityTab(tab.dataset.tab));
+    });
+
+    // Discussion form submit
+    if (el.discussForm) {
+      el.discussForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const meme = state.currentModal;
+        if (!meme) return;
+        const text = (el.discussText.value || "").trim();
+        if (!text) return;
+        const data = getCommunity(meme.id);
+        data.discussions.push({
+          id: Date.now().toString(36),
+          author: (el.discussName.value || "").trim() || "Anonymous",
+          text,
+          ts: Date.now(),
+        });
+        saveCommunity(meme.id, data);
+        el.discussText.value = "";
+        renderDiscussTab(meme);
+        if (el.discussCount) el.discussCount.textContent = data.discussions.length;
+        showToast("Comment posted");
+      });
+    }
+
+    // Origin form
+    if (el.originEditBtn) {
+      el.originEditBtn.addEventListener("click", () => {
+        if (el.originForm) el.originForm.hidden = !el.originForm.hidden;
+        const meme = state.currentModal;
+        if (meme && el.originForm && !el.originForm.hidden) {
+          const data = getCommunity(meme.id);
+          if (data.origin) {
+            if (el.originYear) el.originYear.value = data.origin.year || "";
+            if (el.originSource) el.originSource.value = data.origin.source || "";
+            if (el.originText) el.originText.value = data.origin.text || "";
+          }
+        }
+      });
+    }
+    if (el.originCancel) {
+      el.originCancel.addEventListener("click", () => {
+        if (el.originForm) el.originForm.hidden = true;
+      });
+    }
+    if (el.originForm) {
+      el.originForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const meme = state.currentModal;
+        if (!meme) return;
+        const text = (el.originText ? el.originText.value : "").trim();
+        if (!text) return;
+        const data = getCommunity(meme.id);
+        data.origin = {
+          year:     (el.originYear ? el.originYear.value : "").trim(),
+          source:   (el.originSource ? el.originSource.value : "").trim(),
+          text,
+          editedAt: Date.now(),
+        };
+        saveCommunity(meme.id, data);
+        if (el.originForm) el.originForm.hidden = true;
+        renderOriginTab(meme);
+        showToast("Origin saved");
+      });
+    }
+
+    // Variant form
+    if (el.variantForm) {
+      el.variantForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const meme = state.currentModal;
+        if (!meme) return;
+        const url = (el.variantUrl ? el.variantUrl.value : "").trim();
+        if (!url) return;
+        const title = (el.variantTitle ? el.variantTitle.value : "").trim() || url;
+        const data = getCommunity(meme.id);
+        data.variants.push({ id: Date.now().toString(36), title, url, ts: Date.now() });
+        saveCommunity(meme.id, data);
+        if (el.variantTitle) el.variantTitle.value = "";
+        if (el.variantUrl) el.variantUrl.value = "";
+        renderVariantsTab(meme);
+        if (el.variantsCount) el.variantsCount.textContent = data.variants.length;
+        showToast("Variant link added");
+      });
+    }
   }
 
   /* ============================================

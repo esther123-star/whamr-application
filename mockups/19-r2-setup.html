@@ -1,0 +1,289 @@
+<!-- FILE: 19-r2-setup.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Media Hosting Setup · Cloudflare R2 · whamr.</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFFAF5;--bg-alt:#FFF3E8;--card:#FFFFFF;
+  --ink:#1A0F00;--ink-soft:#4A3020;--ink-mute:#8A7060;
+  --line:#F0DDD0;--line-soft:#FBF0E8;
+  --purple:#FF4500;--purple-mid:#FF6B35;--purple-dark:#CC3700;--purple-soft:#FFF1EC;
+  --green:#00C853;--green-soft:#E8FFF0;
+  --amber:#FFB800;--gray-100:#F3F4F6;--gray-400:#9CA3AF;--gray-700:#374151;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;font-size:15px;background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
+
+/* NAV */
+.nav{height:64px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 32px;position:sticky;top:0;z-index:100}
+.nav-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.05em;color:var(--purple);margin-right:32px}
+.nav-links{display:flex;align-items:center;gap:2px}
+.nav-link{font-size:14px;font-weight:500;color:var(--gray-700);padding:6px 12px;border-radius:8px;transition:background 0.15s}
+.nav-link:hover,.nav-link.active{background:var(--purple-soft);color:var(--purple);font-weight:600}
+.nav-back{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:13px;color:var(--gray-700);font-weight:500;padding:6px 14px;border-radius:8px;border:1px solid var(--line);transition:background 0.15s}
+.nav-back:hover{background:var(--purple-soft);color:var(--purple)}
+
+/* PAGE LAYOUT */
+.page-wrap{max-width:960px;margin:0 auto;padding:48px 32px 80px}
+.page-eyebrow{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--purple);margin-bottom:10px}
+.page-h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:36px;color:var(--ink);margin-bottom:10px;line-height:1.2}
+.page-sub{font-size:16px;color:var(--ink-mute);margin-bottom:40px;max-width:620px}
+
+/* STATS STRIP */
+.stats-strip{display:flex;gap:24px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px 28px;margin-bottom:40px;flex-wrap:wrap}
+.stat-block{text-align:center}
+.stat-num{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:28px;color:var(--green);display:block}
+.stat-label{font-size:12px;color:var(--ink-mute);margin-top:2px}
+
+/* STEP CARD */
+.steps{display:flex;flex-direction:column;gap:0}
+.step{display:flex;gap:20px;padding:28px 0;border-bottom:1px solid var(--line-soft)}
+.step:last-child{border-bottom:none}
+.step-num{width:36px;height:36px;border-radius:50%;background:var(--purple);color:#fff;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.step-body{flex:1}
+.step-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;color:var(--ink);margin-bottom:6px}
+.step-desc{font-size:14px;color:var(--ink-mute);line-height:1.6;margin-bottom:12px}
+.step-code{background:#1A0F00;border-radius:10px;padding:14px 18px;font-family:'JetBrains Mono',monospace;font-size:13px;color:#F59E0B;overflow-x:auto;line-height:1.7;margin-bottom:10px;white-space:pre}
+.step-note{font-size:12px;color:var(--ink-mute);background:var(--purple-soft);border-radius:8px;padding:8px 14px;border-left:3px solid var(--purple)}
+
+/* UPLOAD PROGRESS (mockup) */
+.progress-panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px;margin-top:40px;margin-bottom:40px}
+.progress-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.progress-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px}
+.progress-status{font-size:12px;color:var(--green);font-weight:700;display:flex;align-items:center;gap:6px}
+.progress-status::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.file-rows{display:flex;flex-direction:column;gap:10px}
+.file-row{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--bg);border-radius:8px;border:1px solid var(--line-soft)}
+.file-icon{font-size:18px;flex-shrink:0}
+.file-info{flex:1;min-width:0}
+.file-name{font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file-size{font-size:11px;color:var(--ink-mute);font-family:'JetBrains Mono',monospace}
+.file-bar-wrap{width:120px;height:4px;background:var(--line);border-radius:100px;flex-shrink:0}
+.file-bar{height:100%;border-radius:100px;background:var(--green)}
+.file-status{font-size:11px;font-weight:700;flex-shrink:0;width:56px;text-align:right}
+.file-status.done{color:var(--green)}
+.file-status.uploading{color:var(--amber)}
+.file-status.queued{color:var(--gray-400)}
+.progress-summary{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
+.progress-bar-outer{flex:1;height:8px;background:var(--line);border-radius:100px;margin:0 16px}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--green),#4ADE80);border-radius:100px;width:64%}
+.progress-pct{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--green)}
+
+/* ENV FILE PREVIEW */
+.env-card{background:#1A0F00;border-radius:12px;padding:20px 24px;margin:12px 0 20px}
+.env-line{font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.9}
+.env-comment{color:#6B7280}
+.env-key{color:#F59E0B}
+.env-val{color:#34D399}
+.env-placeholder{color:#6B7280;font-style:italic}
+
+/* RESULT PANEL */
+.result-panel{background:var(--green-soft);border:1px solid rgba(0,200,83,0.3);border-radius:12px;padding:20px 24px;margin-top:28px}
+.result-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:#065F46;margin-bottom:10px}
+.result-row{display:flex;align-items:center;gap:10px;font-size:13px;color:#047857;margin-bottom:6px}
+.result-row::before{content:'✓';font-weight:700;color:var(--green)}
+
+/* FOOTER */
+.footer{background:#1A0F00;padding:28px 32px;margin-top:60px}
+.footer-inner{max-width:960px;margin:0 auto;display:flex;justify-content:space-between;align-items:center}
+.footer-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;color:#FF6B35}
+.footer-meta{font-size:12px;color:rgba(255,255,255,0.4)}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="01-landing.html" class="nav-logo">whamr.</a>
+  <div class="nav-links">
+    <a href="01-landing.html" class="nav-link">Home</a>
+    <a href="02-memes-browser.html" class="nav-link">Memes</a>
+    <a href="06-explore.html" class="nav-link">Explore</a>
+    <a href="10-dojos.html" class="nav-link">Dojos</a>
+    <a href="12-analytics.html" class="nav-link active">Creator</a>
+  </div>
+  <a href="index.html" class="nav-back">
+    ← Back to gallery
+  </a>
+</nav>
+
+<div class="page-wrap">
+
+  <!-- HEADER -->
+  <div class="page-eyebrow">Creator Tools · Media Hosting</div>
+  <h1 class="page-h1">Host your memes on<br>Cloudflare R2</h1>
+  <p class="page-sub">Upload all 9,128 real memes and stickers to Cloudflare R2 in one command. Free for your entire library, zero bandwidth fees, global CDN delivery.</p>
+
+  <!-- STATS -->
+  <div class="stats-strip">
+    <div class="stat-block">
+      <span class="stat-num">9,128</span>
+      <div class="stat-label">Files to upload</div>
+    </div>
+    <div class="stat-block">
+      <span class="stat-num" style="color:#FF4500">~3.3 GB</span>
+      <div class="stat-label">Estimated size</div>
+    </div>
+    <div class="stat-block">
+      <span class="stat-num">10 GB</span>
+      <div class="stat-label">R2 free tier</div>
+    </div>
+    <div class="stat-block">
+      <span class="stat-num">$0</span>
+      <div class="stat-label">Bandwidth cost</div>
+    </div>
+    <div class="stat-block">
+      <span class="stat-num" style="color:var(--amber)">4</span>
+      <div class="stat-label">Parallel workers</div>
+    </div>
+  </div>
+
+  <!-- SETUP STEPS -->
+  <div class="steps">
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Create your R2 bucket</div>
+        <div class="step-desc">Go to <strong>dash.cloudflare.com → R2 Object Storage → Create bucket</strong>. Name it <code style="background:var(--gray-100);padding:1px 6px;border-radius:4px;font-family:monospace;font-size:13px">whamr-media</code>. Then go to <strong>Settings → Public Access → Allow Public Access</strong> and copy the <code style="background:var(--gray-100);padding:1px 6px;border-radius:4px;font-family:monospace;font-size:13px">pub-xxxx.r2.dev</code> URL.</div>
+        <div class="step-note">The bucket must be public for the memes to be accessible from the browser without authentication.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Create an API token</div>
+        <div class="step-desc">Go to <strong>R2 → Manage R2 API Tokens → Create API Token</strong>. Set permissions to <strong>Object Read & Write</strong> scoped to the <code style="background:var(--gray-100);padding:1px 6px;border-radius:4px;font-family:monospace;font-size:13px">whamr-media</code> bucket. Copy the Access Key ID and Secret Access Key.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Fill in your credentials</div>
+        <div class="step-desc">Copy <code style="background:var(--gray-100);padding:1px 6px;border-radius:4px;font-family:monospace;font-size:13px">.env.r2.example</code> → <code style="background:var(--gray-100);padding:1px 6px;border-radius:4px;font-family:monospace;font-size:13px">.env.r2</code> at the project root and fill in your values:</div>
+        <div class="env-card">
+          <div class="env-line"><span class="env-comment"># Cloudflare R2 credentials</span></div>
+          <div class="env-line"><span class="env-key">R2_ACCOUNT_ID</span>=<span class="env-val">a1b2c3d4e5f6...</span></div>
+          <div class="env-line"><span class="env-key">R2_ACCESS_KEY_ID</span>=<span class="env-val">your_access_key</span></div>
+          <div class="env-line"><span class="env-key">R2_SECRET_ACCESS_KEY</span>=<span class="env-val">your_secret_key</span></div>
+          <div class="env-line"><span class="env-key">R2_BUCKET_NAME</span>=<span class="env-val">whamr-media</span></div>
+          <div class="env-line"><span class="env-key">R2_PUBLIC_URL</span>=<span class="env-val">https://pub-xxxx.r2.dev</span></div>
+          <div class="env-line"><span class="env-key">MEDIA_SOURCE</span>=<span class="env-placeholder">C:\Users\...\Memes &amp; Stickers</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Install dependencies and upload</div>
+        <div class="step-desc">From the project root, install the upload script dependencies and run the upload:</div>
+        <div class="step-code">cd scripts
+npm install
+node upload-to-r2.js</div>
+        <div class="step-note">The script uploads 4 files in parallel, skips anything already on R2, retries failures 3 times, and shows live progress. Re-run any time you add new memes — it won't re-upload what's already there.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <div class="step-title">Regenerate the catalog</div>
+        <div class="step-desc">After the upload completes, generate a fresh <code style="background:var(--gray-100);padding:1px 6px;border-radius:4px;font-family:monospace;font-size:13px">data/memes.json</code> with R2 URLs:</div>
+        <div class="step-code">node generate-catalog.js</div>
+        <div class="step-desc">This reads the upload manifest, AI-categorises every file, deduplicates, and writes <code style="background:var(--gray-100);padding:1px 6px;border-radius:4px;font-family:monospace;font-size:13px">data/memes.json</code> pointing at your R2 bucket. Then commit and push — the live site instantly serves real content.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- UPLOAD PROGRESS MOCKUP -->
+  <div class="progress-panel">
+    <div class="progress-head">
+      <div class="progress-title">Upload in progress</div>
+      <div class="progress-status">Uploading 4 files in parallel</div>
+    </div>
+    <div class="file-rows">
+      <div class="file-row">
+        <span class="file-icon">🎬</span>
+        <div class="file-info">
+          <div class="file-name">5000 naira pawpaw.mp4</div>
+          <div class="file-size">8.2 MB · Meme/naija/</div>
+        </div>
+        <div class="file-bar-wrap"><div class="file-bar" style="width:100%"></div></div>
+        <span class="file-status done">✓ Done</span>
+      </div>
+      <div class="file-row">
+        <span class="file-icon">🎬</span>
+        <div class="file-info">
+          <div class="file-name">Big Laugh Jide kosoko.mp4</div>
+          <div class="file-size">6.1 MB · Meme/naija/</div>
+        </div>
+        <div class="file-bar-wrap"><div class="file-bar" style="width:100%"></div></div>
+        <span class="file-status done">✓ Done</span>
+      </div>
+      <div class="file-row">
+        <span class="file-icon">🎬</span>
+        <div class="file-info">
+          <div class="file-name">Billy Madison Dance.mp4</div>
+          <div class="file-size">5.4 MB · Meme/dance/</div>
+        </div>
+        <div class="file-bar-wrap"><div class="file-bar" style="width:72%"></div></div>
+        <span class="file-status uploading">↑ 72%</span>
+      </div>
+      <div class="file-row">
+        <span class="file-icon">🖼</span>
+        <div class="file-info">
+          <div class="file-name">STK-20211106-WA0003.webp</div>
+          <div class="file-size">68 KB · Sticker/Sticker/</div>
+        </div>
+        <div class="file-bar-wrap"><div class="file-bar" style="width:45%"></div></div>
+        <span class="file-status uploading">↑ 45%</span>
+      </div>
+      <div class="file-row" style="opacity:0.5">
+        <span class="file-icon">🖼</span>
+        <div class="file-info">
+          <div class="file-name">STK-20211107-WA0000.webp</div>
+          <div class="file-size">71 KB · Sticker/Sticker/</div>
+        </div>
+        <div class="file-bar-wrap"><div class="file-bar" style="width:0%"></div></div>
+        <span class="file-status queued">Queued</span>
+      </div>
+    </div>
+    <div class="progress-summary">
+      <span style="font-size:13px;color:var(--ink-mute)">5,847 / 9,128 files</span>
+      <div class="progress-bar-outer"><div class="progress-bar-fill"></div></div>
+      <span class="progress-pct">64%</span>
+    </div>
+  </div>
+
+  <!-- SUCCESS STATE -->
+  <div class="result-panel">
+    <div class="result-title">✓ Upload complete — 9,128 files on R2</div>
+    <div class="result-row">catalog.json written — 8,609 unique items (519 dupes removed)</div>
+    <div class="result-row">data/memes.json updated with R2 public URLs</div>
+    <div class="result-row">~3.3 GB uploaded · $0 bandwidth cost</div>
+    <div class="result-row">Next: <code style="background:rgba(0,200,83,0.1);padding:1px 6px;border-radius:4px;font-family:monospace;font-size:12px">git add data/memes.json && git push</code> — live site updates instantly</div>
+  </div>
+
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-logo">whamr.</div>
+    <div class="footer-meta">Media Hosting · Cloudflare R2 · v2.1 Final · May 2026</div>
+    <a href="index.html" style="color:rgba(255,255,255,0.5);font-size:13px">← Gallery</a>
+  </div>
+</footer>
+
+<script src="./real-media.js"></script>
+</body>
+</html>

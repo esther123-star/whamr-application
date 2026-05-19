@@ -36,7 +36,7 @@
       <div class="library-head-content">
         <div class="section-eyebrow">The full library</div>
         <h1 class="library-title">All <span class="library-title-num">413</span> memes &amp; stickers</h1>
-        <p class="section-sub">AI search understands plain English — try "funny naija reaction", "sad crying meme", or "dance moves". Or pick a category and scroll.</p>
+        <p class="section-sub">AI search matches by title and tags — results may vary since videos are matched by filename, not visual content. Use the Origin tab on any meme to add context.</p>
       </div>
     </div>
   </section>
@@ -130,23 +130,81 @@
           </div>
         </div>
         <div class="modal-tags" id="modal-tags"></div>
-        <div class="modal-actions">
-          <button class="btn btn-primary" id="btn-share">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+        <!-- Community tabs -->
+        <div class="modal-tabs" role="tablist">
+          <button class="modal-tab active" data-tab="share" role="tab">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
             Share
           </button>
-          <button class="btn" id="btn-favorite">
-            <svg id="fav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-            <span id="fav-label">Save</span>
+          <button class="modal-tab" data-tab="discuss" role="tab">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            Discussion <span class="tab-count" id="discuss-count"></span>
           </button>
-          <button class="btn" id="btn-download">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            Download
+          <button class="modal-tab" data-tab="origin" role="tab">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            Origin
           </button>
-          <button class="btn btn-danger" id="btn-delete" hidden>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"></path></svg>
-            Delete
+          <button class="modal-tab" data-tab="variants" role="tab">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line></svg>
+            Variants <span class="tab-count" id="variants-count"></span>
           </button>
+        </div>
+
+        <!-- Panel: Share -->
+        <div class="tab-panel" id="tab-share">
+          <div class="modal-actions">
+            <button class="btn btn-primary" id="btn-share">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              Share
+            </button>
+            <button class="btn" id="btn-favorite">
+              <svg id="fav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+              <span id="fav-label">Save</span>
+            </button>
+            <button class="btn" id="btn-download">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Download
+            </button>
+            <button class="btn btn-danger" id="btn-delete" hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"></path></svg>
+              Delete
+            </button>
+          </div>
+        </div>
+
+        <!-- Panel: Discussion -->
+        <div class="tab-panel" id="tab-discuss" hidden>
+          <div class="community-list" id="discuss-list"></div>
+          <form class="community-form" id="discuss-form">
+            <input class="community-input" type="text" id="discuss-name" placeholder="Your name (optional)" maxlength="30" autocomplete="off">
+            <textarea class="community-textarea" id="discuss-text" placeholder="Share what you know, a reaction, or context about this meme…" rows="2" maxlength="500"></textarea>
+            <button class="community-submit" type="submit">Post</button>
+          </form>
+        </div>
+
+        <!-- Panel: Origin & History -->
+        <div class="tab-panel" id="tab-origin" hidden>
+          <div class="origin-body" id="origin-body"></div>
+          <button class="community-edit-btn" id="origin-edit-btn">+ Add / Edit Origin</button>
+          <form class="community-form origin-form" id="origin-form" hidden>
+            <input class="community-input" type="text" id="origin-year" placeholder="Year originated (e.g. 2012)" maxlength="10">
+            <input class="community-input" type="text" id="origin-source" placeholder="Source / platform (e.g. Vine, Nollywood, Twitter)" maxlength="80">
+            <textarea class="community-textarea" id="origin-text" placeholder="Describe the origin, context, and history of this meme…" rows="4" maxlength="1000"></textarea>
+            <div class="community-form-actions">
+              <button class="community-submit" type="submit">Save</button>
+              <button class="community-cancel" type="button" id="origin-cancel">Cancel</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Panel: Variants -->
+        <div class="tab-panel" id="tab-variants" hidden>
+          <div class="community-list" id="variants-list"></div>
+          <form class="community-form" id="variant-form">
+            <input class="community-input" type="text" id="variant-title" placeholder="Title (e.g. Extended cut, Dance version…)" maxlength="80">
+            <input class="community-input" type="url" id="variant-url" placeholder="URL (YouTube, Twitter, TikTok…)" maxlength="500">
+            <button class="community-submit" type="submit">Add Link</button>
+          </form>
         </div>
       </div>
     </div>

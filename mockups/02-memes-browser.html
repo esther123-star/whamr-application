@@ -425,18 +425,92 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
 .meme-card:hover .meme-send-btn{background:var(--purple-mid)}
 
 /* ── LOAD MORE ── */
-.load-more-wrap{
-  text-align:center;padding:40px 0 32px;
+.load-more-wrap{text-align:center;padding:32px 0;border-top:1px solid var(--line-soft)}
+.load-progress{height:3px;background:var(--line);border-radius:100px;margin:0 auto 10px;max-width:240px}
+.load-progress-bar{height:100%;background:var(--purple);border-radius:100px;transition:width 0.3s}
+.load-progress-label{font-size:12px;color:var(--gray-400);margin-bottom:12px}
+.load-more-btn{background:var(--purple-soft);color:var(--purple);font-family:'Inter',sans-serif;font-size:14px;font-weight:600;padding:12px 28px;border-radius:10px;border:1.5px solid rgba(255,69,0,0.2);cursor:pointer;transition:background 0.15s}
+.load-more-btn:hover{background:#FFE4DA}
+.load-more-arrow{display:inline-block;margin-left:4px}
+
+/* ── TRENDING STRIP ── */
+.trending-strip{max-width:1280px;margin:20px auto 0;padding:0 32px}
+.trending-strip-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.trending-strip-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:var(--ink)}
+.trending-strip-see-all{font-size:13px;color:var(--purple);font-weight:600}
+.trending-row{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none}
+.trending-row::-webkit-scrollbar{display:none}
+.trending-mini{flex-shrink:0;width:160px;height:140px;border-radius:12px;position:relative;overflow:hidden;cursor:pointer;transition:transform 0.15s}
+.trending-mini:hover{transform:translateY(-3px)}
+.trending-mini-bg{position:absolute;inset:0}
+.trending-mini-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.75) 0%,transparent 60%);display:flex;flex-direction:column;justify-content:flex-end;padding:10px}
+.trending-mini-title{font-size:12px;font-weight:700;color:#fff;line-height:1.3;margin-bottom:4px}
+.trending-mini-foot{display:flex;align-items:center;justify-content:space-between}
+.trending-mini-fire{font-size:11px;color:#FFB800;font-weight:700}
+.trending-mini-cat{font-size:10px;background:rgba(255,255,255,0.2);color:#fff;padding:1px 6px;border-radius:100px}
+
+/* ── QUICK-SEND HOVER BUTTONS ── */
+.meme-quick-send{
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(to top,rgba(0,0,0,0.85),transparent);
+  display:flex;gap:6px;padding:8px;
+  opacity:0;transition:opacity 0.2s;pointer-events:none;
 }
-.btn-load-more{
-  display:inline-flex;align-items:center;gap:8px;
-  border:1.5px solid var(--line);background:var(--card);
-  color:var(--ink-soft);font-size:14px;font-weight:600;
-  padding:13px 32px;border-radius:12px;cursor:pointer;
-  font-family:'Inter',sans-serif;
-  transition:border-color 0.2s,background 0.2s,color 0.2s;
+.meme-img-wrap:hover .meme-quick-send{opacity:1;pointer-events:all}
+.qs-btn{
+  flex:1;height:30px;border-radius:6px;border:none;cursor:pointer;
+  font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:4px;
+  transition:opacity 0.15s;color:#fff;
 }
-.btn-load-more:hover{border-color:var(--purple);background:var(--purple-xsoft);color:var(--purple)}
+.qs-wa{background:#25D366}
+.qs-tg{background:#229ED9}
+.qs-x{background:#000}
+.qs-copy{background:rgba(255,255,255,0.2);backdrop-filter:blur(4px)}
+
+/* ── BULK SELECT ── */
+.btn-select{display:inline-flex;align-items:center;gap:5px;background:var(--purple-xsoft);color:var(--purple);font-size:13px;font-weight:600;padding:8px 14px;border-radius:9px;border:1.5px solid var(--line);cursor:pointer;font-family:'Inter',sans-serif;transition:background 0.15s}
+.btn-select:hover{background:var(--purple-soft)}
+.meme-select-check{
+  position:absolute;top:8px;left:8px;width:20px;height:20px;border-radius:5px;
+  background:#fff;border:2px solid var(--line);display:none;align-items:center;justify-content:center;
+  font-size:12px;cursor:pointer;z-index:3;
+}
+.select-mode .meme-select-check{display:flex}
+.meme-select-check.checked{background:var(--purple);border-color:var(--purple);color:#fff}
+
+/* ── BULK BAR ── */
+.bulk-bar{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1A0F00;color:#fff;border-radius:14px;padding:14px 20px;display:flex;align-items:center;gap:16px;box-shadow:0 8px 32px rgba(0,0,0,0.4);z-index:300;white-space:nowrap}
+.bulk-count{font-size:14px;font-weight:700}
+.bulk-actions{display:flex;gap:8px}
+.bulk-btn{padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;font-family:'Inter',sans-serif}
+.bulk-wa{background:#25D366;color:#fff}
+.bulk-pack{background:var(--purple);color:#fff}
+.bulk-cancel{background:rgba(255,255,255,0.15);color:#fff}
+
+/* ── FAB STICKER PACK ── */
+.fab-sticker-pack{
+  position:fixed;bottom:32px;right:32px;
+  background:linear-gradient(135deg,var(--purple),#CC3700);
+  color:#fff;border-radius:14px;
+  padding:12px 18px;display:flex;align-items:center;gap:8px;
+  box-shadow:0 4px 20px rgba(255,69,0,0.4);
+  text-decoration:none;font-family:'Inter',sans-serif;
+  font-size:13px;font-weight:700;z-index:200;
+  transition:transform 0.2s,box-shadow 0.2s;
+}
+.fab-sticker-pack:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(255,69,0,0.5)}
+.fab-icon{font-size:18px}
+
+/* ── RECENTLY VIEWED ── */
+.recently-viewed{margin-top:32px;padding-top:24px;border-top:1px solid var(--line)}
+.rv-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.rv-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;color:var(--ink)}
+.rv-clear{font-size:12px;color:var(--gray-400);cursor:pointer}
+.rv-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.rv-card{border-radius:10px;overflow:hidden;border:1px solid var(--line);cursor:pointer;transition:border-color 0.15s}
+.rv-card:hover{border-color:var(--purple)}
+.rv-card img{width:100%;aspect-ratio:1;object-fit:cover}
+.rv-card span{display:block;font-size:11px;font-weight:600;color:var(--ink-soft);padding:5px 8px;background:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* ── SHARE MODAL ── */
 .modal-backdrop{
@@ -590,9 +664,9 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
   <div class="nav-links">
     <a href="01-landing.html" class="nav-link">Home</a>
     <a href="02-memes-browser.html" class="nav-link active">Memes</a>
-    <a href="#" class="nav-link">Explore</a>
-    <a href="#" class="nav-link">Dojos</a>
-    <a href="#" class="nav-link">Creator</a>
+    <a href="06-explore.html" class="nav-link">Explore</a>
+    <a href="10-dojos.html" class="nav-link">Dojos</a>
+    <a href="12-analytics.html" class="nav-link">Creator</a>
   </div>
   <div class="nav-search">
     <input type="text" placeholder="Search memes, stickers, categories...">
@@ -668,12 +742,83 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
         <button class="view-btn active" title="Grid view">▦</button>
         <button class="view-btn" title="List view">☰</button>
       </div>
+      <button class="btn-select" id="btn-select" onclick="toggleSelect()">☑ Select</button>
       <button class="btn-create">+ Create</button>
     </div>
   </div>
 </div>
 <div style="max-width:1280px;margin:0 auto;padding:8px 32px 0;">
   <p style="font-size:12.5px;color:#FF4500;font-family:'Inter',sans-serif;font-weight:500;">✦ AI search understands plain English — try describing what you feel</p>
+</div>
+
+<!-- ── TRENDING TODAY STRIP ── -->
+<div class="trending-strip">
+  <div class="trending-strip-head">
+    <span class="trending-strip-title">🔥 Trending today</span>
+    <span class="trending-strip-see-all">See all →</span>
+  </div>
+  <div class="trending-row">
+    <div class="trending-mini" onclick="openModal('5000 Naira Pawpaw','Naija','ran2')">
+      <div class="trending-mini-bg" style="background:linear-gradient(135deg,#CC3700,#FF6B35)"></div>
+      <div class="trending-mini-overlay">
+        <div class="trending-mini-title">5000 Naira Pawpaw</div>
+        <div class="trending-mini-foot">
+          <span class="trending-mini-fire">🔥 99</span>
+          <span class="trending-mini-cat">Naija</span>
+        </div>
+      </div>
+    </div>
+    <div class="trending-mini" onclick="openModal('Big Laugh — Jide Kosoko','Laughing','r4')">
+      <div class="trending-mini-bg" style="background:linear-gradient(135deg,#D97706,#FBBF24)"></div>
+      <div class="trending-mini-overlay">
+        <div class="trending-mini-title">Big Laugh — Jide Kosoko</div>
+        <div class="trending-mini-foot">
+          <span class="trending-mini-fire">🔥 98</span>
+          <span class="trending-mini-cat">Laughing</span>
+        </div>
+      </div>
+    </div>
+    <div class="trending-mini" onclick="openModal('Billy Madison Dance','Dance','d2')">
+      <div class="trending-mini-bg" style="background:linear-gradient(135deg,#1D4ED8,#60A5FA)"></div>
+      <div class="trending-mini-overlay">
+        <div class="trending-mini-title">Billy Madison Dance</div>
+        <div class="trending-mini-foot">
+          <span class="trending-mini-fire">🔥 97</span>
+          <span class="trending-mini-cat">Dance</span>
+        </div>
+      </div>
+    </div>
+    <div class="trending-mini" onclick="openModal('Children of Men Sad Face','Sad','sad2')">
+      <div class="trending-mini-bg" style="background:linear-gradient(135deg,#374151,#9CA3AF)"></div>
+      <div class="trending-mini-overlay">
+        <div class="trending-mini-title">Children of Men Sad Face</div>
+        <div class="trending-mini-foot">
+          <span class="trending-mini-fire">🔥 94</span>
+          <span class="trending-mini-cat">Sad</span>
+        </div>
+      </div>
+    </div>
+    <div class="trending-mini" onclick="openModal('And I Oop','Reactions','a1')">
+      <div class="trending-mini-bg" style="background:linear-gradient(135deg,#7C3AED,#A78BFA)"></div>
+      <div class="trending-mini-overlay">
+        <div class="trending-mini-title">And I Oop</div>
+        <div class="trending-mini-foot">
+          <span class="trending-mini-fire">🔥 93</span>
+          <span class="trending-mini-cat">Reactions</span>
+        </div>
+      </div>
+    </div>
+    <div class="trending-mini" onclick="openModal('Tom Brady Legend','Sports','s1')">
+      <div class="trending-mini-bg" style="background:linear-gradient(135deg,#065F46,#34D399)"></div>
+      <div class="trending-mini-overlay">
+        <div class="trending-mini-title">Tom Brady Legend</div>
+        <div class="trending-mini-foot">
+          <span class="trending-mini-fire">🔥 91</span>
+          <span class="trending-mini-cat">Sports</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- ── MAIN LAYOUT ── -->
@@ -808,9 +953,15 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
       <div class="meme-card" onclick="openModal('E Don Do','Naija','n1')">
         <div class="meme-img-wrap">
           <img src="https://picsum.photos/seed/n1/400/400" alt="E Don Do">
+          <div class="meme-select-check" onclick="event.stopPropagation();this.classList.toggle('checked')">✓</div>
           <span class="meme-type-badge">meme</span>
           <span class="meme-virality">🔥 98</span>
           <button class="meme-fav-btn">♥</button>
+          <div class="meme-quick-send">
+            <button class="qs-btn qs-wa" onclick="event.stopPropagation()">📱 WA</button>
+            <button class="qs-btn qs-tg" onclick="event.stopPropagation()">✈️ TG</button>
+            <button class="qs-btn qs-copy" onclick="event.stopPropagation()">🔗</button>
+          </div>
         </div>
         <div class="meme-body">
           <div class="meme-title">E Don Do</div>
@@ -833,9 +984,15 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
       <div class="meme-card" onclick="openModal('Can\'t Breathe','Laughing','l1')">
         <div class="meme-img-wrap">
           <img src="https://picsum.photos/seed/l1/400/400" alt="Can't Breathe">
+          <div class="meme-select-check" onclick="event.stopPropagation();this.classList.toggle('checked')">✓</div>
           <span class="meme-type-badge">meme</span>
           <span class="meme-virality">🔥 99</span>
           <button class="meme-fav-btn active">♥</button>
+          <div class="meme-quick-send">
+            <button class="qs-btn qs-wa" onclick="event.stopPropagation()">📱 WA</button>
+            <button class="qs-btn qs-tg" onclick="event.stopPropagation()">✈️ TG</button>
+            <button class="qs-btn qs-copy" onclick="event.stopPropagation()">🔗</button>
+          </div>
         </div>
         <div class="meme-body">
           <div class="meme-title">Can't Breathe</div>
@@ -858,9 +1015,15 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
       <div class="meme-card" onclick="openModal('Azonto Move','Dance','d1')">
         <div class="meme-img-wrap">
           <img src="https://picsum.photos/seed/d1/400/400" alt="Azonto Move">
+          <div class="meme-select-check" onclick="event.stopPropagation();this.classList.toggle('checked')">✓</div>
           <span class="meme-type-badge">GIF</span>
           <span class="meme-virality">🔥 96</span>
           <button class="meme-fav-btn">♥</button>
+          <div class="meme-quick-send">
+            <button class="qs-btn qs-wa" onclick="event.stopPropagation()">📱 WA</button>
+            <button class="qs-btn qs-tg" onclick="event.stopPropagation()">✈️ TG</button>
+            <button class="qs-btn qs-copy" onclick="event.stopPropagation()">🔗</button>
+          </div>
         </div>
         <div class="meme-body">
           <div class="meme-title">Azonto Move</div>
@@ -883,8 +1046,14 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
       <div class="meme-card" onclick="openModal('The Rock Eyebrow','Reactions','r2')">
         <div class="meme-img-wrap">
           <img src="https://picsum.photos/seed/r2/400/400" alt="The Rock Eyebrow">
+          <div class="meme-select-check" onclick="event.stopPropagation();this.classList.toggle('checked')">✓</div>
           <span class="meme-type-badge">meme</span>
           <button class="meme-fav-btn">♥</button>
+          <div class="meme-quick-send">
+            <button class="qs-btn qs-wa" onclick="event.stopPropagation()">📱 WA</button>
+            <button class="qs-btn qs-tg" onclick="event.stopPropagation()">✈️ TG</button>
+            <button class="qs-btn qs-copy" onclick="event.stopPropagation()">🔗</button>
+          </div>
         </div>
         <div class="meme-body">
           <div class="meme-title">The Rock Eyebrow</div>
@@ -908,8 +1077,14 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
       <div class="meme-card" onclick="openModal('This Is Fine','Awkward','a3')">
         <div class="meme-img-wrap">
           <img src="https://picsum.photos/seed/a3/400/400" alt="This Is Fine">
+          <div class="meme-select-check" onclick="event.stopPropagation();this.classList.toggle('checked')">✓</div>
           <span class="meme-type-badge">meme</span>
           <button class="meme-fav-btn">♥</button>
+          <div class="meme-quick-send">
+            <button class="qs-btn qs-wa" onclick="event.stopPropagation()">📱 WA</button>
+            <button class="qs-btn qs-tg" onclick="event.stopPropagation()">✈️ TG</button>
+            <button class="qs-btn qs-copy" onclick="event.stopPropagation()">🔗</button>
+          </div>
         </div>
         <div class="meme-body">
           <div class="meme-title">This Is Fine</div>
@@ -932,8 +1107,14 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
       <div class="meme-card" onclick="openModal('Champions Celebration','Sports','s1')">
         <div class="meme-img-wrap">
           <img src="https://picsum.photos/seed/s1/400/400" alt="Champions Celebration">
+          <div class="meme-select-check" onclick="event.stopPropagation();this.classList.toggle('checked')">✓</div>
           <span class="meme-type-badge">GIF</span>
           <button class="meme-fav-btn">♥</button>
+          <div class="meme-quick-send">
+            <button class="qs-btn qs-wa" onclick="event.stopPropagation()">📱 WA</button>
+            <button class="qs-btn qs-tg" onclick="event.stopPropagation()">✈️ TG</button>
+            <button class="qs-btn qs-copy" onclick="event.stopPropagation()">🔗</button>
+          </div>
         </div>
         <div class="meme-body">
           <div class="meme-title">Champions Celebration</div>
@@ -956,8 +1137,14 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
       <div class="meme-card" onclick="openModal('Monday Morning Energy','Random','ran1')">
         <div class="meme-img-wrap">
           <img src="https://picsum.photos/seed/ran1/400/400" alt="Monday Morning Energy">
+          <div class="meme-select-check" onclick="event.stopPropagation();this.classList.toggle('checked')">✓</div>
           <span class="meme-type-badge">sticker</span>
           <button class="meme-fav-btn">♥</button>
+          <div class="meme-quick-send">
+            <button class="qs-btn qs-wa" onclick="event.stopPropagation()">📱 WA</button>
+            <button class="qs-btn qs-tg" onclick="event.stopPropagation()">✈️ TG</button>
+            <button class="qs-btn qs-copy" onclick="event.stopPropagation()">🔗</button>
+          </div>
         </div>
         <div class="meme-body">
           <div class="meme-title">Monday Morning Energy</div>
@@ -980,8 +1167,14 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
       <div class="meme-card" onclick="openModal('Side-eye Chloe','Reactions','r1')">
         <div class="meme-img-wrap">
           <img src="https://picsum.photos/seed/r1/400/400" alt="Side-eye Chloe">
+          <div class="meme-select-check" onclick="event.stopPropagation();this.classList.toggle('checked')">✓</div>
           <span class="meme-type-badge">meme</span>
           <button class="meme-fav-btn">♥</button>
+          <div class="meme-quick-send">
+            <button class="qs-btn qs-wa" onclick="event.stopPropagation()">📱 WA</button>
+            <button class="qs-btn qs-tg" onclick="event.stopPropagation()">✈️ TG</button>
+            <button class="qs-btn qs-copy" onclick="event.stopPropagation()">🔗</button>
+          </div>
         </div>
         <div class="meme-body">
           <div class="meme-title">Side-eye Chloe</div>
@@ -1005,8 +1198,14 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
       <div class="meme-card" onclick="openModal('Panda Laughing','Laughing','l2')">
         <div class="meme-img-wrap">
           <img src="https://picsum.photos/seed/l2/400/400" alt="Panda Laughing">
+          <div class="meme-select-check" onclick="event.stopPropagation();this.classList.toggle('checked')">✓</div>
           <span class="meme-type-badge">meme</span>
           <button class="meme-fav-btn">♥</button>
+          <div class="meme-quick-send">
+            <button class="qs-btn qs-wa" onclick="event.stopPropagation()">📱 WA</button>
+            <button class="qs-btn qs-tg" onclick="event.stopPropagation()">✈️ TG</button>
+            <button class="qs-btn qs-copy" onclick="event.stopPropagation()">🔗</button>
+          </div>
         </div>
         <div class="meme-body">
           <div class="meme-title">Panda Laughing</div>
@@ -1029,8 +1228,14 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
       <div class="meme-card" onclick="openModal('Billy Madison Dance','Dance','d2')">
         <div class="meme-img-wrap">
           <img src="https://picsum.photos/seed/d2/400/400" alt="Billy Madison Dance">
+          <div class="meme-select-check" onclick="event.stopPropagation();this.classList.toggle('checked')">✓</div>
           <span class="meme-type-badge">MP4</span>
           <button class="meme-fav-btn">♥</button>
+          <div class="meme-quick-send">
+            <button class="qs-btn qs-wa" onclick="event.stopPropagation()">📱 WA</button>
+            <button class="qs-btn qs-tg" onclick="event.stopPropagation()">✈️ TG</button>
+            <button class="qs-btn qs-copy" onclick="event.stopPropagation()">🔗</button>
+          </div>
         </div>
         <div class="meme-body">
           <div class="meme-title">Billy Madison Dance</div>
@@ -1053,8 +1258,14 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
       <div class="meme-card" onclick="openModal('Coffin Dancers Mission Failed','Random','s2')">
         <div class="meme-img-wrap">
           <img src="https://picsum.photos/seed/s2/400/400" alt="Coffin Dancers Mission Failed">
+          <div class="meme-select-check" onclick="event.stopPropagation();this.classList.toggle('checked')">✓</div>
           <span class="meme-type-badge">MP4</span>
           <button class="meme-fav-btn">♥</button>
+          <div class="meme-quick-send">
+            <button class="qs-btn qs-wa" onclick="event.stopPropagation()">📱 WA</button>
+            <button class="qs-btn qs-tg" onclick="event.stopPropagation()">✈️ TG</button>
+            <button class="qs-btn qs-copy" onclick="event.stopPropagation()">🔗</button>
+          </div>
         </div>
         <div class="meme-body">
           <div class="meme-title">Coffin Dancers Mission Failed</div>
@@ -1077,8 +1288,14 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
       <div class="meme-card" onclick="openModal('Children of Men Sad Face','Sad','sad2')">
         <div class="meme-img-wrap">
           <img src="https://picsum.photos/seed/sad2/400/400" alt="Children of Men Sad Face">
+          <div class="meme-select-check" onclick="event.stopPropagation();this.classList.toggle('checked')">✓</div>
           <span class="meme-type-badge">PNG</span>
           <button class="meme-fav-btn">♥</button>
+          <div class="meme-quick-send">
+            <button class="qs-btn qs-wa" onclick="event.stopPropagation()">📱 WA</button>
+            <button class="qs-btn qs-tg" onclick="event.stopPropagation()">✈️ TG</button>
+            <button class="qs-btn qs-copy" onclick="event.stopPropagation()">🔗</button>
+          </div>
         </div>
         <div class="meme-body">
           <div class="meme-title">Children of Men Sad Face</div>
@@ -1102,8 +1319,14 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
       <div class="meme-card" onclick="openModal('5000 Naira Pawpaw','Naija','ran2')">
         <div class="meme-img-wrap">
           <img src="https://picsum.photos/seed/ran2/400/400" alt="5000 Naira Pawpaw">
+          <div class="meme-select-check" onclick="event.stopPropagation();this.classList.toggle('checked')">✓</div>
           <span class="meme-type-badge">MP4</span>
           <button class="meme-fav-btn">♥</button>
+          <div class="meme-quick-send">
+            <button class="qs-btn qs-wa" onclick="event.stopPropagation()">📱 WA</button>
+            <button class="qs-btn qs-tg" onclick="event.stopPropagation()">✈️ TG</button>
+            <button class="qs-btn qs-copy" onclick="event.stopPropagation()">🔗</button>
+          </div>
         </div>
         <div class="meme-body">
           <div class="meme-title">5000 Naira Pawpaw</div>
@@ -1126,8 +1349,14 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
       <div class="meme-card" onclick="openModal('Am Rich','Naija','sad3')">
         <div class="meme-img-wrap">
           <img src="https://picsum.photos/seed/sad3/400/400" alt="Am Rich">
+          <div class="meme-select-check" onclick="event.stopPropagation();this.classList.toggle('checked')">✓</div>
           <span class="meme-type-badge">MP4</span>
           <button class="meme-fav-btn">♥</button>
+          <div class="meme-quick-send">
+            <button class="qs-btn qs-wa" onclick="event.stopPropagation()">📱 WA</button>
+            <button class="qs-btn qs-tg" onclick="event.stopPropagation()">✈️ TG</button>
+            <button class="qs-btn qs-copy" onclick="event.stopPropagation()">🔗</button>
+          </div>
         </div>
         <div class="meme-body">
           <div class="meme-title">Am Rich</div>
@@ -1150,8 +1379,14 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
       <div class="meme-card" onclick="openModal('Wait What','Reactions','r3')">
         <div class="meme-img-wrap">
           <img src="https://picsum.photos/seed/r3/400/400" alt="Wait What">
+          <div class="meme-select-check" onclick="event.stopPropagation();this.classList.toggle('checked')">✓</div>
           <span class="meme-type-badge">meme</span>
           <button class="meme-fav-btn">♥</button>
+          <div class="meme-quick-send">
+            <button class="qs-btn qs-wa" onclick="event.stopPropagation()">📱 WA</button>
+            <button class="qs-btn qs-tg" onclick="event.stopPropagation()">✈️ TG</button>
+            <button class="qs-btn qs-copy" onclick="event.stopPropagation()">🔗</button>
+          </div>
         </div>
         <div class="meme-body">
           <div class="meme-title">Wait What</div>
@@ -1174,8 +1409,14 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
       <div class="meme-card" onclick="openModal('Adulting Is Hard','Random','ran3')">
         <div class="meme-img-wrap">
           <img src="https://picsum.photos/seed/ran3/400/400" alt="Adulting Is Hard">
+          <div class="meme-select-check" onclick="event.stopPropagation();this.classList.toggle('checked')">✓</div>
           <span class="meme-type-badge">sticker</span>
           <button class="meme-fav-btn">♥</button>
+          <div class="meme-quick-send">
+            <button class="qs-btn qs-wa" onclick="event.stopPropagation()">📱 WA</button>
+            <button class="qs-btn qs-tg" onclick="event.stopPropagation()">✈️ TG</button>
+            <button class="qs-btn qs-copy" onclick="event.stopPropagation()">🔗</button>
+          </div>
         </div>
         <div class="meme-body">
           <div class="meme-title">Adulting Is Hard</div>
@@ -1199,8 +1440,14 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
       <div class="meme-card" onclick="openModal('Jeff Goldblum Laugh','Laughing','l3')">
         <div class="meme-img-wrap">
           <img src="https://picsum.photos/seed/l3/400/400" alt="Jeff Goldblum Laugh">
+          <div class="meme-select-check" onclick="event.stopPropagation();this.classList.toggle('checked')">✓</div>
           <span class="meme-type-badge">MP4</span>
           <button class="meme-fav-btn">♥</button>
+          <div class="meme-quick-send">
+            <button class="qs-btn qs-wa" onclick="event.stopPropagation()">📱 WA</button>
+            <button class="qs-btn qs-tg" onclick="event.stopPropagation()">✈️ TG</button>
+            <button class="qs-btn qs-copy" onclick="event.stopPropagation()">🔗</button>
+          </div>
         </div>
         <div class="meme-body">
           <div class="meme-title">Jeff Goldblum Laugh</div>
@@ -1223,8 +1470,14 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
       <div class="meme-card" onclick="openModal('Renegade Dance','Dance','d4')">
         <div class="meme-img-wrap">
           <img src="https://picsum.photos/seed/d4/400/400" alt="Renegade Dance">
+          <div class="meme-select-check" onclick="event.stopPropagation();this.classList.toggle('checked')">✓</div>
           <span class="meme-type-badge">MP4</span>
           <button class="meme-fav-btn">♥</button>
+          <div class="meme-quick-send">
+            <button class="qs-btn qs-wa" onclick="event.stopPropagation()">📱 WA</button>
+            <button class="qs-btn qs-tg" onclick="event.stopPropagation()">✈️ TG</button>
+            <button class="qs-btn qs-copy" onclick="event.stopPropagation()">🔗</button>
+          </div>
         </div>
         <div class="meme-body">
           <div class="meme-title">Renegade Dance</div>
@@ -1247,8 +1500,14 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
       <div class="meme-card" onclick="openModal('And I Oop','Reactions','a1')">
         <div class="meme-img-wrap">
           <img src="https://picsum.photos/seed/a1/400/400" alt="And I Oop">
+          <div class="meme-select-check" onclick="event.stopPropagation();this.classList.toggle('checked')">✓</div>
           <span class="meme-type-badge">MP4</span>
           <button class="meme-fav-btn">♥</button>
+          <div class="meme-quick-send">
+            <button class="qs-btn qs-wa" onclick="event.stopPropagation()">📱 WA</button>
+            <button class="qs-btn qs-tg" onclick="event.stopPropagation()">✈️ TG</button>
+            <button class="qs-btn qs-copy" onclick="event.stopPropagation()">🔗</button>
+          </div>
         </div>
         <div class="meme-body">
           <div class="meme-title">And I Oop</div>
@@ -1271,8 +1530,14 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
       <div class="meme-card" onclick="openModal('Big Laugh — Jide Kosoko','Laughing','r4')">
         <div class="meme-img-wrap">
           <img src="https://picsum.photos/seed/r4/400/400" alt="Big Laugh — Jide Kosoko">
+          <div class="meme-select-check" onclick="event.stopPropagation();this.classList.toggle('checked')">✓</div>
           <span class="meme-type-badge">MP4</span>
           <button class="meme-fav-btn">♥</button>
+          <div class="meme-quick-send">
+            <button class="qs-btn qs-wa" onclick="event.stopPropagation()">📱 WA</button>
+            <button class="qs-btn qs-tg" onclick="event.stopPropagation()">✈️ TG</button>
+            <button class="qs-btn qs-copy" onclick="event.stopPropagation()">🔗</button>
+          </div>
         </div>
         <div class="meme-body">
           <div class="meme-title">Big Laugh — Jide Kosoko</div>
@@ -1293,10 +1558,27 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
 
     </div><!-- /meme-grid -->
 
+    <!-- RECENTLY VIEWED -->
+    <div class="recently-viewed">
+      <div class="rv-head">
+        <span class="rv-title">Recently viewed</span>
+        <span class="rv-clear">Clear</span>
+      </div>
+      <div class="rv-row">
+        <div class="rv-card"><img src="https://picsum.photos/seed/n1/80/80" alt="E Don Do"><span>E Don Do</span></div>
+        <div class="rv-card"><img src="https://picsum.photos/seed/d1/80/80" alt="Azonto Move"><span>Azonto Move</span></div>
+        <div class="rv-card"><img src="https://picsum.photos/seed/r1/80/80" alt="Side-eye Chloe"><span>Side-eye Chloe</span></div>
+        <div class="rv-card"><img src="https://picsum.photos/seed/l1/80/80" alt="Can't Breathe"><span>Can't Breathe</span></div>
+      </div>
+    </div>
+
     <!-- LOAD MORE -->
     <div class="load-more-wrap">
-      <p style="font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--ink-mute);margin-bottom:14px;">413 memes &amp; stickers · 24 shown · scroll for more</p>
-      <button class="btn-load-more">Load 24 more</button>
+      <div class="load-progress">
+        <div class="load-progress-bar" style="width:25%"></div>
+      </div>
+      <p class="load-progress-label">Showing 24 of 413 memes &amp; stickers · Scroll for more</p>
+      <button class="load-more-btn">Load 24 more <span class="load-more-arrow">↓</span></button>
     </div>
 
   </div><!-- /main content -->
@@ -1387,9 +1669,9 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
         <div class="footer-col-title">Product</div>
         <div class="footer-links">
           <a href="02-memes-browser.html" class="footer-link">All memes</a>
-          <a href="#" class="footer-link">Explore</a>
+          <a href="06-explore.html" class="footer-link">Explore</a>
           <a href="#" class="footer-link">Create</a>
-          <a href="#" class="footer-link">Dojos</a>
+          <a href="10-dojos.html" class="footer-link">Dojos</a>
         </div>
       </div>
       <div>
@@ -1480,5 +1762,39 @@ document.querySelectorAll('.meme-fav-btn').forEach(function(btn) {
 
 
 <script src="./real-media.js"></script>
+
+<script>
+function toggleSelect() {
+  document.querySelector('.meme-grid').classList.toggle('select-mode');
+  const bar = document.getElementById('bulk-bar');
+  bar.style.display = document.querySelector('.meme-grid').classList.contains('select-mode') ? 'flex' : 'none';
+}
+function cancelSelect() {
+  document.querySelector('.meme-grid').classList.remove('select-mode');
+  document.querySelectorAll('.meme-select-check.checked').forEach(el => el.classList.remove('checked'));
+  document.getElementById('bulk-bar').style.display = 'none';
+}
+function openModal(title, cat, id) {
+  // Placeholder — links to detail page
+  window.location.href = '03-meme-detail.html';
+}
+</script>
+
+<!-- ── BULK ACTION BAR ── -->
+<div class="bulk-bar" id="bulk-bar" style="display:none">
+  <span class="bulk-count" id="bulk-count">0 selected</span>
+  <div class="bulk-actions">
+    <button class="bulk-btn bulk-wa">📱 Send all to WhatsApp</button>
+    <button class="bulk-btn bulk-pack">📦 Export as sticker pack</button>
+    <button class="bulk-btn bulk-cancel" onclick="cancelSelect()">✕ Cancel</button>
+  </div>
+</div>
+
+<!-- ── FAB STICKER PACK ── -->
+<a href="16-export-pack.html" class="fab-sticker-pack">
+  <span class="fab-icon">📦</span>
+  <span class="fab-label">Build Pack</span>
+</a>
+
 </body>
 </html>

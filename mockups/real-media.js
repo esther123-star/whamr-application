@@ -2612,17 +2612,18 @@
     });
 
     /* 3 — Patch visible card titles with real meme names */
-    document.querySelectorAll('.card-title,.meme-card-title').forEach(function(el, i) {
+    /* Only replace titles INSIDE meme card containers — never in gallery index screen names */
+    document.querySelectorAll('.meme-card .card-title, .meme-grid .card-title, .meme-card-title, [data-meme-title]').forEach(function(el, i) {
       var item = memes[i % memes.length];
       if (item) el.textContent = item.title;
     });
 
-    document.querySelectorAll('.card-subtitle,.card-cat,.meme-cat-label').forEach(function(el, i) {
+    document.querySelectorAll('.meme-card .card-subtitle, .meme-card .card-cat, .meme-cat-label').forEach(function(el, i) {
       var item = memes[i % memes.length];
       if (item) el.textContent = item.category;
     });
 
-    document.querySelectorAll('.card-tags,.meme-tags').forEach(function(el, i) {
+    document.querySelectorAll('.meme-card .card-tags, .meme-tags').forEach(function(el, i) {
       var item = memes[i % memes.length];
       if (!item) return;
       el.innerHTML = (item.tags || []).slice(0, 4).map(function(t){
