@@ -1,0 +1,525 @@
+﻿<!-- FILE: 11-settings.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings, Whamr</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Whamr Sunset, Electric Orange-Red + Golden Yellow */
+  --bg:#FFFAF5; --bg-alt:#FFF3E8; --card:#FFFFFF;
+  --ink:#1A0F00; --ink-soft:#4A3020; --ink-mute:#8A7060;
+  --line:#F0DDD0; --line-soft:#FBF0E8;
+  /* Primary: electric orange-red (the wham) */
+  --purple:#FF4500; --purple-mid:#FF6B35; --purple-bright:#FF8C60;
+  --purple-dark:#CC3700; --purple-soft:#FFF1EC; --purple-xsoft:#FFF8F5;
+  /* Accent: warm golden yellow (the joy) */
+  --wham:#FFB800; --wham-bright:#FFD60A; --wham-soft:#FFF8DC;
+  --pink:#FFB800; --pink-soft:#FFF8DC;
+  /* Semantic */
+  --green:#00C853; --green-soft:#E8FFF0;
+  --amber:#FFB800; --red:#FF2D55; --red-soft:#FFF0F3;
+  --blue:#007AFF;
+  /* Gray scale (kept neutral) */
+  --gray-50:#F9FAFB; --gray-100:#F3F4F6; --gray-200:#E5E7EB;
+  --gray-400:#9CA3AF; --gray-500:#6B7280; --gray-700:#374151; --gray-900:#111827;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;font-size:15px;background:var(--bg);color:var(--ink);line-height:1.6}
+a{text-decoration:none;color:inherit}
+img{display:block}
+
+.announce{background:linear-gradient(90deg,var(--purple-dark),var(--purple-mid));padding:9px 24px;text-align:center;font-size:13px;color:rgba(255,255,255,0.95);font-weight:500}
+.announce a{color:#FDE68A;font-weight:600;text-decoration:underline;text-underline-offset:2px}
+
+.nav{height:64px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 32px;gap:0;position:sticky;top:0;z-index:100}
+.nav-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.04em;color:var(--purple);margin-right:36px;flex-shrink:0}
+.nav-logo span{color:var(--wham)}
+.nav-links{display:flex;align-items:center;gap:2px;flex:1}
+.nav-link{font-size:14px;font-weight:500;color:var(--gray-700);padding:6px 12px;border-radius:8px;transition:background 0.15s,color 0.15s}
+.nav-link:hover,.nav-link.active{background:var(--purple-soft);color:var(--purple)}
+.nav-link.active{font-weight:600}
+.nav-search{flex:0 0 260px;position:relative;margin:0 16px}
+.nav-search input{width:100%;padding:8px 16px 8px 38px;border:1.5px solid var(--line);border-radius:100px;font-family:'Inter',sans-serif;font-size:13px;color:var(--ink);background:var(--bg-alt);outline:none}
+.nav-search input::placeholder{color:var(--gray-400)}
+.nav-search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--gray-400)}
+.nav-actions{display:flex;align-items:center;gap:8px}
+.btn-upload{display:inline-flex;align-items:center;gap:6px;background:var(--purple);color:#fff;font-size:13px;font-weight:600;padding:8px 16px;border-radius:9px;border:none;cursor:pointer;font-family:'Inter',sans-serif}
+.nav-icon{width:36px;height:36px;border-radius:8px;background:var(--purple-xsoft);border:1px solid var(--line-soft);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;position:relative}
+.nav-badge{position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;font-size:9px;font-weight:700;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #fff;font-family:'JetBrains Mono',monospace}
+.nav-badge.blue{background:#3B82F6}
+.nav-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#1A0F00,#FF6B35);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;cursor:pointer;flex-shrink:0;font-family:'Space Grotesk',sans-serif}
+.btn-signin{font-size:13px;font-weight:600;color:var(--purple);padding:7px 14px;border-radius:8px;border:1.5px solid var(--purple-soft);background:var(--purple-soft)}
+.btn-signup{font-size:13px;font-weight:600;color:#fff;padding:7px 14px;border-radius:8px;background:var(--purple)}
+
+.page-header{background:#fff;border-bottom:1px solid var(--line);padding:28px 32px}
+.page-header-inner{max-width:1100px;margin:0 auto}
+.page-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:32px;color:var(--ink);letter-spacing:-0.02em}
+.page-subtitle{font-size:14px;color:var(--ink-mute);margin-top:4px}
+
+.settings-layout{max-width:1100px;margin:32px auto;padding:0 32px;display:grid;grid-template-columns:200px 1fr;gap:28px;align-items:start}
+
+.settings-sidebar{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;position:sticky;top:80px}
+.sidebar-nav-item{display:flex;align-items:center;gap:10px;padding:12px 16px;font-size:14px;font-weight:500;color:var(--ink-mute);cursor:pointer;transition:background .15s,color .15s;font-family:'Inter',sans-serif;border-bottom:1px solid var(--line-soft)}
+.sidebar-nav-item:last-child{border-bottom:none}
+.sidebar-nav-item.active{background:var(--purple);color:#fff;font-weight:600}
+.sidebar-nav-item:hover:not(.active){background:var(--purple-xsoft);color:var(--purple)}
+.sidebar-icon{font-size:16px;flex-shrink:0}
+
+.settings-content{display:flex;flex-direction:column;gap:24px}
+.settings-section{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.section-header{padding:20px 24px;border-bottom:1px solid var(--line-soft);display:flex;align-items:center;justify-content:space-between}
+.section-header-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;color:var(--ink)}
+.section-header-actions{display:flex;gap:8px}
+.btn-save{background:var(--purple);color:#fff;font-size:13px;font-weight:600;padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Inter',sans-serif}
+.btn-cancel{background:var(--gray-100);color:var(--gray-700);font-size:13px;font-weight:600;padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-family:'Inter',sans-serif}
+.section-body{padding:24px}
+
+.form-row{margin-bottom:20px}
+.form-row:last-child{margin-bottom:0}
+.form-label{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:6px}
+.form-label-desc{display:block;font-size:12px;color:var(--ink-mute);margin-bottom:6px;font-weight:400}
+.form-input{width:100%;padding:10px 14px;border:1.5px solid var(--line);border-radius:9px;font-size:14px;font-family:'Inter',sans-serif;color:var(--ink);background:#fff;outline:none;transition:border-color .2s}
+.form-input:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(255,69,0,0.12)}
+.form-input::placeholder{color:var(--gray-400)}
+.form-prefix-wrap{position:relative}
+.form-prefix{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--ink-mute);font-weight:500}
+.form-prefix+.form-input{padding-left:30px}
+.form-textarea{width:100%;padding:10px 14px;border:1.5px solid var(--line);border-radius:9px;font-size:14px;font-family:'Inter',sans-serif;color:var(--ink);background:#fff;outline:none;resize:vertical;min-height:80px;transition:border-color .2s}
+.form-textarea:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(255,69,0,0.12)}
+.form-textarea::placeholder{color:var(--gray-400)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+.avatar-upload-row{display:flex;align-items:center;gap:20px;padding:20px;background:var(--bg-alt);border:1px solid var(--line-soft);border-radius:12px;margin-bottom:24px}
+.avatar-preview{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#1A0F00,#FF6B35);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:24px;font-family:'Space Grotesk',sans-serif;flex-shrink:0}
+.btn-change-photo{background:var(--purple-xsoft);color:var(--purple);font-size:13px;font-weight:600;padding:7px 14px;border-radius:8px;border:1px solid var(--line-soft);cursor:pointer;font-family:'Inter',sans-serif;display:inline-block}
+.btn-remove-photo{background:transparent;color:var(--gray-500);font-size:12px;font-weight:500;padding:4px 0;border:none;cursor:pointer;font-family:'Inter',sans-serif}
+.avatar-upload-hint{font-size:12px;color:var(--ink-mute);margin-top:4px}
+
+.creator-badge-row{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:linear-gradient(135deg,var(--wham-soft),#FEF3C7);border:1px solid #FDE68A;border-radius:10px}
+.creator-badge-label{font-size:14px;font-weight:600;color:#92400E}
+.creator-badge-status{font-size:12px;font-weight:500;color:#92400E;opacity:0.8;margin-top:2px}
+
+.toggle-group-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--ink-mute);padding:16px 0 8px;border-bottom:1px solid var(--line-soft)}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--line-soft)}
+.toggle-row:last-child{border-bottom:none}
+.toggle-info{flex:1;margin-right:16px}
+.toggle-title{font-size:14px;font-weight:600;color:var(--ink)}
+.toggle-desc{font-size:12px;color:var(--ink-mute);margin-top:2px}
+.toggle-switch{width:44px;height:24px;background:var(--gray-400);border-radius:100px;position:relative;cursor:pointer;flex-shrink:0;transition:background .2s}
+.toggle-switch.on{background:var(--purple)}
+.toggle-switch::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,0.2)}
+.toggle-switch.on::after{transform:translateX(20px)}
+
+.linked-account-row{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line-soft)}
+.linked-account-row:last-child{border-bottom:none}
+.account-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;border:1px solid var(--line);background:#F9FAFB;font-weight:700;font-size:15px}
+.account-name{font-size:14px;font-weight:600;color:var(--ink);flex:1}
+.account-status{font-size:12px;font-weight:600;color:var(--green);display:flex;align-items:center;gap:4px}
+.account-status.disconnected{color:var(--gray-400)}
+.btn-connect{font-size:12px;font-weight:600;color:var(--purple);background:var(--purple-xsoft);border:1px solid var(--line-soft);padding:6px 12px;border-radius:7px;cursor:pointer;font-family:'Inter',sans-serif}
+
+.pwd-form{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;align-items:end}
+.btn-update-pwd{background:var(--purple);color:#fff;font-size:13px;font-weight:600;padding:10px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;margin-top:12px}
+
+.data-buttons{display:flex;gap:10px;flex-wrap:wrap}
+.btn-data{display:inline-flex;align-items:center;gap:6px;background:#fff;color:var(--ink);font-size:13px;font-weight:600;padding:9px 16px;border-radius:8px;border:1.5px solid var(--line);cursor:pointer;font-family:'Inter',sans-serif}
+.sign-out-link{font-size:13px;font-weight:600;color:var(--red);cursor:pointer;margin-top:12px;display:inline-block}
+
+.danger-zone{border:1.5px solid var(--red);border-radius:12px;padding:20px;margin-top:20px}
+.danger-zone-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:var(--red);margin-bottom:8px}
+.danger-zone-desc{font-size:13px;color:var(--ink-mute);margin-bottom:14px;line-height:1.6}
+.btn-delete{background:var(--red-soft);color:var(--red);font-size:13px;font-weight:700;padding:9px 18px;border-radius:8px;border:1.5px solid var(--red);cursor:pointer;font-family:'Inter',sans-serif}
+
+.plan-badge{display:inline-flex;align-items:center;gap:6px;background:var(--gray-100);color:var(--gray-700);font-size:13px;font-weight:700;padding:5px 14px;border-radius:100px;border:1px solid var(--line);margin-bottom:12px}
+.free-features{list-style:none;margin-bottom:20px}
+.free-features li{font-size:13px;color:var(--ink-mute);padding:5px 0;display:flex;align-items:center;gap:8px}
+.free-features li::before{content:'✓';color:var(--green);font-weight:700}
+.upgrade-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+.upgrade-card{border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+.upgrade-card-header{padding:20px;color:#fff}
+.upgrade-card-header.pro{background:linear-gradient(135deg,var(--purple-dark),var(--purple-mid))}
+.upgrade-card-header.creator{background:linear-gradient(135deg,#92400E,var(--wham),#F59E0B)}
+.upgrade-price{font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;color:#fff}
+.upgrade-price span{font-size:14px;font-weight:400;opacity:0.75}
+.upgrade-name{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;color:#fff;margin-bottom:4px}
+.upgrade-desc{font-size:13px;color:rgba(255,255,255,0.75)}
+.upgrade-card-body{padding:16px 20px;background:#fff}
+.upgrade-features{list-style:none;margin-bottom:16px}
+.upgrade-features li{font-size:13px;color:var(--ink-mute);padding:5px 0;display:flex;align-items:center;gap:8px}
+.upgrade-features li::before{content:'✓';color:var(--purple);font-weight:700}
+.upgrade-features.creator-list li::before{color:var(--wham)}
+.btn-upgrade{width:100%;background:var(--purple);color:#fff;font-size:14px;font-weight:700;padding:11px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'Space Grotesk',sans-serif}
+.btn-upgrade.creator{background:linear-gradient(135deg,var(--wham),#F59E0B)}
+
+.billing-table{width:100%;border-collapse:collapse;margin-top:20px;font-size:13px}
+.billing-table th{text-align:left;padding:10px 14px;background:var(--bg-alt);color:var(--ink-mute);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.06em;border-bottom:1px solid var(--line)}
+.billing-table td{padding:12px 14px;border-bottom:1px solid var(--line-soft);color:var(--ink)}
+.billing-table tr:last-child td{border-bottom:none}
+.billing-table td:nth-child(3){font-family:'JetBrains Mono',monospace;font-weight:600}
+.billing-status{font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px}
+.billing-status.paid{background:var(--green-soft);color:var(--green)}
+.billing-status.free{background:var(--gray-100);color:var(--gray-500)}
+
+.footer{background:#1A0F00;color:rgba(255,255,255,0.5);padding:32px;text-align:center;font-size:13px;margin-top:64px}
+.footer a{color:rgba(255,255,255,0.7);font-weight:600}
+.footer-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;color:#fff;letter-spacing:-0.04em;margin-bottom:10px}
+</style>
+</head>
+<body>
+
+<div class="announce">
+  Creator monetisation is coming soon. <a href="#">Join the waitlist →</a>
+</div>
+
+<nav class="nav">
+  <a href="01-landing.html" class="nav-logo">whamr<span>.</span></a>
+  <div class="nav-links">
+    <a href="01-landing.html" class="nav-link">Home</a>
+    <a href="02-memes-browser.html" class="nav-link">Memes</a>
+    <a href="06-explore.html" class="nav-link">Explore</a>
+    <a href="10-dojos.html" class="nav-link">Dojos</a>
+  </div>
+  <div class="nav-search">
+    <span class="nav-search-icon">🔍</span>
+    <input type="text" placeholder="Search memes, creators...">
+  </div>
+  <div class="nav-actions">
+    <button class="btn-upload">+ Upload</button>
+    <div class="nav-icon">🔔<span class="nav-badge">4</span></div>
+    <div class="nav-icon">💬<span class="nav-badge blue">3</span></div>
+    <div class="nav-avatar">MQ</div>
+    <a href="14-auth.html" class="btn-signin">Sign in</a>
+    <a href="14-auth.html" class="btn-signup">Sign up</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="page-header-inner">
+    <h1 class="page-title">Settings</h1>
+    <p class="page-subtitle">Manage your account, privacy and subscription preferences.</p>
+  </div>
+</div>
+
+<div class="settings-layout">
+  <aside class="settings-sidebar">
+    <div class="sidebar-nav-item active"><span class="sidebar-icon">👤</span> Profile</div>
+    <div class="sidebar-nav-item"><span class="sidebar-icon">🔔</span> Notifications</div>
+    <div class="sidebar-nav-item"><span class="sidebar-icon">🔒</span> Privacy</div>
+    <div class="sidebar-nav-item"><span class="sidebar-icon">⚙️</span> Account</div>
+    <div class="sidebar-nav-item"><span class="sidebar-icon">⚡</span> Subscription</div>
+  </aside>
+
+  <div class="settings-content">
+
+    <!-- PROFILE -->
+    <div class="settings-section">
+      <div class="section-header">
+        <div class="section-header-title">Profile Settings</div>
+        <div class="section-header-actions">
+          <button class="btn-cancel">Cancel</button>
+          <button class="btn-save">Save changes</button>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="avatar-upload-row">
+          <div class="avatar-preview">MQ</div>
+          <div>
+            <div style="display:flex;gap:8px;margin-bottom:8px">
+              <span class="btn-change-photo">📷 Change photo</span>
+              <button class="btn-remove-photo">Remove</button>
+            </div>
+            <div class="avatar-upload-hint">JPG, PNG or GIF. Max 5MB. Min 200×200px.</div>
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-row">
+            <label class="form-label">Display name</label>
+            <input class="form-input" type="text" value="Meme Queen">
+          </div>
+          <div class="form-row">
+            <label class="form-label">Username</label>
+            <div class="form-prefix-wrap">
+              <span class="form-prefix">@</span>
+              <input class="form-input" type="text" value="memequeen">
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Bio</label>
+          <span class="form-label-desc">160 characters max.</span>
+          <textarea class="form-textarea">Nigerian meme curator. Spreading joy one wham at a time. 🇳🇬 Creator on Whamr.</textarea>
+        </div>
+        <div class="form-grid">
+          <div class="form-row">
+            <label class="form-label">Location</label>
+            <input class="form-input" type="text" value="Lagos, Nigeria">
+          </div>
+          <div class="form-row">
+            <label class="form-label">Website URL</label>
+            <input class="form-input" type="url" value="https://memequeen.whamr.app">
+          </div>
+        </div>
+        <div class="toggle-row">
+          <div class="toggle-info">
+            <div class="toggle-title">Your profile is public</div>
+            <div class="toggle-desc">Anyone can view your profile and meme content.</div>
+          </div>
+          <div class="toggle-switch on"></div>
+        </div>
+        <div class="creator-badge-row" style="margin-top:16px">
+          <div>
+            <div class="creator-badge-label">🎨 Creator account, Verified by Whamr</div>
+            <div class="creator-badge-status">Active since January 2024 · Creator tier</div>
+          </div>
+          <span style="font-size:13px;color:#92400E;font-weight:600">Manage →</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- NOTIFICATIONS -->
+    <div class="settings-section">
+      <div class="section-header">
+        <div class="section-header-title">Notifications</div>
+        <div class="section-header-actions"><button class="btn-save">Save</button></div>
+      </div>
+      <div class="section-body">
+        <div class="toggle-group-label">Social interactions</div>
+        <div class="toggle-row"><div class="toggle-info"><div class="toggle-title">Likes on my content</div><div class="toggle-desc">Get notified when someone likes your meme.</div></div><div class="toggle-switch on"></div></div>
+        <div class="toggle-row"><div class="toggle-info"><div class="toggle-title">Comments</div><div class="toggle-desc">Notify me when someone comments on my post.</div></div><div class="toggle-switch on"></div></div>
+        <div class="toggle-row"><div class="toggle-info"><div class="toggle-title">New followers</div><div class="toggle-desc">Alert me when someone follows my profile.</div></div><div class="toggle-switch on"></div></div>
+        <div class="toggle-row"><div class="toggle-info"><div class="toggle-title">Mentions</div><div class="toggle-desc">Notify me when someone mentions @memequeen.</div></div><div class="toggle-switch on"></div></div>
+        <div class="toggle-row"><div class="toggle-info"><div class="toggle-title">Reposts</div><div class="toggle-desc">Alert me when someone reshares my meme.</div></div><div class="toggle-switch on"></div></div>
+        <div class="toggle-group-label" style="margin-top:4px">Platform</div>
+        <div class="toggle-row"><div class="toggle-info"><div class="toggle-title">Dojo activity</div><div class="toggle-desc">Updates from your Dojos and communities.</div></div><div class="toggle-switch on"></div></div>
+        <div class="toggle-row"><div class="toggle-info"><div class="toggle-title">Viral alerts</div><div class="toggle-desc">Alert me when one of my memes goes viral.</div></div><div class="toggle-switch on"></div></div>
+        <div class="toggle-row"><div class="toggle-info"><div class="toggle-title">System announcements</div><div class="toggle-desc">Important platform updates and news.</div></div><div class="toggle-switch on"></div></div>
+        <div class="toggle-group-label" style="margin-top:4px">Emails and push</div>
+        <div class="toggle-row"><div class="toggle-info"><div class="toggle-title">Weekly digest emails</div><div class="toggle-desc">A summary of your top content every Sunday.</div></div><div class="toggle-switch"></div></div>
+        <div class="toggle-row"><div class="toggle-info"><div class="toggle-title">Push notifications</div><div class="toggle-desc">Browser and mobile push alerts.</div></div><div class="toggle-switch on"></div></div>
+        <div class="toggle-row"><div class="toggle-info"><div class="toggle-title">Marketing emails</div><div class="toggle-desc">Tips, feature highlights and offer announcements.</div></div><div class="toggle-switch"></div></div>
+      </div>
+    </div>
+
+    <!-- PRIVACY -->
+    <div class="settings-section">
+      <div class="section-header">
+        <div class="section-header-title">Privacy</div>
+        <div class="section-header-actions"><button class="btn-save">Save</button></div>
+      </div>
+      <div class="section-body">
+        <div class="toggle-row"><div class="toggle-info"><div class="toggle-title">Public profile</div><div class="toggle-desc">Anyone can view your profile and content.</div></div><div class="toggle-switch on"></div></div>
+        <div class="toggle-row"><div class="toggle-info"><div class="toggle-title">Show location</div><div class="toggle-desc">Display your location on your public profile.</div></div><div class="toggle-switch"></div></div>
+        <div class="toggle-row"><div class="toggle-info"><div class="toggle-title">Allow direct messages</div><div class="toggle-desc">Anyone can send you a message on Whamr.</div></div><div class="toggle-switch on"></div></div>
+        <div class="toggle-row"><div class="toggle-info"><div class="toggle-title">Appear in search</div><div class="toggle-desc">Your profile shows up in Whamr search results.</div></div><div class="toggle-switch on"></div></div>
+        <div class="toggle-row"><div class="toggle-info"><div class="toggle-title">Allow data export</div><div class="toggle-desc">Download all your Whamr data anytime (GDPR).</div></div><div class="toggle-switch on"></div></div>
+      </div>
+    </div>
+
+    <!-- ACCOUNT -->
+    <div class="settings-section">
+      <div class="section-header">
+        <div class="section-header-title">Account</div>
+      </div>
+      <div class="section-body">
+        <div style="margin-bottom:28px">
+          <div style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;color:var(--ink);margin-bottom:14px">Change password</div>
+          <div class="pwd-form">
+            <div class="form-row" style="margin-bottom:0"><label class="form-label">Current password</label><input class="form-input" type="password" placeholder="••••••••"></div>
+            <div class="form-row" style="margin-bottom:0"><label class="form-label">New password</label><input class="form-input" type="password" placeholder="Min 8 characters"></div>
+            <div class="form-row" style="margin-bottom:0"><label class="form-label">Confirm new password</label><input class="form-input" type="password" placeholder="Repeat new password"></div>
+          </div>
+          <button class="btn-update-pwd">Update password</button>
+        </div>
+        <div style="margin-bottom:28px">
+          <div style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;color:var(--ink);margin-bottom:14px">Linked accounts</div>
+          <div class="linked-account-row">
+            <div class="account-icon">G</div>
+            <div class="account-name">Google</div>
+            <span class="account-status">✓ Connected</span>
+          </div>
+          <div class="linked-account-row">
+            <div class="account-icon"></div>
+            <div class="account-name">Apple</div>
+            <span class="account-status disconnected">Not connected</span>
+            <button class="btn-connect">Connect</button>
+          </div>
+          <div class="linked-account-row">
+            <div class="account-icon">🎮</div>
+            <div class="account-name">Discord</div>
+            <span class="account-status disconnected">Not connected</span>
+            <button class="btn-connect">Connect</button>
+          </div>
+        </div>
+        <div style="margin-bottom:20px">
+          <div style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;color:var(--ink);margin-bottom:14px">Data and privacy</div>
+          <div class="data-buttons">
+            <button class="btn-data">📦 Export my data</button>
+            <button class="btn-data">📥 Download archive</button>
+          </div>
+          <div><span class="sign-out-link">Sign out all devices →</span></div>
+        </div>
+        <div class="danger-zone">
+          <div class="danger-zone-title">Danger zone</div>
+          <div class="danger-zone-desc">Deleting your account is permanent. All your memes, collections, followers and Dojo memberships will be removed. This action cannot be undone.</div>
+          <button class="btn-delete">Delete my account</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUBSCRIPTION -->
+    <div class="settings-section">
+      <div class="section-header">
+        <div class="section-header-title">Subscription</div>
+      </div>
+      <div class="section-body">
+        <div style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;color:var(--ink);margin-bottom:10px">Current plan</div>
+        <span class="plan-badge">Free tier</span>
+        <ul class="free-features">
+          <li>Unlimited meme browsing and sharing</li>
+          <li>Up to 50 meme uploads per month</li>
+          <li>Join up to 3 Dojos</li>
+          <li>Basic analytics (7-day history)</li>
+        </ul>
+        <div class="upgrade-cards">
+          <div class="upgrade-card">
+            <div class="upgrade-card-header pro">
+              <div class="upgrade-name">PRO</div>
+              <div class="upgrade-price">$4.99<span>/month</span></div>
+              <div class="upgrade-desc">For active creators who post daily.</div>
+            </div>
+            <div class="upgrade-card-body">
+              <ul class="upgrade-features">
+                <li>Unlimited uploads</li>
+                <li>Advanced analytics (90 days)</li>
+                <li>Unlimited Dojo memberships</li>
+                <li>PRO badge on profile</li>
+                <li>Priority content review</li>
+                <li>Custom meme templates</li>
+              </ul>
+              <button class="btn-upgrade">Upgrade to PRO</button>
+            </div>
+          </div>
+          <div class="upgrade-card">
+            <div class="upgrade-card-header creator">
+              <div class="upgrade-name">Creator</div>
+              <div class="upgrade-price">$9.99<span>/month</span></div>
+              <div class="upgrade-desc">Monetise your content and grow your brand.</div>
+            </div>
+            <div class="upgrade-card-body">
+              <ul class="upgrade-features creator-list">
+                <li>Everything in PRO</li>
+                <li>Revenue share on viral content</li>
+                <li>Full creator analytics dashboard</li>
+                <li>Verified creator badge</li>
+                <li>Featured placement on Explore</li>
+                <li>Dedicated creator support</li>
+              </ul>
+              <button class="btn-upgrade creator">Upgrade to Creator</button>
+            </div>
+          </div>
+        </div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;color:var(--ink);margin-top:28px;margin-bottom:4px">Billing history</div>
+        <div style="font-size:13px;color:var(--ink-mute);margin-bottom:12px">You are on the free plan. Showing example history.</div>
+        <table class="billing-table">
+          <thead><tr><th>Date</th><th>Plan</th><th>Amount</th><th>Status</th><th>Invoice</th></tr></thead>
+          <tbody>
+            <tr><td>1 May 2026</td><td>PRO</td><td>$4.99</td><td><span class="billing-status paid">Paid</span></td><td><a href="#" style="color:var(--purple);font-weight:600">Download</a></td></tr>
+            <tr><td>1 Apr 2026</td><td>PRO</td><td>$4.99</td><td><span class="billing-status paid">Paid</span></td><td><a href="#" style="color:var(--purple);font-weight:600">Download</a></td></tr>
+            <tr><td>-</td><td>Free tier</td><td>$0.00</td><td><span class="billing-status free">Free</span></td><td>-</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SETTINGS QUICK ACTIONS FOOTER BAR -->
+<div style="background:#fff;border-top:1px solid var(--line);padding:20px 32px;position:sticky;bottom:0;z-index:90">
+  <div style="max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between">
+    <div style="font-size:13px;color:var(--ink-mute)">Unsaved changes · Profile Settings</div>
+    <div style="display:flex;gap:8px">
+      <button class="btn-cancel" style="background:var(--gray-100);color:var(--gray-700);font-size:13px;font-weight:600;padding:9px 18px;border-radius:9px;border:none;cursor:pointer;font-family:'Inter',sans-serif">Discard</button>
+      <button class="btn-save" style="background:var(--purple);color:#fff;font-size:13px;font-weight:600;padding:9px 20px;border-radius:9px;border:none;cursor:pointer;font-family:'Inter',sans-serif">Save all changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURE OVERVIEW: What you unlock -->
+<div style="background:var(--bg-alt);border-top:1px solid var(--line);padding:48px 32px">
+  <div style="max-width:1100px;margin:0 auto">
+    <div style="text-align:center;margin-bottom:32px">
+      <div style="font-size:11px;font-weight:700;color:var(--purple);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px">Plan comparison</div>
+      <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:24px;color:var(--ink)">Upgrade to unlock the full Whamr experience</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--line)">
+      <!-- Feature column -->
+      <div style="background:#fff;padding:20px">
+        <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;color:var(--ink-mute);margin-bottom:16px;text-transform:uppercase;letter-spacing:0.06em;font-size:11px">Feature</div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="font-size:13px;color:var(--ink);font-weight:500">Monthly uploads</div>
+          <div style="font-size:13px;color:var(--ink);font-weight:500">Analytics history</div>
+          <div style="font-size:13px;color:var(--ink);font-weight:500">Dojo memberships</div>
+          <div style="font-size:13px;color:var(--ink);font-weight:500">Custom templates</div>
+          <div style="font-size:13px;color:var(--ink);font-weight:500">Creator dashboard</div>
+          <div style="font-size:13px;color:var(--ink);font-weight:500">Revenue sharing</div>
+          <div style="font-size:13px;color:var(--ink);font-weight:500">Verified badge</div>
+          <div style="font-size:13px;color:var(--ink);font-weight:500">Priority support</div>
+        </div>
+      </div>
+      <!-- Free column -->
+      <div style="background:#fff;padding:20px">
+        <div style="text-align:center;margin-bottom:16px">
+          <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;color:var(--ink)">Free</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--ink)">$0</div>
+          <div style="font-size:11px;color:var(--gray-400)">Current plan</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;text-align:center">
+          <div style="font-size:13px;color:var(--ink-mute)">50</div>
+          <div style="font-size:13px;color:var(--ink-mute)">7 days</div>
+          <div style="font-size:13px;color:var(--ink-mute)">Up to 3</div>
+          <div style="font-size:20px">-</div>
+          <div style="font-size:20px">-</div>
+          <div style="font-size:20px">-</div>
+          <div style="font-size:20px">-</div>
+          <div style="font-size:20px">-</div>
+        </div>
+      </div>
+      <!-- Creator column -->
+      <div style="background:linear-gradient(135deg,var(--purple-xsoft),#fff);padding:20px;border-left:2px solid var(--purple-soft)">
+        <div style="text-align:center;margin-bottom:16px">
+          <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;color:var(--purple)">Creator</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--purple)">$9.99<span style="font-size:13px;color:var(--ink-mute);font-weight:400">/mo</span></div>
+          <div style="font-size:11px;color:var(--purple-mid);font-weight:600">Most popular</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;text-align:center">
+          <div style="font-size:13px;font-weight:700;color:var(--green)">Unlimited</div>
+          <div style="font-size:13px;font-weight:700;color:var(--green)">90 days</div>
+          <div style="font-size:13px;font-weight:700;color:var(--green)">Unlimited</div>
+          <div style="font-size:16px;color:var(--green)">✓</div>
+          <div style="font-size:16px;color:var(--green)">✓</div>
+          <div style="font-size:16px;color:var(--green)">✓</div>
+          <div style="font-size:16px;color:var(--green)">✓</div>
+          <div style="font-size:16px;color:var(--green)">✓</div>
+        </div>
+        <button style="width:100%;background:var(--purple);color:#fff;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;padding:10px 20px;border-radius:9px;border:none;cursor:pointer;margin-top:14px">Upgrade now</button>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:16px;font-size:13px;color:var(--ink-mute)">Cancel anytime. No hidden fees. Prices in USD.</div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-logo">whamr.</div>
+  <p style="margin-bottom:12px">The global meme-sharing platform. Find the perfect meme. Send the wham.</p>
+  <div style="display:flex;justify-content:center;gap:24px;font-size:13px;flex-wrap:wrap">
+    <a href="#">About</a><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Help</a>
+  </div>
+  <div style="margin-top:16px;font-size:12px;opacity:0.5">© 2026 Whamr Ltd. All rights reserved.</div>
+</footer>
+
+</body>
+</html>

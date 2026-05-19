@@ -1,0 +1,656 @@
+﻿<!-- FILE: 05-meme-editor.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meme Editor, Whamr</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Whamr Sunset, Electric Orange-Red + Golden Yellow */
+  --bg:#FFFAF5; --bg-alt:#FFF3E8; --card:#FFFFFF;
+  --ink:#1A0F00; --ink-soft:#4A3020; --ink-mute:#8A7060;
+  --line:#F0DDD0; --line-soft:#FBF0E8;
+  /* Primary: electric orange-red (the wham) */
+  --purple:#FF4500; --purple-mid:#FF6B35; --purple-bright:#FF8C60;
+  --purple-dark:#CC3700; --purple-soft:#FFF1EC; --purple-xsoft:#FFF8F5;
+  /* Accent: warm golden yellow (the joy) */
+  --wham:#FFB800; --wham-bright:#FFD60A; --wham-soft:#FFF8DC;
+  --pink:#FFB800; --pink-soft:#FFF8DC;
+  /* Semantic */
+  --green:#00C853; --green-soft:#E8FFF0;
+  --amber:#FFB800; --red:#FF2D55; --red-soft:#FFF0F3;
+  --blue:#007AFF;
+  /* Gray scale (kept neutral) */
+  --gray-50:#F9FAFB; --gray-100:#F3F4F6; --gray-200:#E5E7EB;
+  --gray-400:#9CA3AF; --gray-500:#6B7280; --gray-700:#374151; --gray-900:#111827;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;font-size:15px;background:var(--bg);color:var(--ink);line-height:1.6}
+a{text-decoration:none;color:inherit}
+
+/* NAV */
+.nav{height:56px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 32px;gap:0;position:sticky;top:0;z-index:100}
+.nav-logo{font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;font-size:22px;letter-spacing:-0.05em;color:var(--purple);margin-right:40px;flex-shrink:0}
+.nav-links{display:flex;align-items:center;gap:4px;flex:1}
+.nav-link{font-size:14px;font-weight:500;color:var(--gray-700);padding:6px 12px;border-radius:8px;transition:all .15s}
+.nav-link:hover,.nav-link.active{background:var(--purple-soft);color:var(--purple)}
+.nav-link.active{font-weight:600}
+.nav-actions{display:flex;align-items:center;gap:10px}
+.btn-upload{display:inline-flex;align-items:center;gap:6px;background:var(--purple);color:#fff;font-size:13px;font-weight:600;padding:8px 16px;border-radius:9px;border:none;cursor:pointer}
+.nav-bell{width:36px;height:36px;border-radius:8px;background:var(--gray-100);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;position:relative}
+.nav-bell-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;background:var(--red);border-radius:50%;border:1.5px solid #fff}
+.nav-badge-blue{position:absolute;top:6px;right:6px;width:7px;height:7px;background:#3B82F6;border-radius:50%;border:1.5px solid #fff}
+.nav-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#CC3700,#FF4500);display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;font-weight:700;cursor:pointer}
+.btn-signin{font-size:13px;font-weight:600;color:var(--purple);padding:7px 14px;border-radius:8px;border:1.5px solid var(--purple-soft);background:var(--purple-soft)}
+.btn-signup{font-size:13px;font-weight:600;color:#fff;padding:7px 14px;border-radius:8px;background:var(--purple)}
+
+/* PAGE HERO */
+.page-hero{background:var(--bg-alt);border-bottom:1px solid var(--line);padding:32px 40px 28px}
+.hero-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.hero-text{}
+.hero-eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--purple-mid);margin-bottom:8px}
+.hero-h1{font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;font-size:28px;letter-spacing:-0.03em;color:var(--ink);margin-bottom:6px}
+.hero-sub{font-size:14px;color:var(--ink-mute);max-width:520px}
+.hero-actions{display:flex;align-items:center;gap:10px}
+.btn-primary{display:inline-flex;align-items:center;gap:7px;background:var(--purple);color:#fff;font-size:13px;font-weight:700;padding:10px 20px;border-radius:10px;border:none;cursor:pointer;font-family:'Inter',sans-serif}
+.btn-ghost{display:inline-flex;align-items:center;gap:7px;background:transparent;color:var(--ink-mute);font-size:13px;font-weight:600;padding:10px 18px;border-radius:10px;border:1.5px solid var(--line);cursor:pointer;font-family:'Inter',sans-serif}
+
+/* EDITOR LAYOUT */
+.editor-wrap{max-width:1300px;margin:0 auto;padding:28px 24px 60px;display:grid;grid-template-columns:340px 1fr 300px;gap:20px}
+
+/* PANEL shared */
+.panel{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.panel-head{padding:16px 20px;border-bottom:1px solid var(--line-soft);display:flex;align-items:center;justify-content:space-between}
+.panel-title{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:14px;color:var(--ink)}
+.panel-body{padding:16px 20px}
+
+/* LEFT PANEL: Controls */
+.tab-row{display:flex;gap:2px;background:var(--bg-alt);border-radius:10px;padding:3px;margin-bottom:16px}
+.tab-btn{flex:1;text-align:center;font-size:12px;font-weight:600;padding:7px 8px;border-radius:8px;cursor:pointer;color:var(--ink-mute);border:none;background:transparent;font-family:'Inter',sans-serif}
+.tab-btn.active{background:#fff;color:var(--purple);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+
+/* Template grid */
+.template-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-height:200px;overflow-y:auto;margin-bottom:16px}
+.template-thumb{border-radius:8px;overflow:hidden;border:2px solid transparent;cursor:pointer;position:relative;aspect-ratio:1}
+.template-thumb:hover{border-color:var(--purple-soft)}
+.template-thumb.active{border-color:var(--purple)}
+.template-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.template-name{position:absolute;bottom:0;left:0;right:0;font-size:7px;font-weight:700;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.7));padding:8px 4px 3px;text-align:center}
+
+/* Upload zone */
+.upload-zone{border:2px dashed var(--line);border-radius:12px;padding:20px 12px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:14px}
+.upload-zone:hover{border-color:var(--purple-mid);background:var(--purple-xsoft)}
+.upload-icon{font-size:28px;margin-bottom:6px}
+.upload-label{font-size:12px;font-weight:600;color:var(--ink)}
+.upload-sub{font-size:11px;color:var(--ink-mute);margin-top:2px}
+
+/* Form controls */
+.form-group{margin-bottom:14px}
+.form-label{font-size:11px;font-weight:700;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;display:block}
+.form-input{width:100%;border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;font-family:'Inter',sans-serif;font-size:13px;color:var(--ink);outline:none;background:#fff}
+.form-input:focus{border-color:var(--purple-mid)}
+.form-range{width:100%;accent-color:var(--purple);cursor:pointer}
+.range-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--ink-mute);margin-top:3px}
+
+/* Color picker */
+.color-row{display:flex;gap:6px;flex-wrap:wrap}
+.color-dot{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;flex-shrink:0}
+.color-dot.active{border-color:var(--ink);transform:scale(1.15)}
+
+/* Text options */
+.text-style-row{display:flex;gap:4px;margin-top:8px}
+.style-btn{flex:1;font-size:11px;font-weight:700;padding:6px;border:1.5px solid var(--line);border-radius:6px;cursor:pointer;background:#fff;font-family:'Inter',sans-serif;color:var(--ink-mute)}
+.style-btn.active{background:var(--purple);color:#fff;border-color:var(--purple)}
+
+/* Align buttons */
+.align-row{display:flex;gap:4px;margin-top:6px}
+.align-btn{flex:1;font-size:13px;padding:6px;border:1.5px solid var(--line);border-radius:6px;cursor:pointer;background:#fff;text-align:center}
+.align-btn.active{background:var(--purple-soft);border-color:var(--purple-mid)}
+
+/* Layer list */
+.layer-list{margin-top:6px;space-y:4px}
+.layer-item{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:8px;border:1.5px solid var(--line);margin-bottom:4px;cursor:pointer;background:#fff}
+.layer-item.active{border-color:var(--purple-mid);background:var(--purple-xsoft)}
+.layer-icon{font-size:14px;flex-shrink:0}
+.layer-name{font-size:12px;font-weight:600;color:var(--ink);flex:1}
+.layer-vis{font-size:12px;color:var(--ink-mute);cursor:pointer}
+
+/* Divider */
+.divider{height:1px;background:var(--line-soft);margin:14px 0}
+.section-subtitle{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-mute);margin-bottom:10px}
+
+/* CENTER PANEL: Canvas */
+.canvas-panel{background:var(--gray-900);border-radius:16px;border:1px solid rgba(255,255,255,.1);overflow:hidden;display:flex;flex-direction:column}
+.canvas-toolbar{background:#1A0F00;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.1)}
+.canvas-size{font-size:11px;color:rgba(255,255,255,.5);font-weight:500}
+.toolbar-btns{display:flex;gap:6px}
+.toolbar-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.8);font-size:11px;font-weight:600;padding:5px 10px;border-radius:6px;cursor:pointer;font-family:'Inter',sans-serif}
+.toolbar-btn:hover{background:rgba(255,255,255,.2)}
+.toolbar-btn.undo-btn{font-size:14px;padding:5px 8px}
+
+/* Canvas area */
+.canvas-area{flex:1;display:flex;align-items:center;justify-content:center;padding:24px;min-height:520px;position:relative}
+.canvas-img-wrap{position:relative;max-width:480px;width:100%;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 0 0 1px rgba(255,255,255,.15),0 20px 60px rgba(0,0,0,.6)}
+.canvas-img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+/* Text overlay layers */
+.canvas-overlay{position:absolute;left:0;right:0;text-align:center;pointer-events:none}
+.canvas-overlay.top{top:20px}
+.canvas-overlay.bottom{bottom:20px}
+.canvas-text{font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;font-size:36px;color:#fff;text-shadow:3px 3px 0 #000,-3px -3px 0 #000,3px -3px 0 #000,-3px 3px 0 #000,0 3px 0 #000,0 -3px 0 #000,3px 0 0 #000,-3px 0 0 #000;line-height:1.2;letter-spacing:.01em;text-transform:uppercase;padding:0 24px;word-break:break-word}
+.canvas-text.selected{outline:2px dashed rgba(255,107,53,0.15);outline-offset:4px;border-radius:4px}
+/* Filter overlay */
+.filter-overlay{position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:0;border-radius:8px}
+.filter-overlay.brightness{background:#fff;opacity:.08}
+
+/* Canvas grid lines */
+.canvas-grid{position:absolute;inset:0;pointer-events:none}
+.canvas-grid::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:rgba(255,255,255,.1)}
+.canvas-grid::after{content:'';position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(255,255,255,.1)}
+
+/* Handles */
+.handle{width:8px;height:8px;border-radius:50%;background:var(--purple-mid);position:absolute;border:2px solid #fff;box-shadow:0 0 4px rgba(0,0,0,.5)}
+
+/* Canvas footer */
+.canvas-footer{background:#1A0F00;padding:12px 16px;border-top:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:space-between}
+.zoom-controls{display:flex;align-items:center;gap:8px}
+.zoom-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:14px;width:28px;height:28px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif}
+.zoom-level{font-size:12px;color:rgba(255,255,255,.6);font-weight:500;min-width:40px;text-align:center}
+.canvas-cta{display:flex;gap:8px}
+.btn-download{background:var(--green);color:#fff;font-size:13px;font-weight:700;padding:8px 16px;border-radius:9px;border:none;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:6px}
+.btn-share{background:var(--purple);color:#fff;font-size:13px;font-weight:700;padding:8px 16px;border-radius:9px;border:none;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:6px}
+
+/* RIGHT PANEL: Properties + history */
+.props-section{margin-bottom:16px}
+.props-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-mute);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.props-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.prop-box{background:var(--bg-alt);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.prop-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-mute);margin-bottom:3px}
+.prop-val{font-size:13px;font-weight:700;color:var(--ink);font-family:'Plus Jakarta Sans',sans-serif}
+
+/* Filter preview chips */
+.filter-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
+.filter-chip{border-radius:8px;overflow:hidden;border:2px solid transparent;cursor:pointer;position:relative}
+.filter-chip.active{border-color:var(--purple)}
+.filter-chip img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+.filter-chip-label{position:absolute;bottom:0;left:0;right:0;font-size:7px;font-weight:700;color:#fff;background:rgba(0,0,0,.6);padding:3px;text-align:center}
+
+/* Output format */
+.format-row{display:flex;gap:6px;margin-bottom:12px}
+.format-btn{flex:1;font-size:11px;font-weight:700;padding:7px 4px;border:1.5px solid var(--line);border-radius:8px;cursor:pointer;text-align:center;background:#fff;color:var(--ink-mute);font-family:'Inter',sans-serif}
+.format-btn.active{background:var(--purple);color:#fff;border-color:var(--purple)}
+
+/* History */
+.history-list{space-y:2px}
+.history-item{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;cursor:pointer;font-size:12px;color:var(--ink-mute)}
+.history-item:hover{background:var(--bg-alt)}
+.history-item.current{background:var(--purple-soft);color:var(--purple)}
+.history-icon{font-size:13px;flex-shrink:0}
+.history-label{flex:1}
+.history-time{font-size:10px;opacity:.6}
+
+/* Sticker overlay panel */
+.sticker-panel{margin-bottom:14px}
+.sticker-search{width:100%;border:1.5px solid var(--line);border-radius:8px;padding:7px 10px;font-size:12px;font-family:'Inter',sans-serif;color:var(--ink);outline:none}
+.sticker-search:focus{border-color:var(--purple-mid)}
+.sticker-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:8px;max-height:120px;overflow-y:auto}
+.sticker-item{aspect-ratio:1;border-radius:6px;background:var(--bg-alt);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;border:1.5px solid transparent}
+.sticker-item:hover{border-color:var(--purple-soft);background:var(--purple-xsoft)}
+
+/* Status bar at bottom */
+.status-bar{background:#fff;border-top:1px solid var(--line);padding:8px 24px;display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--ink-mute)}
+.status-item{display:flex;align-items:center;gap:6px}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+
+/* Keyboard shortcuts panel */
+.shortcuts{display:flex;gap:16px;flex-wrap:wrap}
+.shortcut{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--ink-mute)}
+.kbd{background:var(--gray-100);border:1px solid var(--line);border-radius:4px;padding:1px 5px;font-size:10px;font-weight:700;font-family:monospace;color:var(--gray-700)}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-logo">whamr.</div>
+  <div class="nav-links">
+    <a href="01-landing.html" class="nav-link">Home</a>
+    <a href="02-memes-browser.html" class="nav-link">Memes</a>
+    <a href="06-explore.html" class="nav-link">Explore</a>
+    <a href="10-dojos.html" class="nav-link">Dojos</a>
+  </div>
+  <div class="nav-actions">
+    <button class="btn-upload">+ Upload</button>
+    <div class="nav-bell">🔔<span class="nav-bell-dot"></span></div>
+    <div class="nav-bell">💬<span class="nav-badge-blue"></span></div>
+    <div class="nav-avatar">M</div>
+    <button class="btn-signin">Sign in</button>
+  </div>
+</nav>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="hero-inner">
+    <div class="hero-text">
+      <div class="hero-eyebrow">Meme Editor</div>
+      <h1 class="hero-h1">Create a meme</h1>
+      <p class="hero-sub">Pick a template or upload your own image. Add text layers, apply filters, and export in one click. No design skills needed.</p>
+    </div>
+    <div class="hero-actions">
+      <button class="btn-ghost">📂 Open saved draft</button>
+      <button class="btn-primary">🪄 AI caption suggest</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDITOR -->
+<div class="editor-wrap">
+
+  <!-- LEFT: Controls -->
+  <div>
+    <!-- Source panel -->
+    <div class="panel" style="margin-bottom:16px">
+      <div class="panel-head">
+        <span class="panel-title">Source image</span>
+        <span style="font-size:11px;color:var(--ink-mute)">512×512 PNG</span>
+      </div>
+      <div class="panel-body">
+        <!-- Tabs: Templates vs Upload -->
+        <div class="tab-row">
+          <button class="tab-btn active">Templates</button>
+          <button class="tab-btn">Upload</button>
+          <button class="tab-btn">URL</button>
+        </div>
+
+        <!-- Template grid -->
+        <div class="template-grid">
+          <div class="template-thumb active">
+            <img src="https://picsum.photos/seed/tmpl1/80/80" alt="Drake" />
+            <div class="template-name">Drake</div>
+          </div>
+          <div class="template-thumb">
+            <img src="https://picsum.photos/seed/tmpl2/80/80" alt="Distracted" />
+            <div class="template-name">Distracted</div>
+          </div>
+          <div class="template-thumb">
+            <img src="https://picsum.photos/seed/tmpl3/80/80" alt="Two Buttons" />
+            <div class="template-name">Two Buttons</div>
+          </div>
+          <div class="template-thumb">
+            <img src="https://picsum.photos/seed/tmpl4/80/80" alt="Brain" />
+            <div class="template-name">Expanding Brain</div>
+          </div>
+          <div class="template-thumb">
+            <img src="https://picsum.photos/seed/tmpl5/80/80" alt="Change Mind" />
+            <div class="template-name">Change My Mind</div>
+          </div>
+          <div class="template-thumb">
+            <img src="https://picsum.photos/seed/tmpl6/80/80" alt="This is Fine" />
+            <div class="template-name">This Is Fine</div>
+          </div>
+          <div class="template-thumb">
+            <img src="https://picsum.photos/seed/tmpl7/80/80" alt="Cat" />
+            <div class="template-name">Woman &amp; Cat</div>
+          </div>
+          <div class="template-thumb">
+            <img src="https://picsum.photos/seed/tmpl8/80/80" alt="Bernie" />
+            <div class="template-name">Bernie</div>
+          </div>
+          <div class="template-thumb">
+            <img src="https://picsum.photos/seed/tmpl9/80/80" alt="Success Kid" />
+            <div class="template-name">Success Kid</div>
+          </div>
+          <div class="template-thumb">
+            <img src="https://picsum.photos/seed/tmpl10/80/80" alt="Spongebob" />
+            <div class="template-name">Mocking SpongeBob</div>
+          </div>
+          <div class="template-thumb">
+            <img src="https://picsum.photos/seed/tmpl11/80/80" alt="Stonks" />
+            <div class="template-name">Stonks</div>
+          </div>
+          <div class="template-thumb" style="display:flex;align-items:center;justify-content:center;background:var(--bg-alt);font-size:18px;cursor:pointer">
+            +
+          </div>
+        </div>
+
+        <!-- Or upload -->
+        <div class="upload-zone">
+          <div class="upload-icon">📁</div>
+          <div class="upload-label">Drop image here</div>
+          <div class="upload-sub">PNG, JPG, GIF, WebP</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Text layers -->
+    <div class="panel" style="margin-bottom:16px">
+      <div class="panel-head">
+        <span class="panel-title">Text layers</span>
+        <button style="font-size:12px;font-weight:600;color:var(--purple);background:none;border:none;cursor:pointer">+ Add layer</button>
+      </div>
+      <div class="panel-body">
+        <!-- Layer list -->
+        <div class="layer-list">
+          <div class="layer-item active">
+            <div class="layer-icon">T</div>
+            <div class="layer-name">Top text</div>
+            <div class="layer-vis">👁</div>
+          </div>
+          <div class="layer-item">
+            <div class="layer-icon">T</div>
+            <div class="layer-name">Bottom text</div>
+            <div class="layer-vis">👁</div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Text content -->
+        <div class="form-group">
+          <label class="form-label">Top text (selected)</label>
+          <input class="form-input" type="text" value="When the meme hits different" style="font-weight:700" />
+        </div>
+
+        <!-- Font size -->
+        <div class="form-group">
+          <label class="form-label" style="display:flex;align-items:center;justify-content:space-between">
+            <span>Font size</span>
+            <span style="font-weight:700;color:var(--ink)">42px</span>
+          </label>
+          <input class="form-range" type="range" min="20" max="80" value="42" />
+          <div class="range-labels"><span>20px</span><span>80px</span></div>
+        </div>
+
+        <!-- Font color -->
+        <div class="form-group">
+          <label class="form-label">Color</label>
+          <div class="color-row">
+            <div class="color-dot active" style="background:#ffffff;border-color:#000"></div>
+            <div class="color-dot" style="background:#000000"></div>
+            <div class="color-dot" style="background:#fbbf24"></div>
+            <div class="color-dot" style="background:#ef4444"></div>
+            <div class="color-dot" style="background:#3b82f6"></div>
+            <div class="color-dot" style="background:#10b981"></div>
+            <div class="color-dot" style="background:#8b5cf6"></div>
+            <div class="color-dot" style="background:#f97316"></div>
+          </div>
+        </div>
+
+        <!-- Text style -->
+        <div class="form-group">
+          <label class="form-label">Style</label>
+          <div class="text-style-row">
+            <button class="style-btn active" style="font-weight:900">B</button>
+            <button class="style-btn" style="font-style:italic">I</button>
+            <button class="style-btn" style="text-decoration:underline">U</button>
+            <button class="style-btn">S</button>
+          </div>
+        </div>
+
+        <!-- Alignment -->
+        <div class="form-group">
+          <label class="form-label">Alignment</label>
+          <div class="align-row">
+            <button class="align-btn active">≡</button>
+            <button class="align-btn">≡</button>
+            <button class="align-btn">≡</button>
+          </div>
+        </div>
+
+        <!-- Stroke -->
+        <div class="form-group">
+          <label class="form-label" style="display:flex;align-items:center;justify-content:space-between">
+            <span>Stroke (outline)</span>
+            <span style="font-weight:700;color:var(--ink)">3px</span>
+          </label>
+          <input class="form-range" type="range" min="0" max="10" value="3" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Sticker overlay panel -->
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">Add sticker overlay</span>
+        <span style="font-size:11px;color:var(--ink-mute)">Drag to canvas</span>
+      </div>
+      <div class="panel-body">
+        <input class="sticker-search" placeholder="Search stickers..." />
+        <div class="sticker-grid">
+          <div class="sticker-item">😂</div>
+          <div class="sticker-item">🔥</div>
+          <div class="sticker-item">💀</div>
+          <div class="sticker-item">😭</div>
+          <div class="sticker-item">🤣</div>
+          <div class="sticker-item">😩</div>
+          <div class="sticker-item">🤯</div>
+          <div class="sticker-item">🙌</div>
+          <div class="sticker-item">💪</div>
+          <div class="sticker-item">👀</div>
+          <div class="sticker-item">🎯</div>
+          <div class="sticker-item">⚡</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CENTER: Canvas -->
+  <div class="canvas-panel">
+    <div class="canvas-toolbar">
+      <span class="canvas-size">Canvas: 512 × 512 px</span>
+      <div class="toolbar-btns">
+        <button class="toolbar-btn undo-btn" title="Undo Ctrl+Z">↩</button>
+        <button class="toolbar-btn undo-btn" title="Redo Ctrl+Y">↪</button>
+        <button class="toolbar-btn">Crop</button>
+        <button class="toolbar-btn">Flip</button>
+        <button class="toolbar-btn">Rotate</button>
+        <button class="toolbar-btn" style="background:rgba(217,119,6,.25);border-color:rgba(217,119,6,.5);color:#FDE68A">🪄 AI enhance</button>
+      </div>
+    </div>
+
+    <div class="canvas-area">
+      <div class="canvas-img-wrap">
+        <img class="canvas-img" src="https://picsum.photos/seed/tmpl1/480/480" alt="Drake meme template" />
+        <div class="canvas-overlay top">
+          <div class="canvas-text selected">When the meme hits different</div>
+        </div>
+        <div class="canvas-overlay bottom">
+          <div class="canvas-text" style="font-size:28px;opacity:.9">send the wham 🔥</div>
+        </div>
+        <div class="canvas-grid"></div>
+        <!-- Corner resize handle -->
+        <div class="handle" style="top:12px;left:12px;opacity:.6"></div>
+        <div class="handle" style="top:12px;right:12px;opacity:.6"></div>
+        <div class="handle" style="bottom:12px;left:12px;opacity:.6"></div>
+        <div class="handle" style="bottom:12px;right:12px;opacity:.6"></div>
+        <div class="filter-overlay brightness"></div>
+      </div>
+    </div>
+
+    <div class="canvas-footer">
+      <div class="zoom-controls">
+        <button class="zoom-btn">-</button>
+        <span class="zoom-level">100%</span>
+        <button class="zoom-btn">+</button>
+        <button class="zoom-btn" title="Fit to screen" style="font-size:11px;padding:0 8px;width:auto">Fit</button>
+      </div>
+      <div class="canvas-cta">
+        <button class="btn-download">⬇️ Download PNG</button>
+        <button class="btn-share">🔗 Share meme</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: Properties + History -->
+  <div>
+    <!-- Image adjustments -->
+    <div class="panel" style="margin-bottom:16px">
+      <div class="panel-head">
+        <span class="panel-title">Image adjustments</span>
+      </div>
+      <div class="panel-body">
+        <div class="props-grid-2" style="margin-bottom:12px">
+          <div class="prop-box">
+            <div class="prop-label">Width</div>
+            <div class="prop-val">512 px</div>
+          </div>
+          <div class="prop-box">
+            <div class="prop-label">Height</div>
+            <div class="prop-val">512 px</div>
+          </div>
+          <div class="prop-box">
+            <div class="prop-label">Format</div>
+            <div class="prop-val">PNG</div>
+          </div>
+          <div class="prop-box">
+            <div class="prop-label">Quality</div>
+            <div class="prop-val">95%</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" style="display:flex;justify-content:space-between">
+            <span>Brightness</span><span style="font-weight:700;color:var(--ink)">+8</span>
+          </label>
+          <input class="form-range" type="range" min="-100" max="100" value="8" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" style="display:flex;justify-content:space-between">
+            <span>Contrast</span><span style="font-weight:700;color:var(--ink)">+12</span>
+          </label>
+          <input class="form-range" type="range" min="-100" max="100" value="12" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" style="display:flex;justify-content:space-between">
+            <span>Saturation</span><span style="font-weight:700;color:var(--ink)">0</span>
+          </label>
+          <input class="form-range" type="range" min="-100" max="100" value="0" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" style="display:flex;justify-content:space-between">
+            <span>Blur</span><span style="font-weight:700;color:var(--ink)">0px</span>
+          </label>
+          <input class="form-range" type="range" min="0" max="20" value="0" />
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Preset filters -->
+        <div class="section-subtitle">Preset filters</div>
+        <div class="filter-grid">
+          <div class="filter-chip active">
+            <img src="https://picsum.photos/seed/tmpl1/60/60" alt="Normal" />
+            <div class="filter-chip-label">Normal</div>
+          </div>
+          <div class="filter-chip">
+            <img src="https://picsum.photos/seed/tmpl1/60/60" alt="Vivid" style="filter:saturate(1.5)" />
+            <div class="filter-chip-label">Vivid</div>
+          </div>
+          <div class="filter-chip">
+            <img src="https://picsum.photos/seed/tmpl1/60/60" alt="B&W" style="filter:grayscale(1)" />
+            <div class="filter-chip-label">B&amp;W</div>
+          </div>
+          <div class="filter-chip">
+            <img src="https://picsum.photos/seed/tmpl1/60/60" alt="Sepia" style="filter:sepia(.8)" />
+            <div class="filter-chip-label">Sepia</div>
+          </div>
+          <div class="filter-chip">
+            <img src="https://picsum.photos/seed/tmpl1/60/60" alt="Punch" style="filter:contrast(1.3) saturate(1.4)" />
+            <div class="filter-chip-label">Punch</div>
+          </div>
+          <div class="filter-chip">
+            <img src="https://picsum.photos/seed/tmpl1/60/60" alt="Fade" style="filter:brightness(1.1) contrast(.9)" />
+            <div class="filter-chip-label">Fade</div>
+          </div>
+        </div>
+
+        <!-- Output format -->
+        <div class="divider"></div>
+        <div class="section-subtitle">Export format</div>
+        <div class="format-row">
+          <button class="format-btn active">PNG</button>
+          <button class="format-btn">JPG</button>
+          <button class="format-btn">WebP</button>
+          <button class="format-btn">GIF</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit history -->
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-title">History</span>
+        <span style="font-size:11px;color:var(--ink-mute)">20 steps</span>
+      </div>
+      <div class="panel-body">
+        <div class="history-list">
+          <div class="history-item current">
+            <div class="history-icon">T</div>
+            <div class="history-label">Edit top text</div>
+            <div class="history-time">now</div>
+          </div>
+          <div class="history-item">
+            <div class="history-icon">🎨</div>
+            <div class="history-label">Brightness +8</div>
+            <div class="history-time">1m</div>
+          </div>
+          <div class="history-item">
+            <div class="history-icon">T</div>
+            <div class="history-label">Add bottom text</div>
+            <div class="history-time">2m</div>
+          </div>
+          <div class="history-item">
+            <div class="history-icon">📐</div>
+            <div class="history-label">Resize to 512px</div>
+            <div class="history-time">3m</div>
+          </div>
+          <div class="history-item">
+            <div class="history-icon">🖼️</div>
+            <div class="history-label">Load template: Drake</div>
+            <div class="history-time">4m</div>
+          </div>
+          <div class="history-item">
+            <div class="history-icon">🆕</div>
+            <div class="history-label">New canvas</div>
+            <div class="history-time">5m</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- STATUS BAR -->
+<div class="status-bar">
+  <div style="display:flex;align-items:center;gap:20px">
+    <div class="status-item">
+      <div class="status-dot"></div>
+      <span>Auto-saved 30s ago</span>
+    </div>
+    <div class="status-item">
+      <span>Canvas: 512 × 512 px</span>
+    </div>
+    <div class="status-item">
+      <span>Layer: Top text (selected)</span>
+    </div>
+    <div class="status-item">
+      <span>Layers: 2 of 2</span>
+    </div>
+  </div>
+  <div class="shortcuts">
+    <div class="shortcut"><span class="kbd">Ctrl Z</span><span>Undo</span></div>
+    <div class="shortcut"><span class="kbd">Ctrl Y</span><span>Redo</span></div>
+    <div class="shortcut"><span class="kbd">Ctrl S</span><span>Save</span></div>
+    <div class="shortcut"><span class="kbd">Ctrl D</span><span>Download</span></div>
+    <div class="shortcut"><span class="kbd">Del</span><span>Delete layer</span></div>
+    <div class="shortcut"><span class="kbd">Ctrl +</span><span>Zoom in</span></div>
+  </div>
+</div>
+
+</body>
+</html>

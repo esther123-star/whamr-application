@@ -1,0 +1,494 @@
+﻿<!-- FILE: 14-auth.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign in / Register, Whamr</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Whamr Sunset, Electric Orange-Red + Golden Yellow */
+  --bg:#FFFAF5; --bg-alt:#FFF3E8; --card:#FFFFFF;
+  --ink:#1A0F00; --ink-soft:#4A3020; --ink-mute:#8A7060;
+  --line:#F0DDD0; --line-soft:#FBF0E8;
+  /* Primary: electric orange-red (the wham) */
+  --purple:#FF4500; --purple-mid:#FF6B35; --purple-bright:#FF8C60;
+  --purple-dark:#CC3700; --purple-soft:#FFF1EC; --purple-xsoft:#FFF8F5;
+  /* Accent: warm golden yellow (the joy) */
+  --wham:#FFB800; --wham-bright:#FFD60A; --wham-soft:#FFF8DC;
+  --pink:#FFB800; --pink-soft:#FFF8DC;
+  /* Semantic */
+  --green:#00C853; --green-soft:#E8FFF0;
+  --amber:#FFB800; --red:#FF2D55; --red-soft:#FFF0F3;
+  --blue:#007AFF;
+  /* Gray scale (kept neutral) */
+  --gray-50:#F9FAFB; --gray-100:#F3F4F6; --gray-200:#E5E7EB;
+  --gray-400:#9CA3AF; --gray-500:#6B7280; --gray-700:#374151; --gray-900:#111827;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;font-size:15px;background:var(--bg);color:var(--ink);line-height:1.6}
+a{text-decoration:none;color:inherit}
+
+.announce{background:linear-gradient(90deg,var(--purple-dark),var(--purple-mid));padding:9px 24px;text-align:center;font-size:13px;color:rgba(255,255,255,0.95);font-weight:500}
+.announce a{color:#FDE68A;font-weight:600;text-decoration:underline;text-underline-offset:2px}
+
+/* SIMPLIFIED NAV */
+.nav{height:64px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 32px;gap:0;position:sticky;top:0;z-index:100}
+.nav-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.04em;color:var(--purple);flex:1}
+.nav-logo span{color:var(--wham)}
+.nav-browse{font-size:14px;font-weight:600;color:var(--purple);padding:7px 16px;border-radius:8px;background:var(--purple-xsoft);border:1px solid var(--line-soft)}
+
+/* PAGE BG */
+.page-bg{min-height:calc(100vh - 100px);background:linear-gradient(160deg,var(--bg) 0%,var(--bg-alt) 100%);padding:48px 24px}
+.page-bg-inner{max-width:1100px;margin:0 auto}
+
+/* PAGE LABEL */
+.page-label{text-align:center;margin-bottom:36px}
+.page-label-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;color:var(--ink-mute);letter-spacing:0.08em;text-transform:uppercase}
+.page-label-sub{font-size:13px;color:var(--gray-400);margin-top:4px}
+
+/* AUTH ROW */
+.auth-row{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:40px}
+
+/* AUTH CARD */
+.auth-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:36px;box-shadow:0 4px 24px rgba(255,69,0,0.12)}
+.auth-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:28px;letter-spacing:-0.04em;color:var(--purple);text-align:center;margin-bottom:20px}
+.auth-logo span{color:var(--wham)}
+.auth-h2{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:24px;color:var(--ink);text-align:center;margin-bottom:6px}
+.auth-subtitle{font-size:14px;color:var(--ink-mute);text-align:center;margin-bottom:24px;line-height:1.5}
+.auth-subtitle strong{color:var(--ink)}
+
+/* SOCIAL BUTTONS */
+.social-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:11px 20px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;margin-bottom:10px;transition:background .15s}
+.social-btn.google{background:#fff;border:1.5px solid var(--line);color:var(--ink)}
+.social-btn.google:hover{background:var(--gray-50)}
+.social-btn.apple{background:#000;border:1.5px solid #000;color:#fff}
+.social-btn.apple:hover{background:#111}
+.social-icon{width:20px;height:20px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+
+/* DIVIDER */
+.auth-divider{display:flex;align-items:center;gap:12px;margin:18px 0;color:var(--gray-400);font-size:13px}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--line)}
+
+/* FORM */
+.form-field{margin-bottom:14px}
+.form-field:last-of-type{margin-bottom:0}
+.field-label{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:5px}
+.field-input{width:100%;padding:10px 14px;border:1.5px solid var(--line);border-radius:9px;font-size:14px;font-family:'Inter',sans-serif;color:var(--ink);background:#fff;outline:none;transition:border-color .2s}
+.field-input:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(255,69,0,0.12)}
+.field-input::placeholder{color:var(--gray-400)}
+.forgot-link{font-size:12px;font-weight:600;color:var(--purple);text-align:right;display:block;margin-top:6px;cursor:pointer}
+.btn-auth{width:100%;background:var(--purple);color:#fff;font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;padding:12px 20px;border-radius:10px;border:none;cursor:pointer;margin-top:16px;letter-spacing:0.01em}
+.btn-auth:hover{background:var(--purple-dark)}
+
+/* PASSWORD STRENGTH */
+.strength-label{font-size:11px;color:var(--ink-mute);margin-top:5px;display:flex;align-items:center;gap:6px}
+.strength-bar{flex:1;height:4px;background:var(--line);border-radius:2px;overflow:hidden}
+.strength-fill{height:100%;border-radius:2px;width:60%;background:var(--wham)}
+
+/* FOOTER OF CARD */
+.auth-footer{text-align:center;font-size:13px;color:var(--ink-mute);margin-top:20px}
+.auth-footer a{color:var(--purple);font-weight:600}
+
+/* SOCIAL PROOF */
+.social-proof{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:20px}
+.proof-avatars{display:flex}
+.proof-avatar{width:28px;height:28px;border-radius:50%;border:2px solid #fff;background:linear-gradient(135deg,var(--purple-dark),var(--purple-mid));display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;margin-left:-8px;font-family:'Space Grotesk',sans-serif}
+.proof-avatar:first-child{margin-left:0}
+.proof-text{font-size:12px;color:var(--ink-mute)}
+.proof-text strong{color:var(--ink);font-weight:700}
+
+/* TERMS NOTE */
+.terms-note{font-size:11px;color:var(--gray-400);text-align:center;margin-top:14px;line-height:1.5}
+.terms-note a{color:var(--purple)}
+
+/* ─── PASSWORD RESET SECTION ─── */
+.reset-section{margin-bottom:48px}
+.reset-section-label{text-align:center;margin-bottom:28px}
+.reset-section-label-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;color:var(--ink-mute);letter-spacing:0.08em;text-transform:uppercase}
+.reset-section-label-sub{font-size:13px;color:var(--gray-400);margin-top:4px}
+.reset-steps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+
+.reset-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:28px;box-shadow:0 4px 24px rgba(255,69,0,0.12)}
+.reset-step-chip{display:inline-flex;align-items:center;gap:6px;background:var(--purple-xsoft);color:var(--purple);font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;border:1px solid var(--line-soft);margin-bottom:14px;font-family:'JetBrains Mono',monospace}
+.reset-h3{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;color:var(--ink);margin-bottom:6px}
+.reset-sub{font-size:13px;color:var(--ink-mute);margin-bottom:20px;line-height:1.5}
+.reset-icon{font-size:40px;text-align:center;margin-bottom:14px}
+.btn-reset{width:100%;background:var(--purple);color:#fff;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;padding:11px 20px;border-radius:10px;border:none;cursor:pointer;margin-top:10px}
+.btn-reset:hover{background:var(--purple-dark)}
+.btn-secondary{width:100%;background:#fff;color:var(--ink-mute);font-family:'Inter',sans-serif;font-size:14px;font-weight:600;padding:10px 20px;border-radius:10px;border:1.5px solid var(--line);cursor:pointer;margin-top:8px}
+.back-link{font-size:12px;color:var(--purple);font-weight:600;text-align:center;display:block;margin-top:12px;cursor:pointer}
+.inbox-opened{display:flex;flex-direction:column;align-items:center;text-align:center}
+.inbox-email-chip{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--ink);background:var(--purple-xsoft);padding:6px 14px;border-radius:8px;border:1px solid var(--line-soft);margin-bottom:14px}
+.resend-link{font-size:12px;color:var(--purple);font-weight:600;cursor:pointer;margin-bottom:8px}
+.btn-gmail{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:#fff;color:var(--ink);font-size:14px;font-weight:600;padding:11px 20px;border-radius:10px;border:1.5px solid var(--line);cursor:pointer;font-family:'Inter',sans-serif;margin-top:8px}
+
+/* FOOTER */
+.footer{background:#1A0F00;color:rgba(255,255,255,0.5);padding:32px;text-align:center;font-size:13px}
+.footer a{color:rgba(255,255,255,0.7);font-weight:600}
+.footer-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;color:#fff;letter-spacing:-0.04em;margin-bottom:10px}
+</style>
+</head>
+<body>
+
+<div class="announce">
+  Whamr is growing fast. Join 34,100 meme creators worldwide. <a href="#">It's free →</a>
+</div>
+
+<!-- SIMPLIFIED NAV -->
+<nav class="nav">
+  <a href="01-landing.html" class="nav-logo">whamr<span>.</span></a>
+  <a href="02-memes-browser.html" class="nav-browse">Browse memes</a>
+</nav>
+
+<div class="page-bg">
+  <div class="page-bg-inner">
+
+    <!-- LABEL -->
+    <div class="page-label">
+      <div class="page-label-title">Authentication</div>
+      <div class="page-label-sub">Sign in, create an account or reset your password below.</div>
+    </div>
+
+    <!-- LOGIN + REGISTER -->
+    <div class="auth-row">
+
+      <!-- LOGIN CARD -->
+      <div class="auth-card">
+        <div class="auth-logo">whamr<span>.</span></div>
+        <h2 class="auth-h2">Welcome back</h2>
+        <p class="auth-subtitle">Sign in to sync your saved memes and collections.</p>
+
+        <button class="social-btn google">
+          <span class="social-icon">G</span>
+          Continue with Google
+        </button>
+        <button class="social-btn apple">
+          <span class="social-icon" style="color:#fff"></span>
+          Continue with Apple
+        </button>
+
+        <div class="auth-divider">or sign in with email</div>
+
+        <div class="form-field">
+          <label class="field-label">Email address</label>
+          <input class="field-input" type="email" placeholder="you@example.com" value="memequeen@whamr.app">
+        </div>
+        <div class="form-field">
+          <label class="field-label">Password</label>
+          <input class="field-input" type="password" placeholder="Your password" value="••••••••••">
+          <a href="#reset-flow" class="forgot-link">Forgot password?</a>
+        </div>
+
+        <button class="btn-auth">Sign in to Whamr</button>
+
+        <div class="social-proof">
+          <div class="proof-avatars">
+            <div class="proof-avatar">MQ</div>
+            <div class="proof-avatar" style="background:linear-gradient(135deg,#064E3B,#059669)">AO</div>
+            <div class="proof-avatar" style="background:linear-gradient(135deg,#92400E,#D97706)">CI</div>
+            <div class="proof-avatar" style="background:linear-gradient(135deg,#1E3A5F,#3B82F6)">TF</div>
+            <div class="proof-avatar" style="background:linear-gradient(135deg,#831843,#D97706)">KA</div>
+          </div>
+          <div class="proof-text">Join <strong>34,100</strong> Whamr users</div>
+        </div>
+
+        <div class="auth-footer">
+          No account? <a href="#">Create one free →</a>
+        </div>
+      </div>
+
+      <!-- REGISTER CARD -->
+      <div class="auth-card">
+        <h2 class="auth-h2">Create your account</h2>
+        <p class="auth-subtitle"><strong>Free forever. No card required.</strong> Start sharing memes in 60 seconds.</p>
+
+        <button class="social-btn google">
+          <span class="social-icon">G</span>
+          Continue with Google
+        </button>
+        <button class="social-btn apple">
+          <span class="social-icon" style="color:#fff"></span>
+          Continue with Apple
+        </button>
+
+        <div class="auth-divider">or register with email</div>
+
+        <div class="form-field">
+          <label class="field-label">Display name</label>
+          <input class="field-input" type="text" placeholder="What should we call you?">
+        </div>
+        <div class="form-field">
+          <label class="field-label">Email address</label>
+          <input class="field-input" type="email" placeholder="you@example.com">
+        </div>
+        <div class="form-field">
+          <label class="field-label">Password</label>
+          <input class="field-input" type="password" placeholder="Min 8 characters">
+          <div class="strength-label">
+            <span>Strength: Medium</span>
+            <div class="strength-bar"><div class="strength-fill"></div></div>
+          </div>
+        </div>
+
+        <button class="btn-auth">Create account</button>
+
+        <div class="terms-note">
+          By creating an account you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+        </div>
+
+        <div class="auth-footer">
+          Already have an account? <a href="#">Sign in</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- PASSWORD RESET SECTION -->
+    <div id="reset-flow" class="reset-section">
+      <div class="reset-section-label">
+        <div class="reset-section-label-title">Password Reset Flow</div>
+        <div class="reset-section-label-sub">Three steps shown side by side below.</div>
+      </div>
+      <div class="reset-steps">
+
+        <!-- STEP 1: Forgot password -->
+        <div class="reset-card">
+          <div class="reset-step-chip">Step 1 of 3</div>
+          <h3 class="reset-h3">Forgot password?</h3>
+          <p class="reset-sub">Enter your email and we will send you a secure reset link right away.</p>
+          <div class="form-field">
+            <label class="field-label">Email address</label>
+            <input class="field-input" type="email" placeholder="you@example.com">
+          </div>
+          <button class="btn-reset">Send reset link</button>
+          <a href="#" class="back-link">Back to sign in</a>
+        </div>
+
+        <!-- STEP 2: Check inbox -->
+        <div class="reset-card">
+          <div class="reset-step-chip">Step 2 of 3</div>
+          <h3 class="reset-h3">Check your inbox</h3>
+          <div class="inbox-opened">
+            <div class="reset-icon">📬</div>
+            <div class="inbox-email-chip">you@example.com</div>
+            <p class="reset-sub">We sent a password reset link to your inbox. It expires in 15 minutes.</p>
+            <a href="#" class="resend-link">Resend the link</a>
+            <button class="btn-gmail">📧 Open Gmail</button>
+            <button class="btn-secondary">Open Outlook</button>
+          </div>
+          <a href="#" class="back-link">Back to sign in</a>
+        </div>
+
+        <!-- STEP 3: Create new password -->
+        <div class="reset-card">
+          <div class="reset-step-chip">Step 3 of 3</div>
+          <h3 class="reset-h3">Create new password</h3>
+          <p class="reset-sub">Choose a strong password you have not used before.</p>
+          <div class="form-field">
+            <label class="field-label">New password</label>
+            <input class="field-input" type="password" placeholder="Min 8 characters">
+            <div class="strength-label">
+              <span>Strength: Strong</span>
+              <div class="strength-bar"><div class="strength-fill" style="width:90%;background:var(--green)"></div></div>
+            </div>
+          </div>
+          <div class="form-field">
+            <label class="field-label">Confirm new password</label>
+            <input class="field-input" type="password" placeholder="Repeat your password">
+          </div>
+          <button class="btn-reset">Reset password</button>
+          <a href="#" class="back-link">Back to sign in</a>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- STATS BANNER -->
+<div style="background:#1A0F00;padding:32px;text-align:center">
+  <div style="max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap">
+    <div style="flex:1;padding:16px 24px;min-width:160px">
+      <div style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:28px;color:#fff">34,100</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px">Active users</div>
+    </div>
+    <div style="width:1px;height:40px;background:rgba(255,255,255,0.1)"></div>
+    <div style="flex:1;padding:16px 24px;min-width:160px">
+      <div style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:28px;color:#fff">2.4M</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px">Memes shared</div>
+    </div>
+    <div style="width:1px;height:40px;background:rgba(255,255,255,0.1)"></div>
+    <div style="flex:1;padding:16px 24px;min-width:160px">
+      <div style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:28px;color:#fff">142</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px">Active Dojos</div>
+    </div>
+    <div style="width:1px;height:40px;background:rgba(255,255,255,0.1)"></div>
+    <div style="flex:1;padding:16px 24px;min-width:160px">
+      <div style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:28px;color:#F59E0B">60+</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-top:4px">Countries reached</div>
+    </div>
+  </div>
+</div>
+
+<!-- TRUST + FEATURES SECTION -->
+<div style="background:#fff;border-top:1px solid var(--line);padding:56px 32px">
+  <div style="max-width:1100px;margin:0 auto">
+    <div style="text-align:center;margin-bottom:40px">
+      <div style="font-size:11px;font-weight:700;color:var(--purple);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px">Why Whamr</div>
+      <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:28px;color:var(--ink);letter-spacing:-0.02em">Everything you need to share memes, globally</div>
+      <div style="font-size:15px;color:var(--ink-mute);margin-top:8px;max-width:500px;margin-left:auto;margin-right:auto">Join 34,100 creators who use Whamr to find, share and build communities around internet culture.</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:2px;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--line)">
+      <div style="background:#fff;padding:28px 22px">
+        <div style="font-size:28px;margin-bottom:10px">🌍</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;color:var(--ink);margin-bottom:6px">Global reach</div>
+        <div style="font-size:13px;color:var(--ink-mute);line-height:1.6">Share memes across WhatsApp, Telegram, X and more from one place.</div>
+      </div>
+      <div style="background:#fff;padding:28px 22px">
+        <div style="font-size:28px;margin-bottom:10px">🔥</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;color:var(--ink);margin-bottom:6px">Viral tracking</div>
+        <div style="font-size:13px;color:var(--ink-mute);line-height:1.6">Know instantly when your content goes viral. Real-time analytics at every tier.</div>
+      </div>
+      <div style="background:#fff;padding:28px 22px">
+        <div style="font-size:28px;margin-bottom:10px">🥋</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;color:var(--ink);margin-bottom:6px">Dojos</div>
+        <div style="font-size:13px;color:var(--ink-mute);line-height:1.6">Join or create communities around your favourite meme culture. Built for your tribe.</div>
+      </div>
+      <div style="background:#fff;padding:28px 22px">
+        <div style="font-size:28px;margin-bottom:10px">🎨</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;color:var(--ink);margin-bottom:6px">Creator tools</div>
+        <div style="font-size:13px;color:var(--ink-mute);line-height:1.6">Edit, caption and publish memes in seconds. Templates, stickers and GIF support included.</div>
+      </div>
+    </div>
+    <!-- TESTIMONIALS -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px">
+      <div style="background:var(--purple-xsoft);border:1px solid var(--line-soft);border-radius:14px;padding:20px">
+        <div style="font-size:13px;color:var(--ink-mute);line-height:1.7;margin-bottom:14px">"Whamr is the only place I share Nigerian memes. The Naija Dojo alone makes it worth it."</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#064E3B,#059669);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff;font-family:'Space Grotesk',sans-serif">AO</div>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--ink)">Adebayo Okonkwo</div>
+            <div style="font-size:11px;color:var(--ink-mute)">@bayo_ok · Lagos</div>
+          </div>
+        </div>
+      </div>
+      <div style="background:var(--wham-soft);border:1px solid #FDE68A;border-radius:14px;padding:20px">
+        <div style="font-size:13px;color:var(--ink-mute);line-height:1.7;margin-bottom:14px">"I went from 200 followers to 12,000 in three months. The creator analytics showed me exactly what worked."</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#1A0F00,#FF6B35);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff;font-family:'Space Grotesk',sans-serif">MQ</div>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--ink)">Meme Queen 👑</div>
+            <div style="font-size:11px;color:var(--ink-mute)">@memequeen · Creator tier</div>
+          </div>
+        </div>
+      </div>
+      <div style="background:var(--green-soft);border:1px solid #A7F3D0;border-radius:14px;padding:20px">
+        <div style="font-size:13px;color:var(--ink-mute);line-height:1.7;margin-bottom:14px">"The GIF search is unreal. I find the perfect reaction meme in seconds and send it straight to WhatsApp."</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#92400E,#D97706);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff;font-family:'Space Grotesk',sans-serif">CI</div>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--ink)">Chisom Ike</div>
+            <div style="font-size:11px;color:var(--ink-mute)">@chisom_ike · Abuja</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- PLATFORM BADGES -->
+    <div style="text-align:center;margin-top:36px;padding-top:32px;border-top:1px solid var(--line)">
+      <div style="font-size:13px;color:var(--ink-mute);margin-bottom:16px;font-weight:500">Available on all platforms</div>
+      <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:8px;background:var(--ink);color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:600;font-family:'Space Grotesk',sans-serif">App Store (iOS)</div>
+        <div style="display:flex;align-items:center;gap:8px;background:var(--ink);color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:600;font-family:'Space Grotesk',sans-serif">Google Play</div>
+        <div style="display:flex;align-items:center;gap:8px;background:var(--purple-xsoft);color:var(--purple);padding:10px 20px;border-radius:10px;font-size:13px;font-weight:600;border:1px solid var(--line-soft);font-family:'Space Grotesk',sans-serif">Web App</div>
+      </div>
+      <div style="margin-top:16px;font-size:12px;color:var(--gray-400)">Whamr is SOC2 Type II certified. Your data is encrypted and never sold.</div>
+    </div>
+  </div>
+</div>
+
+<!-- FAQ SECTION -->
+<div style="background:var(--bg-alt);border-top:1px solid var(--line);padding:56px 32px">
+  <div style="max-width:720px;margin:0 auto">
+    <div style="text-align:center;margin-bottom:36px">
+      <div style="font-size:11px;font-weight:700;color:var(--purple);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px">FAQ</div>
+      <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:28px;color:var(--ink);letter-spacing:-0.02em">Common questions</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff">
+      <div style="padding:18px 22px;border-bottom:1px solid var(--line-soft)">
+        <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:var(--ink);margin-bottom:6px">Is Whamr really free to use?</div>
+        <div style="font-size:13px;color:var(--ink-mute);line-height:1.7">Yes. The free tier gives you unlimited meme browsing, sharing to any platform and up to 50 uploads per month. No credit card required at signup.</div>
+      </div>
+      <div style="padding:18px 22px;border-bottom:1px solid var(--line-soft)">
+        <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:var(--ink);margin-bottom:6px">How do I join a Dojo?</div>
+        <div style="font-size:13px;color:var(--ink-mute);line-height:1.7">After creating your account, visit the Dojos page and tap Join on any public Dojo. Private Dojos require a request which a moderator must approve. Invite-only Dojos need a direct link from an existing member.</div>
+      </div>
+      <div style="padding:18px 22px;border-bottom:1px solid var(--line-soft)">
+        <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:var(--ink);margin-bottom:6px">Can I share memes directly to WhatsApp?</div>
+        <div style="font-size:13px;color:var(--ink-mute);line-height:1.7">Yes. Tap the Send button on any meme and choose WhatsApp, Telegram, X, Facebook or copy the link. The share sheet uses native OS sharing so it works across all apps on your device.</div>
+      </div>
+      <div style="padding:18px 22px;border-bottom:1px solid var(--line-soft)">
+        <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:var(--ink);margin-bottom:6px">What is a Creator account?</div>
+        <div style="font-size:13px;color:var(--ink-mute);line-height:1.7">The Creator tier ($9.99/month) unlocks full analytics, revenue sharing on viral content, unlimited Dojo memberships and a verified badge on your profile. Creators also get priority placement in the Explore feed.</div>
+      </div>
+      <div style="padding:18px 22px;border-bottom:1px solid var(--line-soft)">
+        <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:var(--ink);margin-bottom:6px">How does Whamr handle my data?</div>
+        <div style="font-size:13px;color:var(--ink-mute);line-height:1.7">Whamr is SOC2 Type II certified. We do not sell your data to third parties. You can export or delete your account data at any time from Settings. We comply with GDPR and Nigerian NDPR data regulations.</div>
+      </div>
+      <div style="padding:18px 22px">
+        <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:var(--ink);margin-bottom:6px">What file formats can I upload?</div>
+        <div style="font-size:13px;color:var(--ink-mute);line-height:1.7">We support JPEG, PNG, GIF and WebP. Maximum file size is 20MB per upload. GIFs are automatically optimised for fast loading. Video uploads are available on Creator and PRO plans (MP4 up to 60 seconds).</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:24px;font-size:13px;color:var(--ink-mute)">Still have questions? <a href="#" style="color:var(--purple);font-weight:600">Contact our support team →</a></div>
+  </div>
+</div>
+
+<!-- SECURITY TRUST BAR -->
+<div style="background:#fff;border-top:1px solid var(--line);padding:24px 32px">
+  <div style="max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:32px;flex-wrap:wrap">
+    <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-mute);font-weight:500"><span style="font-size:18px">🔒</span> 256-bit SSL encryption</div>
+    <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-mute);font-weight:500"><span style="font-size:18px">🛡️</span> SOC2 Type II certified</div>
+    <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-mute);font-weight:500"><span style="font-size:18px">✅</span> GDPR compliant</div>
+    <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-mute);font-weight:500"><span style="font-size:18px">🇳🇬</span> NDPR compliant</div>
+    <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-mute);font-weight:500"><span style="font-size:18px">🚫</span> No data selling</div>
+    <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-mute);font-weight:500"><span style="font-size:18px">🗑️</span> Right to deletion</div>
+  </div>
+</div>
+
+<!-- FINAL CTA STRIP -->
+<div style="background:linear-gradient(135deg,var(--purple-dark),var(--purple-mid),var(--purple-bright));padding:48px 32px;text-align:center">
+  <div style="max-width:600px;margin:0 auto">
+    <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:32px;color:#fff;letter-spacing:-0.02em;margin-bottom:8px">Ready to send the wham?</div>
+    <div style="font-size:15px;color:rgba(255,255,255,0.75);margin-bottom:24px;line-height:1.6">Create your free account in 30 seconds. No card required. Start sharing memes your contacts will love.</div>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <button style="background:#fff;color:var(--purple);font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;padding:13px 28px;border-radius:11px;border:none;cursor:pointer">Create free account</button>
+      <button style="background:rgba(255,255,255,0.12);color:#fff;font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;padding:13px 28px;border-radius:11px;border:2px solid rgba(255,255,255,0.3);cursor:pointer">Browse memes first</button>
+    </div>
+    <div style="margin-top:16px;font-size:12px;color:rgba(255,255,255,0.5)">
+      Available on iOS, Android and web. Free forever.
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-logo">whamr.</div>
+  <p style="margin-bottom:12px">The global meme-sharing platform. Find the perfect meme. Send the wham.</p>
+  <div style="display:flex;justify-content:center;gap:24px;font-size:13px;flex-wrap:wrap;margin-bottom:10px">
+    <a href="01-landing.html">Home</a>
+    <a href="02-memes-browser.html">Memes</a>
+    <a href="06-explore.html">Explore</a>
+    <a href="10-dojos.html">Dojos</a>
+    <a href="#">About</a>
+    <a href="#">Careers</a>
+    <a href="#">Blog</a>
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Help</a>
+  </div>
+  <div style="margin-top:16px;font-size:12px;opacity:0.5">© 2026 Whamr Ltd. All rights reserved.</div>
+</footer>
+
+</body>
+</html>

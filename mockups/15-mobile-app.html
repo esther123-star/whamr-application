@@ -1,0 +1,869 @@
+﻿<!-- FILE: 15-mobile-app.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mobile App Design, Whamr</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Whamr Sunset, Electric Orange-Red + Golden Yellow */
+  --bg:#FFFAF5; --bg-alt:#FFF3E8; --card:#FFFFFF;
+  --ink:#1A0F00; --ink-soft:#4A3020; --ink-mute:#8A7060;
+  --line:#F0DDD0; --line-soft:#FBF0E8;
+  /* Primary: electric orange-red (the wham) */
+  --purple:#FF4500; --purple-mid:#FF6B35; --purple-bright:#FF8C60;
+  --purple-dark:#CC3700; --purple-soft:#FFF1EC; --purple-xsoft:#FFF8F5;
+  /* Accent: warm golden yellow (the joy) */
+  --wham:#FFB800; --wham-bright:#FFD60A; --wham-soft:#FFF8DC;
+  --pink:#FFB800; --pink-soft:#FFF8DC;
+  /* Semantic */
+  --green:#00C853; --green-soft:#E8FFF0;
+  --amber:#FFB800; --red:#FF2D55; --red-soft:#FFF0F3;
+  --blue:#007AFF;
+  /* Gray scale (kept neutral) */
+  --gray-50:#F9FAFB; --gray-100:#F3F4F6; --gray-200:#E5E7EB;
+  --gray-400:#9CA3AF; --gray-500:#6B7280; --gray-700:#374151; --gray-900:#111827;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;font-size:15px;background:var(--page-bg);color:#fff;line-height:1.6}
+a{text-decoration:none;color:inherit}
+img{display:block}
+
+/* NAV */
+.nav{height:64px;background:rgba(10,0,21,0.9);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;padding:0 32px;position:sticky;top:0;z-index:100}
+.nav-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.04em;color:#fff;margin-right:36px;flex-shrink:0}
+.nav-logo span{color:var(--wham-bright)}
+.nav-links{display:flex;align-items:center;gap:2px;flex:1}
+.nav-link{font-size:14px;font-weight:500;color:rgba(255,255,255,0.5);padding:6px 12px;border-radius:8px;transition:all .15s}
+.nav-link:hover,.nav-link.active{background:rgba(255,255,255,0.1);color:#fff}
+.nav-link.active{font-weight:600}
+.nav-search{flex:0 0 260px;position:relative;margin:0 16px}
+.nav-search input{width:100%;padding:8px 16px 8px 38px;border:1px solid rgba(255,255,255,0.15);border-radius:100px;font-family:'Inter',sans-serif;font-size:13px;color:#fff;background:rgba(255,255,255,0.1);outline:none}
+.nav-search input::placeholder{color:rgba(255,255,255,0.35)}
+.nav-search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;color:rgba(255,255,255,0.35)}
+.nav-actions{display:flex;align-items:center;gap:8px}
+.btn-upload{display:inline-flex;align-items:center;gap:6px;background:var(--purple);color:#fff;font-size:13px;font-weight:600;padding:8px 16px;border-radius:9px;border:none;cursor:pointer}
+.nav-icon{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;position:relative}
+.nav-badge{position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;font-size:9px;font-weight:700;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--page-bg);font-family:'JetBrains Mono',monospace}
+.nav-badge.blue{background:#3B82F6}
+.nav-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#1A0F00,#FF6B35);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;cursor:pointer;flex-shrink:0;font-family:'Space Grotesk',sans-serif}
+.btn-signin{font-size:13px;font-weight:600;color:rgba(255,255,255,0.8);padding:7px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.08)}
+.btn-signup{font-size:13px;font-weight:600;color:#fff;padding:7px 14px;border-radius:8px;background:var(--purple)}
+
+/* PAGE HEADER */
+.page-header{padding:64px 32px 40px;text-align:center;max-width:800px;margin:0 auto}
+.page-header-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:42px;letter-spacing:-0.04em;color:#fff;margin-bottom:8px}
+.page-header-logo span{color:var(--wham-bright)}
+.page-header-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;color:rgba(255,255,255,0.7);margin-bottom:12px}
+.page-header-meta{font-size:14px;color:rgba(255,255,255,0.4);margin-bottom:20px;font-family:'JetBrains Mono',monospace}
+.live-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(5,150,105,0.15);border:1px solid rgba(5,150,105,0.4);color:#34D399;font-size:13px;font-weight:600;padding:6px 14px;border-radius:100px}
+.live-dot-green{width:7px;height:7px;border-radius:50%;background:#34D399;animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+/* CONTENT AREA */
+.content{max-width:1300px;margin:0 auto;padding:0 32px 80px}
+
+/* PHONES ROW */
+.phones-row-label{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;color:rgba(255,255,255,0.25);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:20px;text-align:center}
+.phones-row{display:flex;justify-content:center;gap:24px;margin-bottom:24px;flex-wrap:wrap}
+
+/* PHONE FRAME */
+.phone{
+  width:214px;
+  height:464px;
+  background:#000;
+  border-radius:36px;
+  border:8px solid #1A1A1A;
+  box-shadow:
+    0 0 0 1px #333,
+    0 32px 80px rgba(0,0,0,0.6),
+    inset 0 0 0 1px rgba(255,255,255,0.08);
+  position:relative;
+  overflow:hidden;
+  flex-shrink:0;
+}
+.phone-notch{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:80px;height:20px;
+  background:#000;
+  border-radius:0 0 14px 14px;
+  z-index:10;
+}
+.phone-notch::before{
+  content:'';position:absolute;top:6px;left:50%;transform:translateX(-50%);
+  width:10px;height:10px;border-radius:50%;background:#1A1A1A;
+}
+.phone-screen{width:100%;height:100%;background:#fff;overflow:hidden;position:relative;border-radius:28px}
+.phone-screen.dark{background:#0F0800}
+
+/* PHONE LABEL */
+.phone-label{text-align:center;margin-top:12px}
+.phone-label-title{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;color:rgba(255,255,255,0.7)}
+.phone-label-sub{font-size:11px;color:rgba(255,255,255,0.3);margin-top:2px;font-family:'JetBrains Mono',monospace}
+
+/* ── PHONE CONTENT STYLES ── */
+/* These are at 55% scale, so everything looks miniature */
+
+/* MOBILE TOP BAR */
+.m-topbar{display:flex;align-items:center;justify-content:space-between;padding:8px 10px 4px;background:#fff;border-bottom:1px solid #F0E8FF}
+.m-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;letter-spacing:-0.03em;color:var(--purple)}
+.m-logo span{color:var(--wham)}
+.m-topbar-icons{display:flex;gap:4px}
+.m-icon{font-size:11px;width:20px;height:20px;border-radius:5px;background:var(--purple-xsoft);display:flex;align-items:center;justify-content:center;position:relative}
+.m-badge{position:absolute;top:-3px;right:-3px;background:var(--red);color:#fff;font-size:6px;font-weight:700;width:10px;height:10px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1.5px solid #fff;font-family:'JetBrains Mono',monospace}
+
+/* MINI HERO */
+.m-hero{background:linear-gradient(135deg,#1A0F00,#CC3700,#FF6B35);padding:8px 10px;margin:4px;border-radius:8px;color:#fff}
+.m-hero-title{font-family:'Space Grotesk',sans-serif;font-size:9px;font-weight:700;line-height:1.2;margin-bottom:4px}
+.m-hero-title em{color:var(--wham-bright);font-style:normal}
+.m-hero-btn{background:#fff;color:var(--purple);font-size:7px;font-weight:700;padding:3px 7px;border-radius:5px;display:inline-block;font-family:'Space Grotesk',sans-serif}
+
+/* MINI STATS */
+.m-stats-row{display:flex;gap:0;border-bottom:1px solid #F0E8FF}
+.m-stat{flex:1;padding:4px;text-align:center;border-right:1px solid #F0E8FF}
+.m-stat:last-child{border-right:none}
+.m-stat-num{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:var(--purple)}
+.m-stat-lbl{font-size:7px;color:var(--gray-400)}
+
+/* CATEGORY PILLS SCROLL */
+.m-pills{display:flex;gap:4px;padding:5px 10px;overflow-x:auto;scrollbar-width:none}
+.m-pills::-webkit-scrollbar{display:none}
+.m-pill{font-size:8px;font-weight:600;padding:3px 8px;border-radius:100px;white-space:nowrap;background:var(--purple-xsoft);color:var(--purple-mid);border:1px solid var(--line-soft);flex-shrink:0;font-family:'Inter',sans-serif}
+.m-pill.active{background:var(--purple);color:#fff;border-color:var(--purple)}
+
+/* MINI MEME GRID 2x2 */
+.m-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:3px;padding:0 4px}
+.m-grid-tile{border-radius:5px;background:var(--purple-xsoft);aspect-ratio:1/1;overflow:hidden;position:relative}
+.m-grid-tile img{width:100%;height:100%;object-fit:cover}
+.m-send-btn{position:absolute;bottom:4px;right:4px;background:rgba(255,69,0,0.12);color:#fff;font-size:7px;font-weight:700;padding:2px 5px;border-radius:4px}
+
+/* SEARCH BAR MOBILE */
+.m-search-bar{margin:6px 10px 4px;position:relative}
+.m-search-bar input{width:100%;padding:5px 10px 5px 24px;border:1.5px solid var(--line);border-radius:8px;font-size:9px;font-family:'Inter',sans-serif;background:#fff;color:var(--ink);outline:none}
+.m-search-bar input::placeholder{color:var(--gray-400)}
+.m-search-icon{position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:10px;color:var(--gray-400)}
+
+/* UPLOAD SHEET */
+.m-dimmed{position:absolute;inset:0;background:rgba(10,0,21,0.5)}
+.m-sheet{position:absolute;bottom:0;left:0;right:0;background:#fff;border-radius:14px 14px 0 0;padding:10px}
+.m-sheet-handle{width:28px;height:3px;background:var(--line);border-radius:100px;margin:0 auto 8px}
+.m-sheet-title{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;color:var(--ink);margin-bottom:8px}
+.m-dropzone{border:1.5px dashed var(--purple-mid);border-radius:8px;padding:8px;text-align:center;margin-bottom:8px}
+.m-dropzone-icon{font-size:16px;margin-bottom:2px}
+.m-dropzone-text{font-size:8px;color:var(--ink-mute)}
+.m-type-toggles{display:flex;gap:4px;margin-bottom:6px}
+.m-type-btn{flex:1;font-size:8px;font-weight:600;text-align:center;padding:4px;border-radius:6px;border:1px solid var(--line);color:var(--ink-mute);font-family:'Inter',sans-serif}
+.m-type-btn.active{background:var(--purple);color:#fff;border-color:var(--purple)}
+.m-input-mini{width:100%;padding:4px 8px;border:1px solid var(--line);border-radius:6px;font-size:8px;font-family:'Inter',sans-serif;color:var(--ink);margin-bottom:4px;outline:none}
+.m-input-mini::placeholder{color:var(--gray-400)}
+.m-publish-btn{width:100%;background:var(--purple);color:#fff;font-size:9px;font-weight:700;padding:6px;border-radius:7px;border:none;font-family:'Space Grotesk',sans-serif;margin-top:4px}
+
+/* MEME DETAIL SCREEN */
+.m-detail-img{width:100%;height:52%;object-fit:cover;background:linear-gradient(135deg,#1A0F00,#FF6B35)}
+.m-detail-img-placeholder{width:100%;height:52%;background:linear-gradient(135deg,var(--purple-dark) 0%,var(--purple-mid) 60%,var(--wham) 100%);display:flex;align-items:center;justify-content:center;font-size:32px}
+.m-detail-body{padding:8px 10px}
+.m-detail-title{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;color:var(--ink);margin-bottom:5px}
+.m-creator-row{display:flex;align-items:center;gap:5px;margin-bottom:6px}
+.m-creator-avatar{width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,#1A0F00,#FF6B35);flex-shrink:0}
+.m-creator-name{font-size:8px;font-weight:600;color:var(--ink);flex:1}
+.m-follow-btn{font-size:7px;font-weight:700;color:var(--purple);background:var(--purple-xsoft);border:1px solid var(--line-soft);padding:2px 6px;border-radius:5px;font-family:'Inter',sans-serif}
+.m-detail-stats{display:flex;gap:8px;margin-bottom:6px}
+.m-detail-stat{font-size:8px;color:var(--ink-mute);font-family:'JetBrains Mono',monospace}
+.m-actions-row{display:flex;gap:0;border-top:1px solid var(--line-soft);margin-top:4px}
+.m-action{flex:1;padding:6px 4px;text-align:center;font-size:8px;font-weight:600;color:var(--ink-mute);border-right:1px solid var(--line-soft)}
+.m-action:last-child{border-right:none}
+.m-action span{display:block;font-size:12px}
+.m-action.liked{color:var(--red)}
+
+/* NOTIFICATIONS SCREEN */
+.m-notif-header{padding:8px 10px 4px}
+.m-notif-title{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;color:var(--ink)}
+.m-notif-sub{font-size:8px;color:var(--ink-mute)}
+.m-filter-pills{display:flex;gap:4px;padding:4px 10px}
+.m-filter-pill{font-size:7px;font-weight:600;padding:3px 7px;border-radius:100px;background:var(--purple-xsoft);color:var(--purple-mid);border:1px solid var(--line-soft);font-family:'Inter',sans-serif}
+.m-filter-pill.active{background:var(--purple);color:#fff;border-color:var(--purple)}
+.m-notif-list{padding:0 4px}
+.m-notif-row{display:flex;align-items:center;gap:6px;padding:5px 6px;border-bottom:1px solid var(--line-soft)}
+.m-notif-avatar{width:22px;height:22px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff;font-family:'Space Grotesk',sans-serif}
+.m-notif-text{font-size:8px;color:var(--ink-mute);flex:1;line-height:1.3}
+.m-notif-text strong{color:var(--ink)}
+.m-notif-time{font-size:7px;color:var(--gray-400);font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.m-notif-dot{width:6px;height:6px;border-radius:50%;background:var(--purple);flex-shrink:0}
+
+/* MESSAGES SCREEN */
+.m-msg-header{padding:8px 10px 4px}
+.m-msg-title{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;color:var(--ink)}
+.m-conv-list{padding:0 4px}
+.m-conv-row{display:flex;align-items:center;gap:6px;padding:6px 6px;border-bottom:1px solid var(--line-soft)}
+.m-conv-avatar{width:24px;height:24px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;font-family:'Space Grotesk',sans-serif}
+.m-conv-info{flex:1;min-width:0}
+.m-conv-name{font-size:9px;font-weight:700;color:var(--ink)}
+.m-conv-preview{font-size:8px;color:var(--ink-mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.m-conv-meta{text-align:right;flex-shrink:0}
+.m-conv-time{font-size:7px;color:var(--gray-400);font-family:'JetBrains Mono',monospace}
+.m-conv-unread{width:14px;height:14px;border-radius:50%;background:var(--purple);display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;color:#fff;margin-top:2px;margin-left:auto;font-family:'JetBrains Mono',monospace}
+
+/* PROFILE SCREEN */
+.m-profile-cover{height:44px;background:linear-gradient(135deg,#1A0F00,#FF6B35,#D97706)}
+.m-profile-avatar-wrap{padding:0 10px}
+.m-profile-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1A0F00,#FF6B35);border:3px solid #fff;margin-top:-18px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff;font-family:'Space Grotesk',sans-serif;box-shadow:0 2px 8px rgba(0,0,0,0.2)}
+.m-profile-name{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;color:var(--ink);margin-top:4px}
+.m-profile-handle{font-size:8px;color:var(--ink-mute)}
+.m-profile-stats{display:flex;gap:12px;margin:4px 10px 4px;padding:6px 0;border-bottom:1px solid var(--line-soft)}
+.m-profile-stat-num{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--ink)}
+.m-profile-stat-lbl{font-size:7px;color:var(--gray-400)}
+.m-profile-tabs{display:flex;border-bottom:1px solid var(--line-soft);margin:0 0 4px}
+.m-profile-tab{flex:1;text-align:center;font-size:8px;font-weight:600;padding:5px;color:var(--ink-mute)}
+.m-profile-tab.active{color:var(--purple);border-bottom:2px solid var(--purple)}
+
+/* BOTTOM NAV */
+.m-bottom-nav{position:absolute;bottom:0;left:0;right:0;height:50px;background:#fff;border-top:1px solid #E8E0FF;display:flex;align-items:flex-start;padding-top:4px;z-index:20}
+.m-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;cursor:pointer;padding-top:2px;position:relative}
+.m-nav-icon{font-size:14px;line-height:1}
+.m-nav-label{font-size:7px;font-weight:600;color:var(--gray-400);font-family:'Inter',sans-serif}
+.m-nav-item.active .m-nav-label{color:var(--purple)}
+.m-nav-item.active .m-nav-icon{filter:none}
+.m-nav-badge{position:absolute;top:0;right:20%;background:var(--red);color:#fff;font-size:6px;font-weight:700;width:10px;height:10px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1.5px solid #fff;font-family:'JetBrains Mono',monospace}
+.m-fab{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--purple-dark),var(--purple-mid));display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;margin-top:-12px;box-shadow:0 4px 12px rgba(255,69,0,0.12);flex-shrink:0}
+
+/* ── SECTION DIVIDER ── */
+.section-div{margin:64px 0 40px;border:none;border-top:1px solid rgba(255,255,255,0.08);position:relative;text-align:center}
+.section-div-label{display:inline-block;background:rgba(255,255,255,0.06);backdrop-filter:blur(8px);padding:6px 20px;border-radius:100px;font-size:12px;font-weight:700;color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.1);position:relative;top:-18px;font-family:'Space Grotesk',sans-serif;letter-spacing:0.04em}
+
+/* ── BOTTOM NAV SPEC SECTION ── */
+.spec-section{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:36px;margin-bottom:40px}
+.spec-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:24px;color:#fff;margin-bottom:6px}
+.spec-subtitle{font-size:14px;color:rgba(255,255,255,0.4);margin-bottom:32px}
+
+/* NAV SPEC DIAGRAM */
+.nav-spec-wrap{background:#fff;border-radius:16px;padding:0;overflow:hidden;max-width:600px;margin:0 auto 32px;box-shadow:0 8px 40px rgba(0,0,0,0.4)}
+.nav-spec-phone-hint{background:linear-gradient(135deg,var(--purple-dark),var(--purple-mid));height:40px;display:flex;align-items:center;justify-content:center}
+.nav-spec-phone-hint-text{font-size:11px;color:rgba(255,255,255,0.6);font-family:'JetBrains Mono',monospace}
+.nav-spec-bar{height:64px;background:#fff;border-top:1px solid #E8E0FF;display:flex;align-items:flex-start;padding-top:8px;position:relative}
+.nav-spec-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;position:relative}
+.nav-spec-icon{font-size:20px;line-height:1}
+.nav-spec-label{font-size:10px;font-weight:600;color:var(--gray-400);font-family:'Inter',sans-serif}
+.nav-spec-item.active .nav-spec-label{color:var(--purple)}
+.nav-spec-fab-wrap{flex:1;display:flex;justify-content:center;align-items:flex-start;margin-top:-18px}
+.nav-spec-fab{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--purple-dark),var(--purple-mid));display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;box-shadow:0 4px 16px rgba(255,69,0,0.12)}
+.nav-spec-safe{height:20px;background:#F9FAFB;border-top:1px solid #F0E8FF;display:flex;align-items:center;justify-content:center}
+.nav-spec-home-indicator{width:100px;height:4px;background:#ccc;border-radius:2px}
+.nav-spec-badge{position:absolute;top:-2px;right:22%;background:var(--red);color:#fff;font-size:7px;font-weight:700;width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #fff;font-family:'JetBrains Mono',monospace}
+
+/* ANNOTATION CALLOUTS */
+.annotations{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;max-width:600px;margin-left:auto;margin-right:auto}
+.annotation{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px}
+.annotation-label{font-size:10px;font-weight:700;color:rgba(255,255,255,0.4);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px}
+.annotation-value{font-size:13px;font-weight:600;color:#fff;font-family:'JetBrains Mono',monospace}
+
+/* COMPONENT TABLE */
+.component-table{width:100%;border-collapse:collapse;font-size:13px;background:rgba(255,255,255,0.02);border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.08)}
+.component-table th{text-align:left;padding:12px 16px;background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.4);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.06em;border-bottom:1px solid rgba(255,255,255,0.08)}
+.component-table td{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.05);color:rgba(255,255,255,0.75);vertical-align:middle}
+.component-table tr:last-child td{border-bottom:none}
+.component-table td:nth-child(2){font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--purple-bright)}
+.component-table td:nth-child(3){font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--wham-bright)}
+.color-swatch{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:4px;vertical-align:middle}
+
+/* FOOTER */
+.footer{background:#000;color:rgba(255,255,255,0.3);padding:32px;text-align:center;font-size:13px;border-top:1px solid rgba(255,255,255,0.06)}
+.footer a{color:rgba(255,255,255,0.5);font-weight:600}
+.footer-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;color:#fff;letter-spacing:-0.04em;margin-bottom:10px}
+.footer-logo span{color:var(--wham-bright)}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="01-landing.html" class="nav-logo">whamr<span>.</span></a>
+  <div class="nav-links">
+    <a href="01-landing.html" class="nav-link">Home</a>
+    <a href="02-memes-browser.html" class="nav-link">Memes</a>
+    <a href="06-explore.html" class="nav-link">Explore</a>
+    <a href="10-dojos.html" class="nav-link">Dojos</a>
+  </div>
+  <div class="nav-search">
+    <span class="nav-search-icon">🔍</span>
+    <input type="text" placeholder="Search memes, creators...">
+  </div>
+  <div class="nav-actions">
+    <button class="btn-upload">+ Upload</button>
+    <div class="nav-icon">🔔<span class="nav-badge">4</span></div>
+    <div class="nav-icon">💬<span class="nav-badge blue">3</span></div>
+    <div class="nav-avatar">MQ</div>
+    <a href="14-auth.html" class="btn-signin">Sign in</a>
+    <a href="14-auth.html" class="btn-signup">Sign up</a>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-header-logo">whamr<span>.</span></div>
+  <div class="page-header-title">Mobile App Design</div>
+  <div class="page-header-meta">iOS · Android · React Native (Expo) · v2.1</div>
+  <div class="live-chip"><span class="live-dot-green"></span> Available on iOS &amp; Android</div>
+</div>
+
+<div class="content">
+
+  <!-- ROW 1: 4 phones -->
+  <div class="phones-row-label">Row 1, Home, Memes, Upload, Meme Detail</div>
+  <div class="phones-row">
+
+    <!-- PHONE 1: Home Feed -->
+    <div>
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <!-- Top bar -->
+          <div class="m-topbar">
+            <div class="m-logo">whamr<span>.</span></div>
+            <div class="m-topbar-icons">
+              <div class="m-icon">🔔<span class="m-badge">4</span></div>
+              <div class="m-icon">💬<span class="m-badge" style="background:#3B82F6">3</span></div>
+            </div>
+          </div>
+          <!-- Hero -->
+          <div style="padding:0 4px;margin:4px 0 0">
+            <div class="m-hero">
+              <div class="m-hero-title">Find the perfect meme.<br><em>Send the wham.</em></div>
+              <div class="m-hero-btn">Browse memes</div>
+            </div>
+          </div>
+          <!-- Stats -->
+          <div class="m-stats-row">
+            <div class="m-stat"><div class="m-stat-num">34.1k</div><div class="m-stat-lbl">Users</div></div>
+            <div class="m-stat"><div class="m-stat-num">2.4M</div><div class="m-stat-lbl">Memes</div></div>
+            <div class="m-stat"><div class="m-stat-num">142</div><div class="m-stat-lbl">Dojos</div></div>
+          </div>
+          <!-- Category pills -->
+          <div class="m-pills">
+            <div class="m-pill active">All</div>
+            <div class="m-pill">Naija</div>
+            <div class="m-pill">Sports</div>
+            <div class="m-pill">Dance</div>
+            <div class="m-pill">Mood</div>
+          </div>
+          <!-- 2x2 Grid -->
+          <div class="m-grid-2">
+            <div class="m-grid-tile"><img src="https://picsum.photos/seed/home1/100/100" alt="" loading="lazy"></div>
+            <div class="m-grid-tile"><img src="https://picsum.photos/seed/home2/100/100" alt="" loading="lazy"></div>
+            <div class="m-grid-tile"><img src="https://picsum.photos/seed/home3/100/100" alt="" loading="lazy"></div>
+            <div class="m-grid-tile"><img src="https://picsum.photos/seed/home4/100/100" alt="" loading="lazy"></div>
+          </div>
+          <!-- Bottom nav -->
+          <div class="m-bottom-nav">
+            <div class="m-nav-item active"><div class="m-nav-icon">🏠</div><div class="m-nav-label" style="color:var(--purple)">Home</div></div>
+            <div class="m-nav-item"><div class="m-nav-icon">🔍</div><div class="m-nav-label">Explore</div></div>
+            <div class="m-nav-item" style="justify-content:center"><div class="m-fab">+</div><div class="m-nav-label" style="margin-top:2px">Upload</div></div>
+            <div class="m-nav-item"><div class="m-nav-icon">🔔</div><div class="m-nav-label">Alerts</div><div class="m-nav-badge">4</div></div>
+            <div class="m-nav-item"><div class="m-nav-icon">👤</div><div class="m-nav-label">Me</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">
+        <div class="phone-label-title">Home Feed</div>
+        <div class="phone-label-sub">🏠 active</div>
+      </div>
+    </div>
+
+    <!-- PHONE 2: Memes Browser -->
+    <div>
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="m-topbar">
+            <div class="m-logo">whamr<span>.</span></div>
+            <div class="m-topbar-icons">
+              <div class="m-icon">🔔</div>
+              <div class="m-icon" style="width:24px;height:14px;border-radius:3px;background:linear-gradient(135deg,var(--purple-dark),var(--purple-mid));font-size:8px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif">MQ</div>
+            </div>
+          </div>
+          <div class="m-search-bar" style="margin-top:4px">
+            <span class="m-search-icon">🔍</span>
+            <input placeholder="Search memes..." readonly>
+          </div>
+          <div class="m-pills" style="margin-bottom:3px">
+            <div class="m-pill active">All</div>
+            <div class="m-pill">GIFs</div>
+            <div class="m-pill">Stickers</div>
+            <div class="m-pill">Trending</div>
+          </div>
+          <div class="m-grid-2">
+            <div class="m-grid-tile">
+              <img src="https://picsum.photos/seed/browse1/100/100" alt="" loading="lazy">
+              <div class="m-send-btn">Send</div>
+            </div>
+            <div class="m-grid-tile">
+              <img src="https://picsum.photos/seed/browse2/100/100" alt="" loading="lazy">
+              <div class="m-send-btn">Send</div>
+            </div>
+            <div class="m-grid-tile">
+              <img src="https://picsum.photos/seed/browse3/100/100" alt="" loading="lazy">
+              <div class="m-send-btn">Send</div>
+            </div>
+            <div class="m-grid-tile">
+              <img src="https://picsum.photos/seed/browse4/100/100" alt="" loading="lazy">
+              <div class="m-send-btn">Send</div>
+            </div>
+          </div>
+          <div class="m-bottom-nav">
+            <div class="m-nav-item"><div class="m-nav-icon">🏠</div><div class="m-nav-label">Home</div></div>
+            <div class="m-nav-item active"><div class="m-nav-icon">🔍</div><div class="m-nav-label" style="color:var(--purple)">Memes</div></div>
+            <div class="m-nav-item" style="justify-content:center"><div class="m-fab">+</div><div class="m-nav-label" style="margin-top:2px">Upload</div></div>
+            <div class="m-nav-item"><div class="m-nav-icon">🔔</div><div class="m-nav-label">Alerts</div></div>
+            <div class="m-nav-item"><div class="m-nav-icon">👤</div><div class="m-nav-label">Me</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">
+        <div class="phone-label-title">Memes Browser</div>
+        <div class="phone-label-sub">🔍 active</div>
+      </div>
+    </div>
+
+    <!-- PHONE 3: Upload Modal -->
+    <div>
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <!-- Background (dimmed screen 1) -->
+          <div style="position:absolute;inset:0;background:linear-gradient(135deg,#1A0F00,#CC3700);opacity:0.95"></div>
+          <div class="m-dimmed"></div>
+          <!-- Upload sheet -->
+          <div class="m-sheet" style="height:80%">
+            <div class="m-sheet-handle"></div>
+            <div class="m-sheet-title">Upload content</div>
+            <!-- Drop zone -->
+            <div class="m-dropzone">
+              <div class="m-dropzone-icon">📸</div>
+              <div class="m-dropzone-text" style="color:var(--purple-mid);font-weight:600">Tap or drag to upload</div>
+              <div class="m-dropzone-text">JPG, PNG, GIF up to 20MB</div>
+            </div>
+            <!-- Title field -->
+            <div style="font-size:8px;font-weight:600;color:var(--ink);margin-bottom:3px">Title</div>
+            <input class="m-input-mini" placeholder="Give your meme a title..." readonly>
+            <!-- Type toggles -->
+            <div style="font-size:8px;font-weight:600;color:var(--ink);margin-bottom:3px">Content type</div>
+            <div class="m-type-toggles">
+              <div class="m-type-btn active">🖼 Meme</div>
+              <div class="m-type-btn">Sticker</div>
+              <div class="m-type-btn">GIF</div>
+            </div>
+            <!-- Category -->
+            <div style="font-size:8px;font-weight:600;color:var(--ink);margin-bottom:3px">Category</div>
+            <input class="m-input-mini" placeholder="Select a category..." readonly>
+            <button class="m-publish-btn">Publish</button>
+          </div>
+          <!-- Bottom nav -->
+          <div class="m-bottom-nav">
+            <div class="m-nav-item"><div class="m-nav-icon">🏠</div><div class="m-nav-label">Home</div></div>
+            <div class="m-nav-item"><div class="m-nav-icon">🔍</div><div class="m-nav-label">Memes</div></div>
+            <div class="m-nav-item active" style="justify-content:center"><div class="m-fab" style="box-shadow:0 0 0 3px rgba(255,69,0,0.12),0 4px 12px rgba(255,69,0,0.12)">+</div><div class="m-nav-label" style="color:var(--purple);margin-top:2px">Upload</div></div>
+            <div class="m-nav-item"><div class="m-nav-icon">🔔</div><div class="m-nav-label">Alerts</div></div>
+            <div class="m-nav-item"><div class="m-nav-icon">👤</div><div class="m-nav-label">Me</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">
+        <div class="phone-label-title">Upload Modal</div>
+        <div class="phone-label-sub">Bottom sheet · FAB active</div>
+      </div>
+    </div>
+
+    <!-- PHONE 4: Meme Detail -->
+    <div>
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <!-- Full bleed meme image -->
+          <div class="m-detail-img-placeholder">😤</div>
+          <div class="m-detail-body">
+            <div class="m-detail-title">Can't Breathe</div>
+            <div class="m-creator-row">
+              <div class="m-creator-avatar"></div>
+              <div class="m-creator-name">Meme Queen 👑</div>
+              <div class="m-follow-btn">Following</div>
+            </div>
+            <div class="m-detail-stats">
+              <div class="m-detail-stat">❤️ 3,100</div>
+              <div class="m-detail-stat">🔗 1,240</div>
+              <div class="m-detail-stat">👁 42.1k</div>
+            </div>
+            <div class="m-actions-row">
+              <div class="m-action liked"><span>❤️</span>Like</div>
+              <div class="m-action"><span>📌</span>Save</div>
+              <div class="m-action"><span>🔗</span>Send</div>
+            </div>
+          </div>
+          <!-- Bottom nav (none active) -->
+          <div class="m-bottom-nav">
+            <div class="m-nav-item"><div class="m-nav-icon">🏠</div><div class="m-nav-label">Home</div></div>
+            <div class="m-nav-item"><div class="m-nav-icon">🔍</div><div class="m-nav-label">Memes</div></div>
+            <div class="m-nav-item" style="justify-content:center"><div class="m-fab">+</div><div class="m-nav-label" style="margin-top:2px">Upload</div></div>
+            <div class="m-nav-item"><div class="m-nav-icon">🔔</div><div class="m-nav-label">Alerts</div></div>
+            <div class="m-nav-item"><div class="m-nav-icon">👤</div><div class="m-nav-label">Me</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">
+        <div class="phone-label-title">Meme Detail</div>
+        <div class="phone-label-sub">Full-bleed image</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ROW 2: 3 phones -->
+  <div class="phones-row-label">Row 2, Notifications, Messages, Profile</div>
+  <div class="phones-row">
+
+    <!-- PHONE 5: Notifications -->
+    <div>
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="m-notif-header">
+            <div class="m-notif-title">Notifications</div>
+            <div class="m-notif-sub">4 unread</div>
+          </div>
+          <div class="m-filter-pills">
+            <div class="m-filter-pill active">All</div>
+            <div class="m-filter-pill">Likes</div>
+            <div class="m-filter-pill">Comments</div>
+            <div class="m-filter-pill">Follows</div>
+          </div>
+          <div class="m-notif-list">
+            <div class="m-notif-row">
+              <div class="m-notif-avatar" style="background:linear-gradient(135deg,#064E3B,#059669)">AO</div>
+              <div class="m-notif-text"><strong>@bayo_ok</strong> liked your meme Can't Breathe</div>
+              <div class="m-notif-dot"></div>
+              <div class="m-notif-time">2m</div>
+            </div>
+            <div class="m-notif-row">
+              <div class="m-notif-avatar" style="background:linear-gradient(135deg,#92400E,#D97706)">CI</div>
+              <div class="m-notif-text"><strong>@chisom_ike</strong> commented: "This is too real 😭"</div>
+              <div class="m-notif-dot"></div>
+              <div class="m-notif-time">14m</div>
+            </div>
+            <div class="m-notif-row">
+              <div class="m-notif-avatar" style="background:linear-gradient(135deg,#1E3A5F,#3B82F6)">TF</div>
+              <div class="m-notif-text"><strong>@tunde_f</strong> started following you</div>
+              <div class="m-notif-dot"></div>
+              <div class="m-notif-time">1h</div>
+            </div>
+            <div class="m-notif-row">
+              <div class="m-notif-avatar" style="background:linear-gradient(135deg,#CC3700,#FF8C60)">NE</div>
+              <div class="m-notif-text"><strong>@ngozi_e</strong> shared E Don Do to WhatsApp</div>
+              <div class="m-notif-time">3h</div>
+            </div>
+          </div>
+          <div class="m-bottom-nav">
+            <div class="m-nav-item"><div class="m-nav-icon">🏠</div><div class="m-nav-label">Home</div></div>
+            <div class="m-nav-item"><div class="m-nav-icon">🔍</div><div class="m-nav-label">Memes</div></div>
+            <div class="m-nav-item" style="justify-content:center"><div class="m-fab">+</div><div class="m-nav-label" style="margin-top:2px">Upload</div></div>
+            <div class="m-nav-item active"><div class="m-nav-icon">🔔</div><div class="m-nav-label" style="color:var(--purple)">Alerts</div><div class="m-nav-badge">4</div></div>
+            <div class="m-nav-item"><div class="m-nav-icon">👤</div><div class="m-nav-label">Me</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">
+        <div class="phone-label-title">Notifications</div>
+        <div class="phone-label-sub">🔔 active · badge 4</div>
+      </div>
+    </div>
+
+    <!-- PHONE 6: Messages -->
+    <div>
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="m-msg-header">
+            <div class="m-msg-title">Messages</div>
+            <div style="font-size:8px;color:var(--ink-mute)">3 unread</div>
+          </div>
+          <div style="margin:4px 10px 6px">
+            <div class="m-search-bar" style="margin:0">
+              <span class="m-search-icon">🔍</span>
+              <input placeholder="Search conversations..." readonly>
+            </div>
+          </div>
+          <div class="m-conv-list">
+            <div class="m-conv-row">
+              <div class="m-conv-avatar" style="background:linear-gradient(135deg,#064E3B,#059669)">AO</div>
+              <div class="m-conv-info">
+                <div class="m-conv-name">Adebayo Okonkwo</div>
+                <div class="m-conv-preview">Bro send me that E Don Do one 😂</div>
+              </div>
+              <div class="m-conv-meta">
+                <div class="m-conv-time">2m</div>
+                <div class="m-conv-unread">2</div>
+              </div>
+            </div>
+            <div class="m-conv-row">
+              <div class="m-conv-avatar" style="background:linear-gradient(135deg,#92400E,#D97706)">CI</div>
+              <div class="m-conv-info">
+                <div class="m-conv-name">Chisom Ike</div>
+                <div class="m-conv-preview">This one is so accurate for today 💀</div>
+              </div>
+              <div class="m-conv-meta">
+                <div class="m-conv-time">1h</div>
+                <div class="m-conv-unread">1</div>
+              </div>
+            </div>
+            <div class="m-conv-row">
+              <div class="m-conv-avatar" style="background:linear-gradient(135deg,#1E3A5F,#3B82F6)">TF</div>
+              <div class="m-conv-info">
+                <div class="m-conv-name">Tunde Fashola</div>
+                <div class="m-conv-preview">Thanks for the shoutout on Naija Dojo!</div>
+              </div>
+              <div class="m-conv-meta">
+                <div class="m-conv-time">3h</div>
+              </div>
+            </div>
+            <div class="m-conv-row">
+              <div class="m-conv-avatar" style="background:linear-gradient(135deg,#CC3700,#FF8C60)">NE</div>
+              <div class="m-conv-info">
+                <div class="m-conv-name">Ngozi Emeka</div>
+                <div class="m-conv-preview">You: Thanks! Will post more tonight.</div>
+              </div>
+              <div class="m-conv-meta">
+                <div class="m-conv-time">Yesterday</div>
+              </div>
+            </div>
+          </div>
+          <div class="m-bottom-nav">
+            <div class="m-nav-item"><div class="m-nav-icon">🏠</div><div class="m-nav-label">Home</div></div>
+            <div class="m-nav-item"><div class="m-nav-icon">🔍</div><div class="m-nav-label">Memes</div></div>
+            <div class="m-nav-item" style="justify-content:center"><div class="m-fab">+</div><div class="m-nav-label" style="margin-top:2px">Upload</div></div>
+            <div class="m-nav-item"><div class="m-nav-icon">💬</div><div class="m-nav-label">Messages</div><div class="m-nav-badge" style="background:#3B82F6">3</div></div>
+            <div class="m-nav-item"><div class="m-nav-icon">👤</div><div class="m-nav-label">Me</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">
+        <div class="phone-label-title">Messages</div>
+        <div class="phone-label-sub">💬 4 conversations</div>
+      </div>
+    </div>
+
+    <!-- PHONE 7: Profile -->
+    <div>
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="m-profile-cover"></div>
+          <div class="m-profile-avatar-wrap">
+            <div class="m-profile-avatar">MQ</div>
+          </div>
+          <div style="padding:2px 10px 0">
+            <div class="m-profile-name">Meme Queen 👑 <span style="font-size:7px;background:var(--purple-xsoft);color:var(--purple);padding:1px 4px;border-radius:3px;font-weight:700">✓</span></div>
+            <div class="m-profile-handle">@memequeen · Creator</div>
+          </div>
+          <div class="m-profile-stats">
+            <div>
+              <div class="m-profile-stat-num">347</div>
+              <div class="m-profile-stat-lbl">Posts</div>
+            </div>
+            <div>
+              <div class="m-profile-stat-num">12.4k</div>
+              <div class="m-profile-stat-lbl">Followers</div>
+            </div>
+            <div>
+              <div class="m-profile-stat-num">842</div>
+              <div class="m-profile-stat-lbl">Following</div>
+            </div>
+          </div>
+          <div class="m-profile-tabs">
+            <div class="m-profile-tab active">Posts</div>
+            <div class="m-profile-tab">Collections</div>
+            <div class="m-profile-tab">Liked</div>
+          </div>
+          <div class="m-grid-2">
+            <div class="m-grid-tile"><img src="https://picsum.photos/seed/profile1/100/100" alt="" loading="lazy"></div>
+            <div class="m-grid-tile"><img src="https://picsum.photos/seed/profile2/100/100" alt="" loading="lazy"></div>
+            <div class="m-grid-tile"><img src="https://picsum.photos/seed/profile3/100/100" alt="" loading="lazy"></div>
+            <div class="m-grid-tile"><img src="https://picsum.photos/seed/profile4/100/100" alt="" loading="lazy"></div>
+          </div>
+          <div class="m-bottom-nav">
+            <div class="m-nav-item"><div class="m-nav-icon">🏠</div><div class="m-nav-label">Home</div></div>
+            <div class="m-nav-item"><div class="m-nav-icon">🔍</div><div class="m-nav-label">Memes</div></div>
+            <div class="m-nav-item" style="justify-content:center"><div class="m-fab">+</div><div class="m-nav-label" style="margin-top:2px">Upload</div></div>
+            <div class="m-nav-item"><div class="m-nav-icon">🔔</div><div class="m-nav-label">Alerts</div></div>
+            <div class="m-nav-item active"><div class="m-nav-icon">👤</div><div class="m-nav-label" style="color:var(--purple)">Me</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">
+        <div class="phone-label-title">Profile</div>
+        <div class="phone-label-sub">👤 Me active</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SECTION: Bottom Nav Spec -->
+  <hr class="section-div">
+  <div style="text-align:center;margin-top:-56px;margin-bottom:40px">
+    <span class="section-div-label">Bottom Nav Design Specification</span>
+  </div>
+
+  <div class="spec-section">
+    <div class="spec-title">Bottom Navigation Bar</div>
+    <div class="spec-subtitle">Full-width spec, 375px phone width · 64px total height (44px nav + 20px iOS safe area)</div>
+
+    <!-- SPEC DIAGRAM -->
+    <div class="nav-spec-wrap">
+      <div class="nav-spec-phone-hint">
+        <div class="nav-spec-phone-hint-text">← 375px phone width · Status bar · Screen content above →</div>
+      </div>
+      <!-- Nav bar -->
+      <div class="nav-spec-bar">
+        <div class="nav-spec-item active">
+          <div class="nav-spec-icon">🏠</div>
+          <div class="nav-spec-label" style="color:var(--purple)">Home</div>
+        </div>
+        <div class="nav-spec-item">
+          <div class="nav-spec-icon">🔍</div>
+          <div class="nav-spec-label">Explore</div>
+        </div>
+        <div class="nav-spec-fab-wrap">
+          <div class="nav-spec-fab">+</div>
+        </div>
+        <div class="nav-spec-item">
+          <div class="nav-spec-icon">🔔</div>
+          <div class="nav-spec-label">Alerts</div>
+          <div class="nav-spec-badge">4</div>
+        </div>
+        <div class="nav-spec-item">
+          <div class="nav-spec-icon">👤</div>
+          <div class="nav-spec-label">Me</div>
+        </div>
+      </div>
+      <!-- Safe area -->
+      <div class="nav-spec-safe">
+        <div class="nav-spec-home-indicator"></div>
+      </div>
+    </div>
+
+    <!-- ANNOTATIONS -->
+    <div class="annotations" style="grid-template-columns:repeat(4,1fr)">
+      <div class="annotation">
+        <div class="annotation-label">Nav bar height</div>
+        <div class="annotation-value">44px</div>
+      </div>
+      <div class="annotation">
+        <div class="annotation-label">iOS safe area</div>
+        <div class="annotation-value">+20px</div>
+      </div>
+      <div class="annotation">
+        <div class="annotation-label">FAB size</div>
+        <div class="annotation-value">52×52px</div>
+      </div>
+      <div class="annotation">
+        <div class="annotation-label">FAB lift</div>
+        <div class="annotation-value">-20px</div>
+      </div>
+      <div class="annotation">
+        <div class="annotation-label">Active color</div>
+        <div class="annotation-value" style="color:var(--purple-bright)">#FF4500</div>
+      </div>
+      <div class="annotation">
+        <div class="annotation-label">Badge size</div>
+        <div class="annotation-value">16×16px</div>
+      </div>
+      <div class="annotation">
+        <div class="annotation-label">Badge color</div>
+        <div class="annotation-value" style="color:#ff6b6b">#DC2626</div>
+      </div>
+      <div class="annotation">
+        <div class="annotation-label">Item width</div>
+        <div class="annotation-value">20% (5 cols)</div>
+      </div>
+    </div>
+
+    <!-- COMPONENT TABLE -->
+    <table class="component-table">
+      <thead>
+        <tr>
+          <th>Component</th>
+          <th>Size</th>
+          <th>Color</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Nav bar</td>
+          <td>64px height</td>
+          <td>#FFFFFF</td>
+          <td>Total height includes iOS safe area</td>
+        </tr>
+        <tr>
+          <td>Nav item</td>
+          <td>20% width</td>
+          <td>-</td>
+          <td>5 equal columns, tap target 44px</td>
+        </tr>
+        <tr>
+          <td>Active icon</td>
+          <td>24px</td>
+          <td>#FF4500</td>
+          <td>SVG or emoji, purple tint on active</td>
+        </tr>
+        <tr>
+          <td>Active label</td>
+          <td>10px Inter 600</td>
+          <td>#FF4500</td>
+          <td>Shown below icon, purple on active</td>
+        </tr>
+        <tr>
+          <td>FAB button</td>
+          <td>52×52px</td>
+          <td>Gradient #CC3700 → #FF6B35</td>
+          <td>-20px lift above nav bar, shadow</td>
+        </tr>
+        <tr>
+          <td>FAB shadow</td>
+          <td>-</td>
+          <td>rgba(255,69,0,0.12)</td>
+          <td>0 4px 16px blur for depth</td>
+        </tr>
+        <tr>
+          <td>Badge</td>
+          <td>16×16px</td>
+          <td>#DC2626</td>
+          <td>White 2px border, top-right of icon</td>
+        </tr>
+        <tr>
+          <td>Badge font</td>
+          <td>9px JetBrains Mono</td>
+          <td>#FFFFFF</td>
+          <td>Bold, centered in circle</td>
+        </tr>
+        <tr>
+          <td>iOS safe area</td>
+          <td>+20px</td>
+          <td>#F9FAFB</td>
+          <td>Home indicator zone, light gray</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<footer class="footer">
+  <div class="footer-logo">whamr<span>.</span></div>
+  <p style="margin-bottom:12px">The global meme-sharing platform. Find the perfect meme. Send the wham.</p>
+  <div style="display:flex;justify-content:center;gap:24px;font-size:13px;flex-wrap:wrap">
+    <a href="#">About</a><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Help</a>
+  </div>
+  <div style="margin-top:16px;font-size:12px;opacity:0.4">© 2026 Whamr Ltd. All rights reserved.</div>
+</footer>
+
+</body>
+</html>

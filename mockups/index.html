@@ -1,0 +1,765 @@
+﻿<!-- FILE: index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>whamr., UI Mockup Gallery</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Whamr Sunset, Electric Orange-Red + Golden Yellow */
+  --bg:#FFFAF5; --bg-alt:#FFF3E8; --card:#FFFFFF;
+  --ink:#1A0F00; --ink-soft:#4A3020; --ink-mute:#8A7060;
+  --line:#F0DDD0; --line-soft:#FBF0E8;
+  /* Primary: electric orange-red (the wham) */
+  --purple:#FF4500; --purple-mid:#FF6B35; --purple-bright:#FF8C60;
+  --purple-dark:#CC3700; --purple-soft:#FFF1EC; --purple-xsoft:#FFF8F5;
+  /* Accent: warm golden yellow (the joy) */
+  --wham:#FFB800; --wham-bright:#FFD60A; --wham-soft:#FFF8DC;
+  --pink:#FFB800; --pink-soft:#FFF8DC;
+  /* Semantic */
+  --green:#00C853; --green-soft:#E8FFF0;
+  --amber:#FFB800; --red:#FF2D55; --red-soft:#FFF0F3;
+  --blue:#007AFF;
+  /* Gray scale (kept neutral) */
+  --gray-50:#F9FAFB; --gray-100:#F3F4F6; --gray-200:#E5E7EB;
+  --gray-400:#9CA3AF; --gray-500:#6B7280; --gray-700:#374151; --gray-900:#111827;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;font-size:15px;background:var(--bg);color:var(--ink);line-height:1.6}
+a{text-decoration:none;color:inherit}
+
+/* HEADER */
+.gallery-header{
+  background:linear-gradient(135deg,#4A1000 0%,#CC3700 40%,#E83D00 70%,#FF6B35 100%);
+  padding:60px 40px 50px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.gallery-header::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(217,119,6,0.25) 0%,transparent 70%);
+}
+.gallery-header::after{
+  content:'';position:absolute;bottom:-30px;left:50%;transform:translateX(-50%);
+  width:200px;height:60px;
+  background:var(--bg);
+  border-radius:50%;
+  filter:blur(20px);
+  opacity:0.4;
+}
+.gallery-header .inner{position:relative;z-index:1}
+.gallery-logo{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:900;font-size:48px;letter-spacing:-0.05em;
+  color:#fff;display:inline-block;margin-bottom:12px;
+}
+.gallery-logo span{color:rgba(255,255,255,0.5)}
+.gallery-title{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:800;font-size:28px;color:#fff;margin-bottom:10px;
+}
+.gallery-subtitle{
+  font-size:15px;color:rgba(255,255,255,0.7);margin-bottom:24px;
+  letter-spacing:0.01em;
+}
+.gallery-version-chip{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,0.15);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,0.25);
+  border-radius:100px;padding:6px 16px;
+  font-size:12px;color:rgba(255,255,255,0.9);font-weight:500;
+  letter-spacing:0.03em;
+}
+.gallery-version-chip::before{content:'';width:6px;height:6px;border-radius:50%;background:#10B981;flex-shrink:0}
+
+/* STATS BAR */
+.stats-bar{
+  background:#fff;border-bottom:1px solid var(--line);
+  padding:0 40px;
+  display:flex;align-items:center;justify-content:center;gap:40px;
+  height:52px;
+}
+.stat-item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--gray-700)}
+.stat-item strong{color:var(--purple);font-weight:700;font-family:'Plus Jakarta Sans',sans-serif}
+.stat-divider{width:1px;height:20px;background:var(--line)}
+
+/* MAIN CONTENT */
+.gallery-body{max-width:1200px;margin:0 auto;padding:48px 24px 80px}
+
+.section-label{
+  display:flex;align-items:center;gap:12px;margin-bottom:28px;
+}
+.section-label h2{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:800;font-size:20px;color:var(--ink);
+}
+.section-label .tag-count{
+  background:var(--purple-soft);color:var(--purple);
+  font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;
+  letter-spacing:0.04em;
+}
+.tag-bar{display:flex;align-items:center;gap:6px;margin-left:auto}
+.tag-pill{
+  font-size:11px;font-weight:600;padding:3px 10px;border-radius:100px;
+  letter-spacing:0.04em;
+}
+.tag-core{background:#FFF1EC;color:#FF6B35}
+.tag-discovery{background:#FEF3C7;color:#D97706}
+.tag-social{background:#FFFBEB;color:#D97706}
+.tag-community{background:#D1FAE5;color:#065F46}
+.tag-account{background:#E0F2FE;color:#0369A1}
+.tag-creator{background:#FEF9C3;color:#854D0E}
+.tag-admin{background:#FEE2E2;color:#991B1B}
+.tag-auth{background:#FFF1EC;color:#374151}
+.tag-mobile{background:#FFF1EC;color:#FF4500}
+
+/* CARD GRID */
+.card-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:48px;
+}
+
+/* MOCKUP CARD */
+.mockup-card{
+  background:#fff;border:1px solid var(--line);border-radius:16px;
+  overflow:hidden;transition:box-shadow 0.2s,transform 0.2s;
+  display:flex;flex-direction:column;
+}
+.mockup-card:hover{
+  box-shadow:0 12px 40px rgba(255,69,0,0.12),0 2px 8px rgba(0,0,0,0.06);
+  transform:translateY(-3px);
+}
+.card-preview{
+  height:160px;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,var(--purple-soft) 0%,#f5f3ff 100%);
+  display:flex;align-items:center;justify-content:center;
+}
+.card-preview-art{
+  font-size:42px;opacity:0.5;user-select:none;
+}
+.card-preview-badge{
+  position:absolute;top:12px;left:12px;
+  background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);
+  color:#fff;font-size:10px;font-weight:700;
+  padding:3px 9px;border-radius:100px;letter-spacing:0.05em;
+}
+.card-preview-number{
+  position:absolute;top:12px;right:12px;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:900;font-size:32px;
+  color:var(--purple);opacity:0.18;
+}
+.card-body{padding:18px 20px 20px;flex:1;display:flex;flex-direction:column}
+.card-tag-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.card-num{font-size:10px;color:var(--gray-400);font-weight:600;letter-spacing:0.08em}
+.card-title{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:800;font-size:15px;color:var(--ink);margin-bottom:6px;line-height:1.3;
+}
+.card-desc{font-size:12px;color:var(--gray-500);line-height:1.5;flex:1;margin-bottom:14px}
+.card-footer{
+  display:flex;align-items:center;justify-content:space-between;
+  border-top:1px solid var(--line-soft);padding-top:12px;
+}
+.card-link{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--purple);color:#fff;
+  font-size:12px;font-weight:600;
+  padding:7px 14px;border-radius:8px;
+  transition:background 0.15s;
+}
+.card-link:hover{background:var(--purple-dark)}
+.card-link-arrow{font-size:11px}
+.card-filename{
+  font-size:10px;color:var(--gray-400);font-family:'Inter',monospace;
+  letter-spacing:0.02em;
+}
+
+/* COLOR ACCENT BARS on preview */
+.preview-landing{background:linear-gradient(135deg,#CC3700 0%,#FF6B35 50%,#D97706 100%)}
+.preview-browser{background:linear-gradient(135deg,#FFF1EC 0%,#FFFAF5 100%)}
+.preview-detail{background:linear-gradient(135deg,#FFFBEB 0%,#FFF1EC 100%)}
+.preview-upload{background:linear-gradient(135deg,#D1FAE5 0%,#FFF1EC 100%)}
+.preview-editor{background:linear-gradient(135deg,#FEF3C7 0%,#FEE2E2 100%)}
+.preview-explore{background:linear-gradient(135deg,#E0F2FE 0%,#FFF1EC 100%)}
+.preview-profile{background:linear-gradient(135deg,#FFFBEB 0%,#FEF3C7 100%)}
+.preview-notifs{background:linear-gradient(135deg,#FEE2E2 0%,#FFFBEB 100%)}
+.preview-messages{background:linear-gradient(135deg,#D1FAE5 0%,#E0F2FE 100%)}
+.preview-dojos{background:linear-gradient(135deg,#FFF1EC 0%,#D1FAE5 100%)}
+.preview-settings{background:linear-gradient(135deg,#FFF1EC 0%,#FFF1EC 100%)}
+.preview-analytics{background:linear-gradient(135deg,#FEF3C7 0%,#D1FAE5 100%)}
+.preview-admin{background:linear-gradient(135deg,#FEE2E2 0%,#FFF1EC 100%)}
+.preview-auth{background:linear-gradient(135deg,#FFF1EC 0%,#FFF1EC 100%)}
+.preview-mobile{background:linear-gradient(135deg,#4A1000 0%,#FF6B35 100%)}
+
+/* LEGEND */
+.legend{
+  background:#fff;border:1px solid var(--line);border-radius:16px;
+  padding:24px 28px;margin-bottom:48px;
+}
+.legend-title{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:700;font-size:14px;color:var(--ink-mute);
+  margin-bottom:14px;letter-spacing:0.04em;text-transform:uppercase;font-size:11px;
+}
+.legend-grid{display:flex;flex-wrap:wrap;gap:10px}
+.legend-item{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--gray-700)}
+
+/* FOOTER */
+.gallery-footer{
+  background:#1A0F00;color:rgba(255,255,255,0.5);
+  text-align:center;padding:32px 24px;
+  font-size:13px;line-height:1.8;
+}
+.gallery-footer .footer-logo{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:900;font-size:22px;letter-spacing:-0.05em;
+  color:#FF6B35;display:inline-block;margin-bottom:8px;
+}
+.gallery-footer a{color:rgba(255,255,255,0.4)}
+
+/* DESIGN SYSTEM CALLOUT */
+.ds-callout{
+  background:linear-gradient(135deg,#1A0F00 0%,#4A1000 25%,#CC3700 55%,#FF4500 78%,#FFB800 100%);
+  border-radius:16px;padding:28px 32px;margin-bottom:48px;
+  display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;
+}
+.ds-callout h3{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:800;font-size:18px;color:#fff;margin-bottom:6px;
+}
+.ds-callout p{font-size:13px;color:rgba(255,255,255,0.6);line-height:1.5}
+.ds-colors{display:flex;gap:6px;margin-top:12px}
+.ds-swatch{width:24px;height:24px;border-radius:6px;border:2px solid rgba(255,255,255,0.15)}
+.ds-stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.ds-stat{
+  background:rgba(255,255,255,0.08);border-radius:10px;padding:12px 16px;
+}
+.ds-stat-num{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:900;font-size:24px;color:#fff;display:block;
+}
+.ds-stat-label{font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="gallery-header">
+  <div class="inner">
+    <div class="gallery-logo">whamr.</div>
+    <div class="gallery-title">UI Mockup Gallery</div>
+    <div class="gallery-subtitle">Complete design specification · v2.1 Final · May 2026</div>
+    <span class="gallery-version-chip">v2.1 Final · 19 screens · 🌍 Global · All cultures, all regions</span>
+  </div>
+</header>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat-item"><strong>19</strong> screens</div>
+  <div class="stat-divider"></div>
+  <div class="stat-item"><strong>413</strong> memes &amp; stickers</div>
+  <div class="stat-divider"></div>
+  <div class="stat-item"><strong>9</strong> share platforms</div>
+  <div class="stat-divider"></div>
+  <div class="stat-item"><strong>AI search</strong></div>
+  <div class="stat-divider"></div>
+  <div class="stat-item"><strong>Cloudflare R2</strong></div>
+</div>
+
+<!-- BODY -->
+<main class="gallery-body">
+
+  <!-- DESIGN SYSTEM CALLOUT -->
+  <div class="ds-callout">
+    <div>
+      <h3>Whamr Design System v2.1</h3>
+      <p>Plus Jakarta Sans · Inter · Purple (#FF6B35) brand · 15px body · Responsive grid · Sticky nav pattern</p>
+      <div class="ds-colors">
+        <div class="ds-swatch" style="background:#FF6B35" title="#FF6B35 purple"></div>
+        <div class="ds-swatch" style="background:#FF4500" title="#FF4500 purple-dark"></div>
+        <div class="ds-swatch" style="background:#FFF1EC" title="#FFF1EC purple-soft"></div>
+        <div class="ds-swatch" style="background:#D97706" title="#D97706 pink"></div>
+        <div class="ds-swatch" style="background:#10B981" title="#10B981 green"></div>
+        <div class="ds-swatch" style="background:#F59E0B" title="#F59E0B amber"></div>
+        <div class="ds-swatch" style="background:#EF4444" title="#EF4444 red"></div>
+        <div class="ds-swatch" style="background:#FFFAF5" title="#FFFAF5 bg"></div>
+        <div class="ds-swatch" style="background:#1A0F00" title="#1A0F00 ink"></div>
+      </div>
+    </div>
+    <div class="ds-stat-grid">
+      <div class="ds-stat">
+        <span class="ds-stat-num">413</span>
+        <div class="ds-stat-label">Items in library</div>
+      </div>
+      <div class="ds-stat">
+        <span class="ds-stat-num">9</span>
+        <div class="ds-stat-label">Share platforms</div>
+      </div>
+      <div class="ds-stat">
+        <span class="ds-stat-num">19</span>
+        <div class="ds-stat-label">UI screens</div>
+      </div>
+      <div class="ds-stat">
+        <span class="ds-stat-num">11</span>
+        <div class="ds-stat-label">Categories</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAG LEGEND -->
+  <div class="legend">
+    <div class="legend-title">Screen tags</div>
+    <div class="legend-grid">
+      <div class="legend-item"><span class="tag-pill tag-core">Core</span> Main product flows</div>
+      <div class="legend-item"><span class="tag-pill tag-discovery">Discovery</span> Browse &amp; explore</div>
+      <div class="legend-item"><span class="tag-pill tag-social">Social</span> User interactions</div>
+      <div class="legend-item"><span class="tag-pill tag-community">Community</span> Groups &amp; dojos</div>
+      <div class="legend-item"><span class="tag-pill tag-account">Account</span> Settings &amp; prefs</div>
+      <div class="legend-item"><span class="tag-pill tag-creator">Creator</span> Analytics &amp; tools</div>
+      <div class="legend-item"><span class="tag-pill tag-admin">Admin</span> Moderation &amp; ops</div>
+      <div class="legend-item"><span class="tag-pill tag-auth">Auth</span> Login &amp; register</div>
+      <div class="legend-item"><span class="tag-pill tag-mobile">Mobile</span> Phone app frames</div>
+    </div>
+  </div>
+
+  <!-- SECTION LABEL -->
+  <div class="section-label">
+    <h2>All Screens</h2>
+    <span class="tag-count">19 files</span>
+  </div>
+
+  <!-- CARD GRID -->
+  <div class="card-grid">
+
+    <!-- 01 Landing -->
+    <a class="mockup-card" href="01-landing.html">
+      <div class="card-preview preview-landing">
+        <div class="card-preview-art">🏠</div>
+        <div class="card-preview-badge">LANDING</div>
+        <div class="card-preview-number">01</div>
+      </div>
+      <div class="card-body">
+        <div class="card-tag-row">
+          <span class="card-num">SCREEN 01</span>
+          <span class="tag-pill tag-core">Core</span>
+        </div>
+        <div class="card-title">Landing Page</div>
+        <div class="card-desc">Hero with gradient, stats bar, feature grid, category pills, how it works steps, featured memes, share platforms, and footer. Full conversion page.</div>
+        <div class="card-footer">
+          <span class="card-filename">01-landing.html</span>
+          <span class="card-link">View <span class="card-link-arrow">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <!-- 02 Memes Browser -->
+    <a class="mockup-card" href="02-memes-browser.html">
+      <div class="card-preview preview-browser">
+        <div class="card-preview-art">🖼️</div>
+        <div class="card-preview-badge">BROWSER</div>
+        <div class="card-preview-number">02</div>
+      </div>
+      <div class="card-body">
+        <div class="card-tag-row">
+          <span class="card-num">SCREEN 02</span>
+          <span class="tag-pill tag-core">Core</span>
+        </div>
+        <div class="card-title">Memes Browser</div>
+        <div class="card-desc">Library grid with 20 meme cards, sticky search bar, category filter row, stats strip, share modal overlay, load more, and full footer.</div>
+        <div class="card-footer">
+          <span class="card-filename">02-memes-browser.html</span>
+          <span class="card-link">View <span class="card-link-arrow">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <!-- 03 Meme Detail -->
+    <a class="mockup-card" href="03-meme-detail.html">
+      <div class="card-preview preview-detail">
+        <div class="card-preview-art">💬</div>
+        <div class="card-preview-badge">DETAIL</div>
+        <div class="card-preview-number">03</div>
+      </div>
+      <div class="card-body">
+        <div class="card-tag-row">
+          <span class="card-num">SCREEN 03</span>
+          <span class="tag-pill tag-core">Core</span>
+        </div>
+        <div class="card-title">Meme Detail</div>
+        <div class="card-desc">Full meme view with large image, share panel, comments thread, reactions, tags, send stats, related memes row, and social actions.</div>
+        <div class="card-footer">
+          <span class="card-filename">03-meme-detail.html</span>
+          <span class="card-link">View <span class="card-link-arrow">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <!-- 04 Upload Flow -->
+    <a class="mockup-card" href="04-upload-flow.html">
+      <div class="card-preview preview-upload">
+        <div class="card-preview-art">⬆️</div>
+        <div class="card-preview-badge">UPLOAD</div>
+        <div class="card-preview-number">04</div>
+      </div>
+      <div class="card-body">
+        <div class="card-tag-row">
+          <span class="card-num">SCREEN 04</span>
+          <span class="tag-pill tag-core">Core</span>
+        </div>
+        <div class="card-title">Upload Flow</div>
+        <div class="card-desc">4-step wizard shown side-by-side: Select file (drag-drop + URL), Add details (form, tags, type toggle), Publishing (progress checklist), Success (share prompt).</div>
+        <div class="card-footer">
+          <span class="card-filename">04-upload-flow.html</span>
+          <span class="card-link">View <span class="card-link-arrow">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <!-- 05 Meme Editor -->
+    <a class="mockup-card" href="05-meme-editor.html">
+      <div class="card-preview preview-editor">
+        <div class="card-preview-art">✏️</div>
+        <div class="card-preview-badge">EDITOR</div>
+        <div class="card-preview-number">05</div>
+      </div>
+      <div class="card-body">
+        <div class="card-tag-row">
+          <span class="card-num">SCREEN 05</span>
+          <span class="tag-pill tag-core">Core</span>
+        </div>
+        <div class="card-title">Meme Editor</div>
+        <div class="card-desc">Template picker, canvas with text overlay controls, font and color selectors, filters panel, sticker overlay picker, and live preview with export options.</div>
+        <div class="card-footer">
+          <span class="card-filename">05-meme-editor.html</span>
+          <span class="card-link">View <span class="card-link-arrow">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <!-- 06 Explore -->
+    <a class="mockup-card" href="06-explore.html">
+      <div class="card-preview preview-explore">
+        <div class="card-preview-art">🔍</div>
+        <div class="card-preview-badge">EXPLORE</div>
+        <div class="card-preview-number">06</div>
+      </div>
+      <div class="card-body">
+        <div class="card-tag-row">
+          <span class="card-num">SCREEN 06</span>
+          <span class="tag-pill tag-discovery">Discovery</span>
+        </div>
+        <div class="card-title">Explore</div>
+        <div class="card-desc">Trending / New / Top / Categories tabs, virality score badges, masonry grid layout, trending tags cloud, featured creator spotlight, and search overlay.</div>
+        <div class="card-footer">
+          <span class="card-filename">06-explore.html</span>
+          <span class="card-link">View <span class="card-link-arrow">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <!-- 07 User Profile -->
+    <a class="mockup-card" href="07-user-profile.html">
+      <div class="card-preview preview-profile">
+        <div class="card-preview-art">👤</div>
+        <div class="card-preview-badge">PROFILE</div>
+        <div class="card-preview-number">07</div>
+      </div>
+      <div class="card-body">
+        <div class="card-tag-row">
+          <span class="card-num">SCREEN 07</span>
+          <span class="tag-pill tag-social">Social</span>
+        </div>
+        <div class="card-title">User Profile</div>
+        <div class="card-desc">Cover image, avatar, bio, follower/following stats, posted memes grid, liked memes tab, edit profile state, and follow/message CTA buttons.</div>
+        <div class="card-footer">
+          <span class="card-filename">07-user-profile.html</span>
+          <span class="card-link">View <span class="card-link-arrow">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <!-- 08 Notifications -->
+    <a class="mockup-card" href="08-notifications.html">
+      <div class="card-preview preview-notifs">
+        <div class="card-preview-art">🔔</div>
+        <div class="card-preview-badge">NOTIFS</div>
+        <div class="card-preview-number">08</div>
+      </div>
+      <div class="card-body">
+        <div class="card-tag-row">
+          <span class="card-num">SCREEN 08</span>
+          <span class="tag-pill tag-social">Social</span>
+        </div>
+        <div class="card-title">Notifications</div>
+        <div class="card-desc">All / Likes / Comments / Follows filter tabs, notification list with avatars and timestamps, unread badges, mark all read button, and empty state.</div>
+        <div class="card-footer">
+          <span class="card-filename">08-notifications.html</span>
+          <span class="card-link">View <span class="card-link-arrow">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <!-- 09 Messages -->
+    <a class="mockup-card" href="09-messages.html">
+      <div class="card-preview preview-messages">
+        <div class="card-preview-art">💌</div>
+        <div class="card-preview-badge">MESSAGES</div>
+        <div class="card-preview-number">09</div>
+      </div>
+      <div class="card-body">
+        <div class="card-tag-row">
+          <span class="card-num">SCREEN 09</span>
+          <span class="tag-pill tag-social">Social</span>
+        </div>
+        <div class="card-title">Messages</div>
+        <div class="card-desc">Split layout: conversation list sidebar with unread counts, DM thread with meme previews inline, meme picker sheet, and message composer with emoji and GIF.</div>
+        <div class="card-footer">
+          <span class="card-filename">09-messages.html</span>
+          <span class="card-link">View <span class="card-link-arrow">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <!-- 10 Dojos -->
+    <a class="mockup-card" href="10-dojos.html">
+      <div class="card-preview preview-dojos">
+        <div class="card-preview-art">🥋</div>
+        <div class="card-preview-badge">DOJOS</div>
+        <div class="card-preview-number">10</div>
+      </div>
+      <div class="card-body">
+        <div class="card-tag-row">
+          <span class="card-num">SCREEN 10</span>
+          <span class="tag-pill tag-community">Community</span>
+        </div>
+        <div class="card-title">Dojos</div>
+        <div class="card-desc">Discover page with dojo cards, Dojo detail view with cover, members list, activity feed, and meme battles. Join / Create dojo CTAs and rules panel.</div>
+        <div class="card-footer">
+          <span class="card-filename">10-dojos.html</span>
+          <span class="card-link">View <span class="card-link-arrow">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <!-- 11 Settings -->
+    <a class="mockup-card" href="11-settings.html">
+      <div class="card-preview preview-settings">
+        <div class="card-preview-art">⚙️</div>
+        <div class="card-preview-badge">SETTINGS</div>
+        <div class="card-preview-number">11</div>
+      </div>
+      <div class="card-body">
+        <div class="card-tag-row">
+          <span class="card-num">SCREEN 11</span>
+          <span class="tag-pill tag-account">Account</span>
+        </div>
+        <div class="card-title">Settings</div>
+        <div class="card-desc">Sidebar with Profile / Notifications / Privacy / Account / Subscription sections. Toggle switches, plan comparison card, danger zone, and delete account flow.</div>
+        <div class="card-footer">
+          <span class="card-filename">11-settings.html</span>
+          <span class="card-link">View <span class="card-link-arrow">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <!-- 12 Creator Analytics -->
+    <a class="mockup-card" href="12-analytics.html">
+      <div class="card-preview preview-analytics">
+        <div class="card-preview-art">📊</div>
+        <div class="card-preview-badge">ANALYTICS</div>
+        <div class="card-preview-number">12</div>
+      </div>
+      <div class="card-body">
+        <div class="card-tag-row">
+          <span class="card-num">SCREEN 12</span>
+          <span class="tag-pill tag-creator">Creator</span>
+        </div>
+        <div class="card-title">Creator Analytics</div>
+        <div class="card-desc">Overview KPIs, 30-day send volume chart, top 5 memes ranked by sends, platform breakdown donut, best posting times heatmap, and follower growth line.</div>
+        <div class="card-footer">
+          <span class="card-filename">12-analytics.html</span>
+          <span class="card-link">View <span class="card-link-arrow">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <!-- 13 Admin Dashboard -->
+    <a class="mockup-card" href="13-admin-dashboard.html">
+      <div class="card-preview preview-admin">
+        <div class="card-preview-art">🛡️</div>
+        <div class="card-preview-badge">ADMIN</div>
+        <div class="card-preview-number">13</div>
+      </div>
+      <div class="card-body">
+        <div class="card-tag-row">
+          <span class="card-num">SCREEN 13</span>
+          <span class="tag-pill tag-admin">Admin</span>
+        </div>
+        <div class="card-title">Admin Dashboard</div>
+        <div class="card-desc">Overview metrics, moderation queue with approve/reject actions, flagged content log, service health indicators, recent user reports, and category manager.</div>
+        <div class="card-footer">
+          <span class="card-filename">13-admin-dashboard.html</span>
+          <span class="card-link">View <span class="card-link-arrow">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <!-- 14 Auth -->
+    <a class="mockup-card" href="14-auth.html">
+      <div class="card-preview preview-auth">
+        <div class="card-preview-art">🔐</div>
+        <div class="card-preview-badge">AUTH</div>
+        <div class="card-preview-number">14</div>
+      </div>
+      <div class="card-body">
+        <div class="card-tag-row">
+          <span class="card-num">SCREEN 14</span>
+          <span class="tag-pill tag-auth">Auth</span>
+        </div>
+        <div class="card-title">Auth, Login + Register</div>
+        <div class="card-desc">Side-by-side layout: Login form (email, password, remember me, forgot password, Google OAuth) and Register form (username, email, password, avatar upload, terms).</div>
+        <div class="card-footer">
+          <span class="card-filename">14-auth.html</span>
+          <span class="card-link">View <span class="card-link-arrow">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <!-- 15 Mobile App -->
+    <a class="mockup-card" href="15-mobile-app.html">
+      <div class="card-preview preview-mobile">
+        <div class="card-preview-art" style="font-size:36px">📱</div>
+        <div class="card-preview-badge">MOBILE</div>
+        <div class="card-preview-number">15</div>
+      </div>
+      <div class="card-body">
+        <div class="card-tag-row">
+          <span class="card-num">SCREEN 15</span>
+          <span class="tag-pill tag-mobile">Mobile</span>
+        </div>
+        <div class="card-title">Mobile App Frames</div>
+        <div class="card-desc">4 phone-framed screens: Home feed, Memes grid, Upload modal bottom sheet, and Profile page. All in portrait 390×844 frames with bottom nav bar.</div>
+        <div class="card-footer">
+          <span class="card-filename">15-mobile-app.html</span>
+          <span class="card-link">View <span class="card-link-arrow">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <!-- 16 Sticker Pack Export -->
+    <a class="mockup-card" href="16-export-pack.html">
+      <div class="card-preview" style="background:linear-gradient(135deg,#D1FAE5 0%,#FFF1EC 100%)">
+        <div class="card-preview-art">📦</div>
+        <div class="card-preview-badge">EXPORT</div>
+        <div class="card-preview-number">16</div>
+      </div>
+      <div class="card-body">
+        <div class="card-tag-row">
+          <span class="card-num">SCREEN 16</span>
+          <span class="tag-pill tag-core">Core</span>
+        </div>
+        <div class="card-title">Sticker Pack Export</div>
+        <div class="card-desc">Full 4-step export flow: select stickers, configure platform (WhatsApp, Telegram, Signal, Discord, iMessage, ZIP), processing animation, and install/download screen.</div>
+        <div class="card-footer">
+          <span class="card-filename">16-export-pack.html</span>
+          <span class="card-link">View <span class="card-link-arrow">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <!-- 17 Content Share Link -->
+    <a class="mockup-card" href="17-share-link.html">
+      <div class="card-preview" style="background:linear-gradient(135deg,#0F0800 0%,#CC3700 100%)">
+        <div class="card-preview-art" style="color:#fff">🔗</div>
+        <div class="card-preview-badge">SHARE</div>
+        <div class="card-preview-number" style="color:rgba(255,255,255,.15)">17</div>
+      </div>
+      <div class="card-body">
+        <div class="card-tag-row">
+          <span class="card-num">SCREEN 17</span>
+          <span class="tag-pill tag-core">Core</span>
+        </div>
+        <div class="card-title">Content Share Link</div>
+        <div class="card-desc">Public meme share page (/c/:postId), shown in both guest (dark mode) and signed-in views. Includes OG preview, share actions, comments, creator card, and Whamr CTA.</div>
+        <div class="card-footer">
+          <span class="card-filename">17-share-link.html</span>
+          <span class="card-link">View <span class="card-link-arrow">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <!-- 18 AI Search -->
+    <a class="mockup-card" href="18-ai-search.html">
+      <div class="card-preview" style="background:linear-gradient(135deg,#FFF1EC 0%,#CC3700 100%)">
+        <div class="card-preview-art">🔍</div>
+        <div class="card-preview-badge">AI SEARCH</div>
+        <div class="card-preview-number">18</div>
+      </div>
+      <div class="card-body">
+        <div class="card-tag-row">
+          <span class="card-num">SCREEN 18</span>
+          <span class="tag-pill tag-core">Core</span>
+        </div>
+        <div class="card-title">AI Search</div>
+        <div class="card-desc">Natural language search with synonym expansion and fuzzy matching. Shows intent detection hint ('AI matched: Naija · 42 results'), category filter row, and empty state with example queries.</div>
+        <div class="card-footer">
+          <span class="card-filename">18-ai-search.html</span>
+          <span class="card-link">View <span class="card-link-arrow">→</span></span>
+        </div>
+      </div>
+    </a>
+
+    <!-- 19 R2 Media Hosting -->
+    <a class="mockup-card" href="../scripts/upload-to-r2.js">
+      <div class="card-preview" style="background:linear-gradient(135deg,#E8FFF0 0%,#00C853 30%,#1A0F00 100%)">
+        <div class="card-preview-art">☁️</div>
+        <div class="card-preview-badge">HOSTING</div>
+        <div class="card-preview-number">19</div>
+      </div>
+      <div class="card-body">
+        <div class="card-tag-row">
+          <span class="card-num">SCREEN 19</span>
+          <span class="tag-pill tag-creator">Creator</span>
+        </div>
+        <div class="card-title">Media Hosting Setup</div>
+        <div class="card-desc">Cloudflare R2 upload flow — credentials setup, upload progress (4 parallel workers), per-file status, completion summary, and next-step prompt to run generate-catalog.js.</div>
+        <div class="card-footer">
+          <span class="card-filename">19-r2-setup.html</span>
+          <span class="card-link">View <span class="card-link-arrow">→</span></span>
+        </div>
+      </div>
+    </a>
+
+  </div><!-- /card-grid -->
+
+  <!-- DESIGN NOTES -->
+  <div class="legend" style="background:linear-gradient(135deg,#FFFAF5 0%,#fff 100%)">
+    <div class="legend-title" style="color:var(--purple);font-weight:800">Design notes &amp; conventions</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:4px">
+      <div>
+        <p style="font-size:13px;color:var(--gray-700);margin-bottom:8px"><strong style="color:var(--ink)">Images:</strong> Real media served from Cloudflare R2 (whamr-media bucket) — MP4 video memes + WebP stickers</p>
+        <p style="font-size:13px;color:var(--gray-700);margin-bottom:8px"><strong style="color:var(--ink)">Fonts:</strong> Space Grotesk (headings, logo) · Inter (body, labels, inputs) · JetBrains Mono (numbers, stats)</p>
+        <p style="font-size:13px;color:var(--gray-700)"><strong style="color:var(--ink)">Nav height:</strong> 64px sticky · white bg · 1px bottom border · pill search bar</p>
+      </div>
+      <div>
+        <p style="font-size:13px;color:var(--gray-700);margin-bottom:8px"><strong style="color:var(--ink)">Meme card:</strong> White · 12px radius · 1px border · shadow-sm · aspect-square image · Send → CTA</p>
+        <p style="font-size:13px;color:var(--gray-700);margin-bottom:8px"><strong style="color:var(--ink)">Brand colors:</strong> #FF4500 deep violet (primary) · #D97706 amber gold (accent/wham)</p>
+        <p style="font-size:13px;color:var(--gray-700)"><strong style="color:var(--ink)">Content:</strong> 245 video memes · 8,455 WebP stickers · 11 categories · 9 share platforms · AI natural language search</p>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="gallery-footer">
+  <div class="footer-logo">whamr.</div><br>
+  Whamr Design System &nbsp;·&nbsp; Built for the send &nbsp;·&nbsp; v2.1 · Final<br>
+  <span style="font-size:11px">19 screens &nbsp;·&nbsp; May 2026 &nbsp;·&nbsp; 413 real memes &amp; stickers · Cloudflare R2</span>
+</footer>
+
+</body>
+</html>

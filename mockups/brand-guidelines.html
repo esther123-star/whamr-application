@@ -1,0 +1,737 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Whamr, Brand Guidelines</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;font-size:15px;background:#FFFAF5;color:#1A0F00;line-height:1.6;-webkit-font-smoothing:antialiased}
+.container{max-width:1100px;margin:0 auto;padding:0 32px}
+
+/* COVER */
+.cover{background:linear-gradient(135deg,#1A0F00 0%,#4A1000 25%,#CC3700 55%,#FF4500 78%,#FFB800 100%);padding:80px 40px;text-align:center;position:relative;overflow:hidden}
+.cover::before{content:'W';position:absolute;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:600px;color:rgba(255,255,255,0.04);top:-120px;left:50%;transform:translateX(-50%);letter-spacing:-20px;pointer-events:none}
+.cover-inner{position:relative;z-index:1}
+.cover-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:80px;letter-spacing:-4px;color:#fff;display:inline-flex;align-items:baseline;gap:6px;margin-bottom:12px}
+.cover-logo-dot{width:18px;height:18px;border-radius:50%;background:#FFD60A;flex-shrink:0;margin-bottom:8px}
+.cover-tag{font-size:16px;color:rgba(255,255,255,0.6);letter-spacing:0.08em;text-transform:uppercase;font-weight:500;margin-bottom:8px}
+.cover-version{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:100px;padding:5px 16px;font-size:12px;color:rgba(255,255,255,0.8);margin-top:20px}
+.cover-version::before{content:'';width:6px;height:6px;border-radius:50%;background:#00C853;flex-shrink:0}
+
+/* NAV-LIKE SECTION HEADERS */
+.section{padding:64px 0;border-bottom:1px solid #F0DDD0}
+.section:last-child{border-bottom:none}
+.sec-eyebrow{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#FF4500;margin-bottom:12px}
+.sec-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:36px;letter-spacing:-0.02em;color:#1A0F00;margin-bottom:6px}
+.sec-sub{font-size:15px;color:#8A7060;margin-bottom:40px}
+
+/* LOGO SECTION */
+.logo-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px}
+.logo-sample{border-radius:16px;padding:48px 36px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px}
+.logo-sample.light{background:#FFFFFF;border:1px solid #F0DDD0}
+.logo-sample.dark{background:#1A0F00}
+.logo-sample.orange{background:#FF4500}
+.logo-sample.pattern{background:linear-gradient(135deg,#1A0F00 0%,#CC3700 60%,#FF4500 100%)}
+.wordmark{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:52px;letter-spacing:-2.5px;display:flex;align-items:baseline;gap:4px}
+.wordmark-text{color:#FF4500}
+.wordmark-dot{width:11px;height:11px;border-radius:50%;background:#FFB800;flex-shrink:0;margin-bottom:6px}
+.wordmark.on-dark .wordmark-text{color:#fff}
+.wordmark.on-dark .wordmark-dot{background:#FFD60A}
+.wordmark.on-orange .wordmark-text{color:#fff}
+.wordmark.on-orange .wordmark-dot{background:#FFD60A}
+
+/* Icon */
+.icon-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:20px}
+.icon-sample{border-radius:20px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;padding:20px 12px}
+.icon-box{border-radius:16px;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:700;color:#fff;position:relative;overflow:hidden}
+.icon-size-label{font-size:10px;color:#8A7060;font-family:'JetBrains Mono',monospace;font-weight:500}
+.icon-dot{position:absolute;border-radius:50%;background:#FFD60A}
+
+/* COLORS */
+.color-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px}
+.color-card{border-radius:12px;overflow:hidden;border:1px solid #F0DDD0}
+.color-swatch{height:120px}
+.color-info{background:#fff;padding:16px}
+.color-name{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px;color:#1A0F00;margin-bottom:3px}
+.color-hex{font-family:'JetBrains Mono',monospace;font-size:12px;color:#8A7060;margin-bottom:3px}
+.color-role{font-size:11px;color:#8A7060}
+.color-divider{grid-column:1/-1;height:1px;background:#F0DDD0;margin:8px 0}
+
+.tints-row{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;margin-bottom:24px}
+.tint-box{height:40px;border-radius:6px}
+.tint-label{font-size:9px;font-family:'JetBrains Mono',monospace;color:#8A7060;text-align:center;margin-top:4px}
+
+/* TYPOGRAPHY */
+.type-sample{background:#fff;border:1px solid #F0DDD0;border-radius:16px;padding:32px;margin-bottom:16px}
+.type-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#FF4500;margin-bottom:12px}
+.type-row{display:grid;grid-template-columns:200px 1fr;gap:20px;align-items:start;padding:16px 0;border-bottom:1px solid #FBF0E8}
+.type-row:last-child{border-bottom:none}
+.type-meta{font-family:'JetBrains Mono',monospace;font-size:11px;color:#8A7060;line-height:1.8}
+.type-meta strong{color:#1A0F00;display:block}
+
+/* COMPONENTS */
+.comp-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.comp-box{background:#fff;border:1px solid #F0DDD0;border-radius:16px;padding:28px}
+.comp-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#8A7060;margin-bottom:16px}
+
+/* Buttons */
+.btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:10px;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px;border:none;cursor:pointer;text-decoration:none}
+.btn-primary{background:#FF4500;color:#fff}
+.btn-secondary{background:#FFD60A;color:#1A0F00}
+.btn-ghost{background:transparent;color:#FF4500;border:2px solid #FF4500}
+.btn-dark{background:#1A0F00;color:#fff}
+.btn-outline-dark{background:transparent;color:#1A0F00;border:2px solid #1A0F00}
+.btn-sm{padding:7px 14px;font-size:12px;border-radius:8px}
+.btn-lg{padding:14px 28px;font-size:16px;border-radius:12px}
+
+/* Pill tags */
+.pill-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+.pill{padding:5px 14px;border-radius:100px;font-size:13px;font-weight:600;font-family:'Space Grotesk',sans-serif}
+.pill-primary{background:#FF4500;color:#fff}
+.pill-joy{background:#FFD60A;color:#1A0F00}
+.pill-soft{background:#FFF1EC;color:#FF4500}
+.pill-outline{background:transparent;border:2px solid #F0DDD0;color:#8A7060}
+.pill-dark{background:#1A0F00;color:#fff}
+
+/* Meme card mini */
+.mini-meme-card{border:1px solid #F0DDD0;border-radius:12px;overflow:hidden;width:160px}
+.mini-card-img{height:100px;background:linear-gradient(135deg,#4A1000,#FF4500);display:flex;align-items:center;justify-content:center;font-size:28px;position:relative}
+.mini-card-badge{position:absolute;top:6px;left:6px;background:rgba(0,0,0,.5);color:#fff;font-size:8px;font-weight:700;padding:2px 6px;border-radius:20px;font-family:'JetBrains Mono',monospace}
+.mini-card-fire{position:absolute;top:6px;right:6px;background:#FFD60A;color:#1A0F00;font-size:8px;font-weight:700;padding:2px 6px;border-radius:20px;font-family:'JetBrains Mono',monospace}
+.mini-card-body{padding:10px;background:#fff}
+.mini-card-title{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:12px;color:#1A0F00;margin-bottom:2px}
+.mini-card-meta{font-size:10px;color:#8A7060}
+.mini-card-btn{margin-top:6px;width:100%;background:#FF4500;color:#fff;border:none;border-radius:6px;padding:5px;font-size:11px;font-weight:600;font-family:'Space Grotesk',sans-serif;cursor:pointer}
+
+/* SPACING */
+.space-grid{display:flex;gap:8px;align-items:flex-end;margin-bottom:12px}
+.space-box{background:#FFF1EC;border:1px solid #FFB89A;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:4px}
+.space-val{font-size:9px;font-family:'JetBrains Mono',monospace;color:#FF4500;font-weight:600}
+
+/* VOICE + TONE */
+.voice-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.voice-card{border-radius:12px;padding:24px}
+.voice-card.do{background:#E8FFF0;border:1px solid #C0EDD0}
+.voice-card.dont{background:#FFF0F3;border:1px solid #FFBFCC}
+.voice-heading{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;margin-bottom:12px}
+.voice-heading.do{color:#00A846}
+.voice-heading.dont{color:#FF2D55}
+.voice-item{font-size:13px;padding:6px 0;border-bottom:1px dashed rgba(0,0,0,.06);display:flex;align-items:flex-start;gap:8px}
+.voice-item:last-child{border-bottom:none}
+
+/* OG IMAGE PREVIEW */
+.og-preview{border-radius:12px;overflow:hidden;border:1px solid #F0DDD0;margin-bottom:20px}
+.og-img-area{background:linear-gradient(135deg,#1A0F00 0%,#4A1000 25%,#CC3700 55%,#FF4500 78%,#FFB800 100%);padding:40px;aspect-ratio:1200/630;display:flex;flex-direction:column;justify-content:space-between;position:relative}
+.og-whamr{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;letter-spacing:-1px;color:#fff;display:flex;align-items:center;gap:6px}
+.og-whamr-dot{width:7px;height:7px;border-radius:50%;background:#FFD60A}
+.og-headline{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:52px;letter-spacing:-2px;color:#fff;line-height:1.1;max-width:700px}
+.og-headline span{color:#FFD60A}
+.og-stats{display:flex;gap:24px;font-family:'JetBrains Mono',monospace;font-size:14px;color:rgba(255,255,255,0.6)}
+
+/* USAGE RULES */
+.rule-list{list-style:none;space-y:2px}
+.rule-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid #FBF0E8;font-size:14px;color:#4A3020}
+.rule-item:last-child{border-bottom:none}
+.rule-dot{width:20px;height:20px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;margin-top:1px}
+.rule-do .rule-dot{background:#E8FFF0;color:#00A846}
+.rule-dont .rule-dot{background:#FFF0F3;color:#FF2D55}
+
+/* DARK MODE SWATCH */
+.dark-preview{background:#1A0F00;border-radius:16px;padding:32px;display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.dark-card{background:#2A1F14;border-radius:12px;padding:20px;border:1px solid rgba(255,255,255,.08)}
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-inner">
+    <div class="cover-tag">Brand Identity System</div>
+    <div class="cover-logo">
+      <span style="color:#fff;font-family:'Space Grotesk',sans-serif;font-weight:700;">whamr</span>
+      <div class="cover-logo-dot"></div>
+    </div>
+    <p style="font-size:18px;color:rgba(255,255,255,0.65);max-width:480px;margin:0 auto">
+      The complete visual identity for Whamr, a global meme-sharing platform where people go to laugh, destress, and be happy.
+    </p>
+    <div class="cover-version">Brand System v1.0 · May 2026 · Sunset Palette</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- BRAND STORY -->
+  <div class="section">
+    <div class="sec-eyebrow">01, Brand Essence</div>
+    <h2 class="sec-title">What the brand stands for</h2>
+    <p class="sec-sub">The name, the feeling, and the promise in three sentences.</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-bottom:32px">
+      <div style="background:#fff;border:1px solid #F0DDD0;border-radius:16px;padding:28px">
+        <div style="font-size:32px;margin-bottom:12px">💥</div>
+        <h3 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;color:#1A0F00;margin-bottom:8px">The Name</h3>
+        <p style="font-size:14px;color:#8A7060;line-height:1.65"><em>Wham</em> is the sound of a perfect meme landing in the group chat. The full involuntary gut-reaction when someone sends exactly the right thing and everyone loses it. Whamr is named after what great content <em>does</em> to people.</p>
+      </div>
+      <div style="background:#fff;border:1px solid #F0DDD0;border-radius:16px;padding:28px">
+        <div style="font-size:32px;margin-bottom:12px">🌍</div>
+        <h3 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;color:#1A0F00;margin-bottom:8px">The Mission</h3>
+        <p style="font-size:14px;color:#8A7060;line-height:1.65">A global platform where people go to laugh, destress, and share joy. Content from every culture, language, and region, shared to WhatsApp, Telegram, X, and anywhere else in one tap. Free forever.</p>
+      </div>
+      <div style="background:#fff;border:1px solid #F0DDD0;border-radius:16px;padding:28px">
+        <div style="font-size:32px;margin-bottom:12px">⚡</div>
+        <h3 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;color:#1A0F00;margin-bottom:8px">The Promise</h3>
+        <p style="font-size:14px;color:#8A7060;line-height:1.65">Find the perfect meme in seconds. Share it anywhere in one tap. No accounts required, no ads, no friction. Just the wham, and then the send.</p>
+      </div>
+    </div>
+
+    <div style="background:linear-gradient(135deg,#1A0F00,#FF4500);border-radius:16px;padding:32px;text-align:center">
+      <p style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:28px;letter-spacing:-0.5px;color:#fff;margin-bottom:8px">"Send the wham."</p>
+      <p style="font-size:14px;color:rgba(255,255,255,0.6)">Tagline · used in all marketing, UI copy, and brand moments</p>
+    </div>
+  </div>
+
+  <!-- LOGO -->
+  <div class="section">
+    <div class="sec-eyebrow">02, Logo</div>
+    <h2 class="sec-title">The Whamr wordmark</h2>
+    <p class="sec-sub">The wordmark is lowercase, "whamr.", with the period as a deliberate design choice. The period signals impact, finality: it's been sent. Always use the full wordmark; never capitalize, never drop the period.</p>
+
+    <div class="logo-grid">
+      <div class="logo-sample light">
+        <div class="wordmark">
+          <span class="wordmark-text">whamr</span>
+          <div class="wordmark-dot"></div>
+        </div>
+        <div style="font-size:11px;color:#8A7060;font-family:'JetBrains Mono',monospace">Primary / Light backgrounds</div>
+      </div>
+      <div class="logo-sample dark">
+        <div class="wordmark on-dark">
+          <span class="wordmark-text">whamr</span>
+          <div class="wordmark-dot"></div>
+        </div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.5);font-family:'JetBrains Mono',monospace">White / Dark backgrounds</div>
+      </div>
+      <div class="logo-sample orange">
+        <div class="wordmark on-orange">
+          <span class="wordmark-text">whamr</span>
+          <div class="wordmark-dot"></div>
+        </div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.7);font-family:'JetBrains Mono',monospace">Reverse / Brand-color bg, avoid if possible</div>
+      </div>
+      <div class="logo-sample pattern">
+        <div class="wordmark on-dark">
+          <span class="wordmark-text">whamr</span>
+          <div class="wordmark-dot"></div>
+        </div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.6);font-family:'JetBrains Mono',monospace">Gradient / Hero backgrounds</div>
+      </div>
+    </div>
+
+    <h3 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;color:#1A0F00;margin-bottom:16px;margin-top:32px">App Icon</h3>
+    <p style="font-size:14px;color:#8A7060;margin-bottom:20px">The icon is a bold "W" on the Sunset gradient background with the golden period dot at bottom-right. Used for app stores, favicons, and social avatars.</p>
+
+    <div class="icon-grid">
+      <div class="icon-sample" style="background:#FFFAF5">
+        <div class="icon-box" style="width:96px;height:96px;background:linear-gradient(135deg,#1A0F00,#CC3700,#FF4500)">
+          <span style="font-size:56px;font-weight:700">W</span>
+          <div class="icon-dot" style="width:18px;height:18px;bottom:12px;right:12px"></div>
+        </div>
+        <span class="icon-size-label">96×96</span>
+      </div>
+      <div class="icon-sample" style="background:#FFFAF5">
+        <div class="icon-box" style="width:64px;height:64px;background:linear-gradient(135deg,#1A0F00,#CC3700,#FF4500);border-radius:14px">
+          <span style="font-size:38px;font-weight:700">W</span>
+          <div class="icon-dot" style="width:12px;height:12px;bottom:8px;right:8px"></div>
+        </div>
+        <span class="icon-size-label">64×64</span>
+      </div>
+      <div class="icon-sample" style="background:#FFFAF5">
+        <div class="icon-box" style="width:48px;height:48px;background:linear-gradient(135deg,#1A0F00,#FF4500);border-radius:10px">
+          <span style="font-size:28px;font-weight:700">W</span>
+          <div class="icon-dot" style="width:9px;height:9px;bottom:5px;right:5px"></div>
+        </div>
+        <span class="icon-size-label">48×48</span>
+      </div>
+      <div class="icon-sample" style="background:#FFFAF5">
+        <div class="icon-box" style="width:32px;height:32px;background:#FF4500;border-radius:7px">
+          <span style="font-size:20px;font-weight:900">W</span>
+          <div class="icon-dot" style="width:6px;height:6px;bottom:3px;right:3px"></div>
+        </div>
+        <span class="icon-size-label">32×32</span>
+      </div>
+      <div class="icon-sample" style="background:#F3F4F6">
+        <div class="icon-box" style="width:20px;height:20px;background:#FF4500;border-radius:4px">
+          <span style="font-size:13px;font-weight:900">W</span>
+          <div class="icon-dot" style="width:4px;height:4px;bottom:2px;right:2px"></div>
+        </div>
+        <span class="icon-size-label">16×16 favicon</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- COLOR PALETTE -->
+  <div class="section">
+    <div class="sec-eyebrow">03, Color</div>
+    <h2 class="sec-title">The Sunset palette</h2>
+    <p class="sec-sub">Electric orange-red as primary. Golden yellow as the joy accent. Warm cream backgrounds. No cold blues or grays.</p>
+
+    <div class="color-grid">
+      <!-- Primary -->
+      <div class="color-card">
+        <div class="color-swatch" style="background:#FF4500"></div>
+        <div class="color-info">
+          <div class="color-name">Wham Orange</div>
+          <div class="color-hex">#FF4500</div>
+          <div class="color-role">Primary brand · Logo · Buttons · CTAs · Active states</div>
+        </div>
+      </div>
+      <div class="color-card">
+        <div class="color-swatch" style="background:#CC3700"></div>
+        <div class="color-info">
+          <div class="color-name">Deep Wham</div>
+          <div class="color-hex">#CC3700</div>
+          <div class="color-role">Hover states · Dark variant · Pressed buttons</div>
+        </div>
+      </div>
+      <div class="color-card">
+        <div class="color-swatch" style="background:#FF6B35"></div>
+        <div class="color-info">
+          <div class="color-name">Mid Orange</div>
+          <div class="color-hex">#FF6B35</div>
+          <div class="color-role">Secondary accents · Borders on hover · Soft buttons</div>
+        </div>
+      </div>
+      <div class="color-card">
+        <div class="color-swatch" style="background:#FFF1EC"></div>
+        <div class="color-info">
+          <div class="color-name">Orange Tint</div>
+          <div class="color-hex">#FFF1EC</div>
+          <div class="color-role">Soft backgrounds · Hover fills · Tag backgrounds</div>
+        </div>
+      </div>
+
+      <div class="color-divider"></div>
+
+      <!-- Accent -->
+      <div class="color-card">
+        <div class="color-swatch" style="background:#FFD60A"></div>
+        <div class="color-info">
+          <div class="color-name">Electric Joy</div>
+          <div class="color-hex">#FFD60A</div>
+          <div class="color-role">Virality badges 🔥 · "Send the wham." tagline · CTA highlights</div>
+        </div>
+      </div>
+      <div class="color-card">
+        <div class="color-swatch" style="background:#FFB800"></div>
+        <div class="color-info">
+          <div class="color-name">Golden Amber</div>
+          <div class="color-hex">#FFB800</div>
+          <div class="color-role">Logo period dot · Warmth accents · Wham score badges</div>
+        </div>
+      </div>
+      <div class="color-card">
+        <div class="color-swatch" style="background:#FFF8DC"></div>
+        <div class="color-info">
+          <div class="color-name">Joy Tint</div>
+          <div class="color-hex">#FFF8DC</div>
+          <div class="color-role">Warm section backgrounds · Highlighted areas</div>
+        </div>
+      </div>
+      <div class="color-card">
+        <div class="color-swatch" style="background:#FFFAF5"></div>
+        <div class="color-info">
+          <div class="color-name">Warm Cream</div>
+          <div class="color-hex">#FFFAF5</div>
+          <div class="color-role">Page background · Never cold white</div>
+        </div>
+      </div>
+
+      <div class="color-divider"></div>
+
+      <!-- Ink -->
+      <div class="color-card">
+        <div class="color-swatch" style="background:#1A0F00"></div>
+        <div class="color-info">
+          <div class="color-name">Warm Ink</div>
+          <div class="color-hex">#1A0F00</div>
+          <div class="color-role">Body text · Headers · Dark backgrounds</div>
+        </div>
+      </div>
+      <div class="color-card">
+        <div class="color-swatch" style="background:#4A3020"></div>
+        <div class="color-info">
+          <div class="color-name">Ink Soft</div>
+          <div class="color-hex">#4A3020</div>
+          <div class="color-role">Secondary text · Subheadings</div>
+        </div>
+      </div>
+      <div class="color-card">
+        <div class="color-swatch" style="background:#8A7060"></div>
+        <div class="color-info">
+          <div class="color-name">Ink Muted</div>
+          <div class="color-hex">#8A7060</div>
+          <div class="color-role">Meta text · Placeholders · Timestamps</div>
+        </div>
+      </div>
+      <div class="color-card">
+        <div class="color-swatch" style="background:#F0DDD0"></div>
+        <div class="color-info">
+          <div class="color-name">Warm Border</div>
+          <div class="color-hex">#F0DDD0</div>
+          <div class="color-role">Card borders · Dividers · Input outlines</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tint scale -->
+    <h3 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;color:#1A0F00;margin-bottom:12px">Orange tint scale</h3>
+    <div class="tints-row">
+      <div>
+        <div class="tint-box" style="background:#FFF8F5"></div>
+        <div class="tint-label">50</div>
+      </div>
+      <div>
+        <div class="tint-box" style="background:#FFF1EC"></div>
+        <div class="tint-label">100</div>
+      </div>
+      <div>
+        <div class="tint-box" style="background:#FFD5C5"></div>
+        <div class="tint-label">200</div>
+      </div>
+      <div>
+        <div class="tint-box" style="background:#FFB8A0"></div>
+        <div class="tint-label">300</div>
+      </div>
+      <div>
+        <div class="tint-box" style="background:#FF8C60"></div>
+        <div class="tint-label">400</div>
+      </div>
+      <div>
+        <div class="tint-box" style="background:#FF6B35"></div>
+        <div class="tint-label">500</div>
+      </div>
+      <div>
+        <div class="tint-box" style="background:#FF4500"></div>
+        <div class="tint-label" style="color:#FF4500;font-weight:700">600 ★</div>
+      </div>
+      <div>
+        <div class="tint-box" style="background:#CC3700"></div>
+        <div class="tint-label">700</div>
+      </div>
+      <div>
+        <div class="tint-box" style="background:#991A00"></div>
+        <div class="tint-label">800</div>
+      </div>
+      <div>
+        <div class="tint-box" style="background:#660D00"></div>
+        <div class="tint-label">900</div>
+      </div>
+    </div>
+
+    <!-- Semantic colors -->
+    <h3 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;color:#1A0F00;margin-bottom:12px;margin-top:24px">Semantic colors</h3>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:8px;padding:8px 14px;background:#fff;border:1px solid #F0DDD0;border-radius:8px">
+        <div style="width:12px;height:12px;border-radius:50%;background:#00C853"></div>
+        <span style="font-size:12px;font-family:'JetBrains Mono',monospace">#00C853</span>
+        <span style="font-size:12px;color:#8A7060">Success · Online</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;padding:8px 14px;background:#fff;border:1px solid #F0DDD0;border-radius:8px">
+        <div style="width:12px;height:12px;border-radius:50%;background:#FF2D55"></div>
+        <span style="font-size:12px;font-family:'JetBrains Mono',monospace">#FF2D55</span>
+        <span style="font-size:12px;color:#8A7060">Error · Alert · Notification badge</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;padding:8px 14px;background:#fff;border:1px solid #F0DDD0;border-radius:8px">
+        <div style="width:12px;height:12px;border-radius:50%;background:#007AFF"></div>
+        <span style="font-size:12px;font-family:'JetBrains Mono',monospace">#007AFF</span>
+        <span style="font-size:12px;color:#8A7060">Message badge · Links only</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TYPOGRAPHY -->
+  <div class="section">
+    <div class="sec-eyebrow">04, Typography</div>
+    <h2 class="sec-title">Three-font system</h2>
+    <p class="sec-sub">Space Grotesk (display) · Inter (body) · JetBrains Mono (numbers). Each font has one job. Don't mix them outside their roles.</p>
+
+    <div class="type-sample">
+      <div class="type-label">Space Grotesk, Display &amp; headings</div>
+      <div class="type-row">
+        <div class="type-meta"><strong>Hero / H1</strong>80–88px · weight 700 · tracking -0.03em</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:52px;letter-spacing:-2px;color:#1A0F00;line-height:1.05">Send the wham.</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><strong>Page H1</strong>40–48px · weight 700 · tracking -0.02em</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:36px;letter-spacing:-1px;color:#1A0F00">All 413 memes &amp; stickers &amp; stickers</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><strong>Section H2</strong>28–36px · weight 700</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:26px;color:#1A0F00">Browse by vibe</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><strong>Card title</strong>14–16px · weight 600</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;color:#1A0F00">E Don Do · Naija · 892 sends</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><strong>Logo wordmark</strong>Any size · weight 700 · tracking -0.05em</div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:32px;letter-spacing:-2px;color:#FF4500;display:flex;align-items:baseline;gap:3px">whamr<span style="width:9px;height:9px;border-radius:50%;background:#FFB800;display:inline-block;margin-bottom:4px;margin-left:2px"></span></div>
+      </div>
+    </div>
+
+    <div class="type-sample">
+      <div class="type-label">Inter, Body &amp; UI</div>
+      <div class="type-row">
+        <div class="type-meta"><strong>Body large</strong>17–18px · weight 400 · line-height 1.65</div>
+        <div style="font-size:17px;color:#4A3020;line-height:1.65;max-width:480px">A fast meme library built for the send. Browse content from every culture, save your favourites, and share in one tap.</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><strong>Body default</strong>15px · weight 400 · line-height 1.6</div>
+        <div style="font-size:15px;color:#4A3020;line-height:1.6">Browse, filter by category, or type anything in the search bar to find the perfect meme.</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><strong>Label / UI</strong>12–13px · weight 600 · uppercase OK</div>
+        <div style="font-size:12px;font-weight:600;color:#8A7060;text-transform:uppercase;letter-spacing:0.08em">TRENDING TODAY · 13 categories · v2.1 · Final</div>
+      </div>
+    </div>
+
+    <div class="type-sample">
+      <div class="type-label">JetBrains Mono, Numbers &amp; data</div>
+      <div class="type-row">
+        <div class="type-meta"><strong>Hero stats</strong>44–48px · weight 600</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-weight:600;font-size:44px;color:#FF4500">34,100</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><strong>Card counts</strong>12–13px · weight 500</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#8A7060">892 sends · 🔥 98 virality · 17,600 views</div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><strong>Badges</strong>10–11px · weight 600</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;background:#FFD60A;color:#1A0F00;padding:3px 8px;border-radius:20px">🔥 99</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;background:#1A0F00;color:#fff;padding:3px 8px;border-radius:20px">meme</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;background:#E8FFF0;color:#00A846;padding:3px 8px;border-radius:20px">● LIVE</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPONENTS -->
+  <div class="section">
+    <div class="sec-eyebrow">05, Components</div>
+    <h2 class="sec-title">Core UI elements</h2>
+    <p class="sec-sub">The primary building blocks of every Whamr screen.</p>
+
+    <div class="comp-grid">
+      <!-- Buttons -->
+      <div class="comp-box">
+        <div class="comp-label">Buttons</div>
+        <div class="btn-row">
+          <span class="btn btn-primary btn-lg">Browse memes →</span>
+        </div>
+        <div class="btn-row">
+          <span class="btn btn-secondary">How it works ↓</span>
+          <span class="btn btn-ghost">Sign in</span>
+        </div>
+        <div class="btn-row">
+          <span class="btn btn-dark btn-sm">+ Upload</span>
+          <span class="btn btn-outline-dark btn-sm">Export pack</span>
+        </div>
+        <div style="font-size:11px;color:#8A7060;margin-top:12px;font-family:'JetBrains Mono',monospace">
+          Primary: #FF4500 · Secondary: #FFD60A/#1A0F00 · Border-radius: 10px (default)
+        </div>
+      </div>
+
+      <!-- Tags & pills -->
+      <div class="comp-box">
+        <div class="comp-label">Pill tags &amp; badges</div>
+        <div class="pill-row">
+          <span class="pill pill-primary">Reactions</span>
+          <span class="pill pill-primary">Dance</span>
+          <span class="pill pill-soft">Naija</span>
+        </div>
+        <div class="pill-row">
+          <span class="pill pill-joy">🔥 99</span>
+          <span class="pill pill-joy">Trending</span>
+          <span class="pill" style="background:#E8FFF0;color:#00A846">● Live</span>
+        </div>
+        <div class="pill-row">
+          <span class="pill pill-outline">Sports</span>
+          <span class="pill pill-outline">K-Pop</span>
+          <span class="pill pill-dark">meme</span>
+          <span class="pill" style="background:#1A0F00;color:#FFD60A">New</span>
+        </div>
+        <div style="font-size:11px;color:#8A7060;margin-top:12px;font-family:'JetBrains Mono',monospace">
+          Active pill: #FF4500 bg · Fire badge: #FFD60A bg + #1A0F00 text
+        </div>
+      </div>
+
+      <!-- Meme card -->
+      <div class="comp-box">
+        <div class="comp-label">Meme card</div>
+        <div style="display:flex;gap:12px">
+          <div class="mini-meme-card">
+            <div class="mini-card-img">
+              😂
+              <span class="mini-card-badge">meme</span>
+              <span class="mini-card-fire">🔥 99</span>
+            </div>
+            <div class="mini-card-body">
+              <div class="mini-card-title">Can't Breathe</div>
+              <div class="mini-card-meta">Laughing · 1,560 sends</div>
+              <button class="mini-card-btn">Send →</button>
+            </div>
+          </div>
+          <div class="mini-meme-card">
+            <div class="mini-card-img" style="background:linear-gradient(135deg,#1A0F00,#CC3700)">
+              🇳🇬
+              <span class="mini-card-badge">meme</span>
+            </div>
+            <div class="mini-card-body">
+              <div class="mini-card-title">E Don Do</div>
+              <div class="mini-card-meta">Naija · 892 sends</div>
+              <button class="mini-card-btn">Send →</button>
+            </div>
+          </div>
+        </div>
+        <div style="font-size:11px;color:#8A7060;margin-top:12px;font-family:'JetBrains Mono',monospace">
+          White card · #F0DDD0 border · Fire badge: #FFD60A bg · Send btn: #FF4500
+        </div>
+      </div>
+
+      <!-- Nav bar -->
+      <div class="comp-box">
+        <div class="comp-label">Navigation bar</div>
+        <div style="background:#fff;border:1px solid #F0DDD0;border-radius:10px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;letter-spacing:-1px;color:#FF4500">whamr<span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:#FFB800;margin-bottom:3px;margin-left:1px"></span></span>
+          <div style="display:flex;gap:12px;font-size:12px;font-weight:500;color:#8A7060">
+            <span>Memes</span><span>Explore</span><span>Dojos</span>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <span style="background:#FF4500;color:#fff;font-size:10px;font-weight:700;padding:4px 10px;border-radius:7px">+ Upload</span>
+            <span style="font-size:16px;position:relative">🔔<span style="position:absolute;top:-4px;right:-4px;width:10px;height:10px;background:#FF2D55;border-radius:50%;border:1.5px solid #fff;display:block"></span></span>
+          </div>
+        </div>
+        <div style="font-size:11px;color:#8A7060;font-family:'JetBrains Mono',monospace">
+          Height: 64px · White bg · #F0DDD0 border-bottom · Logo: #FF4500
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OG IMAGE -->
+  <div class="section">
+    <div class="sec-eyebrow">06, Open Graph &amp; Social</div>
+    <h2 class="sec-title">Sharing previews</h2>
+    <p class="sec-sub">Every link shared from Whamr generates a rich preview. The OG image uses the Sunset gradient, the wordmark, and the core tagline.</p>
+
+    <div class="og-preview">
+      <div class="og-img-area">
+        <div class="og-whamr">whamr<div class="og-whamr-dot"></div></div>
+        <div class="og-headline">Find the perfect meme.<br><span>Send the wham.</span></div>
+        <div class="og-stats">
+          <span>413 memes &amp; stickers</span>
+          <span>·</span>
+          <span>9 platforms</span>
+          <span>·</span>
+          <span>34,100 users</span>
+          <span>·</span>
+          <span>100% free</span>
+        </div>
+      </div>
+    </div>
+    <div style="font-size:12px;color:#8A7060;font-family:'JetBrains Mono',monospace">
+      1200×630px · /public/og-image.svg · theme-color: #FF4500 · Apple touch icon: /icon.svg
+    </div>
+  </div>
+
+  <!-- VOICE + TONE -->
+  <div class="section">
+    <div class="sec-eyebrow">07, Voice &amp; Tone</div>
+    <h2 class="sec-title">How Whamr sounds</h2>
+    <p class="sec-sub">Short, punchy, warm. Never corporate. Write like a friend who loves memes, not a brand manager.</p>
+
+    <div class="voice-grid" style="margin-bottom:24px">
+      <div class="voice-card do">
+        <div class="voice-heading do">✓ Do write like this</div>
+        <div class="voice-item">Find the perfect meme. Send the wham.</div>
+        <div class="voice-item">Browse content from every culture. Free forever.</div>
+        <div class="voice-item">Heart the ones you love. Send them anywhere.</div>
+        <div class="voice-item">Your pack is ready. 8 stickers converted.</div>
+        <div class="voice-item">E Don Do is going viral. 1,200+ sends today.</div>
+      </div>
+      <div class="voice-card dont">
+        <div class="voice-heading dont">✗ Never write like this</div>
+        <div class="voice-item">Leverage our robust, comprehensive meme library, seamlessly.</div>
+        <div class="voice-item">It's important to note that our platform fosters innovation.</div>
+        <div class="voice-item">Delve into our tapestry of multimedia content landscapes.</div>
+        <div class="voice-item">In today's digital age, Whamr is crucial for your pivot.</div>
+        <div class="voice-item">We've pivoted our catalyst-driven ecosystem comprehensively.</div>
+      </div>
+    </div>
+
+    <div style="background:#FFF1EC;border:1px solid #FFB89A;border-radius:12px;padding:20px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#FF4500;margin-bottom:10px">Banned from all Whamr copy</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#fff;border:1px solid #F0DDD0;padding:3px 10px;border-radius:6px;color:#CC3700;text-decoration:line-through">leverage</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#fff;border:1px solid #F0DDD0;padding:3px 10px;border-radius:6px;color:#CC3700;text-decoration:line-through">delve</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#fff;border:1px solid #F0DDD0;padding:3px 10px;border-radius:6px;color:#CC3700;text-decoration:line-through">robust</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#fff;border:1px solid #F0DDD0;padding:3px 10px;border-radius:6px;color:#CC3700;text-decoration:line-through">seamless</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#fff;border:1px solid #F0DDD0;padding:3px 10px;border-radius:6px;color:#CC3700;text-decoration:line-through">comprehensive</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#fff;border:1px solid #F0DDD0;padding:3px 10px;border-radius:6px;color:#CC3700;text-decoration:line-through">innovative</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#fff;border:1px solid #F0DDD0;padding:3px 10px;border-radius:6px;color:#CC3700;text-decoration:line-through">crucial</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#fff;border:1px solid #F0DDD0;padding:3px 10px;border-radius:6px;color:#CC3700;text-decoration:line-through">tapestry</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:12px;background:#fff;border:1px solid #F0DDD0;padding:3px 10px;border-radius:6px;color:#CC3700;text-decoration:line-through">em dash &mdash;</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- USAGE RULES -->
+  <div class="section">
+    <div class="sec-eyebrow">08, Usage Rules</div>
+    <h2 class="sec-title">What to do and not do</h2>
+    <p class="sec-sub">Simple rules that protect the brand at scale.</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+      <div style="background:#fff;border:1px solid #F0DDD0;border-radius:16px;padding:24px">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#00A846;margin-bottom:12px">Always</div>
+        <ul class="rule-list">
+          <li class="rule-item rule-do"><div class="rule-dot">✓</div>Use "whamr." lowercase, with the period</li>
+          <li class="rule-item rule-do"><div class="rule-dot">✓</div>Use the Sunset gradient for hero sections</li>
+          <li class="rule-item rule-do"><div class="rule-dot">✓</div>Use #FFD60A for virality/fire score badges</li>
+          <li class="rule-item rule-do"><div class="rule-dot">✓</div>Keep body text on warm cream, not cold white</li>
+          <li class="rule-item rule-do"><div class="rule-dot">✓</div>Use Space Grotesk for all headings and the logo</li>
+          <li class="rule-item rule-do"><div class="rule-dot">✓</div>Keep buttons orange-red on light backgrounds</li>
+          <li class="rule-item rule-do"><div class="rule-dot">✓</div>Use JetBrains Mono for all numbers and stats</li>
+        </ul>
+      </div>
+      <div style="background:#fff;border:1px solid #F0DDD0;border-radius:16px;padding:24px">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#FF2D55;margin-bottom:12px">Never</div>
+        <ul class="rule-list">
+          <li class="rule-item rule-dont"><div class="rule-dot">✗</div>Write "Whamr" (capital W) or "WHAMR"</li>
+          <li class="rule-item rule-dont"><div class="rule-dot">✗</div>Drop the period: write "whamr" not "whamr."</li>
+          <li class="rule-item rule-dont"><div class="rule-dot">✗</div>Use cold blue or purple as primary colors</li>
+          <li class="rule-item rule-dont"><div class="rule-dot">✗</div>Place the orange-red logo on an orange-red background</li>
+          <li class="rule-item rule-dont"><div class="rule-dot">✗</div>Use em dashes, in any copy or UI text</li>
+          <li class="rule-item rule-dont"><div class="rule-dot">✗</div>Use the fire badge (#FFD60A) for non-virality purposes</li>
+          <li class="rule-item rule-dont"><div class="rule-dot">✗</div>Mix font families outside their defined roles</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<!-- FOOTER -->
+<div style="background:#1A0F00;padding:40px;text-align:center;margin-top:0">
+  <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:28px;letter-spacing:-1.5px;color:#fff;display:inline-flex;align-items:baseline;gap:4px;margin-bottom:12px">
+    whamr<span style="width:8px;height:8px;border-radius:50%;background:#FFD60A;display:inline-block;margin-bottom:4px;margin-left:2px"></span>
+  </div>
+  <p style="font-size:13px;color:rgba(255,255,255,0.4)">Brand System v1.0 · Sunset Palette · May 2026 · Internal use only</p>
+</div>
+
+</body>
+</html>

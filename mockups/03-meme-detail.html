@@ -1,0 +1,831 @@
+﻿<!-- FILE: 03-meme-detail.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E Don Do, whamr.</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Whamr Sunset, Electric Orange-Red + Golden Yellow */
+  --bg:#FFFAF5; --bg-alt:#FFF3E8; --card:#FFFFFF;
+  --ink:#1A0F00; --ink-soft:#4A3020; --ink-mute:#8A7060;
+  --line:#F0DDD0; --line-soft:#FBF0E8;
+  /* Primary: electric orange-red (the wham) */
+  --purple:#FF4500; --purple-mid:#FF6B35; --purple-bright:#FF8C60;
+  --purple-dark:#CC3700; --purple-soft:#FFF1EC; --purple-xsoft:#FFF8F5;
+  /* Accent: warm golden yellow (the joy) */
+  --wham:#FFB800; --wham-bright:#FFD60A; --wham-soft:#FFF8DC;
+  --pink:#FFB800; --pink-soft:#FFF8DC;
+  /* Semantic */
+  --green:#00C853; --green-soft:#E8FFF0;
+  --amber:#FFB800; --red:#FF2D55; --red-soft:#FFF0F3;
+  --blue:#007AFF;
+  /* Gray scale (kept neutral) */
+  --gray-50:#F9FAFB; --gray-100:#F3F4F6; --gray-200:#E5E7EB;
+  --gray-400:#9CA3AF; --gray-500:#6B7280; --gray-700:#374151; --gray-900:#111827;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;font-size:15px;background:var(--bg);color:var(--ink);line-height:1.6}
+img{display:block;max-width:100%}
+a{text-decoration:none;color:inherit}
+
+/* ANNOUNCE BAR */
+.announce{
+  background:linear-gradient(90deg,var(--purple-dark) 0%,var(--purple-mid) 100%);
+  color:#fff;text-align:center;padding:9px 16px;font-size:13px;font-weight:500;
+}
+.announce a{color:var(--wham-bright);text-decoration:underline;text-underline-offset:2px}
+
+/* NAV */
+.nav{
+  height:64px;background:#fff;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;padding:0 28px;gap:12px;
+  position:sticky;top:0;z-index:100;
+}
+.nav-logo{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;
+  font-size:22px;letter-spacing:-0.05em;color:var(--purple);flex-shrink:0;
+}
+.nav-links{display:flex;align-items:center;gap:2px;margin-left:12px}
+.nav-link{
+  font-size:14px;font-weight:500;color:var(--gray-700);
+  padding:6px 11px;border-radius:8px;transition:background 0.15s,color 0.15s;white-space:nowrap;
+}
+.nav-link:hover,.nav-link.active{background:var(--purple-soft);color:var(--purple)}
+.nav-link.active{font-weight:600}
+.nav-search-wrap{flex:1;max-width:380px;margin:0 auto;position:relative}
+.nav-search-wrap input{
+  width:100%;padding:9px 16px 9px 40px;border:1.5px solid var(--line);
+  border-radius:50px;font-family:'Inter',sans-serif;font-size:14px;
+  color:var(--ink);background:#fff;outline:none;
+}
+.nav-search-wrap input:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(255,69,0,0.12)}
+.nav-search-wrap input::placeholder{color:var(--gray-400)}
+.nav-search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--gray-400)}
+.nav-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.btn-upload{
+  display:inline-flex;align-items:center;gap:6px;background:var(--purple);color:#fff;
+  font-size:13px;font-weight:600;padding:8px 16px;border-radius:9px;border:none;cursor:pointer;white-space:nowrap;
+}
+.btn-upload:hover{background:var(--purple-dark)}
+.nav-icon-btn{
+  width:38px;height:38px;border-radius:9px;background:var(--gray-100);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;position:relative;flex-shrink:0;
+}
+.nav-badge{
+  position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;border-radius:9px;border:2px solid #fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;padding:0 4px;
+}
+.badge-red{background:var(--red);color:#fff}
+.badge-blue{background:#2563EB;color:#fff}
+.nav-avatar{
+  width:36px;height:36px;border-radius:50%;
+  background:linear-gradient(135deg,var(--purple-dark) 0%,var(--purple-mid) 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;color:#fff;font-weight:700;cursor:pointer;flex-shrink:0;
+  border:2px solid var(--purple-soft);
+}
+.btn-signin{font-size:13px;font-weight:600;color:var(--purple);padding:7px 14px;border-radius:8px;border:1.5px solid var(--line);background:#fff;cursor:pointer}
+.btn-signup{font-size:13px;font-weight:600;color:#fff;padding:7px 14px;border-radius:8px;background:var(--purple);border:none;cursor:pointer}
+
+/* BREADCRUMB */
+.breadcrumb-bar{background:#fff;border-bottom:1px solid var(--line-soft);padding:11px 0}
+.container{max-width:1200px;margin:0 auto;padding:0 32px}
+.breadcrumb{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--gray-400)}
+.breadcrumb a{color:var(--purple);font-weight:500}
+.breadcrumb a:hover{text-decoration:underline;text-underline-offset:2px}
+.bc-sep{color:var(--gray-200);font-size:11px}
+
+/* MAIN TWO-COL */
+.main-grid{
+  display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);
+  gap:48px;padding:40px 0 32px;align-items:start;
+}
+
+/* LEFT */
+.meme-image-wrap{
+  border-radius:18px;overflow:hidden;
+  box-shadow:0 10px 48px rgba(26,5,51,0.14);
+  aspect-ratio:1/1;max-width:560px;
+  background:linear-gradient(135deg,#1A0F00 0%,#4A3020 50%,#FF4500 100%);
+  position:relative;
+}
+.meme-image-wrap img{width:100%;height:100%;object-fit:cover;display:block;opacity:0.9}
+.meme-img-gradient{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(26,5,51,0) 55%,rgba(26,5,51,0.6) 100%);
+  pointer-events:none;
+}
+.meme-img-cat{
+  position:absolute;top:16px;left:16px;
+  background:var(--purple);color:#fff;font-size:12px;font-weight:700;
+  padding:4px 12px;border-radius:50px;font-family:'Space Grotesk',sans-serif;
+  letter-spacing:0.04em;text-transform:uppercase;
+}
+.meme-img-viral{
+  position:absolute;top:16px;right:16px;
+  background:rgba(217,119,6,0.95);color:#fff;font-size:12px;font-weight:700;
+  padding:5px 12px;border-radius:50px;font-family:'JetBrains Mono',monospace;
+  backdrop-filter:blur(6px);
+}
+
+.eng-bar{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  background:#fff;border:1px solid var(--line);border-radius:14px;
+  overflow:hidden;margin-top:16px;
+}
+.eng-cell{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:14px 8px;border-right:1px solid var(--line);cursor:pointer;
+  transition:background 0.15s;
+}
+.eng-cell:last-child{border-right:none}
+.eng-cell:hover{background:var(--purple-xsoft)}
+.eng-icon{font-size:18px;line-height:1}
+.eng-num{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:15px;color:var(--ink)}
+.eng-lbl{font-size:11px;color:var(--gray-500);font-weight:500}
+
+.tag-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.tag-pill{
+  background:var(--purple-xsoft);color:var(--purple-mid);font-size:13px;font-weight:600;
+  padding:5px 14px;border-radius:50px;border:1px solid var(--purple-soft);cursor:pointer;
+  transition:background 0.15s,border-color 0.15s;
+}
+.tag-pill:hover{background:var(--purple-soft);border-color:var(--purple)}
+
+.similar-section{margin-top:28px}
+.similar-heading{
+  font-size:11px;font-weight:700;color:var(--ink-mute);text-transform:uppercase;
+  letter-spacing:0.08em;margin-bottom:12px;font-family:'Space Grotesk',sans-serif;
+}
+.similar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.similar-card{
+  border-radius:10px;overflow:hidden;cursor:pointer;position:relative;aspect-ratio:1/1;
+  background:#E9D5FF;transition:transform 0.15s,box-shadow 0.15s;
+}
+.similar-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(255,69,0,0.12)}
+.similar-card img{width:100%;height:100%;object-fit:cover;opacity:0.88}
+.similar-card-overlay{
+  position:absolute;inset:0;background:rgba(26,5,51,0.32);
+  display:flex;align-items:flex-end;padding:6px;
+}
+.similar-card-label{font-size:10px;font-weight:700;color:#fff;font-family:'Space Grotesk',sans-serif;line-height:1.2}
+
+/* RIGHT */
+.detail-right{display:flex;flex-direction:column;gap:20px}
+
+.creator-card{
+  display:flex;align-items:center;gap:12px;
+  background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;
+}
+.creator-ava{
+  width:48px;height:48px;border-radius:50%;overflow:hidden;flex-shrink:0;
+  border:3px solid var(--purple-soft);
+}
+.creator-ava img{width:100%;height:100%;object-fit:cover}
+.creator-info{flex:1;min-width:0}
+.creator-name-row{display:flex;align-items:center;gap:6px}
+.creator-name{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;color:var(--ink)}
+.v-badge{
+  width:17px;height:17px;background:var(--purple);border-radius:50%;
+  display:inline-flex;align-items:center;justify-content:center;font-size:9px;color:#fff;flex-shrink:0;
+}
+.creator-handle{font-size:13px;color:var(--ink-mute);font-weight:500}
+.creator-sub{font-size:12px;color:var(--gray-400);margin-top:2px}
+.btn-follow{
+  background:var(--purple);color:#fff;font-size:13px;font-weight:600;
+  padding:8px 18px;border-radius:9px;border:none;cursor:pointer;flex-shrink:0;
+  transition:background 0.15s;
+}
+.btn-follow:hover{background:var(--purple-dark)}
+
+.divider{height:1px;background:var(--line);margin:2px 0}
+
+.meme-title{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:40px;
+  color:var(--ink);letter-spacing:-0.02em;line-height:1.1;
+}
+.chip-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:12px}
+.chip{font-size:12px;font-weight:700;padding:4px 12px;border-radius:50px;display:inline-flex;align-items:center;gap:5px}
+.chip-cat{background:var(--purple);color:#fff;font-family:'Space Grotesk',sans-serif;letter-spacing:0.03em;text-transform:uppercase}
+.chip-type{background:var(--gray-100);color:var(--gray-700);border:1px solid var(--gray-200)}
+.chip-viral{background:#FFD60A;color:#1A0F00;border:1px solid #FDE68A;font-family:'JetBrains Mono',monospace}
+.meme-caption-empty{font-size:13px;color:var(--gray-400);font-style:italic;padding:8px 0 4px}
+
+.action-stack{display:flex;flex-direction:column;gap:10px}
+.action-btn{
+  width:100%;display:flex;align-items:center;gap:10px;
+  padding:13px 18px;border-radius:12px;border:none;cursor:pointer;
+  font-family:'Inter',sans-serif;font-size:14px;font-weight:600;transition:all 0.15s;
+}
+.action-count{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600}
+.btn-like{background:var(--red-soft);color:var(--red);border:1.5px solid #FECACA}
+.btn-like:hover{background:#FEE2E2;border-color:var(--red)}
+.btn-save{background:var(--gray-100);color:var(--gray-700);border:1.5px solid var(--gray-200)}
+.btn-save:hover{background:var(--gray-200)}
+.btn-send{background:var(--purple);color:#fff;padding:15px 18px;font-size:15px}
+.btn-send:hover{background:var(--purple-dark)}
+.btn-dl{background:#fff;color:var(--purple);border:1.5px solid var(--purple);justify-content:center}
+.btn-dl:hover{background:var(--purple-xsoft)}
+
+.share-platforms{
+  display:flex;align-items:center;gap:10px;
+  padding:16px;background:#fff;border:1px solid var(--line);border-radius:12px;
+}
+.share-lbl{font-size:12px;font-weight:600;color:var(--ink-mute);white-space:nowrap;margin-right:4px}
+.share-icon{
+  width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+  font-size:17px;cursor:pointer;border:1px solid var(--line);
+  transition:transform 0.15s,box-shadow 0.15s;
+}
+.share-icon:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+.si-wa{background:#25D366;color:#fff;border-color:#25D366;font-size:14px}
+.si-tg{background:#2AABEE;color:#fff;border-color:#2AABEE}
+.si-x{background:#000;color:#fff;border-color:#000;font-size:13px;font-weight:800;font-family:'Space Grotesk',sans-serif}
+.si-fb{background:#1877F2;color:#fff;border-color:#1877F2;font-size:15px;font-weight:800;font-family:'Space Grotesk',sans-serif}
+.si-em{background:var(--gray-100);color:var(--gray-700)}
+
+.copy-row{
+  display:flex;align-items:center;gap:10px;
+  background:var(--purple-xsoft);border:1px solid var(--purple-soft);border-radius:10px;padding:10px 14px;
+}
+.copy-url{
+  font-size:13px;color:var(--purple-mid);font-family:'JetBrains Mono',monospace;
+  flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.copy-btn{
+  font-size:12px;font-weight:700;color:var(--purple);background:#fff;
+  border:1px solid var(--purple-soft);border-radius:6px;padding:4px 10px;cursor:pointer;white-space:nowrap;
+}
+.copy-btn:hover{background:var(--purple-soft)}
+.report-link{font-size:12px;color:var(--gray-400);text-align:center;cursor:pointer;padding-top:2px}
+.report-link:hover{color:var(--red)}
+.report-link span{text-decoration:underline;text-underline-offset:2px}
+
+/* COMMENTS */
+.comments-section{
+  background:#fff;border:1px solid var(--line);border-radius:18px;
+  padding:32px;margin-top:8px;
+}
+.comments-heading{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;color:var(--ink);
+  margin-bottom:24px;display:flex;align-items:center;gap:10px;
+}
+.comments-count{
+  background:var(--purple-soft);color:var(--purple);
+  font-size:13px;font-weight:700;padding:3px 10px;border-radius:50px;
+  font-family:'JetBrains Mono',monospace;
+}
+
+.comment-input-row{
+  display:flex;align-items:flex-start;gap:12px;
+  padding-bottom:24px;border-bottom:1px solid var(--line-soft);margin-bottom:24px;
+}
+.ci-ava{width:40px;height:40px;border-radius:50%;overflow:hidden;flex-shrink:0;border:2px solid var(--purple-soft)}
+.ci-ava img{width:100%;height:100%;object-fit:cover}
+.ci-wrap{flex:1}
+.ci-textarea{
+  width:100%;min-height:80px;padding:12px 16px;border:1.5px solid var(--line);border-radius:12px;
+  font-family:'Inter',sans-serif;font-size:14px;color:var(--ink);background:#fff;outline:none;resize:none;line-height:1.5;
+}
+.ci-textarea:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(255,69,0,0.12)}
+.ci-textarea::placeholder{color:var(--gray-400)}
+.ci-footer{display:flex;justify-content:flex-end;margin-top:8px}
+.btn-post{
+  background:var(--purple);color:#fff;font-size:13px;font-weight:600;
+  padding:8px 20px;border-radius:9px;border:none;cursor:pointer;
+}
+.btn-post:hover{background:var(--purple-dark)}
+
+.comment-item{display:flex;gap:12px;margin-bottom:24px}
+.comment-item:last-child{margin-bottom:0}
+.c-ava{width:40px;height:40px;border-radius:50%;overflow:hidden;flex-shrink:0}
+.c-ava img{width:100%;height:100%;object-fit:cover}
+.c-body{flex:1;min-width:0}
+.c-header{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.c-name{font-weight:700;font-size:14px;color:var(--ink);font-family:'Space Grotesk',sans-serif}
+.c-v{width:16px;height:16px;background:var(--purple);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:8px;color:#fff;flex-shrink:0}
+.c-time{font-size:12px;color:var(--gray-400)}
+.c-text{font-size:14px;color:var(--ink);line-height:1.55}
+.c-actions{display:flex;align-items:center;gap:16px;margin-top:8px}
+.c-like{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--gray-500);cursor:pointer;transition:color 0.12s}
+.c-like:hover{color:var(--red)}
+.c-like-n{font-family:'JetBrains Mono',monospace;font-size:12px}
+.c-reply{font-size:12px;font-weight:600;color:var(--purple-mid);cursor:pointer}
+.c-reply:hover{text-decoration:underline}
+.c-reply-count{font-size:12px;color:var(--gray-400)}
+
+.replies-indent{
+  margin-top:16px;padding-left:16px;border-left:2px solid var(--purple-soft);
+  display:flex;flex-direction:column;gap:16px;
+}
+.reply-row{display:flex;gap:10px}
+.r-ava{width:32px;height:32px;border-radius:50%;overflow:hidden;flex-shrink:0}
+.r-ava img{width:100%;height:100%;object-fit:cover}
+.r-body{flex:1}
+.r-header{display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.r-name{font-weight:700;font-size:13px;color:var(--ink);font-family:'Space Grotesk',sans-serif}
+.r-v{width:14px;height:14px;background:var(--purple);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:7px;color:#fff}
+.r-time{font-size:11px;color:var(--gray-400)}
+.r-text{font-size:13px;color:var(--ink);line-height:1.5}
+.r-actions{display:flex;gap:12px;margin-top:6px}
+.r-like{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--gray-400);cursor:pointer}
+.r-like:hover{color:var(--red)}
+.r-reply-btn{font-size:11px;font-weight:600;color:var(--purple-mid);cursor:pointer}
+.r-reply-btn:hover{text-decoration:underline}
+
+/* MORE FROM */
+.more-section{margin-top:56px}
+.sec-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:24px}
+.sec-eyebrow{font-size:11px;font-weight:700;color:var(--ink-mute);text-transform:uppercase;letter-spacing:0.08em;font-family:'Space Grotesk',sans-serif;margin-bottom:4px}
+.sec-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:24px;color:var(--ink)}
+.view-all{font-size:13px;font-weight:600;color:var(--purple)}
+.view-all:hover{text-decoration:underline}
+
+.meme-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.meme-card{
+  background:#fff;border-radius:14px;overflow:hidden;border:1px solid var(--line);cursor:pointer;
+  transition:transform 0.15s,box-shadow 0.15s;
+}
+.meme-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(255,69,0,0.12)}
+.meme-card-img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:linear-gradient(135deg,#FFF1EC,#F0DDD0)}
+.meme-card-body{padding:12px}
+.meme-card-title{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px;color:var(--ink);margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meme-card-meta{display:flex;align-items:center;gap:12px}
+.meme-stat{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--gray-500)}
+.meme-stat span{font-family:'JetBrains Mono',monospace;font-weight:500}
+
+/* FOOTER */
+.footer{background:var(--ink);color:rgba(255,255,255,0.6);padding:40px 0 24px;margin-top:64px}
+.footer-inner{max-width:1200px;margin:0 auto;padding:0 32px}
+.footer-top{display:flex;align-items:flex-start;justify-content:space-between;gap:32px;margin-bottom:32px}
+.footer-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.05em;color:#fff;margin-bottom:8px}
+.footer-tagline{font-size:13px;color:rgba(255,255,255,0.4);max-width:220px;line-height:1.5}
+.footer-links{display:flex;gap:48px}
+.footer-col h4{font-size:11px;font-weight:700;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;font-family:'Space Grotesk',sans-serif}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.footer-col li a{font-size:13px;color:rgba(255,255,255,0.55)}
+.footer-col li a:hover{color:#fff}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.08);padding-top:20px;display:flex;align-items:center;justify-content:space-between}
+.footer-copy{font-size:12px;color:rgba(255,255,255,0.3)}
+.footer-bl{display:flex;gap:20px}
+.footer-bl a{font-size:12px;color:rgba(255,255,255,0.4)}
+.footer-bl a:hover{color:rgba(255,255,255,0.8)}
+</style>
+</head>
+<body>
+
+<!-- ANNOUNCE BAR -->
+<div class="announce">
+  New: Meme Dojos are live. Build your crew and climb the leaderboard.
+  <a href="10-dojos.html">Try it now →</a>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="01-landing.html" class="nav-logo">whamr.</a>
+  <div class="nav-links">
+    <a href="01-landing.html" class="nav-link">Home</a>
+    <a href="02-memes-browser.html" class="nav-link active">Memes</a>
+    <a href="06-explore.html" class="nav-link">Explore</a>
+    <a href="10-dojos.html" class="nav-link">Dojos</a>
+    <a href="12-analytics.html" class="nav-link">Analytics</a>
+  </div>
+  <div class="nav-search-wrap">
+    <span class="nav-search-icon">🔍</span>
+    <input type="text" placeholder="Search memes...">
+  </div>
+  <div class="nav-actions">
+    <button class="btn-upload">+ Upload</button>
+    <div class="nav-icon-btn">
+      🔔<span class="nav-badge badge-red">4</span>
+    </div>
+    <div class="nav-icon-btn">
+      💬<span class="nav-badge badge-blue">3</span>
+    </div>
+    <div class="nav-avatar">M</div>
+    <button class="btn-signin">Sign in</button>
+    <button class="btn-signup">Sign up</button>
+  </div>
+</nav>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb-bar">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="01-landing.html">Home</a>
+      <span class="bc-sep">›</span>
+      <a href="02-memes-browser.html">Memes</a>
+      <span class="bc-sep">›</span>
+      <a href="06-explore.html">Naija</a>
+      <span class="bc-sep">›</span>
+      <span style="color:var(--ink);font-weight:600">E Don Do</span>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+  <div class="main-grid">
+
+    <!-- LEFT -->
+    <div>
+      <div class="meme-image-wrap">
+        <img src="https://picsum.photos/seed/edondo/560/560" alt="E Don Do meme">
+        <div class="meme-img-gradient"></div>
+        <span class="meme-img-cat">🇳🇬 Naija</span>
+        <span class="meme-img-viral">🔥 Score 98</span>
+      </div>
+
+      <!-- Engagement Bar -->
+      <div class="eng-bar">
+        <div class="eng-cell">
+          <span class="eng-icon">👁</span>
+          <span class="eng-num">17,600</span>
+          <span class="eng-lbl">Views</span>
+        </div>
+        <div class="eng-cell">
+          <span class="eng-icon">❤️</span>
+          <span class="eng-num">1,203</span>
+          <span class="eng-lbl">Likes</span>
+        </div>
+        <div class="eng-cell">
+          <span class="eng-icon">🔗</span>
+          <span class="eng-num">892</span>
+          <span class="eng-lbl">Shares</span>
+        </div>
+        <div class="eng-cell">
+          <span class="eng-icon">⬇️</span>
+          <span class="eng-num">341</span>
+          <span class="eng-lbl">Downloads</span>
+        </div>
+      </div>
+
+      <!-- Tags -->
+      <div class="tag-row">
+        <span class="tag-pill">#naija</span>
+        <span class="tag-pill">#finish</span>
+        <span class="tag-pill">#done</span>
+        <span class="tag-pill">#edondo</span>
+        <span class="tag-pill">#viral</span>
+      </div>
+
+      <!-- Similar -->
+      <div class="similar-section">
+        <div class="similar-heading">Similar Memes</div>
+        <div class="similar-grid">
+          <div class="similar-card">
+            <img src="https://picsum.photos/seed/sim1/200/200" alt="">
+            <div class="similar-card-overlay"><span class="similar-card-label">It's Over</span></div>
+          </div>
+          <div class="similar-card">
+            <img src="https://picsum.photos/seed/sim2/200/200" alt="">
+            <div class="similar-card-overlay"><span class="similar-card-label">No Cap</span></div>
+          </div>
+          <div class="similar-card">
+            <img src="https://picsum.photos/seed/sim3/200/200" alt="">
+            <div class="similar-card-overlay"><span class="similar-card-label">E Reach</span></div>
+          </div>
+          <div class="similar-card">
+            <img src="https://picsum.photos/seed/sim4/200/200" alt="">
+            <div class="similar-card-overlay"><span class="similar-card-label">Wahala</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="detail-right">
+
+      <!-- Creator -->
+      <div class="creator-card">
+        <div class="creator-ava">
+          <img src="https://picsum.photos/seed/u1/96/96" alt="Meme Queen">
+        </div>
+        <div class="creator-info">
+          <div class="creator-name-row">
+            <span class="creator-name">Meme Queen 👑</span>
+            <span class="v-badge">✓</span>
+          </div>
+          <div class="creator-handle">@memequeen</div>
+          <div class="creator-sub">Creator · 12,400 followers · Joined Jan 2024</div>
+        </div>
+        <button class="btn-follow">Follow</button>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Title + Meta -->
+      <div>
+        <h1 class="meme-title">E Don Do</h1>
+        <div class="chip-row">
+          <span class="chip chip-cat">Naija</span>
+          <span class="chip chip-type">Meme</span>
+          <span class="chip chip-viral">🔥 Viral · Score 98</span>
+        </div>
+        <p class="meme-caption-empty">No caption, the meme speaks for itself.</p>
+      </div>
+
+      <!-- Actions -->
+      <div class="action-stack">
+        <button class="action-btn btn-like">
+          <span>❤️</span>
+          <span>Like this meme</span>
+          <span class="action-count">1,203</span>
+        </button>
+        <button class="action-btn btn-save">
+          <span>📌</span>
+          <span>Save to collection</span>
+        </button>
+        <button class="action-btn btn-send">
+          <span>🔗</span>
+          <span>Send this meme</span>
+          <span class="action-count" style="font-size:12px;opacity:0.75">892 sent</span>
+        </button>
+        <button class="action-btn btn-dl">
+          <span>⬇️</span>
+          <span>Download original</span>
+        </button>
+      </div>
+
+      <!-- Share Platforms -->
+      <div class="share-platforms">
+        <span class="share-lbl">Share to</span>
+        <span class="share-icon si-wa" title="WhatsApp">📱</span>
+        <span class="share-icon si-tg" title="Telegram">✈️</span>
+        <span class="share-icon si-x" title="X / Twitter">X</span>
+        <span class="share-icon si-fb" title="Facebook">f</span>
+        <span class="share-icon si-em" title="Email">✉️</span>
+      </div>
+
+      <!-- Copy Link -->
+      <div class="copy-row">
+        <span class="copy-url">whamr.app/c/m7</span>
+        <button class="copy-btn">Copy link</button>
+      </div>
+
+      <!-- Report -->
+      <div class="report-link">Something wrong? <span>Report this meme</span></div>
+
+    </div>
+  </div><!-- /main-grid -->
+
+  <!-- COMMENTS -->
+  <div class="comments-section">
+    <h2 class="comments-heading">
+      Comments <span class="comments-count">4</span>
+    </h2>
+
+    <!-- Input -->
+    <div class="comment-input-row">
+      <div class="ci-ava"><img src="https://picsum.photos/seed/u1/80/80" alt="Me"></div>
+      <div class="ci-wrap">
+        <textarea class="ci-textarea" placeholder="Add a comment... what do you think of this one?"></textarea>
+        <div class="ci-footer"><button class="btn-post">Post comment</button></div>
+      </div>
+    </div>
+
+    <!-- Comment 1: danceking with 2 replies -->
+    <div class="comment-item">
+      <div class="c-ava"><img src="https://picsum.photos/seed/danceking/80/80" alt="danceking"></div>
+      <div class="c-body">
+        <div class="c-header">
+          <span class="c-name">danceking</span>
+          <span class="c-v">✓</span>
+          <span class="c-time">2h ago</span>
+        </div>
+        <div class="c-text">E don do for real 😂😂 this one killed me</div>
+        <div class="c-actions">
+          <div class="c-like"><span>❤️</span><span class="c-like-n">142</span></div>
+          <span class="c-reply">Reply</span>
+          <span class="c-reply-count">2 replies</span>
+        </div>
+        <div class="replies-indent">
+          <div class="reply-row">
+            <div class="r-ava"><img src="https://picsum.photos/seed/naijafan/64/64" alt="naijafan"></div>
+            <div class="r-body">
+              <div class="r-header">
+                <span class="r-name">naijafan</span>
+                <span class="r-time">1h ago</span>
+              </div>
+              <div class="r-text">@danceking same bro, I cried 😭</div>
+              <div class="r-actions">
+                <div class="r-like">❤️ <span style="font-family:'JetBrains Mono',monospace;font-size:11px;margin-left:3px">28</span></div>
+                <span class="r-reply-btn">Reply</span>
+              </div>
+            </div>
+          </div>
+          <div class="reply-row">
+            <div class="r-ava"><img src="https://picsum.photos/seed/u1/64/64" alt="Meme Queen"></div>
+            <div class="r-body">
+              <div class="r-header">
+                <span class="r-name">Meme Queen 👑</span>
+                <span class="r-v">✓</span>
+                <span class="r-time">58m ago</span>
+              </div>
+              <div class="r-text">@danceking hahaha glad it hit! More coming soon 🔥</div>
+              <div class="r-actions">
+                <div class="r-like">❤️ <span style="font-family:'JetBrains Mono',monospace;font-size:11px;margin-left:3px">61</span></div>
+                <span class="r-reply-btn">Reply</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comment 2 -->
+    <div class="comment-item">
+      <div class="c-ava"><img src="https://picsum.photos/seed/laughmaster/80/80" alt="laughmaster"></div>
+      <div class="c-body">
+        <div class="c-header">
+          <span class="c-name">laughmaster</span>
+          <span class="c-v">✓</span>
+          <span class="c-time">3h ago</span>
+        </div>
+        <div class="c-text">The way I screamed 💀</div>
+        <div class="c-actions">
+          <div class="c-like"><span>❤️</span><span class="c-like-n">89</span></div>
+          <span class="c-reply">Reply</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comment 3 -->
+    <div class="comment-item">
+      <div class="c-ava"><img src="https://picsum.photos/seed/sportsmemer/80/80" alt="sportsmemer"></div>
+      <div class="c-body">
+        <div class="c-header">
+          <span class="c-name">sportsmemer</span>
+          <span class="c-time">5h ago</span>
+        </div>
+        <div class="c-text">Someone send this to the boys immediately</div>
+        <div class="c-actions">
+          <div class="c-like"><span>❤️</span><span class="c-like-n">67</span></div>
+          <span class="c-reply">Reply</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comment 4 -->
+    <div class="comment-item" style="margin-bottom:0">
+      <div class="c-ava"><img src="https://picsum.photos/seed/sadvibes/80/80" alt="sadvibes_ng"></div>
+      <div class="c-body">
+        <div class="c-header">
+          <span class="c-name">sadvibes_ng</span>
+          <span class="c-time">6h ago</span>
+        </div>
+        <div class="c-text">Context: my life every Monday 🙃</div>
+        <div class="c-actions">
+          <div class="c-like"><span>❤️</span><span class="c-like-n">44</span></div>
+          <span class="c-reply">Reply</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MORE FROM NAIJA -->
+  <div class="more-section">
+    <div class="sec-header">
+      <div>
+        <div class="sec-eyebrow">Category</div>
+        <h2 class="sec-title">More from Naija 🇳🇬</h2>
+      </div>
+      <a href="06-explore.html" class="view-all">View all →</a>
+    </div>
+    <div class="meme-grid-4">
+      <div class="meme-card">
+        <img class="meme-card-img" src="https://picsum.photos/seed/naija1/400/400" alt="">
+        <div class="meme-card-body">
+          <div class="meme-card-title">Shege Level</div>
+          <div class="meme-card-meta">
+            <div class="meme-stat">👁 <span>8,200</span></div>
+            <div class="meme-stat">❤️ <span>441</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="meme-card">
+        <img class="meme-card-img" src="https://picsum.photos/seed/naija2/400/400" alt="">
+        <div class="meme-card-body">
+          <div class="meme-card-title">This Pepper</div>
+          <div class="meme-card-meta">
+            <div class="meme-stat">👁 <span>5,700</span></div>
+            <div class="meme-stat">❤️ <span>302</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="meme-card">
+        <img class="meme-card-img" src="https://picsum.photos/seed/naija3/400/400" alt="">
+        <div class="meme-card-body">
+          <div class="meme-card-title">Omo Wahala</div>
+          <div class="meme-card-meta">
+            <div class="meme-stat">👁 <span>11,400</span></div>
+            <div class="meme-stat">❤️ <span>798</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="meme-card">
+        <img class="meme-card-img" src="https://picsum.photos/seed/naija4/400/400" alt="">
+        <div class="meme-card-body">
+          <div class="meme-card-title">E Be Things</div>
+          <div class="meme-card-meta">
+            <div class="meme-stat">👁 <span>6,900</span></div>
+            <div class="meme-stat">❤️ <span>519</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="meme-card">
+        <img class="meme-card-img" src="https://picsum.photos/seed/naija5/400/400" alt="">
+        <div class="meme-card-body">
+          <div class="meme-card-title">Na So</div>
+          <div class="meme-card-meta">
+            <div class="meme-stat">👁 <span>3,200</span></div>
+            <div class="meme-stat">❤️ <span>178</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="meme-card">
+        <img class="meme-card-img" src="https://picsum.photos/seed/naija6/400/400" alt="">
+        <div class="meme-card-body">
+          <div class="meme-card-title">Gbedu State</div>
+          <div class="meme-card-meta">
+            <div class="meme-stat">👁 <span>7,100</span></div>
+            <div class="meme-stat">❤️ <span>390</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="meme-card">
+        <img class="meme-card-img" src="https://picsum.photos/seed/naija7/400/400" alt="">
+        <div class="meme-card-body">
+          <div class="meme-card-title">Sapa Alert</div>
+          <div class="meme-card-meta">
+            <div class="meme-stat">👁 <span>14,800</span></div>
+            <div class="meme-stat">❤️ <span>1,012</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="meme-card">
+        <img class="meme-card-img" src="https://picsum.photos/seed/naija8/400/400" alt="">
+        <div class="meme-card-body">
+          <div class="meme-card-title">Hustle Hard</div>
+          <div class="meme-card-meta">
+            <div class="meme-stat">👁 <span>9,600</span></div>
+            <div class="meme-stat">❤️ <span>612</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo">whamr.</div>
+        <div class="footer-tagline">Find the perfect meme. Send the wham. Built for the internet.</div>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Explore</h4>
+          <ul>
+            <li><a href="06-explore.html">Trending</a></li>
+            <li><a href="06-explore.html">Categories</a></li>
+            <li><a href="10-dojos.html">Dojos</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Careers</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Terms</a></li>
+            <li><a href="#">Privacy</a></li>
+            <li><a href="#">Content Policy</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2024 whamr. All rights reserved.</span>
+      <div class="footer-bl">
+        <a href="#">Status</a>
+        <a href="#">API</a>
+        <a href="#">Help</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

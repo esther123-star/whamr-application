@@ -1,0 +1,1080 @@
+﻿<!-- FILE: 16-export-pack.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Export Sticker Pack, whamr.</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Whamr Sunset, Electric Orange-Red + Golden Yellow */
+  --bg:#FFFAF5; --bg-alt:#FFF3E8; --card:#FFFFFF;
+  --ink:#1A0F00; --ink-soft:#4A3020; --ink-mute:#8A7060;
+  --line:#F0DDD0; --line-soft:#FBF0E8;
+  /* Primary: electric orange-red (the wham) */
+  --purple:#FF4500; --purple-mid:#FF6B35; --purple-bright:#FF8C60;
+  --purple-dark:#CC3700; --purple-soft:#FFF1EC; --purple-xsoft:#FFF8F5;
+  /* Accent: warm golden yellow (the joy) */
+  --wham:#FFB800; --wham-bright:#FFD60A; --wham-soft:#FFF8DC;
+  --pink:#FFB800; --pink-soft:#FFF8DC;
+  /* Semantic */
+  --green:#00C853; --green-soft:#E8FFF0;
+  --amber:#FFB800; --red:#FF2D55; --red-soft:#FFF0F3;
+  --blue:#007AFF;
+  /* Gray scale (kept neutral) */
+  --gray-50:#F9FAFB; --gray-100:#F3F4F6; --gray-200:#E5E7EB;
+  --gray-400:#9CA3AF; --gray-500:#6B7280; --gray-700:#374151; --gray-900:#111827;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;font-size:15px;background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;border:none;background:none;font-family:inherit}
+
+/* NAV */
+.nav{
+  height:64px;background:#fff;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;padding:0 32px;gap:0;
+  position:sticky;top:0;z-index:100;
+}
+.nav-logo{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;
+  font-size:22px;letter-spacing:-0.05em;color:var(--purple);
+  margin-right:32px;flex-shrink:0;
+}
+.nav-links{display:flex;align-items:center;gap:2px}
+.nav-link{
+  font-size:14px;font-weight:500;color:var(--gray-700);
+  padding:6px 12px;border-radius:8px;transition:background 0.15s,color 0.15s;white-space:nowrap;
+}
+.nav-link:hover{background:var(--purple-soft);color:var(--purple)}
+.nav-search{
+  flex:1;max-width:360px;margin:0 24px;
+  display:flex;align-items:center;
+  border:1.5px solid var(--line);border-radius:50px;
+  background:#fff;overflow:hidden;
+  transition:border-color 0.2s,box-shadow 0.2s;
+}
+.nav-search:focus-within{border-color:var(--purple);box-shadow:0 0 0 3px rgba(255,69,0,0.12)}
+.nav-search input{
+  flex:1;border:none;outline:none;padding:0 16px;height:38px;
+  font-size:13.5px;font-family:'Inter',sans-serif;color:var(--ink);background:transparent;
+}
+.nav-search input::placeholder{color:var(--gray-400)}
+.nav-search-btn{
+  background:var(--purple);color:#fff;
+  border:none;padding:0 16px;height:38px;
+  font-size:13px;font-weight:600;font-family:'Inter',sans-serif;
+  display:flex;align-items:center;gap:6px;
+  transition:background 0.15s;white-space:nowrap;cursor:pointer;
+}
+.nav-search-btn:hover{background:var(--purple-dark)}
+.nav-actions{display:flex;align-items:center;gap:8px;margin-left:auto}
+.btn-upload{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--purple);color:#fff;
+  font-size:13px;font-weight:600;padding:8px 16px;border-radius:9px;
+  border:none;cursor:pointer;font-family:'Inter',sans-serif;
+  transition:background 0.15s;white-space:nowrap;
+}
+.btn-upload:hover{background:var(--purple-dark)}
+.nav-icon-btn{
+  width:36px;height:36px;border-radius:8px;
+  background:var(--purple-xsoft);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;cursor:pointer;position:relative;
+  transition:background 0.15s;
+}
+.nav-icon-btn:hover{background:var(--purple-soft)}
+.nav-badge{
+  position:absolute;top:-4px;right:-4px;
+  min-width:16px;height:16px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:700;color:#fff;padding:0 4px;
+  border:1.5px solid #fff;
+}
+.nav-badge.red{background:var(--red)}
+.nav-badge.blue{background:#2563EB}
+.nav-avatar{
+  width:34px;height:34px;border-radius:50%;
+  background:linear-gradient(135deg,#1A0F00 0%,#4A1000 30%,#CC3700 60%,#FF4500 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;color:#fff;font-weight:700;cursor:pointer;flex-shrink:0;
+  border:2px solid var(--purple-soft);
+}
+.btn-signin{
+  font-size:13px;font-weight:600;color:var(--purple);
+  padding:7px 14px;border-radius:8px;
+  border:1.5px solid var(--line);background:transparent;
+  font-family:'Inter',sans-serif;transition:all 0.15s;white-space:nowrap;cursor:pointer;
+}
+.btn-signin:hover{border-color:var(--purple);background:var(--purple-xsoft)}
+.btn-signup{
+  font-size:13px;font-weight:600;color:#fff;
+  padding:7px 16px;border-radius:8px;background:var(--ink);
+  font-family:'Inter',sans-serif;transition:background 0.15s;white-space:nowrap;border:none;cursor:pointer;
+}
+.btn-signup:hover{background:#2D0A5F}
+
+/* MAIN LAYOUT */
+.page-wrap{max-width:900px;margin:0 auto;padding:40px 24px 80px}
+
+/* PAGE HEADER */
+.page-header{margin-bottom:36px;text-align:center}
+.page-header h1{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:32px;
+  letter-spacing:-0.03em;color:var(--ink);margin-bottom:8px;
+}
+.page-header p{font-size:15px;color:var(--ink-mute);max-width:480px;margin:0 auto}
+
+/* PROGRESS BAR */
+.progress-steps{
+  display:flex;align-items:center;justify-content:center;
+  gap:0;margin-bottom:48px;
+}
+.step-item{
+  display:flex;align-items:center;gap:0;
+}
+.step-circle{
+  width:32px;height:32px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace;
+  border:2px solid var(--line);background:#fff;color:var(--ink-mute);
+  flex-shrink:0;
+}
+.step-circle.done{background:var(--green);border-color:var(--green);color:#fff}
+.step-circle.active{background:var(--purple);border-color:var(--purple);color:#fff}
+.step-label{
+  font-size:12px;font-weight:600;color:var(--ink-mute);
+  margin-left:8px;white-space:nowrap;
+}
+.step-label.active{color:var(--purple)}
+.step-label.done{color:var(--green)}
+.step-connector{
+  width:64px;height:2px;background:var(--line);margin:0 8px;flex-shrink:0;
+}
+.step-connector.done{background:var(--green)}
+
+/* SECTION LABELS */
+.step-section-label{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--purple-xsoft);border:1px solid var(--purple-soft);
+  color:var(--purple);font-size:12px;font-weight:700;
+  padding:4px 12px;border-radius:50px;margin-bottom:16px;
+  text-transform:uppercase;letter-spacing:0.08em;
+}
+.step-section-label span{
+  background:var(--purple);color:#fff;
+  width:18px;height:18px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;
+}
+
+/* PANEL */
+.panel{
+  background:var(--card);border:1px solid var(--line);
+  border-radius:16px;padding:32px;margin-bottom:32px;
+}
+.panel-title{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;
+  letter-spacing:-0.02em;color:var(--ink);margin-bottom:6px;
+}
+.panel-subtitle{font-size:14px;color:var(--ink-mute);margin-bottom:24px}
+
+/* SELECT ROW */
+.select-row{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--line-soft);
+}
+.select-count{
+  font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;
+  color:var(--ink);
+}
+.select-row-links{display:flex;align-items:center;gap:16px}
+.select-link{
+  font-size:13px;font-weight:600;color:var(--purple);
+  display:flex;align-items:center;gap:4px;
+  padding:4px 10px;border-radius:8px;
+  transition:background 0.15s;cursor:pointer;
+}
+.select-link:hover{background:var(--purple-soft)}
+
+/* STICKER GRID */
+.sticker-grid{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:10px;
+  margin-bottom:24px;
+}
+.sticker-cell{
+  aspect-ratio:1;border-radius:12px;overflow:hidden;
+  position:relative;cursor:pointer;border:2px solid transparent;
+  transition:border-color 0.15s,transform 0.1s;
+}
+.sticker-cell:hover{transform:scale(1.03)}
+.sticker-cell.selected{border-color:var(--purple)}
+.sticker-cell img{width:100%;height:100%;object-fit:cover}
+.sticker-overlay{
+  position:absolute;inset:0;background:rgba(255,69,0,0.12);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity 0.15s;
+}
+.sticker-cell.selected .sticker-overlay{opacity:1}
+.sticker-check{
+  width:26px;height:26px;background:var(--purple);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:13px;font-weight:700;
+  border:2px solid #fff;
+}
+.type-badge{
+  position:absolute;top:6px;left:6px;
+  background:rgba(0,0,0,0.55);color:#fff;
+  font-size:9px;font-weight:700;letter-spacing:0.05em;
+  padding:2px 6px;border-radius:4px;
+  font-family:'Inter',sans-serif;text-transform:uppercase;
+}
+.sticker-cell.unselected .sticker-overlay{opacity:0}
+
+/* BOTTOM ACTION ROW */
+.panel-action-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding-top:20px;border-top:1px solid var(--line-soft);
+}
+.selected-summary{
+  font-size:13px;color:var(--ink-mute);
+}
+.selected-summary strong{
+  font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--ink);
+}
+.btn-continue{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--purple);color:#fff;
+  font-size:14px;font-weight:600;font-family:'Inter',sans-serif;
+  padding:11px 24px;border-radius:10px;border:none;cursor:pointer;
+  transition:background 0.15s,transform 0.1s;
+}
+.btn-continue:hover{background:var(--purple-dark);transform:translateY(-1px)}
+.btn-continue.disabled{background:var(--gray-400);cursor:not-allowed;transform:none}
+
+/* PLATFORM CARDS */
+.platform-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
+  margin-bottom:28px;
+}
+.platform-card{
+  border:2px solid var(--line);border-radius:12px;padding:16px;
+  cursor:pointer;transition:border-color 0.15s,background 0.15s;
+  background:#fff;
+}
+.platform-card:hover{border-color:var(--purple-bright);background:var(--purple-xsoft)}
+.platform-card.selected{border-color:var(--purple);background:var(--purple-soft)}
+.platform-icon{font-size:22px;margin-bottom:8px}
+.platform-name{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;
+  color:var(--ink);margin-bottom:3px;
+}
+.platform-desc{font-size:12px;color:var(--ink-mute)}
+
+/* FORM SECTION */
+.form-section-title{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;
+  color:var(--ink);margin-bottom:16px;padding-top:4px;
+}
+.form-row{margin-bottom:16px}
+.form-label{
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:13px;font-weight:600;color:var(--ink);margin-bottom:6px;
+}
+.form-counter{font-size:12px;font-weight:400;color:var(--ink-mute)}
+.form-input{
+  width:100%;border:1.5px solid var(--line);border-radius:10px;
+  padding:10px 14px;font-size:14px;font-family:'Inter',sans-serif;
+  color:var(--ink);background:#fff;outline:none;
+  transition:border-color 0.2s,box-shadow 0.2s;
+}
+.form-input:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(255,69,0,0.12)}
+.form-note{
+  border:1.5px solid var(--wham-bright);background:var(--wham-soft);
+  border-radius:10px;padding:14px 16px;margin-top:16px;
+}
+.form-note-title{
+  font-size:12px;font-weight:700;color:var(--wham);
+  text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;
+}
+.form-note p{font-size:13px;color:#78350F}
+
+/* PREVIEW STRIP */
+.preview-strip-label{
+  font-size:13px;font-weight:600;color:var(--ink);
+  margin-bottom:10px;margin-top:20px;
+}
+.preview-strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.preview-thumb{
+  width:52px;height:52px;border-radius:8px;overflow:hidden;flex-shrink:0;
+  border:1.5px solid var(--line);
+}
+.preview-thumb img{width:100%;height:100%;object-fit:cover}
+
+/* CONFIGURE ACTION ROW */
+.configure-action-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding-top:20px;border-top:1px solid var(--line-soft);margin-top:20px;
+}
+.btn-ghost{
+  font-size:14px;font-weight:600;color:var(--ink-mute);
+  padding:10px 20px;border-radius:10px;
+  border:1.5px solid var(--line);background:transparent;
+  font-family:'Inter',sans-serif;cursor:pointer;
+  transition:all 0.15s;
+}
+.btn-ghost:hover{border-color:var(--purple);color:var(--purple);background:var(--purple-xsoft)}
+.btn-export{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--purple);color:#fff;
+  font-size:14px;font-weight:600;font-family:'Inter',sans-serif;
+  padding:11px 24px;border-radius:10px;border:none;cursor:pointer;
+  transition:background 0.15s;
+}
+.btn-export:hover{background:var(--purple-dark)}
+
+/* EXPORTING STATE */
+.exporting-center{text-align:center;padding:20px 0}
+.rocket-emoji{
+  font-size:72px;margin:0 auto 24px;
+  display:block;
+  animation:pulse-rocket 1.4s ease-in-out infinite;
+}
+@keyframes pulse-rocket{
+  0%,100%{transform:scale(1) translateY(0)}
+  50%{transform:scale(1.12) translateY(-8px)}
+}
+.export-progress-bar-wrap{
+  background:var(--line-soft);border-radius:50px;
+  height:8px;margin:20px 0 8px;overflow:hidden;
+}
+.export-progress-bar-fill{
+  height:100%;border-radius:50px;background:linear-gradient(90deg,var(--purple),var(--purple-bright));
+  width:72%;transition:width 0.4s;
+}
+.export-progress-label{
+  font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;
+  color:var(--purple);margin-bottom:20px;
+}
+.export-checklist{
+  list-style:none;text-align:left;max-width:400px;margin:0 auto;
+}
+.export-checklist li{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:8px 0;border-bottom:1px solid var(--line-soft);
+  font-size:14px;
+}
+.export-checklist li:last-child{border-bottom:none}
+.check-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.check-icon.done{color:var(--green)}
+.check-icon.pending{color:var(--wham)}
+.check-icon.todo{color:var(--gray-400)}
+.check-text-pending{color:var(--wham);font-style:italic}
+.check-text-todo{color:var(--gray-400)}
+.export-note{
+  margin-top:20px;font-size:13px;color:var(--ink-mute);
+  font-style:italic;
+}
+
+/* DONE STATE */
+.done-title{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:26px;
+  letter-spacing:-0.02em;color:var(--ink);margin-bottom:6px;
+}
+.done-subtitle{font-size:15px;color:var(--ink-mute);margin-bottom:24px}
+.done-preview-strip{display:flex;gap:10px;margin-bottom:28px;flex-wrap:wrap}
+.done-thumb{
+  width:60px;height:60px;border-radius:50%;overflow:hidden;
+  border:2px solid var(--purple-soft);
+}
+.done-thumb img{width:100%;height:100%;object-fit:cover}
+.install-card{
+  border:2px solid var(--green);background:var(--green-soft);
+  border-radius:14px;padding:20px 22px;margin-bottom:20px;
+}
+.install-card h3{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;
+  color:var(--green);margin-bottom:12px;display:flex;align-items:center;gap:8px;
+}
+.install-steps{list-style:none;counter-reset:install}
+.install-steps li{
+  display:flex;align-items:flex-start;gap:10px;
+  font-size:14px;color:var(--gray-700);padding:5px 0;
+}
+.install-step-num{
+  width:22px;height:22px;border-radius:50%;background:var(--green);color:#fff;
+  font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:1px;
+}
+.qr-card{
+  border:1.5px solid var(--gray-200);background:var(--gray-100);
+  border-radius:14px;padding:20px 22px;margin-bottom:20px;
+}
+.qr-card-title{
+  font-size:14px;font-weight:600;color:var(--ink);margin-bottom:14px;
+  display:flex;align-items:center;gap:6px;
+}
+.qr-pattern{
+  display:inline-grid;grid-template-columns:repeat(7,10px);gap:2px;
+  margin-bottom:10px;
+}
+.qr-pixel{width:10px;height:10px;background:transparent}
+.qr-pixel.b{background:#1A0F00}
+.qr-label{font-size:12px;color:var(--ink-mute);margin-bottom:12px}
+.copy-row{display:flex;gap:8px;align-items:center}
+.copy-input{
+  flex:1;border:1.5px solid var(--line);border-radius:8px;
+  padding:8px 12px;font-size:13px;font-family:'JetBrains Mono',monospace;
+  color:var(--ink-mute);background:#fff;outline:none;
+}
+.btn-copy{
+  background:var(--purple-soft);color:var(--purple);
+  font-size:12px;font-weight:700;padding:8px 14px;border-radius:8px;
+  border:1.5px solid var(--purple-soft);cursor:pointer;
+  font-family:'Inter',sans-serif;transition:all 0.15s;
+}
+.btn-copy:hover{background:var(--purple-soft);border-color:var(--purple)}
+.done-actions{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.btn-download{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--green);color:#fff;
+  font-size:14px;font-weight:600;font-family:'Inter',sans-serif;
+  padding:12px 22px;border-radius:10px;border:none;cursor:pointer;
+  transition:background 0.15s;
+}
+.btn-download:hover{background:#047857}
+.btn-open-app{
+  display:inline-flex;align-items:center;gap:8px;
+  background:#065F46;color:#fff;
+  font-size:14px;font-weight:600;font-family:'Inter',sans-serif;
+  padding:12px 22px;border-radius:10px;border:none;cursor:pointer;
+  transition:background 0.15s;
+}
+.btn-open-app:hover{background:#064E3B}
+.done-secondary{display:flex;gap:20px;align-items:center;font-size:13px;color:var(--ink-mute)}
+.done-secondary a{font-weight:600;color:var(--purple)}
+.done-secondary a:hover{text-decoration:underline}
+
+/* WHATS NEXT */
+.whats-next-title{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;
+  letter-spacing:-0.02em;color:var(--ink);margin-bottom:16px;
+}
+.next-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:40px}
+.next-card{
+  border:1px solid var(--line);border-radius:14px;padding:20px;
+  background:#fff;transition:border-color 0.15s,box-shadow 0.15s;
+}
+.next-card:hover{border-color:var(--purple-bright);box-shadow:0 4px 16px rgba(255,69,0,0.12)}
+.next-card-icon{font-size:26px;margin-bottom:10px}
+.next-card h4{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;
+  color:var(--ink);margin-bottom:5px;
+}
+.next-card p{font-size:13px;color:var(--ink-mute);line-height:1.5}
+.next-card a{
+  display:inline-block;margin-top:10px;font-size:12px;font-weight:600;color:var(--purple);
+}
+
+/* DIVIDER */
+.step-divider{
+  display:flex;align-items:center;gap:16px;margin:40px 0 32px;
+}
+.step-divider-line{flex:1;height:1px;background:var(--line)}
+.step-divider-badge{
+  display:flex;align-items:center;gap:8px;
+  background:var(--purple-xsoft);border:1px solid var(--purple-soft);
+  border-radius:50px;padding:6px 16px;white-space:nowrap;
+}
+.step-divider-badge-num{
+  background:var(--purple);color:#fff;
+  width:20px;height:20px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;
+}
+.step-divider-badge-text{
+  font-size:12px;font-weight:700;color:var(--purple);
+  text-transform:uppercase;letter-spacing:0.07em;
+}
+
+/* FOOTER */
+footer{
+  background:#1A0F00;color:rgba(255,255,255,0.7);
+  padding:48px 32px 28px;
+}
+.footer-inner{max-width:1200px;margin:0 auto}
+.footer-top{
+  display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:40px;
+  margin-bottom:40px;
+}
+.footer-brand-logo{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;
+  letter-spacing:-0.05em;color:#fff;margin-bottom:8px;
+}
+.footer-brand-tagline{font-size:13px;color:rgba(255,255,255,0.5);line-height:1.5}
+.footer-col-title{
+  font-size:11px;font-weight:700;color:rgba(255,255,255,0.4);
+  text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;
+}
+.footer-col ul{list-style:none}
+.footer-col ul li{margin-bottom:8px}
+.footer-col ul li a{
+  font-size:13px;color:rgba(255,255,255,0.6);
+  transition:color 0.15s;
+}
+.footer-col ul li a:hover{color:#fff}
+.footer-bottom{
+  display:flex;align-items:center;justify-content:space-between;
+  border-top:1px solid rgba(255,255,255,0.08);padding-top:24px;
+  font-size:12px;color:rgba(255,255,255,0.35);
+}
+.footer-bottom-links{display:flex;gap:20px}
+.footer-bottom-links a{color:rgba(255,255,255,0.35);transition:color 0.15s}
+.footer-bottom-links a:hover{color:rgba(255,255,255,0.7)}
+
+/* HIGHLIGHT RING on configure panel */
+.panel.step-2-panel{border-color:var(--purple);box-shadow:0 0 0 3px rgba(255,69,0,0.12)}
+.panel.step-3-panel{border-color:var(--wham-bright);box-shadow:0 0 0 3px rgba(217,119,6,0.06)}
+.panel.step-4-panel{border-color:var(--green);box-shadow:0 0 0 3px rgba(5,150,105,0.06)}
+
+/* DISABLED BUTTON EXAMPLE */
+.btn-continue-example-disabled{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--gray-400);color:#fff;
+  font-size:13px;font-weight:600;font-family:'Inter',sans-serif;
+  padding:9px 18px;border-radius:10px;border:none;cursor:not-allowed;
+  margin-left:12px;
+}
+.disabled-label{
+  font-size:11px;color:var(--gray-500);margin-top:6px;font-style:italic;
+}
+
+@media(max-width:720px){
+  .sticker-grid{grid-template-columns:repeat(4,1fr)}
+  .platform-grid{grid-template-columns:repeat(2,1fr)}
+  .next-cards{grid-template-columns:1fr}
+  .footer-top{grid-template-columns:1fr 1fr}
+  .step-connector{width:32px}
+  .step-label{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="01-landing.html" class="nav-logo">whamr.</a>
+  <div class="nav-links">
+    <a href="02-memes-browser.html" class="nav-link">Browse</a>
+    <a href="06-explore.html" class="nav-link">Explore</a>
+    <a href="10-dojos.html" class="nav-link">Dojos</a>
+    <a href="#" class="nav-link active">Export</a>
+  </div>
+  <div class="nav-search">
+    <input type="text" placeholder="Search memes, stickers, tags...">
+    <button class="nav-search-btn">🔍 Search</button>
+  </div>
+  <div class="nav-actions">
+    <button class="btn-upload">+ Upload</button>
+    <div class="nav-icon-btn">
+      🔔<span class="nav-badge red">4</span>
+    </div>
+    <div class="nav-icon-btn">
+      💬<span class="nav-badge blue">3</span>
+    </div>
+    <div class="nav-avatar">M</div>
+    <button class="btn-signin">Sign in</button>
+    <button class="btn-signup">Sign up</button>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <h1>Export Sticker Pack</h1>
+    <p>Turn your favourite memes into stickers. Send them on WhatsApp, Telegram, Signal, Discord, and more.</p>
+  </div>
+
+  <!-- PROGRESS BAR -->
+  <div class="progress-steps">
+    <div class="step-item">
+      <div class="step-circle done">✓</div>
+      <span class="step-label done">Select stickers</span>
+    </div>
+    <div class="step-connector done"></div>
+    <div class="step-item">
+      <div class="step-circle done">✓</div>
+      <span class="step-label done">Configure</span>
+    </div>
+    <div class="step-connector done"></div>
+    <div class="step-item">
+      <div class="step-circle done">✓</div>
+      <span class="step-label done">Exporting</span>
+    </div>
+    <div class="step-connector"></div>
+    <div class="step-item">
+      <div class="step-circle active">4</div>
+      <span class="step-label active">Done</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       STEP 1, SELECT STICKERS
+  ═══════════════════════════════════════════════ -->
+  <div class="step-divider">
+    <div class="step-divider-line"></div>
+    <div class="step-divider-badge">
+      <div class="step-divider-badge-num">1</div>
+      <span class="step-divider-badge-text">Select Stickers</span>
+    </div>
+    <div class="step-divider-line"></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Pick your stickers</div>
+    <div class="panel-subtitle">Choose 3–30 stickers for your pack. WhatsApp requires a minimum of 3.</div>
+
+    <div class="select-row">
+      <div class="select-count"><strong>8 selected</strong> &nbsp;·&nbsp; 30 max</div>
+      <div class="select-row-links">
+        <a class="select-link" href="#">♥ Select saved stickers</a>
+        <a class="select-link" href="#">☰ Select all stickers</a>
+      </div>
+    </div>
+
+    <!-- 5×4 = 20 sticker grid. 8 pre-selected. -->
+    <div class="sticker-grid">
+
+      <!-- Row 1, selected -->
+      <div class="sticker-cell selected">
+        <img src="https://picsum.photos/seed/r1/200/200" alt="sticker">
+        <div class="type-badge">Reaction</div>
+        <div class="sticker-overlay"><div class="sticker-check">✓</div></div>
+      </div>
+      <div class="sticker-cell selected">
+        <img src="https://picsum.photos/seed/r2/200/200" alt="sticker">
+        <div class="type-badge">Reaction</div>
+        <div class="sticker-overlay"><div class="sticker-check">✓</div></div>
+      </div>
+      <div class="sticker-cell selected">
+        <img src="https://picsum.photos/seed/n1/200/200" alt="sticker">
+        <div class="type-badge">Naija</div>
+        <div class="sticker-overlay"><div class="sticker-check">✓</div></div>
+      </div>
+      <div class="sticker-cell selected">
+        <img src="https://picsum.photos/seed/n2/200/200" alt="sticker">
+        <div class="type-badge">Naija</div>
+        <div class="sticker-overlay"><div class="sticker-check">✓</div></div>
+      </div>
+      <div class="sticker-cell">
+        <img src="https://picsum.photos/seed/n3/200/200" alt="sticker">
+        <div class="type-badge">Naija</div>
+        <div class="sticker-overlay"><div class="sticker-check">✓</div></div>
+      </div>
+
+      <!-- Row 2, mixed -->
+      <div class="sticker-cell selected">
+        <img src="https://picsum.photos/seed/d1/200/200" alt="sticker">
+        <div class="type-badge">Dance</div>
+        <div class="sticker-overlay"><div class="sticker-check">✓</div></div>
+      </div>
+      <div class="sticker-cell">
+        <img src="https://picsum.photos/seed/d2/200/200" alt="sticker">
+        <div class="type-badge">Dance</div>
+        <div class="sticker-overlay"><div class="sticker-check">✓</div></div>
+      </div>
+      <div class="sticker-cell selected">
+        <img src="https://picsum.photos/seed/d3/200/200" alt="sticker">
+        <div class="type-badge">Dance</div>
+        <div class="sticker-overlay"><div class="sticker-check">✓</div></div>
+      </div>
+      <div class="sticker-cell">
+        <img src="https://picsum.photos/seed/d4/200/200" alt="sticker">
+        <div class="type-badge">Dance</div>
+        <div class="sticker-overlay"><div class="sticker-check">✓</div></div>
+      </div>
+      <div class="sticker-cell">
+        <img src="https://picsum.photos/seed/d5/200/200" alt="sticker">
+        <div class="type-badge">Dance</div>
+        <div class="sticker-overlay"><div class="sticker-check">✓</div></div>
+      </div>
+
+      <!-- Row 3 -->
+      <div class="sticker-cell selected">
+        <img src="https://picsum.photos/seed/l1/200/200" alt="sticker">
+        <div class="type-badge">LOL</div>
+        <div class="sticker-overlay"><div class="sticker-check">✓</div></div>
+      </div>
+      <div class="sticker-cell">
+        <img src="https://picsum.photos/seed/l2/200/200" alt="sticker">
+        <div class="type-badge">LOL</div>
+        <div class="sticker-overlay"><div class="sticker-check">✓</div></div>
+      </div>
+      <div class="sticker-cell selected">
+        <img src="https://picsum.photos/seed/l3/200/200" alt="sticker">
+        <div class="type-badge">LOL</div>
+        <div class="sticker-overlay"><div class="sticker-check">✓</div></div>
+      </div>
+      <div class="sticker-cell">
+        <img src="https://picsum.photos/seed/a1/200/200" alt="sticker">
+        <div class="type-badge">Anime</div>
+        <div class="sticker-overlay"><div class="sticker-check">✓</div></div>
+      </div>
+      <div class="sticker-cell">
+        <img src="https://picsum.photos/seed/a3/200/200" alt="sticker">
+        <div class="type-badge">Anime</div>
+        <div class="sticker-overlay"><div class="sticker-check">✓</div></div>
+      </div>
+
+      <!-- Row 4 -->
+      <div class="sticker-cell">
+        <img src="https://picsum.photos/seed/s1/200/200" alt="sticker">
+        <div class="type-badge">Sport</div>
+        <div class="sticker-overlay"><div class="sticker-check">✓</div></div>
+      </div>
+      <div class="sticker-cell">
+        <img src="https://picsum.photos/seed/r3/200/200" alt="sticker">
+        <div class="type-badge">Reaction</div>
+        <div class="sticker-overlay"><div class="sticker-check">✓</div></div>
+      </div>
+      <div class="sticker-cell">
+        <img src="https://picsum.photos/seed/r4/200/200" alt="sticker">
+        <div class="type-badge">Reaction</div>
+        <div class="sticker-overlay"><div class="sticker-check">✓</div></div>
+      </div>
+      <div class="sticker-cell">
+        <img src="https://picsum.photos/seed/r5/200/200" alt="sticker">
+        <div class="type-badge">Reaction</div>
+        <div class="sticker-overlay"><div class="sticker-check">✓</div></div>
+      </div>
+      <div class="sticker-cell">
+        <img src="https://picsum.photos/seed/r6/200/200" alt="sticker">
+        <div class="type-badge">Reaction</div>
+        <div class="sticker-overlay"><div class="sticker-check">✓</div></div>
+      </div>
+    </div>
+
+    <div class="panel-action-row">
+      <div>
+        <div class="selected-summary"><strong>8</strong> stickers selected. Minimum 3 required.</div>
+        <div class="disabled-label">Example: disabled state (fewer than 3 selected) shown on button to the right</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="btn-continue-example-disabled" disabled>Continue with 0 →</button>
+        <button class="btn-continue">Continue with 8 stickers &rarr;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       STEP 2, CONFIGURE
+  ═══════════════════════════════════════════════ -->
+  <div class="step-divider">
+    <div class="step-divider-line"></div>
+    <div class="step-divider-badge">
+      <div class="step-divider-badge-num">2</div>
+      <span class="step-divider-badge-text">Configure Pack</span>
+    </div>
+    <div class="step-divider-line"></div>
+  </div>
+
+  <div class="panel step-2-panel">
+    <div class="panel-title">Configure your pack</div>
+    <div class="panel-subtitle">Choose a platform, name your pack, and you're done.</div>
+
+    <!-- Platform selector -->
+    <div class="form-section-title">Choose a platform</div>
+    <div class="platform-grid">
+      <div class="platform-card selected">
+        <div class="platform-icon">💬</div>
+        <div class="platform-name">WhatsApp</div>
+        <div class="platform-desc">Direct install via .wastickers</div>
+      </div>
+      <div class="platform-card">
+        <div class="platform-icon">✈️</div>
+        <div class="platform-name">Telegram</div>
+        <div class="platform-desc">Sticker set via @WhamrBot</div>
+      </div>
+      <div class="platform-card">
+        <div class="platform-icon">🔵</div>
+        <div class="platform-name">Signal</div>
+        <div class="platform-desc">signal.art install link</div>
+      </div>
+      <div class="platform-card">
+        <div class="platform-icon">🎮</div>
+        <div class="platform-name">Discord</div>
+        <div class="platform-desc">PNG emoji / server stickers</div>
+      </div>
+      <div class="platform-card">
+        <div class="platform-icon">📱</div>
+        <div class="platform-name">iMessage</div>
+        <div class="platform-desc">iOS Sticker Pack ZIP</div>
+      </div>
+      <div class="platform-card">
+        <div class="platform-icon">📦</div>
+        <div class="platform-name">ZIP export</div>
+        <div class="platform-desc">All formats bundled</div>
+      </div>
+    </div>
+
+    <!-- Pack details -->
+    <div class="form-section-title" style="margin-top:24px">Pack details</div>
+    <div class="form-row">
+      <div class="form-label">
+        <span>Pack name</span>
+        <span class="form-counter">13/32</span>
+      </div>
+      <input class="form-input" type="text" value="My Whamr Pack" maxlength="32">
+    </div>
+    <div class="form-row">
+      <div class="form-label">
+        <span>Publisher <span style="font-weight:400;color:var(--ink-mute)">(optional)</span></span>
+      </div>
+      <input class="form-input" type="text" value="@memequeen">
+    </div>
+
+    <div class="form-note">
+      <div class="form-note-title">⚠️ WhatsApp notes</div>
+      <p>3–30 stickers per pack. Each sticker must be a WebP image at 512x512px under 100KB. The pack installs directly into your WhatsApp sticker picker when you tap the .wastickers file on your phone.</p>
+    </div>
+
+    <!-- Preview strip -->
+    <div class="preview-strip-label">Selected stickers (8)</div>
+    <div class="preview-strip">
+      <div class="preview-thumb"><img src="https://picsum.photos/seed/r1/104/104" alt=""></div>
+      <div class="preview-thumb"><img src="https://picsum.photos/seed/r2/104/104" alt=""></div>
+      <div class="preview-thumb"><img src="https://picsum.photos/seed/n1/104/104" alt=""></div>
+      <div class="preview-thumb"><img src="https://picsum.photos/seed/n2/104/104" alt=""></div>
+      <div class="preview-thumb"><img src="https://picsum.photos/seed/d1/104/104" alt=""></div>
+      <div class="preview-thumb"><img src="https://picsum.photos/seed/d3/104/104" alt=""></div>
+      <div class="preview-thumb"><img src="https://picsum.photos/seed/l1/104/104" alt=""></div>
+      <div class="preview-thumb"><img src="https://picsum.photos/seed/l3/104/104" alt=""></div>
+    </div>
+
+    <div class="configure-action-row">
+      <button class="btn-ghost">&larr; Back</button>
+      <button class="btn-export">Export to WhatsApp &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       STEP 3, EXPORTING
+  ═══════════════════════════════════════════════ -->
+  <div class="step-divider">
+    <div class="step-divider-line"></div>
+    <div class="step-divider-badge">
+      <div class="step-divider-badge-num">3</div>
+      <span class="step-divider-badge-text">Exporting</span>
+    </div>
+    <div class="step-divider-line"></div>
+  </div>
+
+  <div class="panel step-3-panel">
+    <div class="exporting-center">
+      <div class="panel-title" style="text-align:center">Preparing your pack...</div>
+      <div class="panel-subtitle" style="text-align:center">Converting 8 stickers to WebP format optimised for WhatsApp.</div>
+
+      <span class="rocket-emoji">🚀</span>
+
+      <div class="export-progress-bar-wrap">
+        <div class="export-progress-bar-fill"></div>
+      </div>
+      <div class="export-progress-label">72% complete</div>
+
+      <ul class="export-checklist">
+        <li>
+          <span class="check-icon done">✅</span>
+          <span>Fetching 8 stickers</span>
+        </li>
+        <li>
+          <span class="check-icon done">✅</span>
+          <span>Converting to WebP 512x512px</span>
+        </li>
+        <li>
+          <span class="check-icon pending">⏳</span>
+          <span class="check-text-pending">Optimizing file sizes (3/8 done)...</span>
+        </li>
+        <li>
+          <span class="check-icon todo">○</span>
+          <span class="check-text-todo">Building .wastickers package</span>
+        </li>
+        <li>
+          <span class="check-icon todo">○</span>
+          <span class="check-text-todo">Generating install link</span>
+        </li>
+      </ul>
+
+      <p class="export-note">Typically takes 5–10 seconds for packs under 30 stickers.</p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       STEP 4, DONE
+  ═══════════════════════════════════════════════ -->
+  <div class="step-divider">
+    <div class="step-divider-line"></div>
+    <div class="step-divider-badge">
+      <div class="step-divider-badge-num">4</div>
+      <span class="step-divider-badge-text">Done</span>
+    </div>
+    <div class="step-divider-line"></div>
+  </div>
+
+  <div class="panel step-4-panel">
+    <div class="done-title">🎉 Your pack is ready!</div>
+    <div class="done-subtitle">8 stickers converted. Opens WhatsApp directly on your phone.</div>
+
+    <div class="done-preview-strip">
+      <div class="done-thumb"><img src="https://picsum.photos/seed/r1/120/120" alt=""></div>
+      <div class="done-thumb"><img src="https://picsum.photos/seed/r2/120/120" alt=""></div>
+      <div class="done-thumb"><img src="https://picsum.photos/seed/n1/120/120" alt=""></div>
+      <div class="done-thumb"><img src="https://picsum.photos/seed/n2/120/120" alt=""></div>
+      <div class="done-thumb"><img src="https://picsum.photos/seed/d1/120/120" alt=""></div>
+      <div class="done-thumb"><img src="https://picsum.photos/seed/d3/120/120" alt=""></div>
+      <div class="done-thumb"><img src="https://picsum.photos/seed/l1/120/120" alt=""></div>
+      <div class="done-thumb"><img src="https://picsum.photos/seed/l3/120/120" alt=""></div>
+    </div>
+
+    <!-- Install card -->
+    <div class="install-card">
+      <h3>📲 Install on your phone</h3>
+      <ol class="install-steps">
+        <li>
+          <span class="install-step-num">1</span>
+          <span>Tap "Download pack" below to save the .wastickers file.</span>
+        </li>
+        <li>
+          <span class="install-step-num">2</span>
+          <span>Open the .wastickers file on your phone (tap once in your downloads folder).</span>
+        </li>
+        <li>
+          <span class="install-step-num">3</span>
+          <span>WhatsApp opens with an "Add to WhatsApp" prompt.</span>
+        </li>
+        <li>
+          <span class="install-step-num">4</span>
+          <span>Tap Add. Your stickers appear in the WhatsApp sticker picker. Done.</span>
+        </li>
+      </ol>
+    </div>
+
+    <!-- QR card -->
+    <div class="qr-card">
+      <div class="qr-card-title">📱 Share with others</div>
+      <!-- CSS fake QR pattern -->
+      <div class="qr-pattern">
+        <!-- Row 1 -->
+        <div class="qr-pixel b"></div><div class="qr-pixel b"></div><div class="qr-pixel b"></div><div class="qr-pixel"></div><div class="qr-pixel b"></div><div class="qr-pixel b"></div><div class="qr-pixel b"></div>
+        <!-- Row 2 -->
+        <div class="qr-pixel b"></div><div class="qr-pixel"></div><div class="qr-pixel b"></div><div class="qr-pixel"></div><div class="qr-pixel b"></div><div class="qr-pixel"></div><div class="qr-pixel b"></div>
+        <!-- Row 3 -->
+        <div class="qr-pixel b"></div><div class="qr-pixel"></div><div class="qr-pixel b"></div><div class="qr-pixel b"></div><div class="qr-pixel b"></div><div class="qr-pixel"></div><div class="qr-pixel b"></div>
+        <!-- Row 4 -->
+        <div class="qr-pixel"></div><div class="qr-pixel b"></div><div class="qr-pixel"></div><div class="qr-pixel b"></div><div class="qr-pixel"></div><div class="qr-pixel b"></div><div class="qr-pixel"></div>
+        <!-- Row 5 -->
+        <div class="qr-pixel b"></div><div class="qr-pixel"></div><div class="qr-pixel b"></div><div class="qr-pixel b"></div><div class="qr-pixel b"></div><div class="qr-pixel"></div><div class="qr-pixel b"></div>
+        <!-- Row 6 -->
+        <div class="qr-pixel b"></div><div class="qr-pixel"></div><div class="qr-pixel b"></div><div class="qr-pixel"></div><div class="qr-pixel b"></div><div class="qr-pixel"></div><div class="qr-pixel b"></div>
+        <!-- Row 7 -->
+        <div class="qr-pixel b"></div><div class="qr-pixel b"></div><div class="qr-pixel b"></div><div class="qr-pixel"></div><div class="qr-pixel b"></div><div class="qr-pixel b"></div><div class="qr-pixel b"></div>
+      </div>
+      <div class="qr-label">Scan to get this pack</div>
+      <div class="copy-row">
+        <input class="copy-input" type="text" value="whamr.app/pack/xq9m2k" readonly>
+        <button class="btn-copy">Copy link</button>
+      </div>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="done-actions">
+      <button class="btn-download">⬇️ Download pack</button>
+      <button class="btn-open-app">📱 Open WhatsApp</button>
+    </div>
+    <div class="done-secondary">
+      <a href="#">Export another</a>
+      <span>·</span>
+      <a href="02-memes-browser.html">Back to memes</a>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       WHAT'S NEXT
+  ═══════════════════════════════════════════════ -->
+  <div class="whats-next-title">What's next?</div>
+  <div class="next-cards">
+    <div class="next-card">
+      <div class="next-card-icon">📤</div>
+      <h4>Upload your own stickers</h4>
+      <p>Got original art or cropped memes? Upload them and add to any pack in seconds.</p>
+      <a href="04-upload-flow.html">Upload now &rarr;</a>
+    </div>
+    <div class="next-card">
+      <div class="next-card-icon">🔗</div>
+      <h4>Share a pack link</h4>
+      <p>Every pack gets a shareable link. Post it anywhere and let people install directly.</p>
+      <a href="#">Get your link &rarr;</a>
+    </div>
+    <div class="next-card">
+      <div class="next-card-icon">🔄</div>
+      <h4>Cross-platform export</h4>
+      <p>Export the same pack to Telegram then Discord without re-selecting anything.</p>
+      <a href="#">Try it &rarr;</a>
+    </div>
+  </div>
+
+</div><!-- /page-wrap -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand-logo">whamr.</div>
+        <div class="footer-brand-tagline">Find the perfect meme. Send the wham. Free forever, no credit card needed.</div>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Product</div>
+        <ul>
+          <li><a href="02-memes-browser.html">Browse memes</a></li>
+          <li><a href="06-explore.html">Explore</a></li>
+          <li><a href="10-dojos.html">Dojos</a></li>
+          <li><a href="#">Export stickers</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Platforms</div>
+        <ul>
+          <li><a href="#">WhatsApp</a></li>
+          <li><a href="#">Telegram</a></li>
+          <li><a href="#">Signal</a></li>
+          <li><a href="#">Discord</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Company</div>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Privacy</a></li>
+          <li><a href="#">Terms</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 whamr. All rights reserved.</span>
+      <div class="footer-bottom-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,609 @@
+﻿<!-- FILE: 08-notifications.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notifications, whamr.</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Whamr Sunset, Electric Orange-Red + Golden Yellow */
+  --bg:#FFFAF5; --bg-alt:#FFF3E8; --card:#FFFFFF;
+  --ink:#1A0F00; --ink-soft:#4A3020; --ink-mute:#8A7060;
+  --line:#F0DDD0; --line-soft:#FBF0E8;
+  /* Primary: electric orange-red (the wham) */
+  --purple:#FF4500; --purple-mid:#FF6B35; --purple-bright:#FF8C60;
+  --purple-dark:#CC3700; --purple-soft:#FFF1EC; --purple-xsoft:#FFF8F5;
+  /* Accent: warm golden yellow (the joy) */
+  --wham:#FFB800; --wham-bright:#FFD60A; --wham-soft:#FFF8DC;
+  --pink:#FFB800; --pink-soft:#FFF8DC;
+  /* Semantic */
+  --green:#00C853; --green-soft:#E8FFF0;
+  --amber:#FFB800; --red:#FF2D55; --red-soft:#FFF0F3;
+  --blue:#007AFF;
+  /* Gray scale (kept neutral) */
+  --gray-50:#F9FAFB; --gray-100:#F3F4F6; --gray-200:#E5E7EB;
+  --gray-400:#9CA3AF; --gray-500:#6B7280; --gray-700:#374151; --gray-900:#111827;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;font-size:15px;background:var(--bg);color:var(--ink);line-height:1.6}
+img{display:block;max-width:100%}
+a{text-decoration:none;color:inherit}
+
+/* ANNOUNCE */
+.announce{background:linear-gradient(90deg,var(--purple-dark) 0%,var(--purple-mid) 100%);color:#fff;text-align:center;padding:9px 16px;font-size:13px;font-weight:500}
+.announce a{color:var(--wham-bright);text-decoration:underline;text-underline-offset:2px}
+
+/* NAV */
+.nav{height:64px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 28px;gap:12px;position:sticky;top:0;z-index:100}
+.nav-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.05em;color:var(--purple);flex-shrink:0}
+.nav-links{display:flex;align-items:center;gap:2px;margin-left:12px}
+.nav-link{font-size:14px;font-weight:500;color:var(--gray-700);padding:6px 11px;border-radius:8px;transition:background 0.15s,color 0.15s;white-space:nowrap}
+.nav-link:hover,.nav-link.active{background:var(--purple-soft);color:var(--purple)}
+.nav-link.active{font-weight:600}
+.nav-search-wrap{flex:1;max-width:380px;margin:0 auto;position:relative}
+.nav-search-wrap input{width:100%;padding:9px 16px 9px 40px;border:1.5px solid var(--line);border-radius:50px;font-family:'Inter',sans-serif;font-size:14px;color:var(--ink);background:#fff;outline:none}
+.nav-search-wrap input:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(255,69,0,0.12)}
+.nav-search-wrap input::placeholder{color:var(--gray-400)}
+.nav-search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--gray-400)}
+.nav-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.btn-upload{display:inline-flex;align-items:center;gap:6px;background:var(--purple);color:#fff;font-size:13px;font-weight:600;padding:8px 16px;border-radius:9px;border:none;cursor:pointer;white-space:nowrap}
+.btn-upload:hover{background:var(--purple-dark)}
+.nav-icon-btn{width:38px;height:38px;border-radius:9px;background:var(--gray-100);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;position:relative;flex-shrink:0}
+.nav-badge{position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;border-radius:9px;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;padding:0 4px}
+.badge-red{background:var(--red);color:#fff}
+.badge-blue{background:#2563EB;color:#fff}
+.nav-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--purple-dark) 0%,var(--purple-mid) 100%);display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;font-weight:700;cursor:pointer;flex-shrink:0;border:2px solid var(--purple-soft)}
+.btn-signin{font-size:13px;font-weight:600;color:var(--purple);padding:7px 14px;border-radius:8px;border:1.5px solid var(--line);background:#fff;cursor:pointer}
+.btn-signup{font-size:13px;font-weight:600;color:#fff;padding:7px 14px;border-radius:8px;background:var(--purple);border:none;cursor:pointer}
+
+/* PAGE HEADER */
+.page-header{background:#fff;border-bottom:1px solid var(--line);padding:28px 0 0}
+.container{max-width:900px;margin:0 auto;padding:0 32px}
+.page-header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.page-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:28px;color:var(--ink)}
+.page-sub{font-size:14px;color:var(--gray-500);margin-top:2px}
+.page-header-actions{display:flex;align-items:center;gap:12px}
+.btn-mark-read{font-size:13px;font-weight:600;color:var(--purple);background:none;border:none;cursor:pointer;padding:4px 0}
+.btn-mark-read:hover{text-decoration:underline}
+.settings-icon-btn{
+  width:36px;height:36px;border-radius:8px;background:var(--gray-100);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;
+}
+
+/* FILTER TABS */
+.filter-tabs{display:flex;align-items:center;gap:6px;padding-bottom:0}
+.filter-tab{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 16px;border-radius:50px;font-size:13px;font-weight:600;cursor:pointer;
+  border:1.5px solid transparent;transition:all 0.15s;white-space:nowrap;
+}
+.filter-tab.active{background:var(--purple);color:#fff;border-color:var(--purple)}
+.filter-tab:not(.active){background:#fff;color:var(--gray-700);border-color:var(--line)}
+.filter-tab:not(.active):hover{background:var(--purple-xsoft);border-color:var(--purple-soft);color:var(--purple)}
+.filter-tab-count{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700}
+.filter-tab.active .filter-tab-count{color:rgba(255,255,255,0.75)}
+.filter-tab:not(.active) .filter-tab-count{color:var(--gray-400)}
+
+/* MAIN LAYOUT */
+.main-wrap{max-width:900px;margin:0 auto;padding:28px 32px 64px;display:grid;grid-template-columns:1fr 280px;gap:28px;align-items:start}
+.notifications-col{}
+.sidebar-col{}
+
+/* NOTIFICATION LIST */
+.notif-list{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+
+/* Notification item */
+.notif-item{
+  display:flex;align-items:flex-start;gap:14px;padding:16px 18px;
+  border-bottom:1px solid var(--line-soft);cursor:pointer;
+  transition:background 0.12s;position:relative;
+}
+.notif-item:last-child{border-bottom:none}
+.notif-item:hover{background:var(--gray-50)}
+.notif-item.unread{
+  background:var(--purple-xsoft);
+  border-left:3px solid var(--purple);
+  padding-left:15px;
+}
+.notif-item.unread:hover{background:var(--purple-soft)}
+
+/* Type icon circle */
+.notif-type-icon{
+  width:38px;height:38px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;flex-shrink:0;
+}
+.type-like{background:#FEE2E2;color:var(--red)}
+.type-follow{background:var(--purple-soft);color:var(--purple)}
+.type-comment{background:#DBEAFE;color:#2563EB}
+.type-repost{background:var(--green-soft);color:var(--green)}
+.type-mention{background:#FEF3C7;color:var(--wham)}
+.type-viral{background:var(--wham-soft);color:var(--wham)}
+.type-reply{background:#F3E8FF;color:var(--purple-mid)}
+
+/* Actor avatar */
+.notif-actor-ava{
+  width:36px;height:36px;border-radius:50%;overflow:hidden;flex-shrink:0;border:2px solid #fff;
+}
+.notif-actor-ava img{width:100%;height:100%;object-fit:cover}
+
+/* Content */
+.notif-content{flex:1;min-width:0}
+.notif-text{font-size:14px;color:var(--ink);line-height:1.45}
+.notif-text strong{font-weight:700}
+.notif-time{font-size:12px;color:var(--gray-400);margin-top:3px;font-family:'JetBrains Mono',monospace}
+.notif-unread-dot{
+  width:8px;height:8px;background:var(--purple);border-radius:50%;
+  flex-shrink:0;margin-top:5px;
+}
+
+/* Post thumbnail */
+.notif-thumb{
+  width:52px;height:52px;border-radius:8px;overflow:hidden;flex-shrink:0;
+  border:1px solid var(--line);background:var(--gray-100);
+}
+.notif-thumb img{width:100%;height:100%;object-fit:cover}
+
+/* PREFERENCES CARD */
+.prefs-card{
+  background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;
+  margin-top:0;
+}
+.prefs-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.prefs-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:var(--ink)}
+.settings-link{font-size:12px;font-weight:600;color:var(--purple);cursor:pointer}
+.settings-link:hover{text-decoration:underline}
+.prefs-sub{font-size:12px;color:var(--gray-500);margin-bottom:16px}
+.pref-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:11px 0;border-bottom:1px solid var(--line-soft);
+}
+.pref-row:last-child{border-bottom:none}
+.pref-label{font-size:13px;font-weight:500;color:var(--ink);display:flex;align-items:center;gap:8px}
+.pref-icon{font-size:16px}
+.toggle{
+  width:40px;height:22px;border-radius:11px;position:relative;cursor:pointer;flex-shrink:0;
+  transition:background 0.2s;
+}
+.toggle.on{background:var(--purple)}
+.toggle.off{background:var(--gray-300)}
+.toggle-knob{
+  width:18px;height:18px;border-radius:50%;background:#fff;
+  position:absolute;top:2px;transition:left 0.2s;
+  box-shadow:0 1px 4px rgba(0,0,0,0.15);
+}
+.toggle.on .toggle-knob{left:20px}
+.toggle.off .toggle-knob{left:2px}
+
+/* WEEKLY STATS CARD */
+.week-card{
+  background:linear-gradient(135deg,var(--purple-dark) 0%,var(--purple-mid) 100%);
+  border-radius:16px;padding:20px;margin-top:16px;color:#fff;
+}
+.week-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;margin-bottom:4px}
+.week-sub{font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:16px}
+.week-stat{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.1)}
+.week-stat:last-child{border-bottom:none}
+.week-stat-label{font-size:13px;color:rgba(255,255,255,0.8)}
+.week-stat-value{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:16px;color:#fff}
+
+/* FOOTER */
+.footer{background:var(--ink);color:rgba(255,255,255,0.6);padding:40px 0 24px}
+.footer-inner{max-width:1200px;margin:0 auto;padding:0 32px}
+.footer-top{display:flex;align-items:flex-start;justify-content:space-between;gap:32px;margin-bottom:32px}
+.footer-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.05em;color:#fff;margin-bottom:8px}
+.footer-tagline{font-size:13px;color:rgba(255,255,255,0.4);max-width:220px;line-height:1.5}
+.footer-links{display:flex;gap:48px}
+.footer-col h4{font-size:11px;font-weight:700;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;font-family:'Space Grotesk',sans-serif}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.footer-col li a{font-size:13px;color:rgba(255,255,255,0.55)}
+.footer-col li a:hover{color:#fff}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.08);padding-top:20px;display:flex;align-items:center;justify-content:space-between}
+.footer-copy{font-size:12px;color:rgba(255,255,255,0.3)}
+.footer-bl{display:flex;gap:20px}
+.footer-bl a{font-size:12px;color:rgba(255,255,255,0.4)}
+.footer-bl a:hover{color:rgba(255,255,255,0.8)}
+</style>
+</head>
+<body>
+
+<!-- ANNOUNCE -->
+<div class="announce">
+  New: Meme Dojos are live. Build your crew and climb the leaderboard.
+  <a href="10-dojos.html">Try it now →</a>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="01-landing.html" class="nav-logo">whamr.</a>
+  <div class="nav-links">
+    <a href="01-landing.html" class="nav-link">Home</a>
+    <a href="02-memes-browser.html" class="nav-link">Memes</a>
+    <a href="06-explore.html" class="nav-link">Explore</a>
+    <a href="10-dojos.html" class="nav-link">Dojos</a>
+    <a href="12-analytics.html" class="nav-link">Analytics</a>
+  </div>
+  <div class="nav-search-wrap">
+    <span class="nav-search-icon">🔍</span>
+    <input type="text" placeholder="Search memes...">
+  </div>
+  <div class="nav-actions">
+    <button class="btn-upload">+ Upload</button>
+    <div class="nav-icon-btn">🔔<span class="nav-badge badge-red">4</span></div>
+    <div class="nav-icon-btn">💬<span class="nav-badge badge-blue">3</span></div>
+    <div class="nav-avatar">M</div>
+    <button class="btn-signin">Sign in</button>
+    <button class="btn-signup">Sign up</button>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="container">
+    <div class="page-header-row">
+      <div>
+        <h1 class="page-title">Notifications</h1>
+        <p class="page-sub">4 unread</p>
+      </div>
+      <div class="page-header-actions">
+        <button class="btn-mark-read">Mark all read</button>
+        <div class="settings-icon-btn" title="Notification settings">⚙️</div>
+      </div>
+    </div>
+
+    <!-- Filter tabs -->
+    <div class="filter-tabs">
+      <span class="filter-tab active">All <span class="filter-tab-count">12</span></span>
+      <span class="filter-tab">Likes <span class="filter-tab-count">3</span></span>
+      <span class="filter-tab">Comments <span class="filter-tab-count">2</span></span>
+      <span class="filter-tab">Follows <span class="filter-tab-count">2</span></span>
+      <span class="filter-tab">Mentions <span class="filter-tab-count">1</span></span>
+      <span class="filter-tab">System <span class="filter-tab-count">1</span></span>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main-wrap">
+  <div class="notifications-col">
+    <div class="notif-list">
+
+      <!-- 1: danceking liked (unread, 2m) -->
+      <div class="notif-item unread">
+        <div class="notif-type-icon type-like">❤️</div>
+        <div class="notif-actor-ava"><img src="https://picsum.photos/seed/danceking/72/72" alt="danceking"></div>
+        <div class="notif-content">
+          <div class="notif-text"><strong>danceking</strong> liked your meme <strong>"E Don Do"</strong></div>
+          <div class="notif-time">2 minutes ago</div>
+        </div>
+        <div class="notif-thumb"><img src="https://picsum.photos/seed/edondo/104/104" alt=""></div>
+        <div class="notif-unread-dot"></div>
+      </div>
+
+      <!-- 2: laughmaster followed (unread, 14m) -->
+      <div class="notif-item unread">
+        <div class="notif-type-icon type-follow">👤</div>
+        <div class="notif-actor-ava"><img src="https://picsum.photos/seed/laughmaster/72/72" alt="laughmaster"></div>
+        <div class="notif-content">
+          <div class="notif-text"><strong>laughmaster</strong> started following you</div>
+          <div class="notif-time">14 minutes ago</div>
+        </div>
+        <div class="notif-unread-dot"></div>
+      </div>
+
+      <!-- 3: sportsmemer commented (unread, 1h) -->
+      <div class="notif-item unread">
+        <div class="notif-type-icon type-comment">💬</div>
+        <div class="notif-actor-ava"><img src="https://picsum.photos/seed/sportsmemer/72/72" alt="sportsmemer"></div>
+        <div class="notif-content">
+          <div class="notif-text"><strong>sportsmemer</strong> commented: <em>"This one hit different 💀"</em></div>
+          <div class="notif-time">1 hour ago</div>
+        </div>
+        <div class="notif-thumb"><img src="https://picsum.photos/seed/edondo/104/104" alt=""></div>
+        <div class="notif-unread-dot"></div>
+      </div>
+
+      <!-- 4: naijacontent reposted (unread, 3h) -->
+      <div class="notif-item unread">
+        <div class="notif-type-icon type-repost">🔁</div>
+        <div class="notif-actor-ava"><img src="https://picsum.photos/seed/naijacontent/72/72" alt="naijacontent"></div>
+        <div class="notif-content">
+          <div class="notif-text"><strong>naijacontent</strong> reposted <strong>"E Don Do"</strong> to their <strong>8,100 followers</strong></div>
+          <div class="notif-time">3 hours ago</div>
+        </div>
+        <div class="notif-thumb"><img src="https://picsum.photos/seed/edondo/104/104" alt=""></div>
+        <div class="notif-unread-dot"></div>
+      </div>
+
+      <!-- 5: awkward.life mentioned (read, 5h) -->
+      <div class="notif-item">
+        <div class="notif-type-icon type-mention">@</div>
+        <div class="notif-actor-ava"><img src="https://picsum.photos/seed/awkward/72/72" alt="awkward.life"></div>
+        <div class="notif-content">
+          <div class="notif-text"><strong>awkward.life</strong> mentioned you in a comment on <strong>"Monday Energy"</strong></div>
+          <div class="notif-time">5 hours ago</div>
+        </div>
+        <div class="notif-thumb"><img src="https://picsum.photos/seed/mondayenergy/104/104" alt=""></div>
+      </div>
+
+      <!-- 6: system viral alert (read, 1d) -->
+      <div class="notif-item">
+        <div class="notif-type-icon type-viral">🔥</div>
+        <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--purple-dark),var(--purple-mid));display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;flex-shrink:0;">W</div>
+        <div class="notif-content">
+          <div class="notif-text"><strong>whamr.</strong> System alert: <em>"E Don Do going viral 🔥"</em>, virality score just passed 90.</div>
+          <div class="notif-time">1 day ago</div>
+        </div>
+        <div class="notif-thumb"><img src="https://picsum.photos/seed/edondo/104/104" alt=""></div>
+      </div>
+
+      <!-- 7: laughmaster replied to comment (read, 3d) -->
+      <div class="notif-item">
+        <div class="notif-type-icon type-reply">↩️</div>
+        <div class="notif-actor-ava"><img src="https://picsum.photos/seed/laughmaster/72/72" alt="laughmaster"></div>
+        <div class="notif-content">
+          <div class="notif-text"><strong>laughmaster</strong> replied to your comment on <strong>"Azonto Forever"</strong></div>
+          <div class="notif-time">3 days ago</div>
+        </div>
+        <div class="notif-thumb"><img src="https://picsum.photos/seed/azonto/104/104" alt=""></div>
+      </div>
+
+      <!-- 8: memequeen liked your post (read, 4d) -->
+      <div class="notif-item">
+        <div class="notif-type-icon type-like">❤️</div>
+        <div class="notif-actor-ava"><img src="https://picsum.photos/seed/naijafan/72/72" alt="naijafan"></div>
+        <div class="notif-content">
+          <div class="notif-text"><strong>naijafan</strong> liked your meme <strong>"That Look"</strong></div>
+          <div class="notif-time">4 days ago</div>
+        </div>
+        <div class="notif-thumb"><img src="https://picsum.photos/seed/thatlook/104/104" alt=""></div>
+      </div>
+
+      <!-- 9: brokebutlit started following (read, 4d) -->
+      <div class="notif-item">
+        <div class="notif-type-icon type-follow">👤</div>
+        <div class="notif-actor-ava"><img src="https://picsum.photos/seed/brokebutlit/72/72" alt="brokebutlit"></div>
+        <div class="notif-content">
+          <div class="notif-text"><strong>brokebutlit</strong> started following you</div>
+          <div class="notif-time">4 days ago</div>
+        </div>
+      </div>
+
+      <!-- 10: kpopstudio liked (read, 5d) -->
+      <div class="notif-item">
+        <div class="notif-type-icon type-like">❤️</div>
+        <div class="notif-actor-ava"><img src="https://picsum.photos/seed/kpopstudio/72/72" alt="kpopstudio"></div>
+        <div class="notif-content">
+          <div class="notif-text"><strong>kpopstudio</strong> liked your meme <strong>"Glo Life"</strong></div>
+          <div class="notif-time">5 days ago</div>
+        </div>
+        <div class="notif-thumb"><img src="https://picsum.photos/seed/glolife/104/104" alt=""></div>
+      </div>
+
+      <!-- 11: animelord liked (read, 6d) -->
+      <div class="notif-item">
+        <div class="notif-type-icon type-like">❤️</div>
+        <div class="notif-actor-ava"><img src="https://picsum.photos/seed/animelord/72/72" alt="animelord"></div>
+        <div class="notif-content">
+          <div class="notif-text"><strong>animelord</strong> liked and saved your meme <strong>"No Wahala"</strong></div>
+          <div class="notif-time">6 days ago</div>
+        </div>
+        <div class="notif-thumb"><img src="https://picsum.photos/seed/nowahala/104/104" alt=""></div>
+      </div>
+
+      <!-- 12: system milestone (read, 1w) -->
+      <div class="notif-item">
+        <div class="notif-type-icon type-viral">🏆</div>
+        <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--wham),var(--wham-bright));display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;flex-shrink:0;">W</div>
+        <div class="notif-content">
+          <div class="notif-text"><strong>whamr.</strong> Milestone: Your profile just hit <strong>12,000 followers</strong>. Keep creating!</div>
+          <div class="notif-time">1 week ago</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar-col">
+    <!-- Notification Preferences -->
+    <div class="prefs-card">
+      <div class="prefs-header">
+        <div class="prefs-title">Notification preferences</div>
+        <span class="settings-link">Settings</span>
+      </div>
+      <div class="prefs-sub">Control what you hear about.</div>
+
+      <div class="pref-row">
+        <span class="pref-label"><span class="pref-icon">❤️</span> Likes</span>
+        <div class="toggle on"><div class="toggle-knob"></div></div>
+      </div>
+      <div class="pref-row">
+        <span class="pref-label"><span class="pref-icon">💬</span> Comments</span>
+        <div class="toggle on"><div class="toggle-knob"></div></div>
+      </div>
+      <div class="pref-row">
+        <span class="pref-label"><span class="pref-icon">👤</span> New followers</span>
+        <div class="toggle on"><div class="toggle-knob"></div></div>
+      </div>
+      <div class="pref-row">
+        <span class="pref-label"><span class="pref-icon">🔥</span> Viral alerts</span>
+        <div class="toggle on"><div class="toggle-knob"></div></div>
+      </div>
+    </div>
+
+    <!-- Weekly Stats -->
+    <div class="week-card">
+      <div class="week-title">Your week</div>
+      <div class="week-sub">May 11 – May 17, 2026</div>
+      <div class="week-stat">
+        <span class="week-stat-label">New followers</span>
+        <span class="week-stat-value">18</span>
+      </div>
+      <div class="week-stat">
+        <span class="week-stat-label">Likes on your memes</span>
+        <span class="week-stat-value">247</span>
+      </div>
+      <div class="week-stat">
+        <span class="week-stat-label">Shares</span>
+        <span class="week-stat-value">89</span>
+      </div>
+      <div class="week-stat">
+        <span class="week-stat-label">Profile views</span>
+        <span class="week-stat-value">1,204</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SUGGESTED CREATORS SECTION -->
+<div style="max-width:900px;margin:0 auto;padding:0 32px 40px">
+  <div style="background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px;margin-bottom:24px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--ink-mute);text-transform:uppercase;letter-spacing:0.08em;font-family:'Space Grotesk',sans-serif;margin-bottom:4px">You might like</div>
+        <h3 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;color:var(--ink)">Suggested creators</h3>
+      </div>
+      <a href="#" style="font-size:13px;font-weight:600;color:var(--purple)">Refresh →</a>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:0">
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line-soft)">
+        <img src="https://picsum.photos/seed/creator1/80/80" alt="" style="width:44px;height:44px;border-radius:50%;border:2px solid var(--purple-soft);flex-shrink:0">
+        <div style="flex:1;min-width:0">
+          <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;color:var(--ink)">GlobalMemez 🌎</div>
+          <div style="font-size:12px;color:var(--gray-500)">@globalmemez · 24.1K followers</div>
+          <div style="font-size:12px;color:var(--gray-400);margin-top:2px">Memes from 40+ countries</div>
+        </div>
+        <button style="background:var(--purple);color:#fff;font-size:12px;font-weight:700;padding:6px 14px;border-radius:8px;border:none;cursor:pointer;flex-shrink:0">Follow</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line-soft)">
+        <img src="https://picsum.photos/seed/creator2/80/80" alt="" style="width:44px;height:44px;border-radius:50%;border:2px solid var(--purple-soft);flex-shrink:0">
+        <div style="flex:1;min-width:0">
+          <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;color:var(--ink)">AfroMemeKing 👑</div>
+          <div style="font-size:12px;color:var(--gray-500)">@afromemeking · 11.3K followers</div>
+          <div style="font-size:12px;color:var(--gray-400);margin-top:2px">West Africa's finest meme page</div>
+        </div>
+        <button style="background:var(--purple);color:#fff;font-size:12px;font-weight:700;padding:6px 14px;border-radius:8px;border:none;cursor:pointer;flex-shrink:0">Follow</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line-soft)">
+        <img src="https://picsum.photos/seed/creator3/80/80" alt="" style="width:44px;height:44px;border-radius:50%;border:2px solid var(--purple-soft);flex-shrink:0">
+        <div style="flex:1;min-width:0">
+          <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;color:var(--ink)">Anime Laugh Lab 🎌</div>
+          <div style="font-size:12px;color:var(--gray-500)">@animelaughlab · 8.7K followers</div>
+          <div style="font-size:12px;color:var(--gray-400);margin-top:2px">Anime reaction memes daily</div>
+        </div>
+        <button style="background:var(--purple);color:#fff;font-size:12px;font-weight:700;padding:6px 14px;border-radius:8px;border:none;cursor:pointer;flex-shrink:0">Follow</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 0">
+        <img src="https://picsum.photos/seed/creator4/80/80" alt="" style="width:44px;height:44px;border-radius:50%;border:2px solid var(--purple-soft);flex-shrink:0">
+        <div style="flex:1;min-width:0">
+          <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;color:var(--ink)">K-Pop Reaction Vault</div>
+          <div style="font-size:12px;color:var(--gray-500)">@kpopreactions · 6.2K followers</div>
+          <div style="font-size:12px;color:var(--gray-400);margin-top:2px">All things K-Pop and chaotic</div>
+        </div>
+        <button style="background:var(--purple);color:#fff;font-size:12px;font-weight:700;padding:6px 14px;border-radius:8px;border:none;cursor:pointer;flex-shrink:0">Follow</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top memes this week -->
+  <div style="background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px;margin-bottom:24px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--ink-mute);text-transform:uppercase;letter-spacing:0.08em;font-family:'Space Grotesk',sans-serif;margin-bottom:4px">Your week in memes</div>
+        <h3 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;color:var(--ink)">Top performing posts</h3>
+      </div>
+      <a href="12-analytics.html" style="font-size:13px;font-weight:600;color:var(--purple)">Full analytics →</a>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:0">
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line-soft)">
+        <div style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:16px;color:var(--purple);width:24px;flex-shrink:0">#1</div>
+        <img src="https://picsum.photos/seed/edondo/80/80" alt="" style="width:44px;height:44px;border-radius:8px;object-fit:cover;flex-shrink:0">
+        <div style="flex:1;min-width:0">
+          <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">E Don Do</div>
+          <div style="font-size:12px;color:var(--gray-500)">17,600 views · 1,203 likes · 892 shares</div>
+        </div>
+        <div style="background:#FFD60A;color:#1A0F00;font-size:11px;font-weight:700;padding:3px 8px;border-radius:50px;font-family:'JetBrains Mono',monospace;flex-shrink:0">🔥 98</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line-soft)">
+        <div style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:16px;color:var(--ink-mute);width:24px;flex-shrink:0">#2</div>
+        <img src="https://picsum.photos/seed/p8/80/80" alt="" style="width:44px;height:44px;border-radius:8px;object-fit:cover;flex-shrink:0">
+        <div style="flex:1;min-width:0">
+          <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Glo Life</div>
+          <div style="font-size:12px;color:var(--gray-500)">8,300 views · 601 likes · 214 shares</div>
+        </div>
+        <div style="background:var(--purple-xsoft);color:var(--purple);font-size:11px;font-weight:700;padding:3px 8px;border-radius:50px;font-family:'JetBrains Mono',monospace;flex-shrink:0">🔥 67</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 0">
+        <div style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:16px;color:var(--ink-mute);width:24px;flex-shrink:0">#3</div>
+        <img src="https://picsum.photos/seed/p2/80/80" alt="" style="width:44px;height:44px;border-radius:8px;object-fit:cover;flex-shrink:0">
+        <div style="flex:1;min-width:0">
+          <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">That Look 👀</div>
+          <div style="font-size:12px;color:var(--gray-500)">9,800 views · 724 likes · 310 shares</div>
+        </div>
+        <div style="background:var(--purple-xsoft);color:var(--purple);font-size:11px;font-weight:700;padding:3px 8px;border-radius:50px;font-family:'JetBrains Mono',monospace;flex-shrink:0">🔥 72</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trending memes callout -->
+  <div style="background:linear-gradient(135deg,var(--purple-dark) 0%,var(--purple-mid) 100%);border-radius:16px;padding:24px;display:flex;align-items:center;gap:20px">
+    <div style="font-size:40px;flex-shrink:0">🔥</div>
+    <div style="flex:1">
+      <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;color:#fff;margin-bottom:4px">Your meme is going viral</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.7)">"E Don Do" hit virality score 98 today. That puts it in the top 0.5% of all memes posted this week.</div>
+    </div>
+    <a href="03-meme-detail.html" style="background:#fff;color:var(--purple);font-size:13px;font-weight:700;padding:10px 18px;border-radius:10px;white-space:nowrap;flex-shrink:0">View meme →</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo">whamr.</div>
+        <div class="footer-tagline">Find the perfect meme. Send the wham. Built for the internet.</div>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Explore</h4>
+          <ul>
+            <li><a href="06-explore.html">Trending</a></li>
+            <li><a href="06-explore.html">Categories</a></li>
+            <li><a href="10-dojos.html">Dojos</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Careers</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Terms</a></li>
+            <li><a href="#">Privacy</a></li>
+            <li><a href="#">Content Policy</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2024 whamr. All rights reserved.</span>
+      <div class="footer-bl">
+        <a href="#">Status</a>
+        <a href="#">API</a>
+        <a href="#">Help</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

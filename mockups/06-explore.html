@@ -1,0 +1,702 @@
+﻿<!-- FILE: 06-explore.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Explore, whamr.</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Whamr Sunset, Electric Orange-Red + Golden Yellow */
+  --bg:#FFFAF5; --bg-alt:#FFF3E8; --card:#FFFFFF;
+  --ink:#1A0F00; --ink-soft:#4A3020; --ink-mute:#8A7060;
+  --line:#F0DDD0; --line-soft:#FBF0E8;
+  /* Primary: electric orange-red (the wham) */
+  --purple:#FF4500; --purple-mid:#FF6B35; --purple-bright:#FF8C60;
+  --purple-dark:#CC3700; --purple-soft:#FFF1EC; --purple-xsoft:#FFF8F5;
+  /* Accent: warm golden yellow (the joy) */
+  --wham:#FFB800; --wham-bright:#FFD60A; --wham-soft:#FFF8DC;
+  --pink:#FFB800; --pink-soft:#FFF8DC;
+  /* Semantic */
+  --green:#00C853; --green-soft:#E8FFF0;
+  --amber:#FFB800; --red:#FF2D55; --red-soft:#FFF0F3;
+  --blue:#007AFF;
+  /* Gray scale (kept neutral) */
+  --gray-50:#F9FAFB; --gray-100:#F3F4F6; --gray-200:#E5E7EB;
+  --gray-400:#9CA3AF; --gray-500:#6B7280; --gray-700:#374151; --gray-900:#111827;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;font-size:15px;background:var(--bg);color:var(--ink);line-height:1.6}
+img{display:block;max-width:100%}
+a{text-decoration:none;color:inherit}
+
+/* ANNOUNCE */
+.announce{
+  background:linear-gradient(90deg,var(--purple-dark) 0%,var(--purple-mid) 100%);
+  color:#fff;text-align:center;padding:9px 16px;font-size:13px;font-weight:500;
+}
+.announce a{color:var(--wham-bright);text-decoration:underline;text-underline-offset:2px}
+
+/* NAV */
+.nav{
+  height:64px;background:#fff;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;padding:0 28px;gap:12px;
+  position:sticky;top:0;z-index:100;
+}
+.nav-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.05em;color:var(--purple);flex-shrink:0}
+.nav-links{display:flex;align-items:center;gap:2px;margin-left:12px}
+.nav-link{font-size:14px;font-weight:500;color:var(--gray-700);padding:6px 11px;border-radius:8px;transition:background 0.15s,color 0.15s;white-space:nowrap}
+.nav-link:hover,.nav-link.active{background:var(--purple-soft);color:var(--purple)}
+.nav-link.active{font-weight:600}
+.nav-search-wrap{flex:1;max-width:380px;margin:0 auto;position:relative}
+.nav-search-wrap input{width:100%;padding:9px 16px 9px 40px;border:1.5px solid var(--line);border-radius:50px;font-family:'Inter',sans-serif;font-size:14px;color:var(--ink);background:#fff;outline:none}
+.nav-search-wrap input:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(255,69,0,0.12)}
+.nav-search-wrap input::placeholder{color:var(--gray-400)}
+.nav-search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--gray-400)}
+.nav-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.btn-upload{display:inline-flex;align-items:center;gap:6px;background:var(--purple);color:#fff;font-size:13px;font-weight:600;padding:8px 16px;border-radius:9px;border:none;cursor:pointer;white-space:nowrap}
+.btn-upload:hover{background:var(--purple-dark)}
+.nav-icon-btn{width:38px;height:38px;border-radius:9px;background:var(--gray-100);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;position:relative;flex-shrink:0}
+.nav-badge{position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;border-radius:9px;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;padding:0 4px}
+.badge-red{background:var(--red);color:#fff}
+.badge-blue{background:#2563EB;color:#fff}
+.nav-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--purple-dark) 0%,var(--purple-mid) 100%);display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;font-weight:700;cursor:pointer;flex-shrink:0;border:2px solid var(--purple-soft)}
+.btn-signin{font-size:13px;font-weight:600;color:var(--purple);padding:7px 14px;border-radius:8px;border:1.5px solid var(--line);background:#fff;cursor:pointer}
+.btn-signup{font-size:13px;font-weight:600;color:#fff;padding:7px 14px;border-radius:8px;background:var(--purple);border:none;cursor:pointer}
+
+/* PAGE HEADER */
+.page-header{
+  background:#fff;border-bottom:1px solid var(--line);padding:40px 0 32px;
+}
+.container{max-width:1200px;margin:0 auto;padding:0 32px}
+.page-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:48px;color:var(--ink);letter-spacing:-0.03em;line-height:1}
+.page-subtitle{font-size:16px;color:var(--ink-mute);margin-top:8px;margin-bottom:24px}
+.page-search{position:relative;max-width:100%}
+.page-search input{
+  width:100%;padding:13px 20px 13px 48px;
+  border:2px solid var(--line);border-radius:50px;
+  font-family:'Inter',sans-serif;font-size:15px;color:var(--ink);background:#fff;outline:none;
+}
+.page-search input:focus{border-color:var(--purple);box-shadow:0 0 0 4px rgba(255,69,0,0.12)}
+.page-search input::placeholder{color:var(--gray-400)}
+.page-search-icon{position:absolute;left:18px;top:50%;transform:translateY(-50%);font-size:18px;color:var(--gray-400)}
+
+/* TABS */
+.tabs-bar{
+  background:#fff;border-bottom:1px solid var(--line);padding:0;
+  position:sticky;top:64px;z-index:90;
+}
+.tabs-inner{max-width:1200px;margin:0 auto;padding:0 32px;display:flex;align-items:center;gap:6px;padding-top:16px;padding-bottom:16px}
+.tab-pill{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:9px 20px;border-radius:50px;font-size:14px;font-weight:600;cursor:pointer;
+  border:1.5px solid transparent;transition:all 0.15s;font-family:'Space Grotesk',sans-serif;
+}
+.tab-pill.active{background:var(--purple);color:#fff;border-color:var(--purple)}
+.tab-pill:not(.active){background:#fff;color:var(--gray-700);border-color:var(--line)}
+.tab-pill:not(.active):hover{background:var(--purple-xsoft);border-color:var(--purple-soft);color:var(--purple)}
+
+/* SECTION CONTAINERS */
+.section-wrap{padding:40px 0;border-bottom:1px solid var(--line-soft)}
+.section-wrap:last-child{border-bottom:none}
+.section-top{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:24px}
+.section-eyebrow{font-size:11px;font-weight:700;color:var(--ink-mute);text-transform:uppercase;letter-spacing:0.08em;font-family:'Space Grotesk',sans-serif;margin-bottom:4px}
+.section-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:24px;color:var(--ink)}
+.section-subtitle{font-size:13px;color:var(--gray-500);margin-top:3px}
+.view-all{font-size:13px;font-weight:600;color:var(--purple)}
+.view-all:hover{text-decoration:underline}
+
+/* DIMMED PREVIEW LABEL */
+.tab-preview-label{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--gray-100);border:1px solid var(--gray-200);border-radius:8px;
+  padding:7px 14px;font-size:13px;font-weight:600;color:var(--gray-700);
+  margin-bottom:20px;
+}
+.tab-preview-label .tab-name{font-family:'Space Grotesk',sans-serif}
+
+/* MEME GRID */
+.meme-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.meme-card{
+  background:#fff;border-radius:14px;overflow:hidden;border:1px solid var(--line);
+  cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;position:relative;
+}
+.meme-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(255,69,0,0.12)}
+.meme-card-img-wrap{position:relative;aspect-ratio:1/1;overflow:hidden;background:linear-gradient(135deg,#FFF1EC,#F0DDD0)}
+.meme-card-img-wrap img{width:100%;height:100%;object-fit:cover;display:block}
+.viral-badge{
+  position:absolute;top:10px;left:10px;
+  background:#FFD60A;color:#1A0F00;font-size:11px;font-weight:700;
+  padding:3px 9px;border-radius:50px;font-family:'JetBrains Mono',monospace;
+  backdrop-filter:blur(4px);
+}
+.type-badge{
+  position:absolute;top:10px;right:10px;
+  background:rgba(255,255,255,0.9);color:var(--ink-mute);font-size:10px;font-weight:700;
+  padding:2px 8px;border-radius:50px;font-family:'Space Grotesk',sans-serif;letter-spacing:0.04em;
+  text-transform:uppercase;
+}
+.meme-card-body{padding:12px}
+.meme-card-title{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px;color:var(--ink);margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meme-card-meta{display:flex;align-items:center;gap:12px}
+.meme-stat{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--gray-500)}
+.meme-stat span{font-family:'JetBrains Mono',monospace;font-weight:500}
+.meme-card-creator{font-size:11px;color:var(--gray-400);margin-top:4px}
+
+/* NEW TAB: timestamp only */
+.time-badge{
+  position:absolute;bottom:10px;right:10px;
+  background:rgba(26,5,51,0.6);color:#fff;font-size:10px;font-weight:600;
+  padding:2px 8px;border-radius:50px;font-family:'JetBrains Mono',monospace;
+  backdrop-filter:blur(4px);
+}
+
+/* DIMMED SECTION */
+.dimmed{opacity:0.55;pointer-events:none;user-select:none}
+
+/* VIRALITY LEGEND */
+.virality-legend{
+  background:var(--wham-soft);border:1px solid #FDE68A;border-radius:12px;
+  padding:14px 18px;font-size:13px;color:var(--wham);font-weight:500;
+  margin-bottom:24px;display:flex;align-items:center;gap:10px;
+}
+.virality-legend strong{font-weight:700}
+
+/* CATEGORY GRID */
+.cat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.cat-card{
+  border-radius:16px;padding:24px 20px;cursor:pointer;position:relative;overflow:hidden;
+  transition:transform 0.15s,box-shadow 0.15s;border:1px solid rgba(255,255,255,0.3);
+}
+.cat-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,0.12)}
+.cat-emoji{font-size:36px;margin-bottom:12px;display:block;line-height:1}
+.cat-name{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:18px;color:#fff;margin-bottom:4px}
+.cat-count{font-size:12px;color:rgba(255,255,255,0.75);font-family:'JetBrains Mono',monospace;font-weight:500;margin-bottom:12px}
+.cat-browse{font-size:12px;font-weight:700;color:rgba(255,255,255,0.9)}
+.cat-coming{background:var(--gray-100);border:1.5px dashed var(--gray-200);display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:140px}
+.cat-coming .cat-name{color:var(--gray-400);font-size:15px}
+.cat-coming .cat-count{color:var(--gray-400);font-size:12px}
+
+/* COLORS */
+.cat-reactions{background:linear-gradient(135deg,#FF6B35,#FF4500)}
+.cat-dance{background:linear-gradient(135deg,#DB2777,#9D174D)}
+.cat-laugh{background:linear-gradient(135deg,#D97706,#92400E)}
+.cat-awkward{background:linear-gradient(135deg,#0891B2,#0E7490)}
+.cat-sports{background:linear-gradient(135deg,#059669,#065F46)}
+.cat-anime{background:linear-gradient(135deg,#DC2626,#991B1B)}
+.cat-gaming{background:linear-gradient(135deg,#4338CA,#3730A3)}
+.cat-pop{background:linear-gradient(135deg,#C026D3,#86198F)}
+.cat-naija{background:linear-gradient(135deg,#15803D,#14532D)}
+.cat-kpop{background:linear-gradient(135deg,#D97706,#9D174D)}
+.cat-latin{background:linear-gradient(135deg,#EA580C,#9A3412)}
+.cat-sad{background:linear-gradient(135deg,#4B5563,#1F2937)}
+.cat-random{background:linear-gradient(135deg,#FF6B35,#2563EB)}
+
+/* FOOTER */
+.footer{background:var(--ink);color:rgba(255,255,255,0.6);padding:40px 0 24px;margin-top:64px}
+.footer-inner{max-width:1200px;margin:0 auto;padding:0 32px}
+.footer-top{display:flex;align-items:flex-start;justify-content:space-between;gap:32px;margin-bottom:32px}
+.footer-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.05em;color:#fff;margin-bottom:8px}
+.footer-tagline{font-size:13px;color:rgba(255,255,255,0.4);max-width:220px;line-height:1.5}
+.footer-links{display:flex;gap:48px}
+.footer-col h4{font-size:11px;font-weight:700;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;font-family:'Space Grotesk',sans-serif}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.footer-col li a{font-size:13px;color:rgba(255,255,255,0.55)}
+.footer-col li a:hover{color:#fff}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.08);padding-top:20px;display:flex;align-items:center;justify-content:space-between}
+.footer-copy{font-size:12px;color:rgba(255,255,255,0.3)}
+.footer-bl{display:flex;gap:20px}
+.footer-bl a{font-size:12px;color:rgba(255,255,255,0.4)}
+.footer-bl a:hover{color:rgba(255,255,255,0.8)}
+</style>
+</head>
+<body>
+
+<!-- ANNOUNCE -->
+<div class="announce">
+  New: Meme Dojos are live. Build your crew and climb the leaderboard.
+  <a href="10-dojos.html">Try it now →</a>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="01-landing.html" class="nav-logo">whamr.</a>
+  <div class="nav-links">
+    <a href="01-landing.html" class="nav-link">Home</a>
+    <a href="02-memes-browser.html" class="nav-link">Memes</a>
+    <a href="06-explore.html" class="nav-link active">Explore</a>
+    <a href="10-dojos.html" class="nav-link">Dojos</a>
+    <a href="12-analytics.html" class="nav-link">Analytics</a>
+  </div>
+  <div class="nav-search-wrap">
+    <span class="nav-search-icon">🔍</span>
+    <input type="text" placeholder="Search memes...">
+  </div>
+  <div class="nav-actions">
+    <button class="btn-upload">+ Upload</button>
+    <div class="nav-icon-btn">🔔<span class="nav-badge badge-red">4</span></div>
+    <div class="nav-icon-btn">💬<span class="nav-badge badge-blue">3</span></div>
+    <div class="nav-avatar">M</div>
+    <button class="btn-signin">Sign in</button>
+    <button class="btn-signup">Sign up</button>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="container">
+    <h1 class="page-title">Explore</h1>
+    <p class="page-subtitle">Discover what the internet is laughing at right now.</p>
+    <div class="page-search">
+      <span class="page-search-icon">🔍</span>
+      <input type="text" placeholder="Search all memes, creators, categories...">
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <span class="tab-pill active">🔥 Trending</span>
+    <span class="tab-pill">✨ New</span>
+    <span class="tab-pill">🗂️ Categories</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ====== TRENDING TAB ====== -->
+  <div class="section-wrap">
+    <div class="section-top">
+      <div>
+        <div class="section-eyebrow">Most shared in the last 24h</div>
+        <h2 class="section-title">🔥 Trending Now</h2>
+        <p class="section-subtitle">Sorted by virality score. Updated every 15 minutes.</p>
+      </div>
+      <a href="#" class="view-all">See all trending →</a>
+    </div>
+
+    <div class="virality-legend">
+      <span>🔥</span>
+      <span><strong>Virality Score</strong> = (likes × 1 + comments × 3 + shares × 5 + views × 0.01) ÷ hours since posted</span>
+    </div>
+
+    <div class="meme-grid">
+      <div class="meme-card">
+        <div class="meme-card-img-wrap">
+          <img src="https://picsum.photos/seed/tr1/400/400" alt="">
+          <span class="viral-badge">🔥 98</span>
+          <span class="type-badge">Meme</span>
+        </div>
+        <div class="meme-card-body">
+          <div class="meme-card-title">E Don Do</div>
+          <div class="meme-card-meta">
+            <div class="meme-stat">🔗 <span>892</span></div>
+            <div class="meme-stat">❤️ <span>1,203</span></div>
+          </div>
+          <div class="meme-card-creator">by @memequeen</div>
+        </div>
+      </div>
+      <div class="meme-card">
+        <div class="meme-card-img-wrap">
+          <img src="https://picsum.photos/seed/tr2/400/400" alt="">
+          <span class="viral-badge">🔥 91</span>
+          <span class="type-badge">GIF</span>
+        </div>
+        <div class="meme-card-body">
+          <div class="meme-card-title">The Shake 🕺</div>
+          <div class="meme-card-meta">
+            <div class="meme-stat">🔗 <span>741</span></div>
+            <div class="meme-stat">❤️ <span>989</span></div>
+          </div>
+          <div class="meme-card-creator">by @danceking</div>
+        </div>
+      </div>
+      <div class="meme-card">
+        <div class="meme-card-img-wrap">
+          <img src="https://picsum.photos/seed/tr3/400/400" alt="">
+          <span class="viral-badge">🔥 87</span>
+          <span class="type-badge">Meme</span>
+        </div>
+        <div class="meme-card-body">
+          <div class="meme-card-title">Azonto Forever</div>
+          <div class="meme-card-meta">
+            <div class="meme-stat">🔗 <span>620</span></div>
+            <div class="meme-stat">❤️ <span>804</span></div>
+          </div>
+          <div class="meme-card-creator">by @laughmaster</div>
+        </div>
+      </div>
+      <div class="meme-card">
+        <div class="meme-card-img-wrap">
+          <img src="https://picsum.photos/seed/tr4/400/400" alt="">
+          <span class="viral-badge">🔥 83</span>
+          <span class="type-badge">Sticker</span>
+        </div>
+        <div class="meme-card-body">
+          <div class="meme-card-title">Monday Energy</div>
+          <div class="meme-card-meta">
+            <div class="meme-stat">🔗 <span>502</span></div>
+            <div class="meme-stat">❤️ <span>677</span></div>
+          </div>
+          <div class="meme-card-creator">by @sadvibes_ng</div>
+        </div>
+      </div>
+      <div class="meme-card">
+        <div class="meme-card-img-wrap">
+          <img src="https://picsum.photos/seed/tr5/400/400" alt="">
+          <span class="viral-badge">🔥 78</span>
+          <span class="type-badge">Meme</span>
+        </div>
+        <div class="meme-card-body">
+          <div class="meme-card-title">Anime Reaction 💀</div>
+          <div class="meme-card-meta">
+            <div class="meme-stat">🔗 <span>448</span></div>
+            <div class="meme-stat">❤️ <span>590</span></div>
+          </div>
+          <div class="meme-card-creator">by @animelord</div>
+        </div>
+      </div>
+      <div class="meme-card">
+        <div class="meme-card-img-wrap">
+          <img src="https://picsum.photos/seed/tr6/400/400" alt="">
+          <span class="viral-badge">🔥 74</span>
+          <span class="type-badge">GIF</span>
+        </div>
+        <div class="meme-card-body">
+          <div class="meme-card-title">Goal Celebration</div>
+          <div class="meme-card-meta">
+            <div class="meme-stat">🔗 <span>389</span></div>
+            <div class="meme-stat">❤️ <span>514</span></div>
+          </div>
+          <div class="meme-card-creator">by @sportsmemer</div>
+        </div>
+      </div>
+      <div class="meme-card">
+        <div class="meme-card-img-wrap">
+          <img src="https://picsum.photos/seed/tr7/400/400" alt="">
+          <span class="viral-badge">🔥 69</span>
+          <span class="type-badge">Meme</span>
+        </div>
+        <div class="meme-card-body">
+          <div class="meme-card-title">Sapa Level 9000</div>
+          <div class="meme-card-meta">
+            <div class="meme-stat">🔗 <span>340</span></div>
+            <div class="meme-stat">❤️ <span>467</span></div>
+          </div>
+          <div class="meme-card-creator">by @brokebutlit</div>
+        </div>
+      </div>
+      <div class="meme-card">
+        <div class="meme-card-img-wrap">
+          <img src="https://picsum.photos/seed/tr8/400/400" alt="">
+          <span class="viral-badge">🔥 65</span>
+          <span class="type-badge">Sticker</span>
+        </div>
+        <div class="meme-card-body">
+          <div class="meme-card-title">Send Help 🆘</div>
+          <div class="meme-card-meta">
+            <div class="meme-stat">🔗 <span>301</span></div>
+            <div class="meme-stat">❤️ <span>422</span></div>
+          </div>
+          <div class="meme-card-creator">by @awkward.life</div>
+        </div>
+      </div>
+      <div class="meme-card">
+        <div class="meme-card-img-wrap">
+          <img src="https://picsum.photos/seed/tr9/400/400" alt="">
+          <span class="viral-badge">🔥 61</span>
+          <span class="type-badge">Meme</span>
+        </div>
+        <div class="meme-card-body">
+          <div class="meme-card-title">K-Pop Shocked</div>
+          <div class="meme-card-meta">
+            <div class="meme-stat">🔗 <span>270</span></div>
+            <div class="meme-stat">❤️ <span>388</span></div>
+          </div>
+          <div class="meme-card-creator">by @kpopstudio</div>
+        </div>
+      </div>
+      <div class="meme-card">
+        <div class="meme-card-img-wrap">
+          <img src="https://picsum.photos/seed/tr10/400/400" alt="">
+          <span class="viral-badge">🔥 58</span>
+          <span class="type-badge">GIF</span>
+        </div>
+        <div class="meme-card-body">
+          <div class="meme-card-title">Too Much Pepper</div>
+          <div class="meme-card-meta">
+            <div class="meme-stat">🔗 <span>249</span></div>
+            <div class="meme-stat">❤️ <span>355</span></div>
+          </div>
+          <div class="meme-card-creator">by @naijacontent</div>
+        </div>
+      </div>
+      <div class="meme-card">
+        <div class="meme-card-img-wrap">
+          <img src="https://picsum.photos/seed/tr11/400/400" alt="">
+          <span class="viral-badge">🔥 53</span>
+          <span class="type-badge">Meme</span>
+        </div>
+        <div class="meme-card-body">
+          <div class="meme-card-title">That Look 👀</div>
+          <div class="meme-card-meta">
+            <div class="meme-stat">🔗 <span>220</span></div>
+            <div class="meme-stat">❤️ <span>314</span></div>
+          </div>
+          <div class="meme-card-creator">by @memequeen</div>
+        </div>
+      </div>
+      <div class="meme-card">
+        <div class="meme-card-img-wrap">
+          <img src="https://picsum.photos/seed/tr12/400/400" alt="">
+          <span class="viral-badge">🔥 49</span>
+          <span class="type-badge">Sticker</span>
+        </div>
+        <div class="meme-card-body">
+          <div class="meme-card-title">Not My Fault</div>
+          <div class="meme-card-meta">
+            <div class="meme-stat">🔗 <span>198</span></div>
+            <div class="meme-stat">❤️ <span>280</span></div>
+          </div>
+          <div class="meme-card-creator">by @laughmaster</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== NEW TAB (preview / dimmed) ====== -->
+  <div class="section-wrap">
+    <div class="tab-preview-label">
+      <span>✨</span>
+      <span class="tab-name">New tab</span>
+      <span style="font-size:11px;color:var(--gray-400)">(preview)</span>
+    </div>
+    <div class="section-top">
+      <div>
+        <div class="section-eyebrow">Fresh uploads</div>
+        <h2 class="section-title">✨ Just Posted</h2>
+        <p class="section-subtitle">Sorted by upload time. Newest first.</p>
+      </div>
+      <a href="#" class="view-all">See all new →</a>
+    </div>
+    <div class="meme-grid dimmed">
+      <div class="meme-card">
+        <div class="meme-card-img-wrap">
+          <img src="https://picsum.photos/seed/new1/400/400" alt="">
+          <span class="time-badge">2h ago</span>
+          <span class="type-badge">Meme</span>
+        </div>
+        <div class="meme-card-body">
+          <div class="meme-card-title">Naija Mornings</div>
+          <div class="meme-card-meta">
+            <div class="meme-stat">👁 <span>412</span></div>
+            <div class="meme-stat">❤️ <span>38</span></div>
+          </div>
+          <div class="meme-card-creator">by @naijafan</div>
+        </div>
+      </div>
+      <div class="meme-card">
+        <div class="meme-card-img-wrap">
+          <img src="https://picsum.photos/seed/new2/400/400" alt="">
+          <span class="time-badge">3h ago</span>
+          <span class="type-badge">GIF</span>
+        </div>
+        <div class="meme-card-body">
+          <div class="meme-card-title">Real Talk 💬</div>
+          <div class="meme-card-meta">
+            <div class="meme-stat">👁 <span>287</span></div>
+            <div class="meme-stat">❤️ <span>21</span></div>
+          </div>
+          <div class="meme-card-creator">by @danceking</div>
+        </div>
+      </div>
+      <div class="meme-card">
+        <div class="meme-card-img-wrap">
+          <img src="https://picsum.photos/seed/new3/400/400" alt="">
+          <span class="time-badge">4h ago</span>
+          <span class="type-badge">Sticker</span>
+        </div>
+        <div class="meme-card-body">
+          <div class="meme-card-title">Feeling It 🎵</div>
+          <div class="meme-card-meta">
+            <div class="meme-stat">👁 <span>190</span></div>
+            <div class="meme-stat">❤️ <span>14</span></div>
+          </div>
+          <div class="meme-card-creator">by @kpopstudio</div>
+        </div>
+      </div>
+      <div class="meme-card">
+        <div class="meme-card-img-wrap">
+          <img src="https://picsum.photos/seed/new4/400/400" alt="">
+          <span class="time-badge">5h ago</span>
+          <span class="type-badge">Meme</span>
+        </div>
+        <div class="meme-card-body">
+          <div class="meme-card-title">Not Again 😤</div>
+          <div class="meme-card-meta">
+            <div class="meme-stat">👁 <span>156</span></div>
+            <div class="meme-stat">❤️ <span>9</span></div>
+          </div>
+          <div class="meme-card-creator">by @awkward.life</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== CATEGORIES TAB ====== -->
+  <div class="section-wrap">
+    <div class="tab-preview-label">
+      <span>🗂️</span>
+      <span class="tab-name">Categories tab</span>
+    </div>
+    <div class="section-top">
+      <div>
+        <div class="section-eyebrow">Browse by mood</div>
+        <h2 class="section-title">🗂️ All Categories</h2>
+        <p class="section-subtitle">13 categories and growing. Find your vibe.</p>
+      </div>
+    </div>
+    <div class="cat-grid">
+      <div class="cat-card cat-reactions">
+        <span class="cat-emoji">😮</span>
+        <div class="cat-name">Reactions</div>
+        <div class="cat-count">45 memes</div>
+        <div class="cat-browse">Browse →</div>
+      </div>
+      <div class="cat-card cat-dance">
+        <span class="cat-emoji">💃</span>
+        <div class="cat-name">Dance</div>
+        <div class="cat-count">15 memes</div>
+        <div class="cat-browse">Browse →</div>
+      </div>
+      <div class="cat-card cat-laugh">
+        <span class="cat-emoji">😂</span>
+        <div class="cat-name">Laughing</div>
+        <div class="cat-count">22 memes</div>
+        <div class="cat-browse">Browse →</div>
+      </div>
+      <div class="cat-card cat-awkward">
+        <span class="cat-emoji">😬</span>
+        <div class="cat-name">Awkward</div>
+        <div class="cat-count">17 memes</div>
+        <div class="cat-browse">Browse →</div>
+      </div>
+      <div class="cat-card cat-sports">
+        <span class="cat-emoji">⚽</span>
+        <div class="cat-name">Sports</div>
+        <div class="cat-count">17 memes</div>
+        <div class="cat-browse">Browse →</div>
+      </div>
+      <div class="cat-card cat-anime">
+        <span class="cat-emoji">🎌</span>
+        <div class="cat-name">Anime</div>
+        <div class="cat-count">8 memes</div>
+        <div class="cat-browse">Browse →</div>
+      </div>
+      <div class="cat-card cat-gaming">
+        <span class="cat-emoji">🎮</span>
+        <div class="cat-name">Gaming</div>
+        <div class="cat-count">6 memes</div>
+        <div class="cat-browse">Browse →</div>
+      </div>
+      <div class="cat-card cat-pop">
+        <span class="cat-emoji">🌟</span>
+        <div class="cat-name">Pop Culture</div>
+        <div class="cat-count">11 memes</div>
+        <div class="cat-browse">Browse →</div>
+      </div>
+      <div class="cat-card cat-naija">
+        <span class="cat-emoji">🇳🇬</span>
+        <div class="cat-name">Naija</div>
+        <div class="cat-count">12 memes</div>
+        <div class="cat-browse">Browse →</div>
+      </div>
+      <div class="cat-card cat-kpop">
+        <span class="cat-emoji">🎵</span>
+        <div class="cat-name">K-Pop</div>
+        <div class="cat-count">5 memes</div>
+        <div class="cat-browse">Browse →</div>
+      </div>
+      <div class="cat-card cat-latin">
+        <span class="cat-emoji">🌮</span>
+        <div class="cat-name">Latin</div>
+        <div class="cat-count">7 memes</div>
+        <div class="cat-browse">Browse →</div>
+      </div>
+      <div class="cat-card cat-sad">
+        <span class="cat-emoji">😢</span>
+        <div class="cat-name">Sad</div>
+        <div class="cat-count">11 memes</div>
+        <div class="cat-browse">Browse →</div>
+      </div>
+      <div class="cat-card cat-random">
+        <span class="cat-emoji">🎲</span>
+        <div class="cat-name">Random</div>
+        <div class="cat-count">13 memes</div>
+        <div class="cat-browse">Browse →</div>
+      </div>
+      <div class="cat-card cat-coming" style="border-radius:16px">
+        <span class="cat-emoji" style="font-size:28px;color:var(--gray-300)">➕</span>
+        <div class="cat-name">Coming Soon</div>
+        <div class="cat-count">Stay tuned</div>
+      </div>
+      <div class="cat-card cat-coming" style="border-radius:16px">
+        <span class="cat-emoji" style="font-size:28px;color:var(--gray-300)">➕</span>
+        <div class="cat-name">Coming Soon</div>
+        <div class="cat-count">Stay tuned</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo">whamr.</div>
+        <div class="footer-tagline">Find the perfect meme. Send the wham. Built for the internet.</div>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Explore</h4>
+          <ul>
+            <li><a href="06-explore.html">Trending</a></li>
+            <li><a href="06-explore.html">Categories</a></li>
+            <li><a href="10-dojos.html">Dojos</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Careers</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Terms</a></li>
+            <li><a href="#">Privacy</a></li>
+            <li><a href="#">Content Policy</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2024 whamr. All rights reserved.</span>
+      <div class="footer-bl">
+        <a href="#">Status</a>
+        <a href="#">API</a>
+        <a href="#">Help</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

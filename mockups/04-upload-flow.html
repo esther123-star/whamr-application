@@ -1,0 +1,720 @@
+﻿<!-- FILE: 04-upload-flow.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>whamr., Upload a Meme</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Whamr Sunset, Electric Orange-Red + Golden Yellow */
+  --bg:#FFFAF5; --bg-alt:#FFF3E8; --card:#FFFFFF;
+  --ink:#1A0F00; --ink-soft:#4A3020; --ink-mute:#8A7060;
+  --line:#F0DDD0; --line-soft:#FBF0E8;
+  /* Primary: electric orange-red (the wham) */
+  --purple:#FF4500; --purple-mid:#FF6B35; --purple-bright:#FF8C60;
+  --purple-dark:#CC3700; --purple-soft:#FFF1EC; --purple-xsoft:#FFF8F5;
+  /* Accent: warm golden yellow (the joy) */
+  --wham:#FFB800; --wham-bright:#FFD60A; --wham-soft:#FFF8DC;
+  --pink:#FFB800; --pink-soft:#FFF8DC;
+  /* Semantic */
+  --green:#00C853; --green-soft:#E8FFF0;
+  --amber:#FFB800; --red:#FF2D55; --red-soft:#FFF0F3;
+  --blue:#007AFF;
+  /* Gray scale (kept neutral) */
+  --gray-50:#F9FAFB; --gray-100:#F3F4F6; --gray-200:#E5E7EB;
+  --gray-400:#9CA3AF; --gray-500:#6B7280; --gray-700:#374151; --gray-900:#111827;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;font-size:15px;background:var(--bg);color:var(--ink);line-height:1.6}
+img{display:block}
+a{text-decoration:none;color:inherit}
+
+/* ── NAV ── */
+.nav{
+  height:56px;background:#fff;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;padding:0 32px;
+  position:sticky;top:0;z-index:100;
+}
+.nav-logo{
+  font-family:'Plus Jakarta Sans',sans-serif;font-weight:900;
+  font-size:22px;letter-spacing:-0.05em;color:var(--purple);
+  margin-right:40px;flex-shrink:0;
+}
+.nav-links{display:flex;align-items:center;gap:4px;flex:1}
+.nav-link{
+  font-size:14px;font-weight:500;color:var(--gray-700);
+  padding:6px 12px;border-radius:8px;
+}
+.nav-link.active{background:var(--purple-soft);color:var(--purple);font-weight:600}
+.nav-actions{display:flex;align-items:center;gap:10px}
+.nav-avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:linear-gradient(135deg,#1A0F00 0%,#4A1000 30%,#CC3700 60%,#FF4500 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;color:#fff;font-weight:700;
+}
+
+/* ── PAGE TOP ── */
+.upload-page-top{
+  background:#fff;border-bottom:1px solid var(--line);
+  padding:28px 40px;
+}
+.upload-page-inner{max-width:1300px;margin:0 auto}
+.upload-page-title{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:900;font-size:24px;color:var(--ink);
+  margin-bottom:6px;
+}
+.upload-page-sub{font-size:14px;color:var(--gray-500);margin-bottom:24px}
+
+/* ── PROGRESS INDICATOR ── */
+.progress-bar{
+  display:flex;align-items:center;gap:0;
+}
+.prog-step{
+  display:flex;align-items:center;gap:10px;flex-shrink:0;
+}
+.prog-circle{
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;flex-shrink:0;
+  border:2px solid var(--gray-200);background:#fff;color:var(--gray-400);
+}
+.prog-circle.done{
+  background:var(--green);border-color:var(--green);color:#fff;
+}
+.prog-circle.active{
+  background:var(--purple);border-color:var(--purple);color:#fff;
+}
+.prog-label{font-size:12px;font-weight:600;color:var(--gray-400);white-space:nowrap}
+.prog-label.active{color:var(--purple)}
+.prog-label.done{color:var(--green)}
+.prog-connector{
+  flex:1;height:2px;background:var(--gray-200);margin:0 8px;min-width:20px;max-width:80px;
+}
+.prog-connector.done{background:var(--green)}
+.prog-connector.active{background:linear-gradient(90deg,var(--green) 0%,var(--purple) 100%)}
+
+/* ── FOUR STEPS LAYOUT ── */
+.steps-layout{
+  max-width:1380px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:0;
+  align-items:stretch;
+  border:1px solid var(--line);
+  border-radius:16px;overflow:hidden;
+  margin:28px 24px 40px;
+  background:var(--line);
+  box-shadow:0 4px 24px rgba(0,0,0,0.06);
+}
+.step-panel{
+  background:#fff;
+  display:flex;flex-direction:column;
+  min-height:680px;
+}
+.step-panel-header{
+  padding:20px 24px 16px;
+  border-bottom:1px solid var(--line-soft);
+}
+.step-panel-num{
+  font-size:10px;font-weight:700;color:var(--gray-400);
+  letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;
+}
+.step-panel-title{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:800;font-size:16px;color:var(--ink);margin-bottom:2px;
+}
+.step-panel-desc{font-size:12px;color:var(--gray-400)}
+
+/* step active state */
+.step-panel.step-active .step-panel-header{
+  background:linear-gradient(135deg,#FFF3E8 0%,#fff 100%);
+  border-bottom:2px solid var(--purple-soft);
+}
+.step-panel.step-active .step-panel-num{color:var(--purple)}
+.step-panel.step-active .step-panel-title{color:var(--purple)}
+.step-panel.step-done .step-panel-header{
+  background:linear-gradient(135deg,#ECFDF5 0%,#fff 100%);
+  border-bottom:1px solid #D1FAE5;
+}
+.step-panel.step-done .step-panel-num{color:var(--green)}
+
+.step-panel-body{flex:1;padding:20px 24px;display:flex;flex-direction:column;gap:16px}
+.step-panel-footer{
+  padding:16px 24px;
+  border-top:1px solid var(--line-soft);
+  display:flex;align-items:center;gap:8px;
+}
+
+/* ── STEP 1 ELEMENTS ── */
+.dropzone{
+  border:2px dashed var(--gray-200);border-radius:14px;
+  padding:32px 20px;text-align:center;
+  background:var(--gray-50);
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  transition:border-color 0.2s,background 0.2s;
+  cursor:pointer;flex:1;
+}
+.dropzone:hover{border-color:var(--purple);background:var(--purple-soft)}
+.dz-icon{font-size:40px;opacity:0.5}
+.dz-main{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:700;font-size:15px;color:var(--ink-soft);
+}
+.dz-sub{font-size:12px;color:var(--gray-400)}
+.dz-browse{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--purple);color:#fff;
+  font-size:12px;font-weight:600;padding:8px 18px;border-radius:8px;
+  border:none;cursor:pointer;margin-top:8px;
+}
+.dz-types{
+  font-size:11px;color:var(--gray-400);
+  background:#fff;border:1px solid var(--line);
+  border-radius:100px;padding:4px 14px;margin-top:4px;
+}
+.url-section{
+  border:1px solid var(--line);border-radius:10px;overflow:hidden;
+}
+.url-label{
+  font-size:11px;font-weight:700;color:var(--gray-400);
+  padding:8px 14px 0;letter-spacing:0.06em;text-transform:uppercase;
+}
+.url-row{display:flex;align-items:stretch}
+.url-input{
+  flex:1;padding:10px 14px;font-size:13px;font-family:'Inter',sans-serif;
+  border:none;outline:none;background:#fff;color:var(--ink);
+}
+.url-input::placeholder{color:var(--gray-300,#D1D5DB)}
+.url-btn{
+  background:var(--purple);color:#fff;
+  font-size:12px;font-weight:700;padding:0 16px;
+  border:none;cursor:pointer;
+}
+
+/* ── STEP 2 ELEMENTS ── */
+.s2-preview{
+  width:100%;aspect-ratio:1/1;border-radius:10px;overflow:hidden;
+  background:var(--gray-100);flex-shrink:0;
+  position:relative;max-width:100%;
+}
+.s2-preview img{width:100%;height:100%;object-fit:cover}
+.s2-preview-badge{
+  position:absolute;top:8px;left:8px;
+  background:rgba(0,0,0,0.65);color:#fff;
+  font-size:9px;font-weight:700;padding:3px 8px;border-radius:100px;
+  letter-spacing:0.06em;text-transform:uppercase;
+}
+.form-label{
+  font-size:11px;font-weight:700;color:var(--gray-700);
+  letter-spacing:0.04em;text-transform:uppercase;margin-bottom:5px;
+  display:flex;align-items:center;gap:4px;
+}
+.form-label .req{color:var(--red);font-size:13px}
+.form-input{
+  width:100%;padding:10px 14px;
+  border:1.5px solid var(--line);border-radius:8px;
+  font-family:'Inter',sans-serif;font-size:14px;color:var(--ink);
+  outline:none;background:#fff;
+}
+.form-input:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(255,69,0,0.12)}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.type-toggle{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.type-btn{
+  padding:8px 6px;border-radius:8px;
+  border:1.5px solid var(--line);background:#fff;
+  font-size:12px;font-weight:600;color:var(--gray-600,#4B5563);
+  cursor:pointer;text-align:center;transition:all 0.15s;
+}
+.type-btn.active{background:var(--purple-soft);border-color:var(--purple);color:var(--purple)}
+.form-select{
+  width:100%;padding:10px 14px;
+  border:1.5px solid var(--line);border-radius:8px;
+  font-family:'Inter',sans-serif;font-size:14px;color:var(--ink);
+  outline:none;background:#fff;cursor:pointer;
+}
+.form-select:focus{border-color:var(--purple)}
+.form-textarea{
+  width:100%;padding:10px 14px;
+  border:1.5px solid var(--line);border-radius:8px;
+  font-family:'Inter',sans-serif;font-size:13px;color:var(--ink);
+  outline:none;background:#fff;resize:none;min-height:60px;
+}
+.form-textarea:focus{border-color:var(--purple)}
+.tags-wrap{
+  border:1.5px solid var(--line);border-radius:8px;
+  padding:8px 12px;background:#fff;
+  display:flex;flex-wrap:wrap;gap:6px;align-items:center;
+}
+.tags-wrap:focus-within{border-color:var(--purple)}
+.tag-chip{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--purple-soft);color:var(--purple);
+  font-size:11px;font-weight:600;padding:3px 10px;border-radius:100px;
+}
+.tag-chip-x{font-size:10px;cursor:pointer;opacity:0.7}
+.tags-input{
+  border:none;outline:none;font-size:13px;
+  font-family:'Inter',sans-serif;color:var(--ink);
+  background:transparent;min-width:80px;flex:1;
+}
+.tags-input::placeholder{color:var(--gray-300,#D1D5DB)}
+
+/* visibility toggle */
+.vis-toggle{
+  display:flex;align-items:center;gap:0;
+  border:1.5px solid var(--line);border-radius:8px;overflow:hidden;
+}
+.vis-btn{
+  flex:1;padding:8px 10px;font-size:12px;font-weight:600;
+  cursor:pointer;text-align:center;transition:all 0.15s;border:none;background:#fff;
+  color:var(--gray-600,#4B5563);
+}
+.vis-btn.active{background:var(--purple-soft);color:var(--purple)}
+.vis-btn:first-child{border-right:1px solid var(--line)}
+
+/* ── STEP 3 ELEMENTS ── */
+.s3-center{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;gap:20px;padding:16px;
+}
+.s3-rocket{font-size:56px;animation:float 2s ease-in-out infinite alternate}
+@keyframes float{0%{transform:translateY(0)}100%{transform:translateY(-10px)}}
+.s3-title{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:800;font-size:18px;color:var(--ink);
+}
+.s3-sub{font-size:13px;color:var(--gray-400)}
+.checklist{
+  width:100%;background:var(--gray-50);border:1px solid var(--line);
+  border-radius:10px;overflow:hidden;
+  display:flex;flex-direction:column;
+}
+.checklist-item{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 16px;border-bottom:1px solid var(--line-soft);
+  font-size:13px;
+}
+.checklist-item:last-child{border:none}
+.check-icon{
+  width:22px;height:22px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;flex-shrink:0;
+}
+.check-done{background:var(--green);color:#fff}
+.check-spin{background:var(--amber);color:#fff;animation:spin 1s linear infinite}
+.check-pending{background:var(--gray-200);color:var(--gray-400)}
+@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.check-label-done{color:var(--gray-700)}
+.check-label-spin{color:var(--ink);font-weight:600}
+.check-label-pending{color:var(--gray-400)}
+.s3-progress-track{
+  width:100%;height:4px;background:var(--gray-200);border-radius:2px;
+  position:relative;overflow:hidden;
+}
+.s3-progress-bar{
+  height:100%;border-radius:2px;
+  background:linear-gradient(90deg,var(--purple),var(--pink));
+  animation:progress 3s ease-out forwards;
+}
+@keyframes progress{0%{width:0%}60%{width:65%}100%{width:72%}}
+.s3-pct{font-size:12px;color:var(--gray-400)}
+
+/* ── STEP 4 ELEMENTS ── */
+.s4-center{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-start;
+  gap:14px;padding:12px 0;
+}
+.s4-confetti{font-size:40px}
+.s4-title{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:900;font-size:20px;color:var(--ink);text-align:center;
+  line-height:1.2;
+}
+.s4-subtitle{font-size:13px;color:var(--gray-500);text-align:center}
+.s4-preview{
+  width:100%;aspect-ratio:1/1;border-radius:12px;overflow:hidden;
+  border:2px solid var(--purple-soft);position:relative;
+}
+.s4-preview img{width:100%;height:100%;object-fit:cover}
+.s4-live-badge{
+  position:absolute;top:10px;left:10px;
+  background:var(--green);color:#fff;
+  font-size:10px;font-weight:700;padding:4px 10px;border-radius:100px;
+  display:flex;align-items:center;gap:5px;letter-spacing:0.04em;
+}
+.s4-live-dot{width:5px;height:5px;border-radius:50%;background:#fff;animation:blink 1s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.s4-stats{
+  width:100%;display:flex;align-items:center;justify-content:space-around;
+  background:var(--gray-50);border:1px solid var(--line);border-radius:10px;
+  padding:12px 8px;
+}
+.s4-stat{text-align:center}
+.s4-stat-num{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-weight:800;font-size:20px;color:var(--ink);display:block;
+}
+.s4-stat-label{font-size:10px;color:var(--gray-400);display:block}
+.s4-share-row{
+  width:100%;display:grid;grid-template-columns:repeat(2,1fr);gap:8px;
+}
+.s4-share-btn{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  padding:10px 12px;border-radius:9px;font-size:12px;font-weight:600;
+  cursor:pointer;border:none;
+}
+.s4-share-wa{background:#DCFCE7;color:#15803D}
+.s4-share-tg{background:#EFF6FF;color:#1D4ED8}
+.s4-share-x{background:var(--gray-100);color:var(--ink)}
+.s4-share-copy{background:var(--purple-soft);color:var(--purple)}
+
+/* ── BUTTONS ── */
+.btn-primary{
+  flex:1;display:flex;align-items:center;justify-content:center;gap:6px;
+  background:var(--purple);color:#fff;
+  font-size:13px;font-weight:700;padding:11px 16px;border-radius:9px;
+  border:none;cursor:pointer;
+}
+.btn-primary:hover{background:var(--purple-dark)}
+.btn-secondary{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  background:#fff;border:1.5px solid var(--line);
+  color:var(--gray-700);font-size:13px;font-weight:600;
+  padding:11px 16px;border-radius:9px;cursor:pointer;
+}
+.btn-ghost{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  background:transparent;border:1.5px solid var(--line);
+  color:var(--gray-600,#4B5563);font-size:13px;font-weight:600;
+  padding:11px 16px;border-radius:9px;cursor:pointer;
+  flex:1;
+}
+.btn-success{
+  flex:1;display:flex;align-items:center;justify-content:center;gap:6px;
+  background:var(--purple);color:#fff;
+  font-size:13px;font-weight:700;padding:11px 16px;border-radius:9px;
+  border:none;cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav class="nav">
+  <a href="index.html" class="nav-logo">whamr.</a>
+  <div class="nav-links">
+    <a href="01-landing.html" class="nav-link">Home</a>
+    <a href="02-memes-browser.html" class="nav-link">Memes</a>
+    <a href="06-explore.html" class="nav-link">Explore</a>
+    <a href="10-dojos.html" class="nav-link">Dojos</a>
+  </div>
+  <div class="nav-actions">
+    <div class="nav-avatar">TK</div>
+  </div>
+</nav>
+
+<!-- ── PAGE TOP ── -->
+<div class="upload-page-top">
+  <div class="upload-page-inner">
+    <h1 class="upload-page-title">Upload a meme</h1>
+    <p class="upload-page-sub">Add your content to the whamr. library. Supported formats: JPG, PNG, GIF, WEBP, MP4 · Max 10MB</p>
+
+    <!-- PROGRESS INDICATOR -->
+    <div class="progress-bar">
+
+      <!-- Step 1 -->
+      <div class="prog-step">
+        <div class="prog-circle done">✓</div>
+        <div class="prog-label done">Select file</div>
+      </div>
+      <div class="prog-connector done"></div>
+
+      <!-- Step 2 -->
+      <div class="prog-step">
+        <div class="prog-circle done">✓</div>
+        <div class="prog-label done">Add details</div>
+      </div>
+      <div class="prog-connector active"></div>
+
+      <!-- Step 3 -->
+      <div class="prog-step">
+        <div class="prog-circle active">3</div>
+        <div class="prog-label active">Publishing</div>
+      </div>
+      <div class="prog-connector"></div>
+
+      <!-- Step 4 -->
+      <div class="prog-step">
+        <div class="prog-circle">4</div>
+        <div class="prog-label">Done!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── FOUR STEPS ── -->
+<div class="steps-layout">
+
+  <!-- ═══════════════════════════════════ STEP 1 ═══════════════════════════════════ -->
+  <div class="step-panel step-done">
+    <div class="step-panel-header">
+      <div class="step-panel-num">Step 1, completed ✓</div>
+      <div class="step-panel-title">Select your file</div>
+      <div class="step-panel-desc">Upload or link a meme, sticker, or GIF</div>
+    </div>
+    <div class="step-panel-body">
+
+      <div class="dropzone">
+        <div class="dz-icon">⬆️</div>
+        <div class="dz-main">Drop your file here</div>
+        <div class="dz-sub">or click to browse from your device</div>
+        <button class="dz-browse">📂 Browse files</button>
+        <div class="dz-types">JPG · PNG · GIF · WEBP · MP4 · max 10 MB</div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:10px;color:var(--gray-400);font-size:12px">
+        <div style="flex:1;height:1px;background:var(--line)"></div>
+        or paste a URL
+        <div style="flex:1;height:1px;background:var(--line)"></div>
+      </div>
+
+      <div class="url-section">
+        <div class="url-label">Image / GIF URL</div>
+        <div class="url-row">
+          <input class="url-input" type="text" placeholder="https://example.com/meme.jpg" value="">
+          <button class="url-btn">Use →</button>
+        </div>
+      </div>
+
+      <div style="background:var(--gray-50);border:1px solid var(--line);border-radius:8px;padding:12px 14px">
+        <div style="font-size:11px;font-weight:700;color:var(--gray-400);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px">Supported platforms</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <span style="font-size:11px;background:#fff;border:1px solid var(--line);border-radius:100px;padding:3px 10px;color:var(--gray-600,#4B5563)">Twitter/X</span>
+          <span style="font-size:11px;background:#fff;border:1px solid var(--line);border-radius:100px;padding:3px 10px;color:var(--gray-600,#4B5563)">Reddit</span>
+          <span style="font-size:11px;background:#fff;border:1px solid var(--line);border-radius:100px;padding:3px 10px;color:var(--gray-600,#4B5563)">Tenor</span>
+          <span style="font-size:11px;background:#fff;border:1px solid var(--line);border-radius:100px;padding:3px 10px;color:var(--gray-600,#4B5563)">Giphy</span>
+          <span style="font-size:11px;background:#fff;border:1px solid var(--line);border-radius:100px;padding:3px 10px;color:var(--gray-600,#4B5563)">Imgflip</span>
+          <span style="font-size:11px;background:#fff;border:1px solid var(--line);border-radius:100px;padding:3px 10px;color:var(--gray-600,#4B5563)">Direct link</span>
+        </div>
+      </div>
+
+      <div style="font-size:11px;color:var(--gray-400);line-height:1.6;text-align:center">
+        By uploading you confirm this content is yours or freely available to share.<br>
+        Whamr may reject content that violates community guidelines.
+      </div>
+    </div>
+    <div class="step-panel-footer">
+      <button class="btn-primary">Next: Add details →</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ STEP 2 ═══════════════════════════════════ -->
+  <div class="step-panel step-done">
+    <div class="step-panel-header">
+      <div class="step-panel-num">Step 2, completed ✓</div>
+      <div class="step-panel-title">Add details</div>
+      <div class="step-panel-desc">Title, type, category, and tags</div>
+    </div>
+    <div class="step-panel-body">
+
+      <!-- Preview thumbnail -->
+      <div class="s2-preview">
+        <img src="https://picsum.photos/seed/wm05/400/400" alt="E Don Do preview">
+        <span class="s2-preview-badge">Meme</span>
+      </div>
+
+      <!-- Title -->
+      <div class="form-group">
+        <label class="form-label">Title <span class="req">*</span></label>
+        <input class="form-input" type="text" value="E Don Do" placeholder="Give your meme a memorable name…">
+      </div>
+
+      <!-- Type -->
+      <div class="form-group">
+        <label class="form-label">Type <span class="req">*</span></label>
+        <div class="type-toggle">
+          <button class="type-btn active">🖼️ Meme</button>
+          <button class="type-btn">🏷️ Sticker</button>
+          <button class="type-btn">🎞️ GIF</button>
+        </div>
+      </div>
+
+      <!-- Category -->
+      <div class="form-group">
+        <label class="form-label">Category <span class="req">*</span></label>
+        <select class="form-select">
+          <option>Reactions</option>
+          <option selected>Naija</option>
+          <option>Dance</option>
+          <option>Laughing</option>
+          <option>Awkward</option>
+          <option>Sports</option>
+          <option>Random</option>
+          <option>Sad</option>
+        </select>
+      </div>
+
+      <!-- Tags -->
+      <div class="form-group">
+        <label class="form-label">Tags</label>
+        <div class="tags-wrap">
+          <span class="tag-chip">naija <span class="tag-chip-x">×</span></span>
+          <span class="tag-chip">funny <span class="tag-chip-x">×</span></span>
+          <span class="tag-chip">pidgin <span class="tag-chip-x">×</span></span>
+          <input class="tags-input" type="text" placeholder="Add tag…">
+        </div>
+      </div>
+
+      <!-- Caption -->
+      <div class="form-group">
+        <label class="form-label">Caption <span style="font-weight:400;color:var(--gray-400);text-transform:none;letter-spacing:0">(optional)</span></label>
+        <textarea class="form-textarea" rows="2" placeholder="Add a caption or context for this meme…">E don do! When the situation is fully cooked.</textarea>
+      </div>
+
+      <!-- Visibility -->
+      <div class="form-group">
+        <label class="form-label">Visibility</label>
+        <div class="vis-toggle">
+          <button class="vis-btn active">🌍 Public</button>
+          <button class="vis-btn">🔒 Private</button>
+        </div>
+        <div style="font-size:11px;color:var(--gray-400)">Public memes appear in the library and can be sent by anyone.</div>
+      </div>
+
+    </div>
+    <div class="step-panel-footer">
+      <button class="btn-secondary">← Back</button>
+      <button class="btn-primary">Publish meme 🌍</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ STEP 3 ═══════════════════════════════════ -->
+  <div class="step-panel step-active">
+    <div class="step-panel-header">
+      <div class="step-panel-num">Step 3, In progress</div>
+      <div class="step-panel-title">Publishing…</div>
+      <div class="step-panel-desc">Hang tight while we process your meme</div>
+    </div>
+    <div class="step-panel-body">
+
+      <div class="s3-center">
+        <div class="s3-rocket">🚀</div>
+        <div>
+          <div class="s3-title">Publishing your meme…</div>
+          <div class="s3-sub">Usually takes 5–15 seconds. AI moderation is running.</div>
+        </div>
+
+        <div class="s3-progress-track">
+          <div class="s3-progress-bar"></div>
+        </div>
+        <div class="s3-pct">72% complete</div>
+
+        <div class="checklist" style="width:100%">
+          <div class="checklist-item">
+            <div class="check-icon check-done">✓</div>
+            <div class="check-label-done">File uploaded to CDN</div>
+          </div>
+          <div class="checklist-item">
+            <div class="check-icon check-done">✓</div>
+            <div class="check-label-done">Metadata saved</div>
+          </div>
+          <div class="checklist-item">
+            <div class="check-icon check-done">✓</div>
+            <div class="check-label-done">Thumbnails generated (3 sizes)</div>
+          </div>
+          <div class="checklist-item">
+            <div class="check-icon check-spin">⏳</div>
+            <span class="check-label-spin">AI moderation check…</span>
+          </div>
+          <div class="checklist-item">
+            <div class="check-icon check-pending">○</div>
+            <div class="check-label-pending">Generating share links</div>
+          </div>
+          <div class="checklist-item">
+            <div class="check-icon check-pending">○</div>
+            <div class="check-label-pending">Indexing for search</div>
+          </div>
+        </div>
+
+        <div style="background:var(--amber);background:linear-gradient(135deg,#FEF3C7,#FFF7ED);border:1px solid #FDE68A;border-radius:9px;padding:12px 14px;width:100%">
+          <div style="font-size:12px;font-weight:700;color:#92400E;margin-bottom:3px">🤖 AI moderation</div>
+          <div style="font-size:11px;color:#78350F;line-height:1.5">Whamr checks all uploads for prohibited content. Content that violates community guidelines will not be published.</div>
+        </div>
+      </div>
+
+    </div>
+    <div class="step-panel-footer">
+      <button class="btn-secondary" style="opacity:0.5;cursor:not-allowed">← Back</button>
+      <button class="btn-primary" style="opacity:0.5;cursor:not-allowed">Please wait…</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════ STEP 4 ═══════════════════════════════════ -->
+  <div class="step-panel">
+    <div class="step-panel-header">
+      <div class="step-panel-num">Step 4, Preview</div>
+      <div class="step-panel-title">Done! 🎉</div>
+      <div class="step-panel-desc">Your meme is live and ready to send</div>
+    </div>
+    <div class="step-panel-body">
+
+      <div class="s4-center">
+        <div class="s4-confetti">🎉</div>
+        <div>
+          <div class="s4-title">Your meme is live!</div>
+          <div style="font-size:13px;color:var(--gray-400);text-align:center;margin-top:4px">"E Don Do" has been published to whamr.</div>
+        </div>
+
+        <div class="s4-preview">
+          <img src="https://picsum.photos/seed/wm05/400/400" alt="E Don Do, published">
+          <div class="s4-live-badge"><span class="s4-live-dot"></span> LIVE</div>
+        </div>
+
+        <div class="s4-stats">
+          <div class="s4-stat">
+            <span class="s4-stat-num">63</span>
+            <span class="s4-stat-label">Library total</span>
+          </div>
+          <div class="s4-stat" style="border-left:1px solid var(--line);border-right:1px solid var(--line);padding:0 16px">
+            <span class="s4-stat-num">0</span>
+            <span class="s4-stat-label">Sends so far</span>
+          </div>
+          <div class="s4-stat">
+            <span class="s4-stat-num">9</span>
+            <span class="s4-stat-label">Platforms</span>
+          </div>
+        </div>
+
+        <div style="width:100%">
+          <div style="font-size:11px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">Share it now</div>
+          <div class="s4-share-row">
+            <button class="s4-share-btn s4-share-wa">💬 WhatsApp</button>
+            <button class="s4-share-btn s4-share-tg">✈️ Telegram</button>
+            <button class="s4-share-btn s4-share-x">𝕏 Twitter</button>
+            <button class="s4-share-btn s4-share-copy">🔗 Copy link</button>
+          </div>
+        </div>
+
+        <div style="width:100%;display:flex;align-items:center;gap:0;border:1px solid var(--line);border-radius:8px;overflow:hidden">
+          <input type="text" value="https://whamr.app/m/e-don-do" readonly
+            style="flex:1;padding:10px 12px;font-size:12px;color:var(--gray-500);border:none;outline:none;font-family:'Inter',sans-serif;background:#fff">
+          <button style="background:var(--purple);color:#fff;font-size:12px;font-weight:700;padding:0 16px;border:none;cursor:pointer;align-self:stretch">Copy</button>
+        </div>
+
+      </div>
+
+    </div>
+    <div class="step-panel-footer">
+      <button class="btn-ghost">Upload another</button>
+      <a href="02-memes-browser.html" style="flex:1"><button class="btn-success" style="width:100%">Browse memes →</button></a>
+    </div>
+  </div>
+
+</div><!-- /steps-layout -->
+
+</body>
+</html>

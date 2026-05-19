@@ -1,0 +1,736 @@
+﻿<!-- FILE: 09-messages.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Messages, whamr.</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Whamr Sunset, Electric Orange-Red + Golden Yellow */
+  --bg:#FFFAF5; --bg-alt:#FFF3E8; --card:#FFFFFF;
+  --ink:#1A0F00; --ink-soft:#4A3020; --ink-mute:#8A7060;
+  --line:#F0DDD0; --line-soft:#FBF0E8;
+  /* Primary: electric orange-red (the wham) */
+  --purple:#FF4500; --purple-mid:#FF6B35; --purple-bright:#FF8C60;
+  --purple-dark:#CC3700; --purple-soft:#FFF1EC; --purple-xsoft:#FFF8F5;
+  /* Accent: warm golden yellow (the joy) */
+  --wham:#FFB800; --wham-bright:#FFD60A; --wham-soft:#FFF8DC;
+  --pink:#FFB800; --pink-soft:#FFF8DC;
+  /* Semantic */
+  --green:#00C853; --green-soft:#E8FFF0;
+  --amber:#FFB800; --red:#FF2D55; --red-soft:#FFF0F3;
+  --blue:#007AFF;
+  /* Gray scale (kept neutral) */
+  --gray-50:#F9FAFB; --gray-100:#F3F4F6; --gray-200:#E5E7EB;
+  --gray-400:#9CA3AF; --gray-500:#6B7280; --gray-700:#374151; --gray-900:#111827;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;font-size:15px;background:var(--bg);color:var(--ink);line-height:1.6}
+img{display:block;max-width:100%}
+a{text-decoration:none;color:inherit}
+
+/* ANNOUNCE */
+.announce{background:linear-gradient(90deg,var(--purple-dark) 0%,var(--purple-mid) 100%);color:#fff;text-align:center;padding:9px 16px;font-size:13px;font-weight:500}
+.announce a{color:var(--wham-bright);text-decoration:underline;text-underline-offset:2px}
+
+/* NAV */
+.nav{height:64px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 28px;gap:12px;position:sticky;top:0;z-index:100}
+.nav-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.05em;color:var(--purple);flex-shrink:0}
+.nav-links{display:flex;align-items:center;gap:2px;margin-left:12px}
+.nav-link{font-size:14px;font-weight:500;color:var(--gray-700);padding:6px 11px;border-radius:8px;transition:background 0.15s,color 0.15s;white-space:nowrap}
+.nav-link:hover,.nav-link.active{background:var(--purple-soft);color:var(--purple)}
+.nav-link.active{font-weight:600}
+.nav-search-wrap{flex:1;max-width:380px;margin:0 auto;position:relative}
+.nav-search-wrap input{width:100%;padding:9px 16px 9px 40px;border:1.5px solid var(--line);border-radius:50px;font-family:'Inter',sans-serif;font-size:14px;color:var(--ink);background:#fff;outline:none}
+.nav-search-wrap input:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(255,69,0,0.12)}
+.nav-search-wrap input::placeholder{color:var(--gray-400)}
+.nav-search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--gray-400)}
+.nav-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.btn-upload{display:inline-flex;align-items:center;gap:6px;background:var(--purple);color:#fff;font-size:13px;font-weight:600;padding:8px 16px;border-radius:9px;border:none;cursor:pointer;white-space:nowrap}
+.btn-upload:hover{background:var(--purple-dark)}
+.nav-icon-btn{width:38px;height:38px;border-radius:9px;background:var(--gray-100);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;position:relative;flex-shrink:0}
+.nav-badge{position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;border-radius:9px;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;padding:0 4px}
+.badge-red{background:var(--red);color:#fff}
+.badge-blue{background:#2563EB;color:#fff}
+.nav-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--purple-dark) 0%,var(--purple-mid) 100%);display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;font-weight:700;cursor:pointer;flex-shrink:0;border:2px solid var(--purple-soft)}
+.btn-signin{font-size:13px;font-weight:600;color:var(--purple);padding:7px 14px;border-radius:8px;border:1.5px solid var(--line);background:#fff;cursor:pointer}
+.btn-signup{font-size:13px;font-weight:600;color:#fff;padding:7px 14px;border-radius:8px;background:var(--purple);border:none;cursor:pointer}
+
+/* TWO-PANEL LAYOUT */
+.messages-layout{
+  display:flex;height:calc(100vh - 64px - 38px);/* subtract nav + announce */
+  overflow:hidden;
+}
+
+/* LEFT PANEL */
+.panel-left{
+  width:300px;min-width:300px;background:#fff;border-right:1px solid var(--line);
+  display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;
+}
+
+/* Panel header */
+.panel-left-header{
+  padding:16px 16px 12px;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;
+}
+.panel-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;color:var(--ink)}
+.compose-btn{
+  width:32px;height:32px;border-radius:8px;background:var(--purple-xsoft);
+  border:1px solid var(--purple-soft);display:flex;align-items:center;justify-content:center;
+  font-size:16px;cursor:pointer;transition:background 0.15s;
+}
+.compose-btn:hover{background:var(--purple-soft)}
+
+/* Panel search */
+.panel-search{padding:10px 12px;border-bottom:1px solid var(--line-soft);flex-shrink:0}
+.panel-search-inner{position:relative}
+.panel-search-inner input{
+  width:100%;padding:8px 12px 8px 36px;border:1.5px solid var(--line);border-radius:8px;
+  font-family:'Inter',sans-serif;font-size:13px;color:var(--ink);background:var(--gray-50);outline:none;
+}
+.panel-search-inner input:focus{border-color:var(--purple);background:#fff;box-shadow:0 0 0 3px rgba(255,69,0,0.12)}
+.panel-search-inner input::placeholder{color:var(--gray-400)}
+.panel-search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--gray-400)}
+
+/* Message requests */
+.msg-request-row{
+  display:flex;align-items:center;gap:10px;padding:10px 16px;
+  background:var(--wham-soft);border-bottom:1px solid #FDE68A;cursor:pointer;
+  flex-shrink:0;
+}
+.msg-request-row:hover{background:#FEF3C7}
+.msg-req-icon{font-size:18px}
+.msg-req-text{font-size:13px;font-weight:600;color:var(--wham);flex:1}
+.msg-req-count{
+  background:#FFD60A;color:#1A0F00;font-size:10px;font-weight:700;
+  width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;
+}
+
+/* Conversation list */
+.conv-list{flex:1;overflow-y:auto}
+
+.conv-item{
+  display:flex;align-items:flex-start;gap:10px;padding:14px 16px;
+  cursor:pointer;border-bottom:1px solid var(--line-soft);transition:background 0.12s;
+  position:relative;
+}
+.conv-item:hover{background:var(--gray-50)}
+.conv-item.active{background:var(--purple-xsoft);border-left:3px solid var(--purple);padding-left:13px}
+.conv-item.active:hover{background:var(--purple-soft)}
+
+.conv-ava-wrap{position:relative;flex-shrink:0}
+.conv-ava{width:44px;height:44px;border-radius:50%;overflow:hidden;border:2px solid var(--line)}
+.conv-ava img{width:100%;height:100%;object-fit:cover}
+.online-dot{
+  position:absolute;bottom:1px;right:1px;width:11px;height:11px;
+  border-radius:50%;background:var(--green);border:2px solid #fff;
+}
+
+.conv-body{flex:1;min-width:0}
+.conv-name-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px}
+.conv-name{font-size:14px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Space Grotesk',sans-serif}
+.conv-time{font-size:11px;color:var(--gray-400);font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.conv-preview{font-size:13px;color:var(--gray-500);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.conv-preview.unread{color:var(--ink);font-weight:600}
+
+.unread-badge{
+  background:var(--purple);color:#fff;font-size:10px;font-weight:700;
+  min-width:18px;height:18px;border-radius:9px;padding:0 5px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;flex-shrink:0;margin-top:2px;
+}
+.muted-icon{font-size:13px;color:var(--gray-300);flex-shrink:0;margin-top:4px}
+
+/* RIGHT PANEL */
+.panel-right{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--gray-50)}
+
+/* Thread header */
+.thread-header{
+  background:#fff;border-bottom:1px solid var(--line);padding:12px 20px;
+  display:flex;align-items:center;gap:12px;flex-shrink:0;
+}
+.thread-back{font-size:18px;cursor:pointer;color:var(--gray-500)}
+.thread-ava-wrap{position:relative;flex-shrink:0}
+.thread-ava{width:44px;height:44px;border-radius:50%;overflow:hidden;border:2px solid var(--purple-soft)}
+.thread-ava img{width:100%;height:100%;object-fit:cover}
+.thread-online{position:absolute;bottom:1px;right:1px;width:11px;height:11px;border-radius:50%;background:var(--green);border:2px solid #fff}
+.thread-info{flex:1;min-width:0}
+.thread-name{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;color:var(--ink)}
+.thread-status{font-size:12px;color:var(--green);font-weight:500}
+.thread-actions{display:flex;align-items:center;gap:4px}
+.thread-action-btn{
+  width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-size:17px;cursor:pointer;color:var(--gray-500);border:1px solid transparent;
+  transition:background 0.12s,border-color 0.12s;
+}
+.thread-action-btn:hover{background:var(--gray-100);border-color:var(--line);color:var(--ink)}
+
+/* Message area */
+.message-area{
+  flex:1;overflow-y:auto;padding:24px 20px;
+  display:flex;flex-direction:column;gap:4px;
+}
+
+.date-sep{
+  text-align:center;margin:12px 0;
+}
+.date-sep span{
+  font-size:11px;font-weight:700;color:var(--gray-400);font-family:'Space Grotesk',sans-serif;
+  text-transform:uppercase;letter-spacing:0.06em;
+  background:var(--gray-200);padding:3px 12px;border-radius:50px;
+}
+
+.msg-row{display:flex;align-items:flex-end;gap:8px;margin-bottom:4px}
+.msg-row.mine{flex-direction:row-reverse}
+.msg-row.theirs{flex-direction:row}
+
+.msg-ava{width:30px;height:30px;border-radius:50%;overflow:hidden;flex-shrink:0}
+.msg-ava img{width:100%;height:100%;object-fit:cover}
+
+.msg-bubble{
+  max-width:72%;padding:10px 14px;border-radius:18px;
+  font-size:14px;line-height:1.5;position:relative;
+}
+.msg-bubble.theirs{
+  background:#fff;color:var(--ink);border:1px solid var(--line);
+  border-bottom-left-radius:4px;
+}
+.msg-bubble.mine{
+  background:var(--purple);color:#fff;
+  border-bottom-right-radius:4px;
+}
+
+.msg-meta{
+  display:flex;align-items:center;gap:4px;margin-top:4px;
+  font-size:11px;font-family:'JetBrains Mono',monospace;
+}
+.msg-meta.mine{justify-content:flex-end}
+.msg-meta.theirs{justify-content:flex-start}
+.msg-time{color:var(--gray-400)}
+.msg-read-tick{color:var(--purple);font-size:12px}
+.msg-read-tick.theirs-read{color:var(--gray-400)}
+
+/* Meme attachment card */
+.meme-attach{
+  max-width:240px;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;
+  cursor:pointer;transition:box-shadow 0.15s;
+}
+.meme-attach:hover{box-shadow:0 4px 16px rgba(255,69,0,0.12)}
+.meme-attach-img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#FFF1EC}
+.meme-attach-body{padding:10px 12px}
+.meme-attach-title{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13px;color:var(--ink);margin-bottom:4px}
+.meme-attach-action{font-size:12px;font-weight:600;color:var(--purple)}
+
+/* Unread indicator */
+.unread-msg-indicator{
+  display:flex;align-items:center;gap:8px;margin:8px 0;
+}
+.unread-msg-indicator::before,.unread-msg-indicator::after{
+  content:'';flex:1;height:1px;background:var(--purple-soft);
+}
+.unread-indicator-label{
+  font-size:11px;font-weight:700;color:var(--purple);font-family:'Space Grotesk',sans-serif;
+  white-space:nowrap;display:flex;align-items:center;gap:5px;
+}
+.unread-dot{width:7px;height:7px;border-radius:50%;background:var(--purple)}
+
+/* Typing indicator */
+.typing-row{display:flex;align-items:flex-end;gap:8px;padding-top:8px}
+.typing-bubble{
+  background:#fff;border:1px solid var(--line);border-radius:18px;border-bottom-left-radius:4px;
+  padding:12px 16px;display:flex;align-items:center;gap:5px;
+}
+.typing-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--gray-300);
+  animation:typingBounce 1.2s infinite;
+}
+.typing-dot:nth-child(2){animation-delay:0.2s}
+.typing-dot:nth-child(3){animation-delay:0.4s}
+@keyframes typingBounce{
+  0%,60%,100%{transform:translateY(0)}
+  30%{transform:translateY(-6px)}
+}
+
+/* MEME QUICK SHARE ROW */
+.meme-quick-share{
+  background:#fff;border-top:1px solid var(--line);padding:10px 16px;flex-shrink:0;
+}
+.meme-qs-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.meme-qs-label{font-size:12px;font-weight:700;color:var(--ink-mute);font-family:'Space Grotesk',sans-serif;text-transform:uppercase;letter-spacing:0.06em}
+.meme-qs-close{font-size:14px;color:var(--gray-400);cursor:pointer}
+.meme-qs-scroll{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px}
+.meme-qs-scroll::-webkit-scrollbar{height:3px}
+.meme-qs-scroll::-webkit-scrollbar-thumb{background:var(--purple-soft);border-radius:2px}
+.meme-qs-thumb{
+  width:72px;height:72px;border-radius:10px;overflow:hidden;flex-shrink:0;cursor:pointer;
+  border:2px solid transparent;transition:border-color 0.12s,transform 0.12s;
+}
+.meme-qs-thumb:hover{border-color:var(--purple);transform:scale(1.05)}
+.meme-qs-thumb img{width:100%;height:100%;object-fit:cover}
+
+/* Input area */
+.input-area{
+  background:#fff;border-top:1px solid var(--line);padding:12px 16px;
+  display:flex;align-items:center;gap:10px;flex-shrink:0;
+}
+.input-emoji-btn{
+  width:38px;height:38px;border-radius:10px;background:var(--gray-100);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;flex-shrink:0;
+  transition:background 0.12s;
+}
+.input-emoji-btn:hover{background:var(--purple-xsoft);border-color:var(--purple-soft)}
+.input-field{
+  flex:1;padding:10px 16px;border:1.5px solid var(--line);border-radius:50px;
+  font-family:'Inter',sans-serif;font-size:14px;color:var(--ink);background:#fff;outline:none;
+}
+.input-field:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(255,69,0,0.12)}
+.input-field::placeholder{color:var(--gray-400)}
+.input-send-btn{
+  width:40px;height:40px;border-radius:50%;background:var(--purple);
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px;cursor:pointer;border:none;flex-shrink:0;
+  transition:background 0.15s,transform 0.12s;
+  color:#fff;
+}
+.input-send-btn:hover{background:var(--purple-dark);transform:scale(1.05)}
+</style>
+</head>
+<body>
+
+<!-- ANNOUNCE -->
+<div class="announce">
+  New: Meme Dojos are live. Build your crew and climb the leaderboard.
+  <a href="10-dojos.html">Try it now →</a>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="01-landing.html" class="nav-logo">whamr.</a>
+  <div class="nav-links">
+    <a href="01-landing.html" class="nav-link">Home</a>
+    <a href="02-memes-browser.html" class="nav-link">Memes</a>
+    <a href="06-explore.html" class="nav-link">Explore</a>
+    <a href="10-dojos.html" class="nav-link">Dojos</a>
+    <a href="12-analytics.html" class="nav-link">Analytics</a>
+  </div>
+  <div class="nav-search-wrap">
+    <span class="nav-search-icon">🔍</span>
+    <input type="text" placeholder="Search memes...">
+  </div>
+  <div class="nav-actions">
+    <button class="btn-upload">+ Upload</button>
+    <div class="nav-icon-btn">🔔<span class="nav-badge badge-red">4</span></div>
+    <div class="nav-icon-btn">💬<span class="nav-badge badge-blue">3</span></div>
+    <div class="nav-avatar">M</div>
+    <button class="btn-signin">Sign in</button>
+    <button class="btn-signup">Sign up</button>
+  </div>
+</nav>
+
+<!-- TWO-PANEL -->
+<div class="messages-layout">
+
+  <!-- LEFT PANEL -->
+  <div class="panel-left">
+
+    <!-- Header -->
+    <div class="panel-left-header">
+      <span class="panel-title">Messages</span>
+      <div class="compose-btn" title="New message">✏️</div>
+    </div>
+
+    <!-- Search -->
+    <div class="panel-search">
+      <div class="panel-search-inner">
+        <span class="panel-search-icon">🔍</span>
+        <input type="text" placeholder="Search conversations...">
+      </div>
+    </div>
+
+    <!-- Message request banner -->
+    <div class="msg-request-row">
+      <span class="msg-req-icon">📬</span>
+      <span class="msg-req-text">Message requests (1), Global Memes Hub</span>
+      <span class="msg-req-count">1</span>
+    </div>
+
+    <!-- Conversations -->
+    <div class="conv-list">
+
+      <!-- Active: Dance King -->
+      <div class="conv-item active">
+        <div class="conv-ava-wrap">
+          <div class="conv-ava"><img src="https://picsum.photos/seed/danceking/88/88" alt="Dance King"></div>
+          <div class="online-dot"></div>
+        </div>
+        <div class="conv-body">
+          <div class="conv-name-row">
+            <span class="conv-name">Dance King 💃</span>
+            <span class="conv-time">10:44</span>
+          </div>
+          <span class="conv-preview unread">The Azonto meme bro 💀</span>
+        </div>
+        <div class="unread-badge">2</div>
+      </div>
+
+      <!-- Naija Content Hub (offline, 1 unread) -->
+      <div class="conv-item">
+        <div class="conv-ava-wrap">
+          <div class="conv-ava"><img src="https://picsum.photos/seed/naijacontent/88/88" alt="Naija Content Hub"></div>
+        </div>
+        <div class="conv-body">
+          <div class="conv-name-row">
+            <span class="conv-name">Naija Content Hub</span>
+            <span class="conv-time">Yesterday</span>
+          </div>
+          <span class="conv-preview unread">Your meme is everywhere 🔥</span>
+        </div>
+        <div class="unread-badge">1</div>
+      </div>
+
+      <!-- Laugh Master (online, read) -->
+      <div class="conv-item">
+        <div class="conv-ava-wrap">
+          <div class="conv-ava"><img src="https://picsum.photos/seed/laughmaster/88/88" alt="Laugh Master"></div>
+          <div class="online-dot"></div>
+        </div>
+        <div class="conv-body">
+          <div class="conv-name-row">
+            <span class="conv-name">Laugh Master 😂</span>
+            <span class="conv-time">Mon</span>
+          </div>
+          <span class="conv-preview">haha exactly my reaction</span>
+        </div>
+      </div>
+
+      <!-- Sports Memer FC (offline, muted) -->
+      <div class="conv-item">
+        <div class="conv-ava-wrap">
+          <div class="conv-ava"><img src="https://picsum.photos/seed/sportsmemer/88/88" alt="Sports Memer FC"></div>
+        </div>
+        <div class="conv-body">
+          <div class="conv-name-row">
+            <span class="conv-name" style="color:var(--gray-400)">Sports Memer FC</span>
+            <span class="conv-time">Sun</span>
+          </div>
+          <span class="conv-preview">Send that goal meme</span>
+        </div>
+        <span class="muted-icon" title="Muted">🔕</span>
+      </div>
+
+      <!-- Awkward Life (offline) -->
+      <div class="conv-item">
+        <div class="conv-ava-wrap">
+          <div class="conv-ava"><img src="https://picsum.photos/seed/awkward/88/88" alt="Awkward Life"></div>
+        </div>
+        <div class="conv-body">
+          <div class="conv-name-row">
+            <span class="conv-name">Awkward Life</span>
+            <span class="conv-time">Fri</span>
+          </div>
+          <span class="conv-preview">😬😬😬</span>
+        </div>
+      </div>
+
+    </div>
+  </div><!-- /panel-left -->
+
+  <!-- RIGHT PANEL -->
+  <div class="panel-right">
+
+    <!-- Thread Header -->
+    <div class="thread-header">
+      <span class="thread-back">←</span>
+      <div class="thread-ava-wrap">
+        <div class="thread-ava"><img src="https://picsum.photos/seed/danceking/88/88" alt="Dance King"></div>
+        <div class="thread-online"></div>
+      </div>
+      <div class="thread-info">
+        <div class="thread-name">Dance King 💃</div>
+        <div class="thread-status">Active now</div>
+      </div>
+      <div class="thread-actions">
+        <div class="thread-action-btn" title="Voice call">📞</div>
+        <div class="thread-action-btn" title="Video call">📹</div>
+        <div class="thread-action-btn" title="View profile">👤</div>
+        <div class="thread-action-btn" title="More options">⋯</div>
+      </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="message-area">
+
+      <!-- Date separator: yesterday -->
+      <div class="date-sep"><span>Yesterday</span></div>
+
+      <!-- Earlier history messages -->
+      <div class="msg-row theirs">
+        <div class="msg-ava"><img src="https://picsum.photos/seed/danceking/60/60" alt="danceking"></div>
+        <div>
+          <div class="msg-bubble theirs">bro you been posting hard lately 🔥</div>
+          <div class="msg-meta theirs"><span class="msg-time">8:12 PM</span><span class="msg-read-tick theirs-read">✓✓</span></div>
+        </div>
+      </div>
+      <div class="msg-row mine">
+        <div>
+          <div class="msg-bubble mine">haha yeah, got a lot of drafts saved up finally posting</div>
+          <div class="msg-meta mine"><span class="msg-time">8:15 PM</span><span class="msg-read-tick">✓✓</span></div>
+        </div>
+        <div class="msg-ava"><img src="https://picsum.photos/seed/u1/60/60" alt="me"></div>
+      </div>
+      <div class="msg-row theirs">
+        <div class="msg-ava"><img src="https://picsum.photos/seed/danceking/60/60" alt="danceking"></div>
+        <div>
+          <div class="msg-bubble theirs">E Don Do is insane btw. 17k views in one day???</div>
+          <div class="msg-meta theirs"><span class="msg-time">8:17 PM</span><span class="msg-read-tick theirs-read">✓✓</span></div>
+        </div>
+      </div>
+      <div class="msg-row mine">
+        <div>
+          <div class="msg-bubble mine">I honestly didn't expect it to blow up that fast 😭 still can't believe it</div>
+          <div class="msg-meta mine"><span class="msg-time">8:19 PM</span><span class="msg-read-tick">✓✓</span></div>
+        </div>
+        <div class="msg-ava"><img src="https://picsum.photos/seed/u1/60/60" alt="me"></div>
+      </div>
+      <div class="msg-row theirs">
+        <div class="msg-ava"><img src="https://picsum.photos/seed/danceking/60/60" alt="danceking"></div>
+        <div>
+          <div class="msg-bubble theirs">naijacontent reposted it too, that's why. they got a huge audience</div>
+          <div class="msg-meta theirs"><span class="msg-time">8:20 PM</span><span class="msg-read-tick theirs-read">✓✓</span></div>
+        </div>
+      </div>
+      <div class="msg-row mine">
+        <div>
+          <div class="msg-bubble mine">yeah I saw that. super grateful for the support 🙏</div>
+          <div class="msg-meta mine"><span class="msg-time">8:22 PM</span><span class="msg-read-tick">✓✓</span></div>
+        </div>
+        <div class="msg-ava"><img src="https://picsum.photos/seed/u1/60/60" alt="me"></div>
+      </div>
+      <div class="msg-row mine">
+        <div>
+          <div class="msg-bubble mine">what meme formats are trending right now on your end?</div>
+          <div class="msg-meta mine"><span class="msg-time">8:23 PM</span><span class="msg-read-tick">✓✓</span></div>
+        </div>
+        <div class="msg-ava"><img src="https://picsum.photos/seed/u1/60/60" alt="me"></div>
+      </div>
+      <div class="msg-row theirs">
+        <div class="msg-ava"><img src="https://picsum.photos/seed/danceking/60/60" alt="danceking"></div>
+        <div>
+          <div class="msg-bubble theirs">dance + reaction combos are killing it rn. also the "tell me without telling me" format</div>
+          <div class="msg-meta theirs"><span class="msg-time">8:26 PM</span><span class="msg-read-tick theirs-read">✓✓</span></div>
+        </div>
+      </div>
+      <div class="msg-row theirs">
+        <div class="msg-ava"><img src="https://picsum.photos/seed/danceking/60/60" alt="danceking"></div>
+        <div>
+          <div class="msg-bubble theirs">you should collab on something. DM @laughmaster, he's looking for creators</div>
+          <div class="msg-meta theirs"><span class="msg-time">8:28 PM</span><span class="msg-read-tick theirs-read">✓✓</span></div>
+        </div>
+      </div>
+      <div class="msg-row mine">
+        <div>
+          <div class="msg-bubble mine">ooh that's a great idea. I'll hit him up this week 👍</div>
+          <div class="msg-meta mine"><span class="msg-time">8:31 PM</span><span class="msg-read-tick">✓✓</span></div>
+        </div>
+        <div class="msg-ava"><img src="https://picsum.photos/seed/u1/60/60" alt="me"></div>
+      </div>
+
+      <!-- Date separator: Today -->
+      <div class="date-sep"><span>Today</span></div>
+
+      <!-- Message 1: danceking (theirs) -->
+      <div class="msg-row theirs">
+        <div class="msg-ava"><img src="https://picsum.photos/seed/danceking/60/60" alt="danceking"></div>
+        <div>
+          <div class="msg-bubble theirs">Yo just checked your page 👀</div>
+          <div class="msg-meta theirs">
+            <span class="msg-time">10:41 AM</span>
+            <span class="msg-read-tick theirs-read">✓✓</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Message 2: memequeen (mine) -->
+      <div class="msg-row mine">
+        <div>
+          <div class="msg-bubble mine">What do you think? 😅</div>
+          <div class="msg-meta mine">
+            <span class="msg-time">10:42 AM</span>
+            <span class="msg-read-tick">✓✓</span>
+          </div>
+        </div>
+        <div class="msg-ava"><img src="https://picsum.photos/seed/u1/60/60" alt="me"></div>
+      </div>
+
+      <!-- Message 3: danceking -->
+      <div class="msg-row theirs">
+        <div class="msg-ava"><img src="https://picsum.photos/seed/danceking/60/60" alt="danceking"></div>
+        <div>
+          <div class="msg-bubble theirs">The Azonto meme bro 💀</div>
+          <div class="msg-meta theirs">
+            <span class="msg-time">10:43 AM</span>
+            <span class="msg-read-tick theirs-read">✓✓</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Unread separator -->
+      <div class="unread-msg-indicator">
+        <div class="unread-indicator-label">
+          <div class="unread-dot"></div>
+          New
+        </div>
+      </div>
+
+      <!-- Message 4: danceking, meme attachment (unread) -->
+      <div class="msg-row theirs">
+        <div class="msg-ava"><img src="https://picsum.photos/seed/danceking/60/60" alt="danceking"></div>
+        <div>
+          <div class="meme-attach">
+            <img class="meme-attach-img" src="https://picsum.photos/seed/d1/480/360" alt="Azonto Move meme">
+            <div class="meme-attach-body">
+              <div class="meme-attach-title">Azonto Move 🕺</div>
+              <div class="meme-attach-action">Tap to share this meme →</div>
+            </div>
+          </div>
+          <div class="msg-meta theirs">
+            <span class="msg-time">10:44 AM</span>
+            <div style="width:8px;height:8px;border-radius:50%;background:#2563EB"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Typing indicator -->
+      <div class="typing-row">
+        <div class="msg-ava"><img src="https://picsum.photos/seed/danceking/60/60" alt="danceking"></div>
+        <div class="typing-bubble">
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+        </div>
+      </div>
+
+    </div><!-- /message-area -->
+
+    <!-- Meme Quick Share Row -->
+    <div class="meme-quick-share">
+      <div class="meme-qs-header">
+        <span class="meme-qs-label">📤 Share a meme</span>
+        <span class="meme-qs-close">✕</span>
+      </div>
+      <div class="meme-qs-scroll">
+        <div class="meme-qs-thumb"><img src="https://picsum.photos/seed/qs1/144/144" alt=""></div>
+        <div class="meme-qs-thumb"><img src="https://picsum.photos/seed/qs2/144/144" alt=""></div>
+        <div class="meme-qs-thumb"><img src="https://picsum.photos/seed/qs3/144/144" alt=""></div>
+        <div class="meme-qs-thumb"><img src="https://picsum.photos/seed/qs4/144/144" alt=""></div>
+        <div class="meme-qs-thumb"><img src="https://picsum.photos/seed/qs5/144/144" alt=""></div>
+        <div class="meme-qs-thumb"><img src="https://picsum.photos/seed/qs6/144/144" alt=""></div>
+        <div class="meme-qs-thumb"><img src="https://picsum.photos/seed/qs7/144/144" alt=""></div>
+        <div class="meme-qs-thumb"><img src="https://picsum.photos/seed/qs8/144/144" alt=""></div>
+      </div>
+    </div>
+
+    <!-- Input Area -->
+    <div class="input-area">
+      <div class="input-emoji-btn" title="Emoji / Meme picker">😂</div>
+      <input type="text" class="input-field" placeholder="Message...">
+      <button class="input-send-btn" title="Send">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+      </button>
+    </div>
+
+  </div><!-- /panel-right -->
+
+  <!-- RIGHT INFO PANEL (thread info / profile sidebar) -->
+  <div style="width:260px;min-width:260px;background:#fff;border-left:1px solid var(--line);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0">
+
+    <!-- Contact info header -->
+    <div style="padding:20px 16px;border-bottom:1px solid var(--line);text-align:center">
+      <div style="position:relative;display:inline-block;margin-bottom:12px">
+        <img src="https://picsum.photos/seed/danceking/88/88" alt="Dance King" style="width:64px;height:64px;border-radius:50%;border:3px solid var(--purple-soft);display:block">
+        <div style="position:absolute;bottom:2px;right:2px;width:14px;height:14px;border-radius:50%;background:var(--green);border:2.5px solid #fff"></div>
+      </div>
+      <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;color:var(--ink);margin-bottom:2px">Dance King 💃</div>
+      <div style="font-size:12px;color:var(--gray-500)">@danceking · Active now</div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px">
+        <button style="display:flex;align-items:center;gap:5px;background:var(--purple);color:#fff;font-size:12px;font-weight:600;padding:7px 14px;border-radius:8px;border:none;cursor:pointer">👤 Profile</button>
+        <button style="display:flex;align-items:center;gap:5px;background:var(--gray-100);color:var(--gray-700);font-size:12px;font-weight:600;padding:7px 12px;border-radius:8px;border:1px solid var(--line);cursor:pointer">🔔 Mute</button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div style="padding:16px;border-bottom:1px solid var(--line)">
+      <div style="font-size:11px;font-weight:700;color:var(--ink-mute);text-transform:uppercase;letter-spacing:0.08em;font-family:'Space Grotesk',sans-serif;margin-bottom:12px">About</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--gray-700)">
+          <span style="font-size:15px">👥</span>
+          <span><strong style="color:var(--ink)">8,200</strong> followers</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--gray-700)">
+          <span style="font-size:15px">📸</span>
+          <span><strong style="color:var(--ink)">183</strong> posts</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--gray-700)">
+          <span style="font-size:15px">🏆</span>
+          <span>Member since <strong style="color:var(--ink)">Mar 2024</strong></span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--gray-700)">
+          <span style="font-size:15px">📍</span>
+          <span>Lagos, Nigeria</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shared memes -->
+    <div style="padding:16px;border-bottom:1px solid var(--line)">
+      <div style="font-size:11px;font-weight:700;color:var(--ink-mute);text-transform:uppercase;letter-spacing:0.08em;font-family:'Space Grotesk',sans-serif;margin-bottom:12px">Shared memes</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px">
+        <div style="aspect-ratio:1/1;border-radius:6px;overflow:hidden;cursor:pointer">
+          <img src="https://picsum.photos/seed/shared1/80/80" alt="" style="width:100%;height:100%;object-fit:cover">
+        </div>
+        <div style="aspect-ratio:1/1;border-radius:6px;overflow:hidden;cursor:pointer">
+          <img src="https://picsum.photos/seed/shared2/80/80" alt="" style="width:100%;height:100%;object-fit:cover">
+        </div>
+        <div style="aspect-ratio:1/1;border-radius:6px;overflow:hidden;cursor:pointer">
+          <img src="https://picsum.photos/seed/d1/80/80" alt="" style="width:100%;height:100%;object-fit:cover">
+        </div>
+        <div style="aspect-ratio:1/1;border-radius:6px;overflow:hidden;cursor:pointer">
+          <img src="https://picsum.photos/seed/shared4/80/80" alt="" style="width:100%;height:100%;object-fit:cover">
+        </div>
+        <div style="aspect-ratio:1/1;border-radius:6px;overflow:hidden;cursor:pointer">
+          <img src="https://picsum.photos/seed/shared5/80/80" alt="" style="width:100%;height:100%;object-fit:cover">
+        </div>
+        <div style="aspect-ratio:1/1;border-radius:6px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:var(--purple-xsoft);cursor:pointer">
+          <span style="font-size:12px;font-weight:700;color:var(--purple)">+12</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div style="padding:16px">
+      <div style="font-size:11px;font-weight:700;color:var(--ink-mute);text-transform:uppercase;letter-spacing:0.08em;font-family:'Space Grotesk',sans-serif;margin-bottom:12px">Actions</div>
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <button style="width:100%;display:flex;align-items:center;gap:10px;padding:10px 12px;background:none;border:none;border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:var(--gray-700);text-align:left;transition:background 0.12s" onmouseenter="this.style.background=getComputedStyle(document.documentElement).getPropertyValue('--gray-100')" onmouseleave="this.style.background=''">
+          <span style="font-size:16px">🔕</span> Mute notifications
+        </button>
+        <button style="width:100%;display:flex;align-items:center;gap:10px;padding:10px 12px;background:none;border:none;border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:var(--gray-700);text-align:left">
+          <span style="font-size:16px">🗑️</span> Delete conversation
+        </button>
+        <button style="width:100%;display:flex;align-items:center;gap:10px;padding:10px 12px;background:none;border:none;border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:var(--red);text-align:left">
+          <span style="font-size:16px">🚫</span> Block user
+        </button>
+        <button style="width:100%;display:flex;align-items:center;gap:10px;padding:10px 12px;background:none;border:none;border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:var(--red);text-align:left">
+          <span style="font-size:16px">⚠️</span> Report conversation
+        </button>
+      </div>
+    </div>
+
+  </div><!-- /info panel -->
+
+</div><!-- /messages-layout -->
+
+</body>
+</html>
