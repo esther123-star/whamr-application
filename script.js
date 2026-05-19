@@ -6,6 +6,95 @@
 (function () {
   "use strict";
 
+  /* ============================================
+     AI Search — synonym expansion + fuzzy match
+     ============================================ */
+  const SYNONYMS = {
+    funny:    ["laugh","lol","hilarious","comedy","haha","lmao","rofl","giggle"],
+    laugh:    ["funny","lol","giggle","chuckle","hilarious","haha","lmao"],
+    sad:      ["cry","crying","tears","sob","sobbing","unhappy","upset","meltdown","depress"],
+    happy:    ["excited","joy","celebrate","yay","great","awesome","vibes","winning"],
+    angry:    ["rage","mad","furious","frustrated","annoyed","yikes","livid"],
+    shocked:  ["surprised","wow","omg","whoa","scream","screaming","gasp"],
+    love:     ["heart","kiss","romance","cute","adorable","crush","affection"],
+    dance:    ["dancing","moves","groove","vibes","party","renegade","azonto","gwara"],
+    awkward:  ["cringe","embarrassing","uncomfortable","weird","cooked","regret"],
+    reaction: ["react","response","when","mood","face","epic"],
+    celebrate:["party","win","victory","cheer","birthday","congrats","woohoo"],
+    naija:    ["nigeria","nigerian","nollywood","pidgin","lagos","abuja","yoruba","igbo","african"],
+    nigeria:  ["naija","nigerian","nollywood","lagos"],
+    sports:   ["football","soccer","basketball","nfl","nba","game","match","goal"],
+    sticker:  ["stickers","whatsapp","wa","static","png"],
+    meme:     ["memes","viral","clip","video","format"],
+    hype:     ["lit","fire","energy","banger"],
+    flex:     ["rich","money","boss","drip"],
+    chill:    ["relax","vibe","calm","mood"],
+  };
+
+  const INTENT_PATTERNS = [
+    { re: /\b(dance|dancing|groove|moves|renegade|azonto|gwara)\b/i,     cat: "dance"     },
+    { re: /\b(laugh|lol|funny|hilarious|lmao|haha|giggle|chuckle)\b/i,  cat: "laughing"  },
+    { re: /\b(sad|cry|crying|tears|sob|depress|unhappy|meltdown)\b/i,   cat: "sad"       },
+    { re: /\b(naija|nigeria|nigerian|nollywood|lagos|pidgin|african)\b/i,cat: "naija"     },
+    { re: /\b(sport|football|basketball|soccer|nfl|nba|game|goal)\b/i,  cat: "sports"    },
+    { re: /\b(react|reaction|shocked|wow|omg|scream|screaming|yikes)\b/i,cat: "reactions" },
+    { re: /\b(awkward|cringe|embarrass|uncomfortable|weird|cooked)\b/i, cat: "awkward"   },
+    { re: /\b(love|kiss|heart|crush|romance|cute)\b/i,                  cat: "love"      },
+    { re: /\b(dance|birthday|celebrate|party|congrats)\b/i,             cat: "birthday"  },
+  ];
+
+  function expandQuery(q) {
+    const words = q.toLowerCase().split(/\s+/);
+    const expanded = new Set(words);
+    words.forEach(w => {
+      if (SYNONYMS[w]) SYNONYMS[w].forEach(s => expanded.add(s));
+      Object.entries(SYNONYMS).forEach(([key, vals]) => {
+        if (vals.includes(w)) expanded.add(key);
+      });
+    });
+    return Array.from(expanded);
+  }
+
+  function fuzzyScore(text, term) {
+    const t = text.toLowerCase(), q = term.toLowerCase();
+    if (t === q) return 1;
+    if (t.startsWith(q)) return 0.92;
+    if (t.includes(q)) return 0.85;
+    const words = t.split(/\s+/);
+    for (const w of words) {
+      if (w === q) return 0.9;
+      if (w.startsWith(q) && q.length >= 3) return 0.75;
+    }
+    if (q.length >= 4) {
+      let qi = 0;
+      for (let i = 0; i < t.length && qi < q.length; i++) {
+        if (t[i] === q[qi]) qi++;
+      }
+      const ratio = qi / q.length;
+      if (ratio >= 0.85) return ratio * 0.6;
+    }
+    return 0;
+  }
+
+  function aiScore(meme, terms) {
+    const fields = [meme.title || "", meme.category || "", (meme.tags || []).join(" ")];
+    let best = 0;
+    for (const term of terms) {
+      for (const field of fields) {
+        const s = fuzzyScore(field, term);
+        if (s > best) best = s;
+      }
+    }
+    return best;
+  }
+
+  function detectIntent(q) {
+    for (const { re, cat } of INTENT_PATTERNS) {
+      if (re.test(q)) return cat;
+    }
+    return null;
+  }
+
   /* ---------- which page are we on ---------- */
   const PAGE = window.__WHAMR_PAGE || "library";
   const HAS_GRID = PAGE === "home" || PAGE === "library";
@@ -13,6 +102,7 @@
   const IS_LIBRARY = PAGE === "library";
 
   /* ---------- state ---------- */
+  const PAGE_SIZE = 24;
   const state = {
     memes: [],
     jsonMemes: [],
@@ -22,6 +112,8 @@
     searchQuery: "",
     currentModal: null,
     featuredIds: null, // set on homepage from data-featured-ids
+    page: 1,          // infinite scroll page
+    filteredCache: [], // cached filtered list for infinite scroll
   };
 
   /* ---------- dom refs (some may be null on certain pages) ---------- */
@@ -222,34 +314,59 @@
   }
 
   /* ============================================
-     Filter + search
+     Filter + AI search
      ============================================ */
   function getFilteredMemes() {
-    const q = state.searchQuery.trim().toLowerCase();
-    return state.memes.filter((m) => {
-      if (state.activeCategory === "favorites") {
-        if (!isFavorited(m.id)) return false;
-      } else if (state.activeCategory !== "all") {
-        if ((m.category || "").toLowerCase() !== state.activeCategory) return false;
+    const q = state.searchQuery.trim();
+    let list = state.memes;
+
+    // Category filter
+    if (state.activeCategory === "favorites") {
+      list = list.filter(m => isFavorited(m.id));
+    } else if (state.activeCategory !== "all") {
+      list = list.filter(m => (m.category || "").toLowerCase() === state.activeCategory);
+    }
+
+    if (!q) return list;
+
+    // AI search: expand synonyms then score each meme
+    const terms = expandQuery(q);
+    const scored = list.map(m => ({ m, s: aiScore(m, terms) }));
+    const matched = scored.filter(({ s }) => s >= 0.3).sort((a, b) => b.s - a.s);
+
+    // Show AI intent hint
+    const hint = document.getElementById("ai-hint");
+    if (hint) {
+      const intent = detectIntent(q);
+      if (intent && matched.length > 0) {
+        hint.textContent = `✦ AI matched: ${intent} — ${matched.length} result${matched.length !== 1 ? "s" : ""}`;
+        hint.style.display = "block";
+      } else {
+        hint.style.display = "none";
       }
-      if (q) {
-        const hay = [m.title || "", m.category || "", (m.tags || []).join(" ")]
-          .join(" ").toLowerCase();
-        if (!hay.includes(q)) return false;
-      }
-      return true;
-    });
+    }
+
+    return matched.map(({ m }) => m);
   }
 
   /* ============================================
-     Render grid
+     Render grid — with infinite scroll
      ============================================ */
-  function renderGrid() {
+  function renderGrid(append) {
     if (!el.grid) return;
-    const list = (IS_HOME) ? state.memes : getFilteredMemes(); // home shows all featured (no filter UI)
-    el.grid.innerHTML = "";
 
-    if (el.count) {
+    if (!append) {
+      // Fresh render: reset page and clear grid
+      state.page = 1;
+      state.filteredCache = IS_HOME ? state.memes : getFilteredMemes();
+      el.grid.innerHTML = "";
+    }
+
+    const list = state.filteredCache;
+    const slice = list.slice(0, state.page * PAGE_SIZE);
+    const indicator = document.getElementById("load-more-indicator");
+
+    if (el.count && !IS_HOME) {
       const noun = state.activeCategory === "stickers" ? "sticker" : "meme";
       el.count.textContent = list.length === 1 ? `1 ${noun}` : `${list.length} ${noun}s`;
     }
@@ -263,16 +380,45 @@
           if (el.emptySub) el.emptySub.textContent = "Tap the heart on any meme to save it here.";
         } else {
           if (el.emptyTitle) el.emptyTitle.textContent = "No memes found";
-          if (el.emptySub) el.emptySub.textContent = "Try a different search, switch categories, or upload your own.";
+          if (el.emptySub) el.emptySub.textContent = 'Try different words — AI understands "funny naija reaction" or "sad crying".';
         }
       }
+      if (indicator) indicator.style.display = "none";
       return;
     }
     if (el.empty) el.empty.hidden = true;
 
-    const frag = document.createDocumentFragment();
-    list.forEach((m, i) => frag.appendChild(createCard(m, i)));
-    el.grid.appendChild(frag);
+    if (append) {
+      // Append only new cards
+      const startIdx = (state.page - 1) * PAGE_SIZE;
+      const newItems = list.slice(startIdx, state.page * PAGE_SIZE);
+      const frag = document.createDocumentFragment();
+      newItems.forEach((m, i) => frag.appendChild(createCard(m, startIdx + i)));
+      el.grid.appendChild(frag);
+    } else {
+      const frag = document.createDocumentFragment();
+      slice.forEach((m, i) => frag.appendChild(createCard(m, i)));
+      el.grid.appendChild(frag);
+    }
+
+    if (indicator) {
+      indicator.style.display = slice.length < list.length ? "block" : "none";
+    }
+  }
+
+  /* Infinite scroll observer */
+  function initInfiniteScroll() {
+    const sentinel = document.getElementById("scroll-sentinel");
+    if (!sentinel || IS_HOME) return;
+    const obs = new IntersectionObserver((entries) => {
+      if (!entries[0].isIntersecting) return;
+      const total = state.filteredCache.length;
+      if (state.page * PAGE_SIZE < total) {
+        state.page++;
+        renderGrid(true);
+      }
+    }, { rootMargin: "200px" });
+    obs.observe(sentinel);
   }
 
   function createCard(meme, index) {
@@ -661,8 +807,12 @@
     if (el.search) {
       el.search.addEventListener("input", debounce((e) => {
         state.searchQuery = e.target.value;
+        if (!e.target.value.trim()) {
+          const hint = document.getElementById("ai-hint");
+          if (hint) hint.style.display = "none";
+        }
         renderGrid();
-      }, 140));
+      }, 160));
     }
     if (el.upload) el.upload.addEventListener("change", handleUpload);
     if (el.modalClose) el.modalClose.addEventListener("click", closeModal);
@@ -705,6 +855,7 @@
       await loadMemes();
       if (IS_LIBRARY) renderFilters();
       renderGrid();
+      initInfiniteScroll();
       checkDeepLink();
     }
   }
