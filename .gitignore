@@ -1,0 +1,15 @@
+# Credentials — never commit
+.env.r2
+.env
+.env.local
+
+# Node
+scripts/node_modules/
+scripts/package-lock.json
+
+# Generated — commit data/memes.json only after upload
+scripts/upload-manifest.json
+
+# OS
+.DS_Store
+Thumbs.db
