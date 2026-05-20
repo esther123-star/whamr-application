@@ -1,0 +1,555 @@
+<!-- FILE: 43-privacy.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy · Whamr</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#FFFAF5; --bg-alt:#FFF3E8; --card:#FFFFFF;
+  --ink:#1A0F00; --ink-soft:#4A3020; --ink-mute:#8A7060;
+  --line:#F0DDD0; --line-soft:#FBF0E8;
+  --purple:#FF4500; --purple-mid:#FF6B35; --purple-dark:#CC3700; --purple-soft:#FFF1EC;
+  --wham:#FFB800; --wham-soft:#FFF8DC;
+  --green:#00C853; --green-soft:#E8FFF0;
+  --gray-100:#F3F4F6; --gray-400:#9CA3AF; --gray-500:#6B7280; --gray-700:#374151;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;font-size:15px;background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;border:none;background:none;font-family:inherit}
+
+/* ── NAV ── */
+.nav{height:64px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 28px;gap:12px;position:sticky;top:0;z-index:100}
+.nav-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.05em;color:var(--purple);flex-shrink:0}
+.nav-links{display:flex;align-items:center;gap:2px;margin-left:12px}
+.nav-link{font-size:14px;font-weight:500;color:var(--gray-700);padding:6px 11px;border-radius:8px;transition:background 0.15s,color 0.15s;white-space:nowrap}
+.nav-link:hover,.nav-link.active{background:var(--purple-soft);color:var(--purple)}
+.nav-link.active{font-weight:600}
+.nav-spacer{flex:1}
+.nav-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.nav-icon-btn{width:38px;height:38px;border-radius:9px;background:var(--gray-100);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;position:relative;flex-shrink:0;transition:background 0.15s}
+.nav-icon-btn:hover{background:var(--purple-soft)}
+.nav-badge{position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;border-radius:9px;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;padding:0 4px}
+.badge-red{background:#FF2D55;color:#fff}
+.badge-blue{background:#2563EB;color:#fff}
+.nav-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--purple-dark) 0%,var(--purple-mid) 100%);display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;font-weight:700;cursor:pointer;flex-shrink:0;border:2px solid var(--purple-soft)}
+
+/* ── LAYOUT ── */
+.page-body{display:flex;min-height:calc(100vh - 64px)}
+
+/* ── SIDEBAR ── */
+.sidebar{width:240px;flex-shrink:0;padding:32px 0 40px 0;position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto;border-right:1px solid var(--line)}
+.sidebar-inner{padding:0 20px}
+.sidebar-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--ink-mute);margin-bottom:14px;padding:0 8px}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:2px}
+.toc-item a{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;font-size:13.5px;color:var(--ink-soft);transition:background 0.15s,color 0.15s;line-height:1.3}
+.toc-item a:hover{background:var(--purple-soft);color:var(--purple)}
+.toc-item.active a{background:var(--purple-soft);color:var(--purple);font-weight:600}
+.toc-num{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--gray-400);width:18px;flex-shrink:0;text-align:right}
+.toc-item.active .toc-num{color:var(--purple)}
+
+/* ── MAIN CONTENT ── */
+.main-wrap{flex:1;overflow:hidden;padding:40px 48px 80px 48px}
+.content-inner{max-width:720px;margin:0 auto}
+
+/* ── PAGE HEADER ── */
+.page-header{margin-bottom:40px;padding-bottom:32px;border-bottom:1px solid var(--line)}
+.page-header h1{font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:700;letter-spacing:-0.03em;color:var(--ink);margin-bottom:10px}
+.page-meta{font-size:13.5px;color:var(--ink-mute);margin-bottom:20px}
+.page-desc{font-size:15px;color:var(--ink-soft);line-height:1.65;margin-bottom:22px}
+.chip-row{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--purple-soft);color:var(--purple-dark);font-size:12.5px;font-weight:600;padding:5px 12px;border-radius:50px;border:1px solid rgba(255,69,0,0.15)}
+.chip-green{background:var(--green-soft);color:#007A33;border-color:rgba(0,200,83,0.2)}
+.chip-wham{background:var(--wham-soft);color:#8A6000;border-color:rgba(255,184,0,0.25)}
+.chip-gray{background:var(--gray-100);color:var(--gray-700);border-color:transparent}
+
+/* ── SECTIONS ── */
+.section{margin-bottom:48px;scroll-margin-top:88px}
+.section-heading{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.section-pill{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;background:var(--purple);color:#fff;padding:3px 10px;border-radius:50px;flex-shrink:0}
+.section-heading h2{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;letter-spacing:-0.02em;color:var(--ink)}
+.section-body{color:var(--ink-soft);line-height:1.75;font-size:14.5px}
+.section-body p{margin-bottom:14px}
+.section-body p:last-child{margin-bottom:0}
+.section-body h3{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:var(--ink);margin:20px 0 8px;letter-spacing:-0.01em}
+.section-body h3:first-child{margin-top:0}
+.section-body ul{padding-left:20px;margin-bottom:14px;display:flex;flex-direction:column;gap:6px}
+.section-body ul li{line-height:1.6}
+.section-body a{color:var(--purple);border-bottom:1px solid rgba(255,69,0,0.25);transition:border-color 0.15s}
+.section-body a:hover{border-color:var(--purple)}
+.section-divider{height:1px;background:var(--line-soft);margin:8px 0 48px}
+
+/* ── RIGHTS LIST ── */
+.rights-list{list-style:none;padding:0;margin-bottom:14px;display:flex;flex-direction:column;gap:0}
+.rights-list li{padding:10px 0;border-bottom:1px solid var(--line-soft);display:flex;gap:10px;align-items:flex-start}
+.rights-list li:last-child{border-bottom:none}
+.right-name{font-weight:600;color:var(--ink);min-width:110px;flex-shrink:0;font-size:14px}
+.right-desc{color:var(--ink-soft);font-size:14px}
+
+/* ── TABLES ── */
+.data-table-wrap{overflow-x:auto;margin-bottom:14px;border-radius:10px;border:1px solid var(--line)}
+.data-table{width:100%;border-collapse:collapse;font-size:13.5px}
+.data-table thead tr{background:var(--bg-alt)}
+.data-table th{text-align:left;padding:11px 14px;font-weight:600;color:var(--ink);font-family:'Space Grotesk',sans-serif;font-size:12.5px;text-transform:uppercase;letter-spacing:0.04em;border-bottom:1px solid var(--line)}
+.data-table td{padding:11px 14px;color:var(--ink-soft);border-bottom:1px solid var(--line-soft);vertical-align:top}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:var(--bg-alt)}
+.data-table code{font-family:'JetBrains Mono',monospace;font-size:12.5px;background:var(--purple-soft);color:var(--purple-dark);padding:2px 6px;border-radius:4px}
+.data-table a{color:var(--purple);border-bottom:1px solid rgba(255,69,0,0.25)}
+
+/* ── CONTACT BLOCK ── */
+.contact-block{background:var(--purple-soft);border:1px solid rgba(255,69,0,0.15);border-radius:12px;padding:18px 22px;margin-top:16px;font-size:14px;color:var(--ink-soft)}
+.contact-block strong{color:var(--ink);display:block;margin-bottom:8px}
+.contact-block a{color:var(--purple);font-weight:500}
+.contact-row{display:flex;gap:6px;margin-bottom:4px;align-items:center}
+.contact-row:last-child{margin-bottom:0}
+.contact-label{min-width:60px;color:var(--ink-mute);font-size:13px}
+
+/* ── CALLOUT ── */
+.callout{background:var(--green-soft);border:1px solid rgba(0,200,83,0.2);border-radius:10px;padding:14px 18px;margin-bottom:14px;font-size:14px;color:#005A25}
+.callout strong{color:#003A18}
+
+/* ── FOOTER ── */
+.site-footer{background:#1A0F00;color:rgba(255,255,255,0.5);padding:40px 48px;font-size:13px}
+.footer-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.footer-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;color:#fff;letter-spacing:-0.04em}
+.footer-links{display:flex;gap:20px;flex-wrap:wrap}
+.footer-links a{color:rgba(255,255,255,0.5);transition:color 0.15s}
+.footer-links a:hover{color:#fff}
+.footer-copy{color:rgba(255,255,255,0.3)}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="01-landing.html" class="nav-logo">whamr.</a>
+  <div class="nav-links">
+    <a href="01-landing.html" class="nav-link">Home</a>
+    <a href="02-memes-browser.html" class="nav-link">Memes</a>
+    <a href="06-explore.html" class="nav-link">Explore</a>
+    <a href="22-trending.html" class="nav-link">Trending</a>
+    <a href="10-dojos.html" class="nav-link">Dojos</a>
+    <a href="12-analytics.html" class="nav-link">Creator</a>
+  </div>
+  <div class="nav-spacer"></div>
+  <div class="nav-actions">
+    <a href="08-notifications.html" class="nav-icon-btn">
+      🔔
+      <span class="nav-badge badge-red">3</span>
+    </a>
+    <a href="09-messages.html" class="nav-icon-btn">
+      💬
+      <span class="nav-badge badge-blue">1</span>
+    </a>
+    <a href="07-user-profile.html" class="nav-avatar">O</a>
+  </div>
+</nav>
+
+<!-- PAGE BODY -->
+<div class="page-body">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+      <p class="sidebar-label">Contents</p>
+      <ol class="toc-list">
+        <li class="toc-item active" data-section="s1"><a href="#s1"><span class="toc-num">1</span>Who We Are</a></li>
+        <li class="toc-item" data-section="s2"><a href="#s2"><span class="toc-num">2</span>Data We Collect</a></li>
+        <li class="toc-item" data-section="s3"><a href="#s3"><span class="toc-num">3</span>How We Use Your Data</a></li>
+        <li class="toc-item" data-section="s4"><a href="#s4"><span class="toc-num">4</span>Data Storage &amp; Security</a></li>
+        <li class="toc-item" data-section="s5"><a href="#s5"><span class="toc-num">5</span>Cookies &amp; localStorage</a></li>
+        <li class="toc-item" data-section="s6"><a href="#s6"><span class="toc-num">6</span>Third-Party Services</a></li>
+        <li class="toc-item" data-section="s7"><a href="#s7"><span class="toc-num">7</span>Your Rights</a></li>
+        <li class="toc-item" data-section="s8"><a href="#s8"><span class="toc-num">8</span>Children's Privacy</a></li>
+        <li class="toc-item" data-section="s9"><a href="#s9"><span class="toc-num">9</span>Data Retention</a></li>
+        <li class="toc-item" data-section="s10"><a href="#s10"><span class="toc-num">10</span>Contact &amp; DPO</a></li>
+      </ol>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-wrap">
+    <div class="content-inner">
+
+      <!-- PAGE HEADER -->
+      <header class="page-header">
+        <h1>Privacy Policy</h1>
+        <p class="page-meta">Last updated: 19 May 2026</p>
+        <p class="page-desc">We keep this simple. Here's exactly what data we collect, why, and what you can do about it.</p>
+        <div class="chip-row">
+          <span class="chip-green chip">Minimal data</span>
+          <span class="chip-gray chip">No ads</span>
+          <span class="chip-gray chip">No data selling</span>
+          <span class="chip">You control your data</span>
+        </div>
+      </header>
+
+      <!-- SECTION 1 -->
+      <section class="section" id="s1">
+        <div class="section-heading">
+          <span class="section-pill">01</span>
+          <h2>Who We Are</h2>
+        </div>
+        <div class="section-body">
+          <p>Whamr Ltd ("Whamr", "we", "us", "our") operates the Whamr platform at whamr.app. We are the data controller for personal data processed through the Service.</p>
+          <p>For data protection enquiries, contact our Data Protection Officer: <a href="mailto:dpo@whamr.app">dpo@whamr.app</a></p>
+        </div>
+      </section>
+      <div class="section-divider"></div>
+
+      <!-- SECTION 2 -->
+      <section class="section" id="s2">
+        <div class="section-heading">
+          <span class="section-pill">02</span>
+          <h2>Data We Collect</h2>
+        </div>
+        <div class="section-body">
+          <h3>2.1 Account data</h3>
+          <p>When you register: email address, username, display name, optional profile photo. We do not require a real name.</p>
+          <h3>2.2 Content data</h3>
+          <p>Memes, stickers, and videos you upload; captions and tags you add; comments and discussion posts you write.</p>
+          <h3>2.3 Usage data</h3>
+          <p>Pages visited, memes viewed, searches performed, share actions (platform chosen but not recipient details), timestamps.</p>
+          <h3>2.4 Device data</h3>
+          <p>Browser type, operating system, IP address (for security purposes). We do not collect precise location.</p>
+          <h3>2.5 Payment data</h3>
+          <p>Creator plan subscribers: payment is processed by Stripe. Whamr does not store full card details. We receive a payment confirmation and your billing country.</p>
+          <h3>2.6 Community data</h3>
+          <p>Discussion posts, Origin and Variants contributions stored in your browser's localStorage. If you are signed in, community contributions may be synced to our servers.</p>
+          <h3>2.7 What we do NOT collect</h3>
+          <ul>
+            <li>Precise location</li>
+            <li>Contact book or social graph</li>
+            <li>Biometric data</li>
+            <li>Third-party messaging content (when you share to WhatsApp, we send a link — we don't see what happens after)</li>
+          </ul>
+        </div>
+      </section>
+      <div class="section-divider"></div>
+
+      <!-- SECTION 3 -->
+      <section class="section" id="s3">
+        <div class="section-heading">
+          <span class="section-pill">03</span>
+          <h2>How We Use Your Data</h2>
+        </div>
+        <div class="section-body">
+          <div class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Purpose</th>
+                  <th>Legal basis</th>
+                  <th>Data used</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Providing the Service</td>
+                  <td>Contract</td>
+                  <td>Account, content, usage</td>
+                </tr>
+                <tr>
+                  <td>Personalising your feed</td>
+                  <td>Legitimate interest</td>
+                  <td>Usage, preferences</td>
+                </tr>
+                <tr>
+                  <td>Processing payments</td>
+                  <td>Contract</td>
+                  <td>Payment data</td>
+                </tr>
+                <tr>
+                  <td>Preventing abuse</td>
+                  <td>Legitimate interest</td>
+                  <td>Account, usage, device</td>
+                </tr>
+                <tr>
+                  <td>Sending notifications</td>
+                  <td>Consent</td>
+                  <td>Email, push tokens</td>
+                </tr>
+                <tr>
+                  <td>Improving the platform</td>
+                  <td>Legitimate interest</td>
+                  <td>Anonymised usage</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout">
+            <strong>We do not use your data for targeted advertising, and we do not sell your data to third parties.</strong>
+          </div>
+        </div>
+      </section>
+      <div class="section-divider"></div>
+
+      <!-- SECTION 4 -->
+      <section class="section" id="s4">
+        <div class="section-heading">
+          <span class="section-pill">04</span>
+          <h2>Data Storage &amp; Security</h2>
+        </div>
+        <div class="section-body">
+          <p>Your data is stored on Cloudflare infrastructure (R2, Workers, D1) with servers in the EU and USA. We use TLS encryption for data in transit and AES-256 encryption for sensitive data at rest.</p>
+          <p>Passwords are hashed using bcrypt. We never store plaintext passwords.</p>
+          <p>We conduct regular security reviews. In the event of a data breach affecting your personal data, we will notify you and the relevant supervisory authority within 72 hours of becoming aware.</p>
+        </div>
+      </section>
+      <div class="section-divider"></div>
+
+      <!-- SECTION 5 -->
+      <section class="section" id="s5">
+        <div class="section-heading">
+          <span class="section-pill">05</span>
+          <h2>Cookies &amp; localStorage</h2>
+        </div>
+        <div class="section-body">
+          <h3>Cookies we use</h3>
+          <div class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Cookie</th>
+                  <th>Purpose</th>
+                  <th>Duration</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>whamr_session</code></td>
+                  <td>Authentication</td>
+                  <td>Session</td>
+                </tr>
+                <tr>
+                  <td><code>whamr_prefs</code></td>
+                  <td>Theme and language preferences</td>
+                  <td>1 year</td>
+                </tr>
+                <tr>
+                  <td><code>whamr_consent</code></td>
+                  <td>Cookie consent record</td>
+                  <td>1 year</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <h3>localStorage (browser-only, never sent to servers)</h3>
+          <ul>
+            <li><code style="font-family:'JetBrains Mono',monospace;font-size:12.5px;background:var(--purple-soft);color:var(--purple-dark);padding:2px 6px;border-radius:4px">whamr-favorites</code> — your saved memes</li>
+            <li><code style="font-family:'JetBrains Mono',monospace;font-size:12.5px;background:var(--purple-soft);color:var(--purple-dark);padding:2px 6px;border-radius:4px">whamr-community-*</code> — your community contributions (discussions, origin notes, variant links)</li>
+          </ul>
+          <p>You can clear localStorage at any time via your browser settings or our Settings page.</p>
+        </div>
+      </section>
+      <div class="section-divider"></div>
+
+      <!-- SECTION 6 -->
+      <section class="section" id="s6">
+        <div class="section-heading">
+          <span class="section-pill">06</span>
+          <h2>Third-Party Services</h2>
+        </div>
+        <div class="section-body">
+          <div class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Service</th>
+                  <th>Purpose</th>
+                  <th>Privacy policy</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Cloudflare</td>
+                  <td>CDN, hosting, security</td>
+                  <td><a href="https://www.cloudflare.com/privacy" target="_blank" rel="noopener">cloudflare.com/privacy</a></td>
+                </tr>
+                <tr>
+                  <td>Stripe</td>
+                  <td>Payment processing</td>
+                  <td><a href="https://stripe.com/privacy" target="_blank" rel="noopener">stripe.com/privacy</a></td>
+                </tr>
+                <tr>
+                  <td>Clerk</td>
+                  <td>Authentication</td>
+                  <td><a href="https://clerk.com/privacy" target="_blank" rel="noopener">clerk.com/privacy</a></td>
+                </tr>
+                <tr>
+                  <td>Cloudinary</td>
+                  <td>Media CDN (legacy)</td>
+                  <td><a href="https://cloudinary.com/privacy" target="_blank" rel="noopener">cloudinary.com/privacy</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>We do not use Google Analytics or Meta Pixel.</p>
+        </div>
+      </section>
+      <div class="section-divider"></div>
+
+      <!-- SECTION 7 -->
+      <section class="section" id="s7">
+        <div class="section-heading">
+          <span class="section-pill">07</span>
+          <h2>Your Rights</h2>
+        </div>
+        <div class="section-body">
+          <p>Under UK GDPR, you have the right to:</p>
+          <ul class="rights-list">
+            <li><span class="right-name">Access</span><span class="right-desc">Request a copy of your personal data</span></li>
+            <li><span class="right-name">Rectification</span><span class="right-desc">Correct inaccurate data</span></li>
+            <li><span class="right-name">Erasure</span><span class="right-desc">Request deletion of your data ("right to be forgotten")</span></li>
+            <li><span class="right-name">Portability</span><span class="right-desc">Receive your data in a machine-readable format</span></li>
+            <li><span class="right-name">Objection</span><span class="right-desc">Object to processing based on legitimate interest</span></li>
+            <li><span class="right-name">Restriction</span><span class="right-desc">Request we limit how we use your data</span></li>
+            <li><span class="right-name">Withdraw consent</span><span class="right-desc">At any time for consent-based processing</span></li>
+          </ul>
+          <p>To exercise any right, email <a href="mailto:privacy@whamr.app">privacy@whamr.app</a> or use Settings &rarr; Account &rarr; Data &amp; Privacy.</p>
+          <p>We will respond within 30 days. You also have the right to complain to the ICO (<a href="https://ico.org.uk" target="_blank" rel="noopener">ico.org.uk</a>).</p>
+        </div>
+      </section>
+      <div class="section-divider"></div>
+
+      <!-- SECTION 8 -->
+      <section class="section" id="s8">
+        <div class="section-heading">
+          <span class="section-pill">08</span>
+          <h2>Children's Privacy</h2>
+        </div>
+        <div class="section-body">
+          <p>Whamr is not directed to children under 13. We do not knowingly collect personal data from children under 13. If we become aware that a child under 13 has provided personal data, we will delete it promptly.</p>
+          <p>If you believe a child has registered, please contact: <a href="mailto:privacy@whamr.app">privacy@whamr.app</a>.</p>
+        </div>
+      </section>
+      <div class="section-divider"></div>
+
+      <!-- SECTION 9 -->
+      <section class="section" id="s9">
+        <div class="section-heading">
+          <span class="section-pill">09</span>
+          <h2>Data Retention</h2>
+        </div>
+        <div class="section-body">
+          <div class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Data type</th>
+                  <th>Retention period</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Account data</td>
+                  <td>Until account deletion + 30 days</td>
+                </tr>
+                <tr>
+                  <td>Content (memes, stickers)</td>
+                  <td>Until deletion + 30 days</td>
+                </tr>
+                <tr>
+                  <td>Usage logs</td>
+                  <td>90 days</td>
+                </tr>
+                <tr>
+                  <td>Payment records</td>
+                  <td>7 years (legal requirement)</td>
+                </tr>
+                <tr>
+                  <td>Support correspondence</td>
+                  <td>2 years</td>
+                </tr>
+                <tr>
+                  <td>Anonymised analytics</td>
+                  <td>Indefinitely</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>After account deletion, anonymised aggregate data (e.g. "User sent 847 memes in May") may be retained in analytics systems.</p>
+        </div>
+      </section>
+      <div class="section-divider"></div>
+
+      <!-- SECTION 10 -->
+      <section class="section" id="s10">
+        <div class="section-heading">
+          <span class="section-pill">10</span>
+          <h2>Contact &amp; DPO</h2>
+        </div>
+        <div class="section-body">
+          <div class="contact-block">
+            <strong>Get in touch</strong>
+            <div class="contact-row"><span class="contact-label">DPO</span><a href="mailto:dpo@whamr.app">dpo@whamr.app</a></div>
+            <div class="contact-row"><span class="contact-label">Privacy</span><a href="mailto:privacy@whamr.app">privacy@whamr.app</a></div>
+            <div class="contact-row"><span class="contact-label">Post</span><span style="color:var(--ink-soft)">Whamr Ltd, London, England</span></div>
+            <div class="contact-row"><span class="contact-label">ICO</span><a href="https://ico.org.uk" target="_blank" rel="noopener">ico.org.uk</a> &middot; 0303 123 1113</div>
+          </div>
+          <p style="margin-top:16px;font-size:13.5px;color:var(--ink-mute)">This policy was last updated on 19 May 2026. Material changes will be communicated by email to registered users.</p>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-logo">whamr.</span>
+    <div class="footer-links">
+      <a href="27-help.html">Help</a>
+      <a href="42-terms.html">Terms</a>
+      <a href="43-privacy.html">Privacy</a>
+      <a href="26-pricing.html">Pricing</a>
+    </div>
+    <span class="footer-copy">&copy; 2026 Whamr Ltd. All rights reserved.</span>
+  </div>
+</footer>
+
+<script src="./real-media.js"></script>
+<script>
+// Smooth-scroll ToC active state
+(function () {
+  const sections = document.querySelectorAll('.section[id]');
+  const tocItems = document.querySelectorAll('.toc-item[data-section]');
+
+  function setActive(id) {
+    tocItems.forEach(function(item) {
+      item.classList.toggle('active', item.dataset.section === id);
+    });
+  }
+
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        setActive(entry.target.id);
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+
+  sections.forEach(function(s) { observer.observe(s); });
+
+  // Click scroll
+  tocItems.forEach(function(item) {
+    item.querySelector('a').addEventListener('click', function(e) {
+      e.preventDefault();
+      const target = document.getElementById(item.dataset.section);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setActive(item.dataset.section);
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

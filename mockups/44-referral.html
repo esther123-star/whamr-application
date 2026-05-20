@@ -1,0 +1,509 @@
+<!-- FILE: 44-referral.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invite Friends · Whamr</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#FFFAF5; --bg-alt:#FFF3E8; --card:#FFFFFF;
+  --ink:#1A0F00; --ink-soft:#4A3020; --ink-mute:#8A7060;
+  --line:#F0DDD0; --line-soft:#FBF0E8;
+  --purple:#FF4500; --purple-mid:#FF6B35; --purple-dark:#CC3700; --purple-soft:#FFF1EC;
+  --wham:#FFB800; --wham-soft:#FFF8DC;
+  --green:#00C853; --green-soft:#E8FFF0;
+  --gray-100:#F3F4F6; --gray-400:#9CA3AF; --gray-500:#6B7280; --gray-700:#374151;
+
+  --purple-bright:#FF8C60;
+  --purple-xsoft:#FFF8F5;
+  --red:#FF2D55; --red-soft:#FFF0F3;
+  --wham-bright:#FFD60A;
+  --gray-200:#E5E7EB; --gray-900:#111827;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;font-size:15px;background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;border:none;background:none;font-family:inherit}
+img{display:block}
+
+/* ANNOUNCEMENT BAR */
+.announce{background:linear-gradient(90deg,var(--purple-dark),var(--purple-mid));padding:9px 24px;text-align:center;font-size:13px;color:rgba(255,255,255,0.95);font-weight:500}
+.announce a{color:#FDE68A;font-weight:600;text-decoration:underline;text-underline-offset:2px}
+
+/* NAV */
+.nav{height:64px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 32px;gap:0;position:sticky;top:0;z-index:100}
+.nav-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.04em;color:var(--purple);margin-right:36px;flex-shrink:0}
+.nav-logo span{color:var(--wham)}
+.nav-links{display:flex;align-items:center;gap:2px;flex:1}
+.nav-link{font-size:14px;font-weight:500;color:var(--gray-700);padding:6px 12px;border-radius:8px;transition:background 0.15s,color 0.15s}
+.nav-link:hover,.nav-link.active{background:var(--purple-soft);color:var(--purple)}
+.nav-link.active{font-weight:600}
+.nav-search{flex:0 0 260px;position:relative;margin:0 16px}
+.nav-search input{width:100%;padding:8px 16px 8px 38px;border:1.5px solid var(--line);border-radius:100px;font-family:'Inter',sans-serif;font-size:13px;color:var(--ink);background:var(--bg-alt);outline:none}
+.nav-search input::placeholder{color:var(--gray-400)}
+.nav-search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--gray-400)}
+.nav-actions{display:flex;align-items:center;gap:8px}
+.btn-upload{display:inline-flex;align-items:center;gap:6px;background:var(--purple);color:#fff;font-size:13px;font-weight:600;padding:8px 16px;border-radius:9px;border:none;cursor:pointer;font-family:'Inter',sans-serif}
+.nav-icon{width:36px;height:36px;border-radius:8px;background:var(--purple-xsoft);border:1px solid var(--line-soft);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;position:relative;text-decoration:none}
+.nav-badge{position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;font-size:9px;font-weight:700;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #fff;font-family:'JetBrains Mono',monospace}
+.nav-badge.blue{background:#3B82F6}
+.nav-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#1A0F00,#FF6B35);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;cursor:pointer;flex-shrink:0;font-family:'Space Grotesk',sans-serif;text-decoration:none}
+.btn-signin{font-size:13px;font-weight:600;color:var(--purple);padding:7px 14px;border-radius:8px;border:1.5px solid var(--purple-soft);background:var(--purple-soft)}
+.btn-signup{font-size:13px;font-weight:600;color:#fff;padding:7px 14px;border-radius:8px;background:var(--purple)}
+
+/* PAGE WRAPPER */
+.content{max-width:960px;margin:0 auto;padding:32px 24px 64px}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#1A0F00 0%,#4A1000 100%);border-radius:20px;padding:48px 40px;text-align:center;margin-bottom:28px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-80px;right:-80px;width:280px;height:280px;border-radius:50%;background:rgba(255,184,0,0.08)}
+.hero::after{content:'';position:absolute;bottom:-60px;left:10%;width:220px;height:220px;border-radius:50%;background:rgba(255,69,0,0.1)}
+.hero-icon{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--wham),var(--wham-bright));display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 20px;position:relative;z-index:1;box-shadow:0 4px 20px rgba(255,184,0,0.4)}
+.hero h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:36px;color:#fff;letter-spacing:-0.03em;margin-bottom:12px;position:relative;z-index:1;line-height:1.15}
+.hero p{font-size:16px;color:rgba(255,255,255,0.7);max-width:540px;margin:0 auto 32px;position:relative;z-index:1}
+.hero-stats{display:flex;justify-content:center;gap:40px;position:relative;z-index:1;flex-wrap:wrap}
+.hero-stat{text-align:center}
+.hero-stat-num{font-family:'JetBrains Mono',monospace;font-size:32px;font-weight:700;color:#fff;line-height:1}
+.hero-stat-label{font-size:13px;color:rgba(255,255,255,0.55);margin-top:4px}
+.hero-stat-divider{width:1px;background:rgba(255,255,255,0.12);align-self:stretch;margin:4px 0}
+
+/* REFERRAL LINK CARD */
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px;margin-bottom:20px}
+.card-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;color:var(--ink);margin-bottom:4px}
+.card-subtitle{font-size:13px;color:var(--ink-mute);margin-bottom:20px}
+
+.link-row{display:flex;gap:10px;align-items:center;margin-bottom:16px}
+.link-input{flex:1;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:500;color:var(--ink);background:var(--bg-alt);border:1.5px solid var(--line);border-radius:10px;padding:11px 16px;outline:none}
+.btn-copy{padding:11px 20px;border-radius:10px;font-size:14px;font-weight:600;background:var(--purple);color:#fff;border:none;cursor:pointer;white-space:nowrap;transition:background 0.15s}
+.btn-copy:hover{background:var(--purple-dark)}
+.btn-copy.copied{background:var(--green)}
+.btn-share{padding:11px 18px;border-radius:10px;font-size:14px;font-weight:600;background:var(--bg-alt);color:var(--ink);border:1.5px solid var(--line);cursor:pointer;white-space:nowrap}
+
+.share-label{font-size:13px;font-weight:600;color:var(--ink-mute);margin-bottom:10px}
+.share-btns{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.share-pill{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:100px;font-size:13px;font-weight:600;border:1.5px solid var(--line);background:#fff;cursor:pointer;transition:all 0.15s;color:var(--ink-soft)}
+.share-pill:hover{border-color:var(--purple);background:var(--purple-soft);color:var(--purple)}
+.share-pill.whatsapp{border-color:#25D366;color:#25D366}
+.share-pill.whatsapp:hover{background:#f0fff5}
+.share-pill.telegram{border-color:#229ED9;color:#229ED9}
+.share-pill.telegram:hover{background:#f0f8ff}
+.share-pill.x-twitter{border-color:var(--gray-700);color:var(--gray-700)}
+.share-pill.x-twitter:hover{background:var(--gray-100)}
+
+.whatsapp-msg-toggle{font-size:13px;color:var(--purple);font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:4px;background:none;border:none;padding:0}
+.whatsapp-msg{margin-top:12px;padding:14px 16px;background:var(--bg-alt);border:1.5px solid var(--line);border-radius:10px;font-size:13px;color:var(--ink-soft);font-style:italic;line-height:1.6;display:none}
+.whatsapp-msg.open{display:block}
+
+/* HOW IT WORKS */
+.how-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}
+.how-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px 20px;text-align:center}
+.how-step-num{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--purple);background:var(--purple-soft);padding:3px 8px;border-radius:6px;display:inline-block;margin-bottom:12px;letter-spacing:0.04em}
+.how-icon{font-size:32px;margin-bottom:12px}
+.how-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:var(--ink);margin-bottom:6px}
+.how-desc{font-size:13px;color:var(--ink-mute);line-height:1.5}
+
+/* SECTION HEADING */
+.section-heading{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;color:var(--ink);margin:32px 0 14px}
+
+/* TABLE */
+.table-wrap{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:20px}
+table{width:100%;border-collapse:collapse}
+thead th{font-size:12px;font-weight:700;color:var(--ink-mute);text-transform:uppercase;letter-spacing:0.05em;padding:12px 16px;background:var(--bg-alt);border-bottom:1px solid var(--line);text-align:left}
+tbody tr{border-bottom:1px solid var(--line-soft);transition:background 0.1s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:var(--bg-alt)}
+tbody tr.highlight{background:#FFF3E8}
+tbody tr.highlight:hover{background:#FFE8D0}
+td{padding:14px 16px;font-size:14px;color:var(--ink-soft);vertical-align:middle}
+.td-friend{display:flex;align-items:center;gap:10px}
+.friend-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--purple-dark),var(--purple-mid));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;flex-shrink:0;font-family:'Space Grotesk',sans-serif}
+.friend-avatar.b{background:linear-gradient(135deg,#0369A1,#0EA5E9)}
+.friend-avatar.c{background:linear-gradient(135deg,#059669,#34D399)}
+.friend-name{font-weight:600;color:var(--ink)}
+.friend-handle{font-size:12px;color:var(--gray-400)}
+.badge-complete{display:inline-flex;align-items:center;gap:4px;background:var(--green-soft);color:var(--green);font-size:12px;font-weight:700;padding:4px 9px;border-radius:6px}
+.badge-pending{display:inline-flex;align-items:center;gap:4px;background:var(--wham-soft);color:#B45309;font-size:12px;font-weight:700;padding:4px 9px;border-radius:6px}
+.reward-text{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--green)}
+.reward-text.pending{color:var(--gray-400)}
+.btn-nudge{padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;background:var(--wham-soft);color:#B45309;border:1.5px solid #FDE68A;cursor:pointer;white-space:nowrap}
+.btn-nudge:hover{background:#FDE68A}
+
+/* STATS GRID */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px}
+.stat-box{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px;text-align:center}
+.stat-box-num{font-family:'JetBrains Mono',monospace;font-size:32px;font-weight:700;color:var(--ink);line-height:1;margin-bottom:6px}
+.stat-box-label{font-size:13px;color:var(--ink-mute);font-weight:500}
+
+/* PROGRESS BAR */
+.progress-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:20px}
+.progress-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.progress-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:var(--ink)}
+.progress-count{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:var(--purple)}
+.progress-track{height:12px;background:var(--line);border-radius:100px;overflow:hidden;margin-bottom:10px}
+.progress-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--purple-dark),var(--purple-mid))}
+.progress-note{font-size:13px;color:var(--ink-mute)}
+.progress-note strong{color:var(--ink);font-weight:600}
+
+/* LEADERBOARD */
+.leaderboard-card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:20px}
+.leaderboard-head{padding:20px 20px 14px;border-bottom:1px solid var(--line-soft)}
+.leaderboard-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;color:var(--ink)}
+.leaderboard-sub{font-size:13px;color:var(--ink-mute);margin-top:2px}
+.lb-row{display:flex;align-items:center;padding:12px 20px;border-bottom:1px solid var(--line-soft);gap:14px;transition:background 0.1s}
+.lb-row:last-child{border-bottom:none}
+.lb-row:hover{background:var(--bg-alt)}
+.lb-row.you{background:#FFF3E8}
+.lb-row.you:hover{background:#FFE8D0}
+.lb-rank{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:var(--ink-mute);width:28px;text-align:center;flex-shrink:0}
+.lb-rank.gold{color:#D97706}
+.lb-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--purple-dark),var(--purple-mid));display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;flex-shrink:0;font-family:'Space Grotesk',sans-serif}
+.lb-handle{font-weight:600;color:var(--ink);font-size:14px;flex:1}
+.lb-handle small{display:block;font-size:12px;color:var(--ink-mute);font-weight:400}
+.lb-refs{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--purple);text-align:right;white-space:nowrap}
+.lb-refs small{display:block;font-size:11px;color:var(--ink-mute);font-weight:400;font-family:'Inter',sans-serif}
+.lb-trophy{font-size:18px;flex-shrink:0}
+.lb-note{padding:14px 20px;background:var(--purple-soft);font-size:13px;color:var(--purple-dark);font-weight:500;border-top:1px solid var(--line)}
+
+/* TIERS CARD */
+.tiers-card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:20px}
+.tiers-head{padding:20px 20px 14px;border-bottom:1px solid var(--line-soft)}
+.tiers-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;color:var(--ink)}
+.tiers-sub{font-size:13px;color:var(--ink-mute);margin-top:3px}
+.tier-row{display:flex;align-items:center;padding:14px 20px;border-bottom:1px solid var(--line-soft);gap:16px;transition:background 0.1s}
+.tier-row:last-child{border-bottom:none}
+.tier-row.current{background:var(--purple-soft)}
+.tier-row:hover{background:var(--bg-alt)}
+.tier-row.current:hover{background:#FFE4D9}
+.tier-refs{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:var(--ink);width:48px;flex-shrink:0}
+.tier-refs small{display:block;font-size:10px;color:var(--ink-mute);font-weight:400;font-family:'Inter',sans-serif;text-transform:uppercase;letter-spacing:0.04em}
+.tier-reward{flex:1}
+.tier-reward-title{font-weight:700;font-size:14px;color:var(--ink)}
+.tier-reward-sub{font-size:12px;color:var(--ink-mute);margin-top:1px}
+.tier-badge{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:700;background:var(--bg-alt);color:var(--ink-mute)}
+.tier-badge.done{background:var(--green-soft);color:var(--green)}
+.tier-badge.next{background:var(--wham-soft);color:#B45309}
+.tier-badge.future{background:var(--gray-100);color:var(--gray-500)}
+
+/* FOOTER */
+.footer{background:#1A0F00;color:rgba(255,255,255,0.5);padding:32px;text-align:center;font-size:13px;margin-top:64px}
+.footer a{color:rgba(255,255,255,0.7);font-weight:600}
+.footer-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;color:#fff;letter-spacing:-0.04em;margin-bottom:10px}
+</style>
+</head>
+<body>
+
+<div class="announce">
+  🎁 Each referral earns you 7 days of Creator plan — 3 friends = 1 free month. <a href="26-pricing.html">See plans →</a>
+</div>
+
+<nav class="nav">
+  <a href="01-landing.html" class="nav-logo">whamr<span>.</span></a>
+  <div class="nav-links">
+    <a href="01-landing.html" class="nav-link">Home</a>
+    <a href="02-memes-browser.html" class="nav-link">Memes</a>
+    <a href="06-explore.html" class="nav-link">Explore</a>
+    <a href="22-trending.html" class="nav-link">Trending</a>
+    <a href="10-dojos.html" class="nav-link">Dojos</a>
+    <a href="12-analytics.html" class="nav-link">Creator</a>
+  </div>
+  <div class="nav-search">
+    <span class="nav-search-icon">🔍</span>
+    <input type="text" placeholder="Search memes, creators...">
+  </div>
+  <div class="nav-actions">
+    <a href="04-upload-flow.html" class="btn-upload">+ Upload</a>
+    <a href="08-notifications.html" class="nav-icon" title="Notifications">🔔<span class="nav-badge">4</span></a>
+    <a href="09-messages.html" class="nav-icon" title="Messages">💬<span class="nav-badge blue">3</span></a>
+    <a href="07-user-profile.html" class="nav-avatar">NC</a>
+  </div>
+</nav>
+
+<div class="content">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-icon">🎁</div>
+    <h1>Invite friends. Earn free Creator time.</h1>
+    <p>For every friend who joins Whamr and sends their first meme, you both get 7 days of Creator plan — free.</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num">3</div>
+        <div class="hero-stat-label">Friends invited</div>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">21 days</div>
+        <div class="hero-stat-label">Creator time earned</div>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">1</div>
+        <div class="hero-stat-label">Friend still pending</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REFERRAL LINK CARD -->
+  <div class="card">
+    <div class="card-title">Your invite link</div>
+    <div class="card-subtitle">Share this link — when a friend joins and sends their first meme, you both get 7 days free.</div>
+
+    <div class="link-row">
+      <input class="link-input" id="refLink" type="text" value="whamr.app/invite/naijacontent" readonly>
+      <button class="btn-copy" id="copyBtn" onclick="
+        navigator.clipboard.writeText('whamr.app/invite/naijacontent');
+        this.textContent='Copied! ✓';
+        this.classList.add('copied');
+        setTimeout(()=>{this.textContent='Copy link';this.classList.remove('copied')},2000)
+      ">Copy link</button>
+      <button class="btn-share">Share</button>
+    </div>
+
+    <div class="share-label">Share via:</div>
+    <div class="share-btns">
+      <button class="share-pill whatsapp">📱 WhatsApp</button>
+      <button class="share-pill telegram">✈️ Telegram</button>
+      <button class="share-pill x-twitter">🐦 X</button>
+      <button class="share-pill">📧 Email</button>
+    </div>
+
+    <button class="whatsapp-msg-toggle" id="msgToggle" onclick="
+      var m=document.getElementById('waMsg');
+      var open=m.classList.toggle('open');
+      this.textContent=open?'▲ Hide WhatsApp message':'▼ See pre-written WhatsApp message'
+    ">▼ See pre-written WhatsApp message</button>
+    <div class="whatsapp-msg" id="waMsg">
+      "Hey! I've been using Whamr for finding the best Naija memes to send on WhatsApp. Join using my link and we both get a free week of Creator features: whamr.app/invite/naijacontent"
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <h2 class="section-heading">How it works</h2>
+  <div class="how-row">
+    <div class="how-card">
+      <div class="how-step-num">STEP 1</div>
+      <div class="how-icon">🔗</div>
+      <div class="how-title">Share your link</div>
+      <div class="how-desc">Send your link to friends via WhatsApp, Telegram, or anywhere.</div>
+    </div>
+    <div class="how-card">
+      <div class="how-step-num">STEP 2</div>
+      <div class="how-icon">👋</div>
+      <div class="how-title">Friend joins &amp; sends</div>
+      <div class="how-desc">They sign up, send their first meme. Takes 30 seconds.</div>
+    </div>
+    <div class="how-card">
+      <div class="how-step-num">STEP 3</div>
+      <div class="how-icon">🎁</div>
+      <div class="how-title">You both get 7 days</div>
+      <div class="how-desc">7 days of Creator plan — free. No card needed.</div>
+    </div>
+  </div>
+
+  <!-- REFERRALS TABLE -->
+  <h2 class="section-heading">Your referrals (3)</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Friend</th>
+          <th>Status</th>
+          <th>Joined</th>
+          <th>Reward</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <div class="td-friend">
+              <div class="friend-avatar">AM</div>
+              <div>
+                <div class="friend-name">Aisha M.</div>
+                <div class="friend-handle">@aishamemes</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="badge-complete">✓ Completed</span></td>
+          <td style="font-size:13px;color:var(--ink-mute)">2 days ago</td>
+          <td><span class="reward-text">+7 days earned</span></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            <div class="td-friend">
+              <div class="friend-avatar b">BT</div>
+              <div>
+                <div class="friend-name">Bola T.</div>
+                <div class="friend-handle">@bolavibes</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="badge-complete">✓ Completed</span></td>
+          <td style="font-size:13px;color:var(--ink-mute)">5 days ago</td>
+          <td><span class="reward-text">+7 days earned</span></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            <div class="td-friend">
+              <div class="friend-avatar c">CO</div>
+              <div>
+                <div class="friend-name">Chidi O.</div>
+                <div class="friend-handle">(pending)</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="badge-pending">⏳ Signed up, hasn't sent yet</span></td>
+          <td style="font-size:13px;color:var(--ink-mute)">Yesterday</td>
+          <td><span class="reward-text pending">Pending</span></td>
+          <td><button class="btn-nudge">Nudge →</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- EARNINGS STATS -->
+  <h2 class="section-heading">Your earnings from referrals</h2>
+  <div class="stats-grid">
+    <div class="stat-box">
+      <div class="stat-box-num">3</div>
+      <div class="stat-box-label">Total friends invited</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-box-num">2</div>
+      <div class="stat-box-label">Friends completed</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-box-num">21</div>
+      <div class="stat-box-label">Days of Creator earned</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-box-num">14</div>
+      <div class="stat-box-label">Bonus days remaining</div>
+    </div>
+  </div>
+
+  <!-- PROGRESS TO NEXT MILESTONE -->
+  <div class="progress-card">
+    <div class="progress-header">
+      <div class="progress-title">Next milestone: invite 1 more friend</div>
+      <div class="progress-count">2 / 3 friends</div>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" style="width:67%"></div>
+    </div>
+    <div class="progress-note">
+      Invite <strong>1 more friend</strong> to unlock the 30-day bonus — that's a full month of Creator plan, free. 67% of the way there.
+    </div>
+  </div>
+
+  <!-- LEADERBOARD -->
+  <h2 class="section-heading">Top inviters this month</h2>
+  <div class="leaderboard-card">
+    <div class="lb-row">
+      <div class="lb-rank gold">1</div>
+      <div class="lb-trophy">🥇</div>
+      <div class="lb-avatar">NC</div>
+      <div class="lb-handle">@naijacontent</div>
+      <div class="lb-refs">12 referrals<small>84 days earned</small></div>
+    </div>
+    <div class="lb-row">
+      <div class="lb-rank">2</div>
+      <div class="lb-trophy" style="opacity:0">·</div>
+      <div class="lb-avatar" style="background:linear-gradient(135deg,#BE185D,#D97706)">MQ</div>
+      <div class="lb-handle">@memequeen</div>
+      <div class="lb-refs">8 referrals<small>56 days earned</small></div>
+    </div>
+    <div class="lb-row">
+      <div class="lb-rank">3</div>
+      <div class="lb-trophy" style="opacity:0">·</div>
+      <div class="lb-avatar" style="background:linear-gradient(135deg,#059669,#34D399)">DK</div>
+      <div class="lb-handle">@danceking</div>
+      <div class="lb-refs">5 referrals<small>35 days earned</small></div>
+    </div>
+    <div class="lb-row">
+      <div class="lb-rank">4</div>
+      <div class="lb-trophy" style="opacity:0">·</div>
+      <div class="lb-avatar" style="background:linear-gradient(135deg,#0369A1,#0EA5E9)">LM</div>
+      <div class="lb-handle">@laughmaster</div>
+      <div class="lb-refs">4 referrals<small>28 days earned</small></div>
+    </div>
+    <div class="lb-row you">
+      <div class="lb-rank" style="color:var(--purple);font-weight:700">5</div>
+      <div class="lb-trophy" style="opacity:0">·</div>
+      <div class="lb-avatar" style="background:linear-gradient(135deg,var(--purple-dark),var(--purple-mid));border:2px solid var(--purple)">NC</div>
+      <div class="lb-handle" style="color:var(--purple);font-weight:700">You (@naijacontent)</div>
+      <div class="lb-refs" style="color:var(--purple)">3 referrals<small style="color:var(--ink-mute)">21 days earned</small></div>
+    </div>
+    <div class="lb-note">
+      Top referrer of the month gets <strong>1 year Creator free</strong>. Refer <strong>9 more friends</strong> to take the lead.
+    </div>
+  </div>
+
+  <!-- TIERS -->
+  <h2 class="section-heading">Referral milestones</h2>
+  <div class="tiers-card">
+    <div class="tiers-head">
+      <div class="tiers-title">Escalating rewards</div>
+      <div class="tiers-sub">The more friends you invite, the bigger the prize.</div>
+    </div>
+    <div class="tier-row">
+      <div class="tier-refs">1<small>referral</small></div>
+      <div class="tier-reward">
+        <div class="tier-reward-title">+7 days Creator plan</div>
+        <div class="tier-reward-sub">For you and your friend, free.</div>
+      </div>
+      <div class="tier-badge done">✓ Done</div>
+    </div>
+    <div class="tier-row current">
+      <div class="tier-refs" style="color:var(--purple)">3<small>referrals</small></div>
+      <div class="tier-reward">
+        <div class="tier-reward-title" style="color:var(--purple)">+1 month Creator plan</div>
+        <div class="tier-reward-sub">30 days free, no card required.</div>
+      </div>
+      <div class="tier-badge next">2 / 3 — next up</div>
+    </div>
+    <div class="tier-row">
+      <div class="tier-refs">5<small>referrals</small></div>
+      <div class="tier-reward">
+        <div class="tier-reward-title">+3 months Creator + Verified badge</div>
+        <div class="tier-reward-sub">90 days free plus your profile gets a verification tick.</div>
+      </div>
+      <div class="tier-badge future">Locked</div>
+    </div>
+    <div class="tier-row">
+      <div class="tier-refs">10<small>referrals</small></div>
+      <div class="tier-reward">
+        <div class="tier-reward-title">+1 year Creator + Top Referrer badge</div>
+        <div class="tier-reward-sub">365 days free plus a permanent profile badge.</div>
+      </div>
+      <div class="tier-badge future">Locked</div>
+    </div>
+    <div class="tier-row">
+      <div class="tier-refs">25<small>referrals</small></div>
+      <div class="tier-reward">
+        <div class="tier-reward-title">Lifetime Creator plan 🏆</div>
+        <div class="tier-reward-sub">Creator features forever, no subscription needed.</div>
+      </div>
+      <div class="tier-badge future">Locked</div>
+    </div>
+  </div>
+
+</div>
+
+<footer class="footer">
+  <div class="footer-logo">whamr.</div>
+  <p style="margin-bottom:12px">The global meme-sharing platform. Find the perfect meme. Send the wham.</p>
+  <div style="display:flex;justify-content:center;gap:24px;font-size:13px;flex-wrap:wrap">
+    <a href="#">About</a><a href="#">Privacy</a><a href="#">Terms</a><a href="27-help.html">Help</a>
+  </div>
+  <div style="margin-top:16px;font-size:12px;opacity:0.5">© 2026 Whamr Ltd. All rights reserved.</div>
+</footer>
+
+<script src="./real-media.js"></script>
+</body>
+</html>

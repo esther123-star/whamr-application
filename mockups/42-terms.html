@@ -1,0 +1,426 @@
+<!-- FILE: 42-terms.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms of Service · Whamr</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#FFFAF5; --bg-alt:#FFF3E8; --card:#FFFFFF;
+  --ink:#1A0F00; --ink-soft:#4A3020; --ink-mute:#8A7060;
+  --line:#F0DDD0; --line-soft:#FBF0E8;
+  --purple:#FF4500; --purple-mid:#FF6B35; --purple-dark:#CC3700; --purple-soft:#FFF1EC;
+  --wham:#FFB800; --wham-soft:#FFF8DC;
+  --green:#00C853; --green-soft:#E8FFF0;
+  --gray-100:#F3F4F6; --gray-400:#9CA3AF; --gray-500:#6B7280; --gray-700:#374151;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;font-size:15px;background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;border:none;background:none;font-family:inherit}
+
+/* ── NAV ── */
+.nav{height:64px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 28px;gap:12px;position:sticky;top:0;z-index:100}
+.nav-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.05em;color:var(--purple);flex-shrink:0}
+.nav-links{display:flex;align-items:center;gap:2px;margin-left:12px}
+.nav-link{font-size:14px;font-weight:500;color:var(--gray-700);padding:6px 11px;border-radius:8px;transition:background 0.15s,color 0.15s;white-space:nowrap}
+.nav-link:hover,.nav-link.active{background:var(--purple-soft);color:var(--purple)}
+.nav-link.active{font-weight:600}
+.nav-spacer{flex:1}
+.nav-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.nav-icon-btn{width:38px;height:38px;border-radius:9px;background:var(--gray-100);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;position:relative;flex-shrink:0;transition:background 0.15s}
+.nav-icon-btn:hover{background:var(--purple-soft)}
+.nav-badge{position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;border-radius:9px;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;padding:0 4px}
+.badge-red{background:#FF2D55;color:#fff}
+.badge-blue{background:#2563EB;color:#fff}
+.nav-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--purple-dark) 0%,var(--purple-mid) 100%);display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;font-weight:700;cursor:pointer;flex-shrink:0;border:2px solid var(--purple-soft)}
+
+/* ── LAYOUT ── */
+.page-body{display:flex;min-height:calc(100vh - 64px)}
+
+/* ── SIDEBAR ── */
+.sidebar{width:240px;flex-shrink:0;padding:32px 0 40px 0;position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto;border-right:1px solid var(--line)}
+.sidebar-inner{padding:0 20px}
+.sidebar-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--ink-mute);margin-bottom:14px;padding:0 8px}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:2px}
+.toc-item a{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;font-size:13.5px;color:var(--ink-soft);transition:background 0.15s,color 0.15s;line-height:1.3}
+.toc-item a:hover{background:var(--purple-soft);color:var(--purple)}
+.toc-item.active a{background:var(--purple-soft);color:var(--purple);font-weight:600}
+.toc-num{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--gray-400);width:18px;flex-shrink:0;text-align:right}
+.toc-item.active .toc-num{color:var(--purple)}
+
+/* ── MAIN CONTENT ── */
+.main-wrap{flex:1;overflow:hidden;padding:40px 48px 80px 48px}
+.content-inner{max-width:720px;margin:0 auto}
+
+/* ── PAGE HEADER ── */
+.page-header{margin-bottom:40px;padding-bottom:32px;border-bottom:1px solid var(--line)}
+.page-header h1{font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:700;letter-spacing:-0.03em;color:var(--ink);margin-bottom:10px}
+.page-meta{font-size:13.5px;color:var(--ink-mute);margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.page-meta .dot{color:var(--line)}
+.page-desc{font-size:15px;color:var(--ink-soft);line-height:1.65;margin-bottom:22px}
+.chip-row{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--purple-soft);color:var(--purple-dark);font-size:12.5px;font-weight:600;padding:5px 12px;border-radius:50px;border:1px solid rgba(255,69,0,0.15)}
+.chip-green{background:var(--green-soft);color:#007A33;border-color:rgba(0,200,83,0.2)}
+.chip-wham{background:var(--wham-soft);color:#8A6000;border-color:rgba(255,184,0,0.25)}
+.chip-gray{background:var(--gray-100);color:var(--gray-700);border-color:transparent}
+
+/* ── SECTIONS ── */
+.section{margin-bottom:48px;scroll-margin-top:88px}
+.section-heading{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.section-pill{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;background:var(--purple);color:#fff;padding:3px 10px;border-radius:50px;flex-shrink:0}
+.section-heading h2{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;letter-spacing:-0.02em;color:var(--ink)}
+.section-body{color:var(--ink-soft);line-height:1.75;font-size:14.5px}
+.section-body p{margin-bottom:14px}
+.section-body p:last-child{margin-bottom:0}
+.section-body h3{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:var(--ink);margin:20px 0 8px;letter-spacing:-0.01em}
+.section-body h3:first-child{margin-top:0}
+.section-body ul{padding-left:20px;margin-bottom:14px;display:flex;flex-direction:column;gap:6px}
+.section-body ul li{line-height:1.6}
+.section-body a{color:var(--purple);border-bottom:1px solid rgba(255,69,0,0.25);transition:border-color 0.15s}
+.section-body a:hover{border-color:var(--purple)}
+.section-divider{height:1px;background:var(--line-soft);margin:8px 0 48px}
+.contact-block{background:var(--purple-soft);border:1px solid rgba(255,69,0,0.15);border-radius:12px;padding:18px 22px;margin-top:16px;font-size:14px;color:var(--ink-soft)}
+.contact-block strong{color:var(--ink)}
+.contact-block a{color:var(--purple);font-weight:500}
+
+/* ── FOOTER ── */
+.site-footer{background:#1A0F00;color:rgba(255,255,255,0.5);padding:40px 48px;font-size:13px}
+.footer-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.footer-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;color:#fff;letter-spacing:-0.04em}
+.footer-links{display:flex;gap:20px;flex-wrap:wrap}
+.footer-links a{color:rgba(255,255,255,0.5);transition:color 0.15s}
+.footer-links a:hover{color:#fff}
+.footer-copy{color:rgba(255,255,255,0.3)}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="01-landing.html" class="nav-logo">whamr.</a>
+  <div class="nav-links">
+    <a href="01-landing.html" class="nav-link">Home</a>
+    <a href="02-memes-browser.html" class="nav-link">Memes</a>
+    <a href="06-explore.html" class="nav-link">Explore</a>
+    <a href="22-trending.html" class="nav-link">Trending</a>
+    <a href="10-dojos.html" class="nav-link">Dojos</a>
+    <a href="12-analytics.html" class="nav-link">Creator</a>
+  </div>
+  <div class="nav-spacer"></div>
+  <div class="nav-actions">
+    <a href="08-notifications.html" class="nav-icon-btn">
+      🔔
+      <span class="nav-badge badge-red">3</span>
+    </a>
+    <a href="09-messages.html" class="nav-icon-btn">
+      💬
+      <span class="nav-badge badge-blue">1</span>
+    </a>
+    <a href="07-user-profile.html" class="nav-avatar">O</a>
+  </div>
+</nav>
+
+<!-- PAGE BODY -->
+<div class="page-body">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+      <p class="sidebar-label">Contents</p>
+      <ol class="toc-list">
+        <li class="toc-item active" data-section="s1"><a href="#s1"><span class="toc-num">1</span>Acceptance of Terms</a></li>
+        <li class="toc-item" data-section="s2"><a href="#s2"><span class="toc-num">2</span>The Service</a></li>
+        <li class="toc-item" data-section="s3"><a href="#s3"><span class="toc-num">3</span>Your Account</a></li>
+        <li class="toc-item" data-section="s4"><a href="#s4"><span class="toc-num">4</span>Content & Uploads</a></li>
+        <li class="toc-item" data-section="s5"><a href="#s5"><span class="toc-num">5</span>Intellectual Property</a></li>
+        <li class="toc-item" data-section="s6"><a href="#s6"><span class="toc-num">6</span>Community Rules</a></li>
+        <li class="toc-item" data-section="s7"><a href="#s7"><span class="toc-num">7</span>Creator Programme</a></li>
+        <li class="toc-item" data-section="s8"><a href="#s8"><span class="toc-num">8</span>Payments & Fees</a></li>
+        <li class="toc-item" data-section="s9"><a href="#s9"><span class="toc-num">9</span>Privacy & Data</a></li>
+        <li class="toc-item" data-section="s10"><a href="#s10"><span class="toc-num">10</span>Prohibited Uses</a></li>
+        <li class="toc-item" data-section="s11"><a href="#s11"><span class="toc-num">11</span>Termination</a></li>
+        <li class="toc-item" data-section="s12"><a href="#s12"><span class="toc-num">12</span>Governing Law</a></li>
+      </ol>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-wrap">
+    <div class="content-inner">
+
+      <!-- PAGE HEADER -->
+      <header class="page-header">
+        <h1>Terms of Service</h1>
+        <p class="page-meta">
+          <span>Last updated: 19 May 2026</span>
+          <span class="dot">·</span>
+          <span>Effective: 19 May 2026</span>
+        </p>
+        <p class="page-desc">These terms govern your use of Whamr. By using the platform you agree to them.</p>
+        <div class="chip-row">
+          <span class="chip-green chip">Free to use</span>
+          <span class="chip">You own your content</span>
+          <span class="chip-gray chip">No hate speech</span>
+          <span class="chip-wham chip">UK law applies</span>
+        </div>
+      </header>
+
+      <!-- SECTION 1 -->
+      <section class="section" id="s1">
+        <div class="section-heading">
+          <span class="section-pill">01</span>
+          <h2>Acceptance of Terms</h2>
+        </div>
+        <div class="section-body">
+          <p>By accessing or using Whamr ("the Service", "we", "our", "us"), you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using the Service.</p>
+          <p>These terms apply to all visitors, users, and others who access or use the Service.</p>
+        </div>
+      </section>
+      <div class="section-divider"></div>
+
+      <!-- SECTION 2 -->
+      <section class="section" id="s2">
+        <div class="section-heading">
+          <span class="section-pill">02</span>
+          <h2>The Service</h2>
+        </div>
+        <div class="section-body">
+          <p>Whamr is a meme and sticker discovery, sharing, and creation platform operated by Whamr Ltd. The Service allows users to browse, search, save, upload, and share meme and sticker content to third-party messaging applications including WhatsApp, Telegram, and others.</p>
+          <p>We reserve the right to modify, suspend, or discontinue the Service at any time without notice. We will not be liable to you or any third party for any modification, suspension, or discontinuation.</p>
+        </div>
+      </section>
+      <div class="section-divider"></div>
+
+      <!-- SECTION 3 -->
+      <section class="section" id="s3">
+        <div class="section-heading">
+          <span class="section-pill">03</span>
+          <h2>Your Account</h2>
+        </div>
+        <div class="section-body">
+          <h3>3.1 Registration</h3>
+          <p>You may use certain features without an account. To access Creator features, you must register. You must be at least 13 years old to create an account.</p>
+          <h3>3.2 Accuracy</h3>
+          <p>You agree to provide accurate, current, and complete information during registration and to keep this information updated.</p>
+          <h3>3.3 Security</h3>
+          <p>You are responsible for maintaining the security of your account and password. Whamr cannot and will not be liable for any loss or damage from your failure to comply with this security obligation.</p>
+          <h3>3.4 Termination</h3>
+          <p>You may delete your account at any time. We may terminate or suspend your account for violations of these Terms.</p>
+        </div>
+      </section>
+      <div class="section-divider"></div>
+
+      <!-- SECTION 4 -->
+      <section class="section" id="s4">
+        <div class="section-heading">
+          <span class="section-pill">04</span>
+          <h2>Content &amp; Uploads</h2>
+        </div>
+        <div class="section-body">
+          <h3>4.1 Your content</h3>
+          <p>You retain ownership of content you upload to Whamr. By uploading content, you grant Whamr a non-exclusive, royalty-free, worldwide licence to use, reproduce, distribute, and display your content on the platform and in promotional materials.</p>
+          <h3>4.2 Responsibility</h3>
+          <p>You are solely responsible for content you upload. You confirm that you have the right to use and upload such content, and that it does not infringe any third-party rights.</p>
+          <h3>4.3 Removal</h3>
+          <p>We reserve the right to remove any content that violates these Terms or our Content Policy without prior notice.</p>
+          <h3>4.4 User-generated content</h3>
+          <p>Whamr does not endorse any user-submitted content. We are not responsible for content accuracy or legality.</p>
+        </div>
+      </section>
+      <div class="section-divider"></div>
+
+      <!-- SECTION 5 -->
+      <section class="section" id="s5">
+        <div class="section-heading">
+          <span class="section-pill">05</span>
+          <h2>Intellectual Property</h2>
+        </div>
+        <div class="section-body">
+          <h3>5.1 Platform</h3>
+          <p>The Whamr platform, including its design, code, and original content, is the exclusive property of Whamr Ltd and is protected by copyright, trademark, and other laws.</p>
+          <h3>5.2 Third-party content</h3>
+          <p>Some content in the Whamr library is sourced from publicly available internet content. We respond promptly to valid copyright removal requests. To submit a DMCA notice, email: <a href="mailto:copyright@whamr.app">copyright@whamr.app</a>.</p>
+          <h3>5.3 Trademarks</h3>
+          <p>"Whamr" and the Whamr logo are trademarks of Whamr Ltd. You may not use them without prior written permission.</p>
+        </div>
+      </section>
+      <div class="section-divider"></div>
+
+      <!-- SECTION 6 -->
+      <section class="section" id="s6">
+        <div class="section-heading">
+          <span class="section-pill">06</span>
+          <h2>Community Rules</h2>
+        </div>
+        <div class="section-body">
+          <p>You agree not to:</p>
+          <ul>
+            <li>Upload, post, or share content that is hateful, discriminatory, or harasses individuals or groups</li>
+            <li>Impersonate any person or entity</li>
+            <li>Use the platform to distribute spam or unsolicited commercial messages</li>
+            <li>Attempt to scrape, crawl, or systematically collect data from the platform</li>
+            <li>Share explicit sexual content or content that sexualises minors</li>
+            <li>Engage in coordinated inauthentic behaviour or platform manipulation</li>
+          </ul>
+          <p>Violations may result in content removal, account suspension, or permanent ban.</p>
+        </div>
+      </section>
+      <div class="section-divider"></div>
+
+      <!-- SECTION 7 -->
+      <section class="section" id="s7">
+        <div class="section-heading">
+          <span class="section-pill">07</span>
+          <h2>Creator Programme</h2>
+        </div>
+        <div class="section-body">
+          <h3>7.1 Eligibility</h3>
+          <p>The Creator Programme is available to users who subscribe to the Creator plan and meet eligibility requirements, including minimum follower counts and original content requirements.</p>
+          <h3>7.2 Earnings</h3>
+          <p>Creators may receive tips from followers. Whamr takes a 10% platform fee on all tips. Remaining earnings (90%) are credited to the creator's Whamr Wallet.</p>
+          <h3>7.3 Payouts</h3>
+          <p>Minimum withdrawal is $5 / ₦5,000. Payouts are processed monthly. Whamr is not responsible for delays caused by third-party payment processors.</p>
+          <h3>7.4 Verification</h3>
+          <p>Whamr may revoke Creator status for violations of these Terms or the Creator Guidelines.</p>
+        </div>
+      </section>
+      <div class="section-divider"></div>
+
+      <!-- SECTION 8 -->
+      <section class="section" id="s8">
+        <div class="section-heading">
+          <span class="section-pill">08</span>
+          <h2>Payments &amp; Fees</h2>
+        </div>
+        <div class="section-body">
+          <h3>8.1 Creator plan</h3>
+          <p>The Creator plan is billed monthly or annually as stated on the pricing page. Prices may change with 30 days' notice.</p>
+          <h3>8.2 Refunds</h3>
+          <p>Subscription fees are non-refundable except where required by applicable law. Tips are non-refundable once sent.</p>
+          <h3>8.3 Taxes</h3>
+          <p>You are responsible for any taxes applicable to your earnings from the platform.</p>
+        </div>
+      </section>
+      <div class="section-divider"></div>
+
+      <!-- SECTION 9 -->
+      <section class="section" id="s9">
+        <div class="section-heading">
+          <span class="section-pill">09</span>
+          <h2>Privacy &amp; Data</h2>
+        </div>
+        <div class="section-body">
+          <p>Your use of the Service is also governed by our <a href="43-privacy.html">Privacy Policy</a>. By using the Service, you consent to the collection and use of your data as described therein.</p>
+          <p>We use localStorage to store your preferences and community contributions on your device. Server-side data is stored securely on Cloudflare infrastructure.</p>
+        </div>
+      </section>
+      <div class="section-divider"></div>
+
+      <!-- SECTION 10 -->
+      <section class="section" id="s10">
+        <div class="section-heading">
+          <span class="section-pill">10</span>
+          <h2>Prohibited Uses</h2>
+        </div>
+        <div class="section-body">
+          <p>In addition to Community Rules, you may not use the Service to:</p>
+          <ul>
+            <li>Violate any applicable laws or regulations</li>
+            <li>Transmit malware, viruses, or any harmful code</li>
+            <li>Attempt to gain unauthorised access to any part of the Service</li>
+            <li>Interfere with or disrupt the Service or its servers</li>
+            <li>Collect personal data about other users without their consent</li>
+          </ul>
+        </div>
+      </section>
+      <div class="section-divider"></div>
+
+      <!-- SECTION 11 -->
+      <section class="section" id="s11">
+        <div class="section-heading">
+          <span class="section-pill">11</span>
+          <h2>Termination</h2>
+        </div>
+        <div class="section-body">
+          <p>We may terminate or suspend your account and access to the Service immediately, without prior notice, for any reason, including if you breach these Terms.</p>
+          <p>All provisions of these Terms which should survive termination shall survive, including ownership provisions, warranty disclaimers, and limitations of liability.</p>
+        </div>
+      </section>
+      <div class="section-divider"></div>
+
+      <!-- SECTION 12 -->
+      <section class="section" id="s12">
+        <div class="section-heading">
+          <span class="section-pill">12</span>
+          <h2>Governing Law</h2>
+        </div>
+        <div class="section-body">
+          <p>These Terms shall be governed by and construed in accordance with the laws of England and Wales. Any disputes shall be subject to the exclusive jurisdiction of the courts of England and Wales.</p>
+          <p>If any provision of these Terms is found to be unenforceable, the remaining provisions will continue in full force.</p>
+          <div class="contact-block">
+            <strong>Questions about these Terms?</strong> Email us at <a href="mailto:legal@whamr.app">legal@whamr.app</a>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-logo">whamr.</span>
+    <div class="footer-links">
+      <a href="27-help.html">Help</a>
+      <a href="42-terms.html">Terms</a>
+      <a href="43-privacy.html">Privacy</a>
+      <a href="26-pricing.html">Pricing</a>
+    </div>
+    <span class="footer-copy">&copy; 2026 Whamr Ltd. All rights reserved.</span>
+  </div>
+</footer>
+
+<script src="./real-media.js"></script>
+<script>
+// Smooth-scroll ToC active state
+(function () {
+  const sections = document.querySelectorAll('.section[id]');
+  const tocItems = document.querySelectorAll('.toc-item[data-section]');
+
+  function setActive(id) {
+    tocItems.forEach(function(item) {
+      item.classList.toggle('active', item.dataset.section === id);
+    });
+  }
+
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        setActive(entry.target.id);
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+
+  sections.forEach(function(s) { observer.observe(s); });
+
+  // Click scroll
+  tocItems.forEach(function(item) {
+    item.querySelector('a').addEventListener('click', function(e) {
+      e.preventDefault();
+      const target = document.getElementById(item.dataset.section);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setActive(item.dataset.section);
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>
