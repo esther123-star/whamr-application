@@ -1,0 +1,2098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Whamr — Team Brief & Specifications v2.1</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #FFFAF5;
+      --ink: #1A0F00;
+      --ink-soft: #4A3020;
+      --ink-mute: #8A7060;
+      --line: #F0DDD0;
+      --purple: #FF4500;
+      --purple-mid: #FF6B35;
+      --purple-dark: #CC3700;
+      --purple-soft: #FFF1EC;
+      --wham: #FFB800;
+      --green: #00C853;
+      --sidebar-width: 240px;
+      --header-height: 80px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    /* ── HEADER ───────────────────────────────────────────── */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--header-height);
+      background: linear-gradient(135deg, #1A0F00 0%, #CC3700 55%, #FF6B35 100%);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      z-index: 100;
+      box-shadow: 0 2px 24px rgba(26,15,0,0.45);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: baseline;
+      gap: 20px;
+    }
+
+    .logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 28px;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+
+    .logo span { color: var(--wham); }
+
+    .header-sub {
+      font-size: 12px;
+      color: rgba(255,255,255,0.65);
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn-mockups {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 8px 18px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .btn-mockups:hover { background: rgba(255,255,255,0.22); }
+
+    .version-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      background: var(--wham);
+      color: #1A0F00;
+      padding: 4px 10px;
+      border-radius: 100px;
+      font-weight: 600;
+    }
+
+    /* ── LAYOUT ───────────────────────────────────────────── */
+    .layout {
+      display: flex;
+      margin-top: var(--header-height);
+      min-height: calc(100vh - var(--header-height));
+    }
+
+    /* ── SIDEBAR ──────────────────────────────────────────── */
+    .sidebar {
+      width: var(--sidebar-width);
+      flex-shrink: 0;
+      position: sticky;
+      top: var(--header-height);
+      height: calc(100vh - var(--header-height));
+      overflow-y: auto;
+      background: #fff;
+      border-right: 1px solid var(--line);
+      padding: 24px 0 40px;
+    }
+
+    .sidebar-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: var(--ink-mute);
+      text-transform: uppercase;
+      padding: 0 20px 12px;
+    }
+
+    .sidebar nav a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 20px;
+      text-decoration: none;
+      color: var(--ink-soft);
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.12s;
+      border-left: 2px solid transparent;
+      line-height: 1.3;
+    }
+
+    .sidebar nav a:hover {
+      color: var(--purple);
+      background: var(--purple-soft);
+      border-left-color: var(--purple);
+    }
+
+    .sidebar nav a .num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--ink-mute);
+      min-width: 22px;
+    }
+
+    .sidebar nav a:hover .num { color: var(--purple); }
+
+    /* ── MAIN CONTENT ─────────────────────────────────────── */
+    .main {
+      flex: 1;
+      padding: 48px 56px 80px;
+      max-width: 960px;
+    }
+
+    /* ── SECTIONS ─────────────────────────────────────────── */
+    .section {
+      margin-bottom: 72px;
+      scroll-margin-top: calc(var(--header-height) + 24px);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 28px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--line);
+    }
+
+    .section-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--purple);
+      color: #fff;
+      padding: 4px 12px;
+      border-radius: 100px;
+      flex-shrink: 0;
+    }
+
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 22px;
+      color: var(--ink);
+    }
+
+    h3 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--ink);
+      margin: 28px 0 12px;
+    }
+
+    h4 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--ink-soft);
+      margin: 20px 0 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    p { margin-bottom: 14px; color: var(--ink-soft); }
+
+    /* ── TABLES ───────────────────────────────────────────── */
+    .table-wrap { overflow-x: auto; margin: 20px 0; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+    }
+
+    thead th {
+      background: var(--ink);
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: 0.3px;
+      padding: 10px 14px;
+      text-align: left;
+    }
+
+    thead th:first-child { border-radius: 8px 0 0 0; }
+    thead th:last-child { border-radius: 0 8px 0 0; }
+
+    tbody tr { border-bottom: 1px solid var(--line); }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--purple-soft); }
+
+    tbody td {
+      padding: 10px 14px;
+      color: var(--ink-soft);
+      vertical-align: top;
+    }
+
+    tbody td:first-child { font-weight: 500; color: var(--ink); }
+
+    .mono { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+
+    .badge-live {
+      display: inline-block;
+      background: #E8F9EE;
+      color: var(--green);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 100px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .badge-no {
+      display: inline-block;
+      background: #FFF0EC;
+      color: var(--purple);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 100px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .badge-ready {
+      display: inline-block;
+      background: #FFFBE8;
+      color: #B08000;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 100px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── STAT CARDS ───────────────────────────────────────── */
+    .stat-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+
+    .stat-card {
+      flex: 1;
+      min-width: 140px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 20px 18px;
+    }
+
+    .stat-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--purple);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--ink-mute);
+    }
+
+    /* ── AI SPEC BLOCKS ───────────────────────────────────── */
+    .spec-block {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--purple);
+      border-radius: 0 12px 12px 0;
+      padding: 20px 24px;
+      margin: 20px 0;
+    }
+
+    .spec-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--ink);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .spec-title .tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: var(--purple-soft);
+      color: var(--purple);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .spec-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 13.5px;
+    }
+
+    .spec-row .k {
+      font-weight: 600;
+      color: var(--ink);
+      min-width: 160px;
+      flex-shrink: 0;
+    }
+
+    .spec-row .v { color: var(--ink-soft); }
+
+    /* ── CODE BLOCKS ──────────────────────────────────────── */
+    .code {
+      background: #1A0F00;
+      color: #FFB800;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 16px 20px;
+      border-radius: 8px;
+      margin: 16px 0;
+      overflow-x: auto;
+      line-height: 1.8;
+    }
+
+    .code .c { color: #8A7060; }
+    .code .k { color: #FF6B35; }
+    .code .s { color: #00C853; }
+
+    /* ── COLOR SWATCHES ───────────────────────────────────── */
+    .swatch-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .swatch {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 14px;
+      min-width: 210px;
+    }
+
+    .swatch-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      flex-shrink: 0;
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .swatch-info .name {
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--ink);
+    }
+
+    .swatch-info .val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--ink-mute);
+    }
+
+    /* ── PHASE BLOCKS ─────────────────────────────────────── */
+    .phase {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin: 16px 0;
+    }
+
+    .phase-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--ink);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .phase-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      padding: 3px 9px;
+      border-radius: 100px;
+      font-weight: 600;
+    }
+
+    .phase-done { background: #E8F9EE; color: var(--green); }
+    .phase-next { background: var(--purple-soft); color: var(--purple); }
+    .phase-later { background: #FFFBE8; color: #B08000; }
+
+    ul.task-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    ul.task-list li {
+      padding: 5px 0 5px 22px;
+      position: relative;
+      color: var(--ink-soft);
+      font-size: 13.5px;
+    }
+
+    ul.task-list li::before {
+      content: "→";
+      position: absolute;
+      left: 0;
+      color: var(--purple);
+      font-weight: 700;
+    }
+
+    /* ── DECISION LOG ─────────────────────────────────────── */
+    .decision {
+      display: flex;
+      gap: 16px;
+      margin: 16px 0;
+      align-items: flex-start;
+    }
+
+    .decision-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--purple);
+      color: #fff;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .decision-body strong {
+      display: block;
+      font-size: 14px;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+
+    .decision-body p {
+      font-size: 13.5px;
+      margin-bottom: 0;
+    }
+
+    /* ── CALLOUT ──────────────────────────────────────────── */
+    .callout {
+      background: var(--purple-soft);
+      border-left: 4px solid var(--purple);
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin: 16px 0;
+      font-size: 13.5px;
+      color: var(--ink-soft);
+    }
+
+    .callout strong { color: var(--purple); }
+
+    .callout-wham {
+      background: #FFFBE8;
+      border-left-color: var(--wham);
+    }
+
+    .callout-wham strong { color: #B08000; }
+
+    .callout-green {
+      background: #E8F9EE;
+      border-left-color: var(--green);
+    }
+
+    .callout-green strong { color: var(--green); }
+
+    /* ── WRITING EXAMPLES ─────────────────────────────────── */
+    .example-good {
+      background: #E8F9EE;
+      border: 1px solid #A8E8BE;
+      border-radius: 8px;
+      padding: 10px 16px;
+      margin: 8px 0;
+      font-size: 13.5px;
+      color: #1A5C2A;
+    }
+
+    .example-bad {
+      background: #FFF0EC;
+      border: 1px solid #FFCBB5;
+      border-radius: 8px;
+      padding: 10px 16px;
+      margin: 8px 0;
+      font-size: 13.5px;
+      color: #7A2010;
+      text-decoration: line-through;
+      opacity: 0.8;
+    }
+
+    /* ── FOOTER ───────────────────────────────────────────── */
+    footer {
+      background: var(--ink);
+      color: rgba(255,255,255,0.5);
+      text-align: center;
+      padding: 24px;
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    footer strong { color: var(--wham); }
+
+    /* ── RESPONSIVE ───────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .sidebar { display: none; }
+      .main { padding: 32px 24px 60px; }
+      header { padding: 0 20px; }
+      .header-sub { display: none; }
+      .stat-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-left">
+    <div class="logo">whamr<span>.</span></div>
+    <div class="header-sub">Team Brief & Specifications v2.1 · May 2026</div>
+  </div>
+  <div class="header-right">
+    <span class="version-badge">v2.1 PROTOTYPE</span>
+    <a href="mockups/index.html" class="btn-mockups">View mockups →</a>
+  </div>
+</header>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-label">Contents</div>
+    <nav>
+      <a href="#s01"><span class="num">01</span> Platform Overview</a>
+      <a href="#s02"><span class="num">02</span> Current State</a>
+      <a href="#s03"><span class="num">03</span> Content Library</a>
+      <a href="#s04"><span class="num">04</span> Screen Inventory</a>
+      <a href="#s05"><span class="num">05</span> AI Features</a>
+      <a href="#s06"><span class="num">06</span> Community Features</a>
+      <a href="#s07"><span class="num">07</span> Data Model</a>
+      <a href="#s08"><span class="num">08</span> Design System</a>
+      <a href="#s09"><span class="num">09</span> Competitor Analysis</a>
+      <a href="#s10"><span class="num">10</span> Business Model</a>
+      <a href="#s11"><span class="num">11</span> Build Order</a>
+      <a href="#s12"><span class="num">12</span> Role Definitions</a>
+      <a href="#s13"><span class="num">13</span> Writing Style Guide</a>
+      <a href="#s14"><span class="num">14</span> Domain Strategy</a>
+      <a href="#s15"><span class="num">15</span> Technical Architecture</a>
+      <a href="#s16"><span class="num">16</span> Decision Log</a>
+    </nav>
+  </div>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- 01. PLATFORM OVERVIEW -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <section class="section" id="s01">
+      <div class="section-header">
+        <span class="section-pill">01</span>
+        <h2 class="section-title">Platform Overview</h2>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-card">
+          <div class="stat-num">9,128</div>
+          <div class="stat-label">Media files cataloged</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">413</div>
+          <div class="stat-label">Live on CDN</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">19</div>
+          <div class="stat-label">Mockup screens</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">11</div>
+          <div class="stat-label">Categories</div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <tbody>
+            <tr>
+              <td>Name</td>
+              <td><strong>Whamr</strong></td>
+            </tr>
+            <tr>
+              <td>Tagline</td>
+              <td>"Find the perfect meme. Send the wham."</td>
+            </tr>
+            <tr>
+              <td>Mission</td>
+              <td>The fastest way to find a meme and send it anywhere</td>
+            </tr>
+            <tr>
+              <td>Positioning</td>
+              <td>Global meme and sticker discovery platform built for the send, with deep Naija roots</td>
+            </tr>
+            <tr>
+              <td>Version</td>
+              <td><span class="mono">v2.1 Final · May 2026 · Prototype stage</span></td>
+            </tr>
+            <tr>
+              <td>Live URL</td>
+              <td><span class="mono">whamr-application.vercel.app</span></td>
+            </tr>
+            <tr>
+              <td>GitHub</td>
+              <td><span class="mono">github.com/esther123-star/whamr-application</span></td>
+            </tr>
+            <tr>
+              <td>Primary users</td>
+              <td>Mobile-first users ages 16–35 who share memes on WhatsApp, Telegram, and X</td>
+            </tr>
+            <tr>
+              <td>Primary market</td>
+              <td>Global — Nigeria as anchor market</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <strong>What Whamr does.</strong> A user opens Whamr, types "Nigerian side-eye" or "happy birthday" in plain English, gets exactly the right meme or sticker, and taps Share — straight to WhatsApp or Telegram, in under ten seconds. No scrolling through unrelated results. No signing up. No ads. Just the send.
+      </div>
+
+      <p>Whamr is designed around one core action: the send. Every feature — search, browse, share, favorites, upload — exists to make that send faster and more satisfying. The platform sits at the intersection of Giphy's catalog depth and the Naija cultural intelligence that no Western meme platform has built properly.</p>
+
+      <p>The product is globally scoped. Naija content is the primary differentiator and anchor for the initial user base, not a regional limitation. The catalog, categories, and community tools all support content from any culture — the AI search understands slang, the community tabs let anyone add origin context, and the Sticker Pack Export works with WhatsApp packs from any region.</p>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- 02. CURRENT STATE -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <section class="section" id="s02">
+      <div class="section-header">
+        <span class="section-pill">02</span>
+        <h2 class="section-title">Current State (v2.1)</h2>
+      </div>
+
+      <p>v2.1 is a fully functional prototype. The core browse-and-share experience works end-to-end in the browser. Backend services, user accounts, and server-side storage are written at schema level but not deployed.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>Status</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>413 memes &amp; stickers in live catalog</td>
+              <td><span class="badge-live">✓ Live</span></td>
+              <td>Cloudinary CDN — public URLs</td>
+            </tr>
+            <tr>
+              <td>9,128 real local media files</td>
+              <td><span class="badge-live">✓ Cataloged</span></td>
+              <td><span class="mono">catalog-full.json</span></td>
+            </tr>
+            <tr>
+              <td>AI natural language search</td>
+              <td><span class="badge-live">✓ Live</span></td>
+              <td>Synonym expansion + fuzzy match in <span class="mono">script.js</span></td>
+            </tr>
+            <tr>
+              <td>Infinite scroll (24 per page)</td>
+              <td><span class="badge-live">✓ Live</span></td>
+              <td>IntersectionObserver, sentinel 300px before edge</td>
+            </tr>
+            <tr>
+              <td>Category filters (11 categories)</td>
+              <td><span class="badge-live">✓ Live</span></td>
+              <td>Client-side filter, no reload</td>
+            </tr>
+            <tr>
+              <td>Share to 9 platforms</td>
+              <td><span class="badge-live">✓ Live</span></td>
+              <td>WhatsApp, Telegram, X, Facebook, Reddit, LinkedIn, Pinterest, Email, Download</td>
+            </tr>
+            <tr>
+              <td>Community tabs (Discussion, Origin, Variants)</td>
+              <td><span class="badge-live">✓ Live</span></td>
+              <td>localStorage — per meme ID</td>
+            </tr>
+            <tr>
+              <td>Favorites (localStorage)</td>
+              <td><span class="badge-live">✓ Live</span></td>
+              <td>Persists per device, no account needed</td>
+            </tr>
+            <tr>
+              <td>Upload (IndexedDB)</td>
+              <td><span class="badge-live">✓ Live</span></td>
+              <td>Local device only, not synced to server</td>
+            </tr>
+            <tr>
+              <td>Cloudflare R2 upload script</td>
+              <td><span class="badge-ready">✓ Ready</span></td>
+              <td><span class="mono">node scripts/upload-to-r2.js</span> — run to go live</td>
+            </tr>
+            <tr>
+              <td>User accounts</td>
+              <td><span class="badge-no">✗ Not built</span></td>
+              <td>Clerk auth integrated in UI only — no session data</td>
+            </tr>
+            <tr>
+              <td>Backend database</td>
+              <td><span class="badge-no">✗ Prototype</span></td>
+              <td>Prisma schemas written, not deployed anywhere</td>
+            </tr>
+            <tr>
+              <td>Mobile app</td>
+              <td><span class="badge-no">✗ Planned</span></td>
+              <td>Mockup exists at <span class="mono">15-mobile-app.html</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-wham">
+        <strong>Biggest unlock.</strong> Running <span class="mono">node scripts/upload-to-r2.js</span> moves all 9,128 files to Cloudflare R2 and updates the catalog URLs. That single command takes the live catalog from 413 to 9,128 items — the biggest immediate product improvement available.
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- 03. CONTENT LIBRARY -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <section class="section" id="s03">
+      <div class="section-header">
+        <span class="section-pill">03</span>
+        <h2 class="section-title">Content Library</h2>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-card">
+          <div class="stat-num">9,128</div>
+          <div class="stat-label">Total media files</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">8,609</div>
+          <div class="stat-label">Unique after dedup</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">519</div>
+          <div class="stat-label">Duplicates removed</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">487</div>
+          <div class="stat-label">MP4 video memes</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">8,122</div>
+          <div class="stat-label">WebP stickers</div>
+        </div>
+      </div>
+
+      <h3>Category Breakdown</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Category (UI)</th>
+              <th>JSON key</th>
+              <th>Count</th>
+              <th>Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Reactions</td><td class="mono">reactions</td><td class="mono">60</td><td>MP4 / WebP</td></tr>
+            <tr><td>Naija</td><td class="mono">naija</td><td class="mono">29</td><td>MP4</td></tr>
+            <tr><td>Laughing</td><td class="mono">laughing</td><td class="mono">35</td><td>MP4</td></tr>
+            <tr><td>Dance</td><td class="mono">dance</td><td class="mono">38</td><td>MP4</td></tr>
+            <tr><td>Sad</td><td class="mono">sad</td><td class="mono">35</td><td>MP4</td></tr>
+            <tr><td>Birthday</td><td class="mono">birthday</td><td class="mono">38</td><td>MP4</td></tr>
+            <tr><td>Love</td><td class="mono">love</td><td class="mono">41</td><td>MP4</td></tr>
+            <tr><td>Sports</td><td class="mono">sports</td><td class="mono">12</td><td>MP4</td></tr>
+            <tr><td>Awkward</td><td class="mono">awkward</td><td class="mono">1</td><td>MP4</td></tr>
+            <tr><td>Random</td><td class="mono">random</td><td class="mono">198</td><td>MP4</td></tr>
+            <tr><td>Stickers</td><td class="mono">stickers</td><td class="mono">8,122</td><td>WebP</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Catalog Files</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>File</th>
+              <th>Items</th>
+              <th>Contents</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="mono">catalog-full.json</td>
+              <td class="mono">8,609</td>
+              <td>All unique items — deduplicated, all categories</td>
+            </tr>
+            <tr>
+              <td class="mono">catalog-memes.json</td>
+              <td class="mono">487</td>
+              <td>MP4 video memes only</td>
+            </tr>
+            <tr>
+              <td class="mono">catalog-stickers.json</td>
+              <td class="mono">8,122</td>
+              <td>WebP stickers only</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Hosting Plan</h3>
+      <div class="callout callout-green">
+        <strong>Cloudflare R2 free tier covers the entire library.</strong> 9,128 files at an average of ~1 MB each = ~9 GB. R2 offers 10 GB storage and zero egress bandwidth fees on the free tier. The entire library fits with room to grow.
+      </div>
+
+      <div class="callout">
+        <strong>Category naming note.</strong> Use lowercase in JSON (<span class="mono">naija</span>, <span class="mono">dance</span>, <span class="mono">sad</span>). Use title-case in UI ("Naija", "Dance", "Sad"). The catalog generation script handles this mapping automatically.
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- 04. SCREEN INVENTORY -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <section class="section" id="s04">
+      <div class="section-header">
+        <span class="section-pill">04</span>
+        <h2 class="section-title">Screen Inventory</h2>
+      </div>
+
+      <p>19 mockup screens covering all core user journeys. Each screen is self-contained HTML/CSS/JS — openable in any browser without a server. All screens live in <span class="mono">mockups/</span> and are linked from <span class="mono">mockups/index.html</span>.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Screen</th>
+              <th>File</th>
+              <th>Lines</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="mono">01</td>
+              <td>Landing</td>
+              <td class="mono">01-landing.html</td>
+              <td class="mono">1507</td>
+              <td>Hero section, trending strip, categories grid, how-it-works, creator spotlight, platform logos</td>
+            </tr>
+            <tr>
+              <td class="mono">02</td>
+              <td>Memes Browser</td>
+              <td class="mono">02-memes-browser.html</td>
+              <td class="mono">1800</td>
+              <td>Core browse and search, trending strip, bulk select mode, recently viewed rail</td>
+            </tr>
+            <tr>
+              <td class="mono">03</td>
+              <td>Meme Detail</td>
+              <td class="mono">03-meme-detail.html</td>
+              <td class="mono">833</td>
+              <td>Full-size video/image view, share panel, comments, related memes, community tabs</td>
+            </tr>
+            <tr>
+              <td class="mono">04</td>
+              <td>Upload Flow</td>
+              <td class="mono">04-upload-flow.html</td>
+              <td class="mono">722</td>
+              <td>4-step wizard: drag-drop file, fill metadata form, preview, publish</td>
+            </tr>
+            <tr>
+              <td class="mono">05</td>
+              <td>Meme Editor</td>
+              <td class="mono">05-meme-editor.html</td>
+              <td class="mono">658</td>
+              <td>Canvas editor with templates, text overlay, filters, export controls</td>
+            </tr>
+            <tr>
+              <td class="mono">06</td>
+              <td>Explore</td>
+              <td class="mono">06-explore.html</td>
+              <td class="mono">704</td>
+              <td>Trending / New / Top / Categories tabs with masonry grid layout</td>
+            </tr>
+            <tr>
+              <td class="mono">07</td>
+              <td>User Profile</td>
+              <td class="mono">07-user-profile.html</td>
+              <td class="mono">735</td>
+              <td>Cover image, avatar, bio, meme grid, follower/following counts, follow button</td>
+            </tr>
+            <tr>
+              <td class="mono">08</td>
+              <td>Notifications</td>
+              <td class="mono">08-notifications.html</td>
+              <td class="mono">611</td>
+              <td>Activity feed with All / Likes / Comments / Follows tabs</td>
+            </tr>
+            <tr>
+              <td class="mono">09</td>
+              <td>Messages</td>
+              <td class="mono">09-messages.html</td>
+              <td class="mono">738</td>
+              <td>DM thread with inline meme picker, conversation list sidebar</td>
+            </tr>
+            <tr>
+              <td class="mono">10</td>
+              <td>Dojos</td>
+              <td class="mono">10-dojos.html</td>
+              <td class="mono">695</td>
+              <td>Community group hubs with meme battles, activity feed, rules panel</td>
+            </tr>
+            <tr>
+              <td class="mono">11</td>
+              <td>Settings</td>
+              <td class="mono">11-settings.html</td>
+              <td class="mono">527</td>
+              <td>Profile edit, notifications prefs, privacy toggles, subscription panel</td>
+            </tr>
+            <tr>
+              <td class="mono">12</td>
+              <td>Analytics</td>
+              <td class="mono">12-analytics.html</td>
+              <td class="mono">631</td>
+              <td>Creator KPIs, 30-day share chart, top memes table, platform breakdown donut</td>
+            </tr>
+            <tr>
+              <td class="mono">13</td>
+              <td>Admin</td>
+              <td class="mono">13-admin-dashboard.html</td>
+              <td class="mono">628</td>
+              <td>Moderation queue, flagged content, platform health, category manager</td>
+            </tr>
+            <tr>
+              <td class="mono">14</td>
+              <td>Auth</td>
+              <td class="mono">14-auth.html</td>
+              <td class="mono">496</td>
+              <td>Login and register panels side-by-side, Clerk-style modal aesthetic</td>
+            </tr>
+            <tr>
+              <td class="mono">15</td>
+              <td>Mobile App</td>
+              <td class="mono">15-mobile-app.html</td>
+              <td class="mono">871</td>
+              <td>4 iPhone frames: home feed, meme grid, upload flow, creator profile</td>
+            </tr>
+            <tr>
+              <td class="mono">16</td>
+              <td>Sticker Pack Export</td>
+              <td class="mono">16-export-pack.html</td>
+              <td class="mono">1082</td>
+              <td>4-step wizard to export packs for WhatsApp, Telegram, Signal, Discord</td>
+            </tr>
+            <tr>
+              <td class="mono">17</td>
+              <td>Share Link</td>
+              <td class="mono">17-share-link.html</td>
+              <td class="mono">1047</td>
+              <td>Public OG share page — meme preview, share options, guest and signed-in states</td>
+            </tr>
+            <tr>
+              <td class="mono">18</td>
+              <td>AI Search</td>
+              <td class="mono">18-ai-search.html</td>
+              <td class="mono">1461</td>
+              <td>Intent detection panel, synonym expansion, 9 real results from catalog</td>
+            </tr>
+            <tr>
+              <td class="mono">19</td>
+              <td>R2 Hosting Setup</td>
+              <td class="mono">19-r2-setup.html</td>
+              <td class="mono">289</td>
+              <td>Step-by-step R2 upload guide with progress state mockup</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <strong>Index file.</strong> <span class="mono">mockups/index.html</span> links all 19 screens plus <span class="mono">brand-guidelines.html</span>. Share this URL with stakeholders — it works in any browser with no server required.
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- 05. AI FEATURES -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <section class="section" id="s05">
+      <div class="section-header">
+        <span class="section-pill">05</span>
+        <h2 class="section-title">AI Features Specification</h2>
+      </div>
+
+      <p>Four AI features power Whamr's intelligence layer. All four run client-side in the current prototype — no API calls, no backend. They are fast, free, and work offline.</p>
+
+      <!-- A. Natural Language Search -->
+      <div class="spec-block">
+        <div class="spec-title">
+          A. Natural Language Search
+          <span class="tag">LIVE</span>
+        </div>
+        <div class="spec-row">
+          <span class="k">Location</span>
+          <span class="v"><span class="mono">memes.html</span> + <span class="mono">script.js</span> (live) · <span class="mono">18-ai-search.html</span> (mockup)</span>
+        </div>
+        <div class="spec-row">
+          <span class="k">Entry function</span>
+          <span class="v"><span class="mono">expandQuery()</span> → builds synonym set for user's input</span>
+        </div>
+        <div class="spec-row">
+          <span class="k">Scoring</span>
+          <span class="v"><span class="mono">aiScore()</span> runs fuzzy match — 1.0 exact · 0.9 prefix · 0.85 contains · 0.75 token prefix</span>
+        </div>
+        <div class="spec-row">
+          <span class="k">Intent detection</span>
+          <span class="v"><span class="mono">detectIntent()</span> — regex patterns map queries to category hints</span>
+        </div>
+        <div class="spec-row">
+          <span class="k">Synonym clusters</span>
+          <span class="v">20+ clusters: funny → laugh/lol/hilarious, naija → nigeria/nollywood/lagos, sad → cry/tears/disappointed, dance → groove/moves/twerk, etc.</span>
+        </div>
+        <div class="spec-row">
+          <span class="k">Categories detected</span>
+          <span class="v">dance, laughing, sad, naija, sports, reactions, awkward, love, birthday</span>
+        </div>
+        <div class="spec-row">
+          <span class="k">Score threshold</span>
+          <span class="v">≥ 0.3 to include in results; sorted descending</span>
+        </div>
+        <div class="spec-row">
+          <span class="k">Known limitation</span>
+          <span class="v">Searches by title / filename — not visual content. Use Origin tab to add searchable descriptions for memes with unclear filenames.</span>
+        </div>
+        <div class="spec-row">
+          <span class="k">Scale limit</span>
+          <span class="v">Works well under 10k items. At 10k+, migrate to Meilisearch or Algolia.</span>
+        </div>
+      </div>
+
+      <!-- B. Auto-Categorisation -->
+      <div class="spec-block">
+        <div class="spec-title">
+          B. Auto-Categorisation
+          <span class="tag">LIVE</span>
+        </div>
+        <div class="spec-row">
+          <span class="k">Location</span>
+          <span class="v"><span class="mono">scripts/generate-catalog.js</span></span>
+        </div>
+        <div class="spec-row">
+          <span class="k">Method</span>
+          <span class="v">13 keyword rule arrays matched against filename → assigns category → extracts tags</span>
+        </div>
+        <div class="spec-row">
+          <span class="k">Categories</span>
+          <span class="v">naija, dance, laughing, sad, reactions, awkward, sports, love, birthday, random, stickers</span>
+        </div>
+        <div class="spec-row">
+          <span class="k">Tag extraction</span>
+          <span class="v">Filename split on delimiters (spaces, underscores, hyphens) → noise words stripped → max 8 tags per item</span>
+        </div>
+        <div class="spec-row">
+          <span class="k">Deduplication</span>
+          <span class="v">Jaccard similarity on word sets, threshold 0.9 — removes near-duplicate filenames (519 removed from 9,128)</span>
+        </div>
+        <div class="spec-row">
+          <span class="k">Output per item</span>
+          <span class="v"><span class="mono">{ id, title, type, category, tags, path, size }</span></span>
+        </div>
+        <div class="spec-row">
+          <span class="k">Accuracy</span>
+          <span class="v">~80% accurate at this scale using filename keywords. Good enough for prototype; improve with human review or vision API at scale.</span>
+        </div>
+      </div>
+
+      <!-- C. Community Knowledge -->
+      <div class="spec-block">
+        <div class="spec-title">
+          C. Community Knowledge (Discussion · Origin · Variants)
+          <span class="tag">LIVE</span>
+        </div>
+        <div class="spec-row">
+          <span class="k">Location</span>
+          <span class="v"><span class="mono">memes.html</span> modal · <span class="mono">script.js</span> <span class="mono">communityKey()</span> functions</span>
+        </div>
+        <div class="spec-row">
+          <span class="k">Storage</span>
+          <span class="v">localStorage — keyed by meme ID, survives page refresh, local per device</span>
+        </div>
+        <div class="spec-row">
+          <span class="k">Discussion tab</span>
+          <span class="v">Threaded comments: author name, text, timestamp, <span class="mono">timeAgo()</span> display ("2 hours ago")</span>
+        </div>
+        <div class="spec-row">
+          <span class="k">Origin tab</span>
+          <span class="v">Fields: year, source platform, history text — editable by any visitor, no account required</span>
+        </div>
+        <div class="spec-row">
+          <span class="k">Variants tab</span>
+          <span class="v">URL links to remixed or extended versions (YouTube, TikTok, Twitter) with title and timestamp</span>
+        </div>
+        <div class="spec-row">
+          <span class="k">Purpose</span>
+          <span class="v">Crowdsource the metadata that can't be inferred from filenames — context, cultural meaning, history</span>
+        </div>
+        <div class="spec-row">
+          <span class="k">Migration path</span>
+          <span class="v">When Clerk auth is live, replace localStorage with server-side storage keyed on <span class="mono">memeId</span> as foreign key</span>
+        </div>
+      </div>
+
+      <!-- D. Duplicate Detection -->
+      <div class="spec-block">
+        <div class="spec-title">
+          D. Duplicate Detection (Upload Guard)
+          <span class="tag">LIVE</span>
+        </div>
+        <div class="spec-row">
+          <span class="k">Location</span>
+          <span class="v"><span class="mono">lib/ai-search.ts</span> · <span class="mono">isDuplicate()</span> function</span>
+        </div>
+        <div class="spec-row">
+          <span class="k">Method</span>
+          <span class="v">Jaccard similarity — word-set intersection divided by union — on normalised titles</span>
+        </div>
+        <div class="spec-row">
+          <span class="k">Threshold</span>
+          <span class="v">0.85 similarity triggers duplicate warning</span>
+        </div>
+        <div class="spec-row">
+          <span class="k">Output</span>
+          <span class="v">Returns the most similar existing item — shown as a warning card before the user confirms upload</span>
+        </div>
+        <div class="spec-row">
+          <span class="k">User action</span>
+          <span class="v">User can dismiss warning and upload anyway (e.g. deliberate variant) or cancel</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- 06. COMMUNITY FEATURES -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <section class="section" id="s06">
+      <div class="section-header">
+        <span class="section-pill">06</span>
+        <h2 class="section-title">Community Features</h2>
+      </div>
+
+      <p>Whamr's community layer turns a search tool into a place. Every meme has a public space for discussion, history, and remixes. Dojos give users themed hubs to gather around shared meme cultures.</p>
+
+      <h3>Dojos (10-dojos.html)</h3>
+      <p>Dojos are community groups built around themes. Examples: Naija Meme HQ, Football Meme FC, Afrobeats Dance Vault. Each Dojo has a member count, an activity feed, meme battle threads, and a rules panel. Any user can create a Dojo or join an existing one.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>Screen</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Discussion tabs on memes</td><td class="mono">03-meme-detail.html</td><td><span class="badge-live">✓ Live</span></td></tr>
+            <tr><td>Origin tabs (meme history)</td><td class="mono">03-meme-detail.html</td><td><span class="badge-live">✓ Live</span></td></tr>
+            <tr><td>Variants tabs (remix links)</td><td class="mono">03-meme-detail.html</td><td><span class="badge-live">✓ Live</span></td></tr>
+            <tr><td>User profiles</td><td class="mono">07-user-profile.html</td><td><span class="badge-ready">Mockup</span></td></tr>
+            <tr><td>Direct messages</td><td class="mono">09-messages.html</td><td><span class="badge-ready">Mockup</span></td></tr>
+            <tr><td>Notifications</td><td class="mono">08-notifications.html</td><td><span class="badge-ready">Mockup</span></td></tr>
+            <tr><td>Dojos</td><td class="mono">10-dojos.html</td><td><span class="badge-ready">Mockup</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Discussion Tabs</h3>
+      <p>Each meme has a Discussion tab in its detail modal. Users post comments with a display name they type inline — no account required. Comments show timestamp and a <span class="mono">timeAgo()</span> display. All data lives in localStorage under the meme's ID key.</p>
+
+      <h3>Origin Tabs</h3>
+      <p>The Origin tab lets anyone record the meme's history: year it appeared, source platform (Twitter, TikTok, Nollywood, etc.), and a free-text narrative. This is the mechanism for adding searchable context to memes whose filenames give no clues. It's also where Naija meme provenance gets documented — which movie scene, which musician, which viral moment.</p>
+
+      <h3>Variants Tabs</h3>
+      <p>Variants are external links to remixed or extended versions of the meme — the original YouTube clip, a TikTok remix, an extended Twitter thread. Users paste a URL and a title. This builds a web of related content without hosting it all.</p>
+
+      <h3>Direct Messages</h3>
+      <p>The DM screen (09-messages.html) shows a conversation list on the left and a thread on the right. The thread has an inline sticker picker — users can search and insert a meme directly into the message without leaving the chat. This is the core send-inside-Whamr use case.</p>
+
+      <h3>Notifications</h3>
+      <p>The Notifications screen (08-notifications.html) shows an activity feed tabbed by All, Likes, Comments, and Follows. Notifications link back to the relevant meme or profile.</p>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- 07. DATA MODEL -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <section class="section" id="s07">
+      <div class="section-header">
+        <span class="section-pill">07</span>
+        <h2 class="section-title">Data Model</h2>
+      </div>
+
+      <h3>Content Item Schema</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Field</th>
+              <th>Type</th>
+              <th>Example</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="mono">id</td>
+              <td>string (MD5, 12-char)</td>
+              <td class="mono">c4a2f8b3e910</td>
+              <td>Derived from file path — stable, deterministic</td>
+            </tr>
+            <tr>
+              <td class="mono">title</td>
+              <td>string (max 70)</td>
+              <td>"5000 Naira Pawpaw"</td>
+              <td>Cleaned from filename — title-case, delimiters removed</td>
+            </tr>
+            <tr>
+              <td class="mono">type</td>
+              <td>enum</td>
+              <td class="mono">meme / sticker / gif</td>
+              <td>.mp4 → meme, .webp → sticker, .gif → gif</td>
+            </tr>
+            <tr>
+              <td class="mono">category</td>
+              <td>enum</td>
+              <td class="mono">naija</td>
+              <td>AI-assigned from keyword rules — lowercase in JSON</td>
+            </tr>
+            <tr>
+              <td class="mono">tags</td>
+              <td>string[] (max 8)</td>
+              <td class="mono">["naira","pawpaw","pidgin"]</td>
+              <td>Extracted from filename tokens, noise words stripped</td>
+            </tr>
+            <tr>
+              <td class="mono">src</td>
+              <td>URL</td>
+              <td class="mono">https://res.cloudinary.com/...</td>
+              <td>Cloudinary (live) or R2 public URL (planned)</td>
+            </tr>
+            <tr>
+              <td class="mono">path</td>
+              <td>string</td>
+              <td class="mono">Meme/naija/5000 naira pawpaw.mp4</td>
+              <td>Relative to media root on local machine</td>
+            </tr>
+            <tr>
+              <td class="mono">size</td>
+              <td>number (bytes)</td>
+              <td class="mono">8253440</td>
+              <td>Raw file size — used to estimate R2 storage usage</td>
+            </tr>
+            <tr>
+              <td class="mono">shareCount</td>
+              <td>number</td>
+              <td class="mono">1844</td>
+              <td>Simulated in prototype — will be real with backend</td>
+            </tr>
+            <tr>
+              <td class="mono">viewCount</td>
+              <td>number</td>
+              <td class="mono">27200</td>
+              <td>Simulated in prototype — will be real with backend</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Community Data Schema (localStorage)</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Key</th>
+              <th>Structure</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="mono">whamr-community-{id}</td>
+              <td class="mono">{ discussions: [], origin: null, variants: [] }</td>
+            </tr>
+            <tr>
+              <td class="mono">discussions[i]</td>
+              <td class="mono">{ id, author, text, ts }</td>
+            </tr>
+            <tr>
+              <td class="mono">origin</td>
+              <td class="mono">{ year, source, text, editedAt }</td>
+            </tr>
+            <tr>
+              <td class="mono">variants[i]</td>
+              <td class="mono">{ id, title, url, ts }</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>11 Categories</h3>
+      <div class="code">
+<span class="c">// Enum values (lowercase in JSON, title-case in UI)</span>
+<span class="k">const</span> CATEGORIES = [
+  <span class="s">"reactions"</span>,   <span class="c">// → "Reactions"</span>
+  <span class="s">"naija"</span>,       <span class="c">// → "Naija"</span>
+  <span class="s">"dance"</span>,       <span class="c">// → "Dance"</span>
+  <span class="s">"laughing"</span>,    <span class="c">// → "Laughing"</span>
+  <span class="s">"sad"</span>,         <span class="c">// → "Sad"</span>
+  <span class="s">"birthday"</span>,    <span class="c">// → "Birthday"</span>
+  <span class="s">"love"</span>,        <span class="c">// → "Love"</span>
+  <span class="s">"sports"</span>,      <span class="c">// → "Sports"</span>
+  <span class="s">"awkward"</span>,     <span class="c">// → "Awkward"</span>
+  <span class="s">"random"</span>,      <span class="c">// → "Random"</span>
+  <span class="s">"stickers"</span>     <span class="c">// → "Stickers"</span>
+];
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- 08. DESIGN SYSTEM -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <section class="section" id="s08">
+      <div class="section-header">
+        <span class="section-pill">08</span>
+        <h2 class="section-title">Design System</h2>
+      </div>
+
+      <h3>Color Tokens</h3>
+      <div class="swatch-grid">
+        <div class="swatch"><div class="swatch-dot" style="background:#FF4500"></div><div class="swatch-info"><div class="name">--purple</div><div class="val">#FF4500 · Primary CTA</div></div></div>
+        <div class="swatch"><div class="swatch-dot" style="background:#FF6B35"></div><div class="swatch-info"><div class="name">--purple-mid</div><div class="val">#FF6B35 · Hover states</div></div></div>
+        <div class="swatch"><div class="swatch-dot" style="background:#CC3700"></div><div class="swatch-info"><div class="name">--purple-dark</div><div class="val">#CC3700 · Pressed states</div></div></div>
+        <div class="swatch"><div class="swatch-dot" style="background:#FFF1EC; border-color:#F0DDD0;"></div><div class="swatch-info"><div class="name">--purple-soft</div><div class="val">#FFF1EC · Backgrounds, chips</div></div></div>
+        <div class="swatch"><div class="swatch-dot" style="background:#FFB800"></div><div class="swatch-info"><div class="name">--wham</div><div class="val">#FFB800 · Accent, highlights</div></div></div>
+        <div class="swatch"><div class="swatch-dot" style="background:#1A0F00"></div><div class="swatch-info"><div class="name">--ink</div><div class="val">#1A0F00 · Body text</div></div></div>
+        <div class="swatch"><div class="swatch-dot" style="background:#4A3020"></div><div class="swatch-info"><div class="name">--ink-soft</div><div class="val">#4A3020 · Secondary text</div></div></div>
+        <div class="swatch"><div class="swatch-dot" style="background:#8A7060"></div><div class="swatch-info"><div class="name">--ink-mute</div><div class="val">#8A7060 · Placeholders, captions</div></div></div>
+        <div class="swatch"><div class="swatch-dot" style="background:#F0DDD0; border-color:#E0C0A8;"></div><div class="swatch-info"><div class="name">--line</div><div class="val">#F0DDD0 · Borders, dividers</div></div></div>
+        <div class="swatch"><div class="swatch-dot" style="background:#FFFAF5; border-color:#E0C0A8;"></div><div class="swatch-info"><div class="name">--bg</div><div class="val">#FFFAF5 · Page background</div></div></div>
+        <div class="swatch"><div class="swatch-dot" style="background:#00C853"></div><div class="swatch-info"><div class="name">--green</div><div class="val">#00C853 · Success states</div></div></div>
+      </div>
+
+      <h3>Typography</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Family</th><th>Weight</th><th>Use</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Space Grotesk</td><td>700</td><td>Headings, logo, card titles, stats, section headers</td></tr>
+            <tr><td>Inter</td><td>400 / 500 / 600</td><td>Body copy, labels, nav items, buttons, captions</td></tr>
+            <tr><td>JetBrains Mono</td><td>400 / 600</td><td>Numbers, stats, file sizes, version strings, code</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Component Patterns</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Component</th><th>Spec</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Meme card</td><td>White bg, 12px radius, 1px solid <span class="mono">#F0DDD0</span>, square aspect ratio, hover: box-shadow lift</td></tr>
+            <tr><td>Nav bar</td><td>64px height, white bg, sticky top, pill-shaped search bar with <span class="mono">--purple</span> focus ring</td></tr>
+            <tr><td>Send / CTA button</td><td>Orange <span class="mono">#FF4500</span>, 8px radius, Space Grotesk 600, 14px, white text</td></tr>
+            <tr><td>Category pill</td><td><span class="mono">#FFF1EC</span> bg, <span class="mono">#FF4500</span> text, 100px radius, Inter 500, 13px</td></tr>
+            <tr><td>Modal</td><td>Centered, white bg, 20px radius, dark backdrop <span class="mono">rgba(0,0,0,0.6)</span></td></tr>
+            <tr><td>Header gradient</td><td><span class="mono">#1A0F00 → #CC3700 → #FF6B35</span> — 135deg</td></tr>
+            <tr><td>Stat numbers</td><td>JetBrains Mono 600, <span class="mono">--purple</span> color, large size (28–40px)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Dual Theme Note</h3>
+      <div class="callout">
+        <strong>Two design modes exist.</strong> The live Next.js site uses a dark theme (<span class="mono">#0a0a0f</span> bg) that matches Clerk's dark modal aesthetic. The static HTML mockups use the warm sunset theme (<span class="mono">#FFFAF5</span> bg, <span class="mono">#FF4500</span> primary) shown in this document. Both are valid — the dark theme suits signed-in product screens, the warm theme suits discovery and marketing.
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- 09. COMPETITOR ANALYSIS -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <section class="section" id="s09">
+      <div class="section-header">
+        <span class="section-pill">09</span>
+        <h2 class="section-title">Competitor Analysis</h2>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>Whamr</th>
+              <th>Giphy</th>
+              <th>Tenor</th>
+              <th>WA Stickers</th>
+              <th>Meme Generator</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Platform focus</td>
+              <td>Meme discovery + send</td>
+              <td>GIF library</td>
+              <td>GIF library</td>
+              <td>Sticker packs only</td>
+              <td>Meme creation</td>
+            </tr>
+            <tr>
+              <td>AI search</td>
+              <td><span class="badge-live">Yes</span></td>
+              <td>Keyword only</td>
+              <td>Keyword only</td>
+              <td>None</td>
+              <td>None</td>
+            </tr>
+            <tr>
+              <td>Video memes (MP4)</td>
+              <td><span class="badge-live">Yes</span></td>
+              <td>GIF only</td>
+              <td>GIF / MP4</td>
+              <td>No</td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td>Community discussion</td>
+              <td><span class="badge-live">Yes</span></td>
+              <td>No</td>
+              <td>No</td>
+              <td>No</td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td>Sticker pack export</td>
+              <td><span class="badge-live">Yes</span></td>
+              <td>No</td>
+              <td>No</td>
+              <td>Native only</td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td>Naija content</td>
+              <td><span class="badge-live">Dedicated</span></td>
+              <td>Minimal</td>
+              <td>Minimal</td>
+              <td>None</td>
+              <td>None</td>
+            </tr>
+            <tr>
+              <td>Upload own memes</td>
+              <td><span class="badge-live">Yes</span></td>
+              <td>Yes (limited)</td>
+              <td>No</td>
+              <td>No</td>
+              <td>Yes</td>
+            </tr>
+            <tr>
+              <td>No account required</td>
+              <td><span class="badge-live">Yes</span></td>
+              <td>Yes</td>
+              <td>Yes</td>
+              <td>Yes</td>
+              <td>Partial</td>
+            </tr>
+            <tr>
+              <td>Mobile-first design</td>
+              <td><span class="badge-live">Yes</span></td>
+              <td>Partial</td>
+              <td>Partial</td>
+              <td>App only</td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td>Share to WhatsApp</td>
+              <td><span class="badge-live">Yes</span></td>
+              <td>No</td>
+              <td>No</td>
+              <td>Native</td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td>Origin / history info</td>
+              <td><span class="badge-live">Yes</span></td>
+              <td>No</td>
+              <td>No</td>
+              <td>No</td>
+              <td>No</td>
+            </tr>
+            <tr>
+              <td>Free to use</td>
+              <td><span class="badge-live">Yes</span></td>
+              <td>Yes</td>
+              <td>Yes</td>
+              <td>Yes</td>
+              <td>Freemium</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Whamr's Edge</h3>
+      <p>Five things Whamr does that no other platform does together: AI natural language search, community knowledge (Discussion + Origin + Variants tabs), a dedicated Naija meme library, sticker pack export for WhatsApp/Telegram/Signal/Discord, and upload with no account required. Any one of these would be a differentiator. Having all five is the product bet.</p>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- 10. BUSINESS MODEL -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <section class="section" id="s10">
+      <div class="section-header">
+        <span class="section-pill">10</span>
+        <h2 class="section-title">Business Model</h2>
+      </div>
+
+      <h3>Free Tier (Current)</h3>
+      <p>Browse, save, share, and download: free, no account, no ads. Upload: free, stored locally (IndexedDB) or to Cloudinary. This is the current state — the full product experience is free with no paywall.</p>
+
+      <h3>Creator Tier (Planned)</h3>
+      <ul class="task-list">
+        <li>Persistent uploads — files stored server-side, not lost when localStorage clears</li>
+        <li>Analytics dashboard — real view, share, and follower data tied to their uploads</li>
+        <li>Creator profile — public page with follower system, meme grid, bio</li>
+        <li>Monetisation tools — donations, tipping, or pay-to-send branded packs</li>
+      </ul>
+
+      <h3>API Tier (Planned)</h3>
+      <ul class="task-list">
+        <li>REST API access to the meme catalog — search, browse, fetch by ID or category</li>
+        <li>Free tier: 100 requests/day — for developers building bots or integrations</li>
+        <li>Pro tier: higher rate limits for production apps (pricing TBD)</li>
+      </ul>
+
+      <h3>Revenue Streams (Planned)</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Stream</th><th>Mechanism</th><th>Stage</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Creator subscriptions</td><td>Monthly fee for persistent storage + analytics</td><td>Phase 3</td></tr>
+            <tr><td>API licensing</td><td>Pro tier API for developers and brands</td><td>Phase 4</td></tr>
+            <tr><td>Branded sticker packs</td><td>Sponsored content — brands pay to feature sticker packs</td><td>Phase 4</td></tr>
+            <tr><td>Creator tips</td><td>Users tip creators directly — Whamr takes a cut</td><td>Phase 3</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-wham">
+        <strong>Current focus.</strong> Revenue is Phase 3+. The immediate goal is getting to 9,128 live items, real user accounts, and server-side persistence. Build the audience before monetising it.
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- 11. BUILD ORDER -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <section class="section" id="s11">
+      <div class="section-header">
+        <span class="section-pill">11</span>
+        <h2 class="section-title">Build Order</h2>
+      </div>
+
+      <div class="phase">
+        <div class="phase-title">
+          Phase 0 — Foundation
+          <span class="phase-badge phase-done">Done</span>
+        </div>
+        <ul class="task-list">
+          <li>19 static HTML mockup screens — all major journeys covered</li>
+          <li>Real media catalog — 8,609 unique items cataloged in JSON</li>
+          <li>AI natural language search — live in script.js</li>
+          <li>Community tabs — Discussion, Origin, Variants in localStorage</li>
+          <li>R2 upload script — node scripts/upload-to-r2.js ready to run</li>
+          <li>9 Fastify microservice schemas written</li>
+          <li>Prisma database schemas written</li>
+        </ul>
+      </div>
+
+      <div class="phase">
+        <div class="phase-title">
+          Phase 1 — MVP
+          <span class="phase-badge phase-next">Next</span>
+        </div>
+        <ul class="task-list">
+          <li>Run R2 upload script → swap Cloudinary URLs → all 9,128 items go live</li>
+          <li>Clerk auth → real user accounts and sessions</li>
+          <li>Server-side favorites and uploads (replace IndexedDB)</li>
+          <li>PWA manifest → add-to-home-screen on mobile</li>
+          <li>Fix dead-ends: Notifications and Messages as real pages not placeholders</li>
+        </ul>
+      </div>
+
+      <div class="phase">
+        <div class="phase-title">
+          Phase 2 — Community
+          <span class="phase-badge phase-later">P1</span>
+        </div>
+        <ul class="task-list">
+          <li>Persist community data server-side — migrate from localStorage to PostgreSQL</li>
+          <li>Dojos with real membership — join, post, battle</li>
+          <li>Push notifications — likes, comments, follows</li>
+          <li>DMs with meme sharing — inline sticker picker in chat</li>
+        </ul>
+      </div>
+
+      <div class="phase">
+        <div class="phase-title">
+          Phase 3 — Creator
+          <span class="phase-badge phase-later">P2</span>
+        </div>
+        <ul class="task-list">
+          <li>Creator dashboard — analytics tied to real share and view data</li>
+          <li>Sticker pack builder — generate actual WhatsApp and Telegram packs</li>
+          <li>Upload moderation — AI content check before publish</li>
+          <li>Meme editor — canvas editor connected to real templates and catalog</li>
+        </ul>
+      </div>
+
+      <div class="phase">
+        <div class="phase-title">
+          Phase 4 — Growth
+          <span class="phase-badge phase-later">Plan 2.0</span>
+        </div>
+        <ul class="task-list">
+          <li>Mobile app — React Native, iOS and Android</li>
+          <li>Meme API — developer access, rate-limited free tier</li>
+          <li>Creator monetisation — subscriptions, tips, branded packs</li>
+          <li>Localised content packs — curated collections by region (West Africa, UK diaspora, etc.)</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- 12. ROLE DEFINITIONS -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <section class="section" id="s12">
+      <div class="section-header">
+        <span class="section-pill">12</span>
+        <h2 class="section-title">Role Definitions</h2>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Role</th>
+              <th>Responsibilities</th>
+              <th>Key Screens / Files</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Product</strong></td>
+              <td>Feature prioritisation, roadmap, success metrics, user research</td>
+              <td>Analytics (12), Admin (13)</td>
+            </tr>
+            <tr>
+              <td><strong>Design</strong></td>
+              <td>Mockup creation, design system, brand identity, component library</td>
+              <td>All 19 screens, brand-guidelines.html</td>
+            </tr>
+            <tr>
+              <td><strong>Frontend</strong></td>
+              <td>Next.js web app, UI components, search UX, infinite scroll</td>
+              <td>src/web-app/ — all pages and components</td>
+            </tr>
+            <tr>
+              <td><strong>Backend</strong></td>
+              <td>Fastify microservices, Prisma schemas, API design, auth integration</td>
+              <td>src/services/ — 9 service directories</td>
+            </tr>
+            <tr>
+              <td><strong>DevOps</strong></td>
+              <td>Cloudflare R2 setup, Vercel deployment, Docker, Kubernetes configs</td>
+              <td>infrastructure/, scripts/upload-to-r2.js</td>
+            </tr>
+            <tr>
+              <td><strong>Content</strong></td>
+              <td>Meme curation, categorisation review, tagging quality, dedup QA</td>
+              <td>catalog-full.json, catalog-memes.json, data/memes.json</td>
+            </tr>
+            <tr>
+              <td><strong>Community</strong></td>
+              <td>Dojos moderation, creator relations, content policy, flagged content review</td>
+              <td>Dojos (10), Admin Dashboard (13)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <strong>Current team structure.</strong> Whamr is in prototype stage — roles above describe the full-team picture as the platform scales. At this stage, one person or a small group covers multiple roles. The most critical immediate roles are Frontend (to ship Phase 1) and DevOps (to run the R2 upload).
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- 13. WRITING STYLE GUIDE -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <section class="section" id="s13">
+      <div class="section-header">
+        <span class="section-pill">13</span>
+        <h2 class="section-title">Writing Style Guide</h2>
+      </div>
+
+      <h3>Brand Rules</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Element</th><th>Correct</th><th>Wrong</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Tagline</td><td>"Send the wham." — lowercase, period included</td><td>"Send The Wham" or "send the wham"</td></tr>
+            <tr><td>Brand name</td><td>Whamr — capital W, lowercase rest</td><td>WHAMR, whamr, "the Whamr"</td></tr>
+            <tr><td>Tone</td><td>Direct, punchy, action verbs. Short sentences.</td><td>Long clauses, passive voice, corporate hedging</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Banned Words</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Banned word</th><th>Use instead</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>seamless</td><td>"simple" or "instant"</td></tr>
+            <tr><td>leverage</td><td>"use"</td></tr>
+            <tr><td>robust</td><td>"solid" or describe specifically what is solid</td></tr>
+            <tr><td>innovative</td><td>Say what is actually new</td></tr>
+            <tr><td>cutting-edge</td><td>Cut it entirely</td></tr>
+            <tr><td>best-in-class</td><td>Cut it entirely</td></tr>
+            <tr><td>world-class</td><td>Cut it entirely</td></tr>
+            <tr><td>next-level</td><td>Cut it entirely</td></tr>
+            <tr><td>ecosystem</td><td>"platform" or describe what the network is</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Good Examples</h3>
+      <div class="example-good">"Find the perfect meme. Send it anywhere. One tap." ✓</div>
+      <div class="example-good">"413 memes ready. More every day." ✓</div>
+      <div class="example-good">"No account. No ads. Just the send." ✓</div>
+      <div class="example-good">"The fastest way to find a Naija meme and send it on WhatsApp." ✓</div>
+      <div class="example-good">"AI search that understands Nigerian slang." ✓</div>
+
+      <h3>Bad Examples</h3>
+      <div class="example-bad">"Whamr leverages cutting-edge AI to deliver a seamless meme experience across a robust ecosystem of platforms." ✗</div>
+      <div class="example-bad">"Our world-class, best-in-class innovative platform takes your meme game to the next level." ✗</div>
+
+      <h3>Voice Notes</h3>
+      <p>Whamr is Naija-aware but globally readable. Use pidgin references where they land naturally — but never as performance. The product speaks to a 19-year-old in Lagos and a 25-year-old in East London with the same directness. Naija culture is the flavour, not the fence.</p>
+      <p>Numbers give confidence. Prefer "413 memes" over "hundreds of memes." Prefer "Share in one tap" over "Share quickly." Specificity is respect for the reader.</p>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- 14. DOMAIN STRATEGY -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <section class="section" id="s14">
+      <div class="section-header">
+        <span class="section-pill">14</span>
+        <h2 class="section-title">Domain Strategy</h2>
+      </div>
+
+      <div class="callout">
+        <strong>whamr.com is taken.</strong> Current deployment runs at <span class="mono">whamr-application.vercel.app</span>. A permanent domain is needed before any marketing push.
+      </div>
+
+      <h3>Top Domain Candidates</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Domain</th>
+              <th>Rationale</th>
+              <th>Verdict</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="mono">jollify.com</td>
+              <td>Action verb, globally readable, connects to joy and celebration — "to jollify" is understood in Naija and diaspora English</td>
+              <td><strong>Top pick</strong></td>
+            </tr>
+            <tr>
+              <td class="mono">whamz.com</td>
+              <td>Closest to Whamr — easy transition for early users, clear brand continuity</td>
+              <td>Strong alternative</td>
+            </tr>
+            <tr>
+              <td class="mono">gbedu.com</td>
+              <td>Yoruba word for music / vibes — deep Naija roots, memorable, short</td>
+              <td>Bold pick</td>
+            </tr>
+            <tr>
+              <td class="mono">memzy.com</td>
+              <td>Generic meme domain — clear category signal, globally understood</td>
+              <td>Safe choice</td>
+            </tr>
+            <tr>
+              <td class="mono">gigly.com</td>
+              <td>Captures the laughter angle — light, global, easy to say</td>
+              <td>Option</td>
+            </tr>
+            <tr>
+              <td class="mono">laffr.com</td>
+              <td>Naija slang "laff" (laugh) in Whamr-style spelling — stays in brand family</td>
+              <td>Option</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Recommendation</h3>
+      <p><strong>jollify.com</strong> is the primary recommendation. It works globally without explanation, it evokes the right feeling (send something that makes them jollify), and it has room to grow beyond memes if the platform expands. <strong>whamz.com</strong> is the backup if brand continuity with "Whamr" matters more.</p>
+
+      <div class="callout callout-wham">
+        <strong>Current links.</strong> GitHub: <span class="mono">github.com/esther123-star/whamr-application</span> · Vercel: <span class="mono">whamr-application.vercel.app</span>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- 15. TECHNICAL ARCHITECTURE -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <section class="section" id="s15">
+      <div class="section-header">
+        <span class="section-pill">15</span>
+        <h2 class="section-title">Technical Architecture</h2>
+      </div>
+
+      <h3>Frontend (Live Prototype)</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Layer</th><th>Technology</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Framework</td><td>Next.js 14, React 18, TypeScript</td><td>App Router — no Pages Router</td></tr>
+            <tr><td>Styling</td><td>TailwindCSS</td><td>Utility-first, custom tokens in tailwind.config</td></tr>
+            <tr><td>Routing</td><td>App Router</td><td>Server and client components mixed</td></tr>
+            <tr><td>Auth</td><td>Clerk</td><td>Integrated in UI — sessions not yet active</td></tr>
+            <tr><td>Static mockups</td><td>Plain HTML / CSS / JS</td><td>No framework — open in browser directly</td></tr>
+            <tr><td>Search</td><td>Custom JS in script.js</td><td>Client-side synonym expansion + fuzzy scoring</td></tr>
+            <tr><td>Storage</td><td>localStorage + IndexedDB</td><td>Favorites and uploads — device-local</td></tr>
+            <tr><td>Hosting</td><td>Vercel</td><td>Continuous deployment from GitHub</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Backend (Schemas Written, Not Deployed)</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Service</th><th>Responsibility</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="mono">api-gateway</td><td>Entry point — auth validation, rate limiting, routing to services</td></tr>
+            <tr><td class="mono">content-service</td><td>Catalog CRUD, search index, category management</td></tr>
+            <tr><td class="mono">user-service</td><td>User profiles, follows, favorites — synced with Clerk</td></tr>
+            <tr><td class="mono">social-service</td><td>Comments, community tabs, DMs, Dojos</td></tr>
+            <tr><td class="mono">media-processing</td><td>Upload pipeline — resize, thumbnail, format conversion</td></tr>
+            <tr><td class="mono">ai-service</td><td>Search scoring, auto-categorisation, duplicate detection</td></tr>
+            <tr><td class="mono">analytics-service</td><td>View tracking, share events, creator dashboard data</td></tr>
+            <tr><td class="mono">distribution</td><td>Share link generation, OG metadata, CDN cache control</td></tr>
+            <tr><td class="mono">meme-editor</td><td>Canvas API server-side render, template management</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Infrastructure Stack</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Component</th><th>Technology</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Database</td><td>PostgreSQL + Prisma ORM</td><td>Schemas written, not deployed</td></tr>
+            <tr><td>Cache</td><td>Redis</td><td>Planned for Phase 1</td></tr>
+            <tr><td>Queue</td><td>RabbitMQ</td><td>Planned for async upload processing</td></tr>
+            <tr><td>Media CDN (current)</td><td>Cloudinary (413 items)</td><td><span class="badge-live">Live</span></td></tr>
+            <tr><td>Media CDN (planned)</td><td>Cloudflare R2 (9,128 items)</td><td><span class="badge-ready">Script ready</span></td></tr>
+            <tr><td>Container</td><td>Docker</td><td>Configs written in infrastructure/</td></tr>
+            <tr><td>Orchestration</td><td>Kubernetes</td><td>Configs written in infrastructure/</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>R2 Migration Path</h3>
+      <div class="code">
+<span class="c"># Run once to migrate all 9,128 files to Cloudflare R2</span>
+<span class="k">node</span> scripts/upload-to-r2.js
+
+<span class="c"># Script does:</span>
+<span class="c"># 1. Reads catalog-full.json</span>
+<span class="c"># 2. Uploads each file to R2 bucket</span>
+<span class="c"># 3. Writes updated URLs back to catalog-full.json</span>
+<span class="c"># 4. All 9,128 items become publicly accessible</span>
+<span class="c"># 5. Zero egress cost on Cloudflare free tier</span>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- 16. DECISION LOG -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <section class="section" id="s16">
+      <div class="section-header">
+        <span class="section-pill">16</span>
+        <h2 class="section-title">Decision Log</h2>
+      </div>
+
+      <p>Key architectural and product decisions made during development — recorded here so the team understands not just what was built, but why.</p>
+
+      <div class="decision">
+        <div class="decision-num">01</div>
+        <div class="decision-body">
+          <strong>Static HTML mockups over framework prototypes</strong>
+          <p>All 19 screens are plain HTML/CSS/JS — no Node server, no bundler. Anyone can open them in a browser from a file path. Faster iteration for design review, easier to share with stakeholders who are not technical, and zero environment setup friction.</p>
+        </div>
+      </div>
+
+      <div class="decision">
+        <div class="decision-num">02</div>
+        <div class="decision-body">
+          <strong>Cloudinary → Cloudflare R2 migration planned</strong>
+          <p>Cloudinary's free tier caps egress at 25 GB/month. Cloudflare R2 has zero egress fees. The entire 9,128-file library (~9 GB) fits in R2's 10 GB free tier. The upload script is written and ready — this migration is the single highest-leverage task to unlock the full catalog.</p>
+        </div>
+      </div>
+
+      <div class="decision">
+        <div class="decision-num">03</div>
+        <div class="decision-body">
+          <strong>AI search in script.js, not a backend API</strong>
+          <p>Prototype speed. Client-side synonym expansion and fuzzy scoring works well for 413 items and is still usable at 8,609. No API latency, no server cost. At 10k+ items the in-memory scan becomes slow — migrate to Meilisearch or Algolia then.</p>
+        </div>
+      </div>
+
+      <div class="decision">
+        <div class="decision-num">04</div>
+        <div class="decision-body">
+          <strong>localStorage for community data</strong>
+          <p>No backend yet. localStorage gives instant persistence without a database. The data structure (keyed by meme ID) is designed to migrate directly to server-side PostgreSQL rows when Clerk auth goes live. The migration path is deliberate.</p>
+        </div>
+      </div>
+
+      <div class="decision">
+        <div class="decision-num">05</div>
+        <div class="decision-body">
+          <strong>Catalog generated from filenames, not visual analysis</strong>
+          <p>Extracting meaningful tags from video frames requires expensive ML infrastructure (a vision model, GPU time, API costs). Filename keyword matching gives ~80% accuracy for categorisation at this scale for free. Good enough for prototype — improve with human review or a vision API when the catalog is live and the audience is real.</p>
+        </div>
+      </div>
+
+      <div class="decision">
+        <div class="decision-num">06</div>
+        <div class="decision-body">
+          <strong>19 mockup screens — covering all core user journeys</strong>
+          <p>The screen list was designed to cover every user journey: discover → view → share → create → upload → community → admin → mobile. 19 screens is comprehensive without being excessive. Each screen is designed to stand alone so stakeholders can review individual journeys without needing the full flow.</p>
+        </div>
+      </div>
+
+      <div class="decision">
+        <div class="decision-num">07</div>
+        <div class="decision-body">
+          <strong>Naija content as primary differentiator</strong>
+          <p>No major meme platform prioritises Nigerian or African content. Giphy and Tenor have minimal Naija coverage — largely what gets uploaded by individuals. Whamr has a dedicated Naija category, Naija-aware synonym expansion in the AI search, and a library built around real Nigerian cultural moments. This is the defensible position no Western platform can replicate quickly.</p>
+        </div>
+      </div>
+
+      <div class="decision">
+        <div class="decision-num">08</div>
+        <div class="decision-body">
+          <strong>whamr.com domain taken — running on Vercel subdomain</strong>
+          <p>The current <span class="mono">whamr-application.vercel.app</span> URL is fine for prototype and stakeholder review but not for any public launch. Domain decision should happen before Phase 1 ships. Top candidates are jollify.com (globally brandable) and whamz.com (brand continuity).</p>
+        </div>
+      </div>
+
+      <div class="decision">
+        <div class="decision-num">09</div>
+        <div class="decision-body">
+          <strong>Dual design system — dark theme on live site, warm theme on mockups</strong>
+          <p>The live Next.js site uses a dark theme (<span class="mono">#0a0a0f</span>) that matches Clerk's dark modal aesthetic. The static HTML mockups use the warm sunset palette (<span class="mono">#FFFAF5</span> + <span class="mono">#FF4500</span>). Both are intentional. The dark theme suits signed-in product screens. The warm theme suits discovery, marketing, and design review.</p>
+        </div>
+      </div>
+
+      <div class="decision">
+        <div class="decision-num">10</div>
+        <div class="decision-body">
+          <strong>IntersectionObserver for infinite scroll, no pagination library</strong>
+          <p>No external dependency, no bundle weight, works in all modern browsers. 24 items per page keeps initial load fast. The sentinel div is placed 300px before the viewport edge — this early trigger means the next batch loads before the user reaches the bottom, so scroll feels instant. Simple, fast, and zero maintenance.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <strong>Whamr</strong> Team Brief · v2.1 · May 2026 · whamr-application.vercel.app
+</footer>
+
+</body>
+</html>
