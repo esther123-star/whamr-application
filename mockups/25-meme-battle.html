@@ -1,0 +1,647 @@
+<!-- FILE: 25-meme-battle.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meme Battles · Whamr</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#FFFAF5; --bg-alt:#FFF3E8; --card:#FFFFFF;
+  --ink:#1A0F00; --ink-soft:#4A3020; --ink-mute:#8A7060;
+  --line:#F0DDD0; --line-soft:#FBF0E8;
+  --purple:#FF4500; --purple-mid:#FF6B35; --purple-dark:#CC3700;
+  --purple-soft:#FFF1EC;
+  --wham:#FFB800; --wham-soft:#FFF8DC;
+  --green:#00C853;
+  --gray-100:#F3F4F6; --gray-400:#9CA3AF; --gray-500:#6B7280; --gray-700:#374151;
+  /* Extended */
+  --purple-bright:#FF8C60; --purple-xsoft:#FFF8F5;
+  --green-soft:#E8FFF0; --red:#FF2D55; --red-soft:#FFF0F3;
+  --gray-50:#F9FAFB; --gray-200:#E5E7EB; --gray-900:#111827;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;font-size:15px;background:var(--bg);color:var(--ink);line-height:1.6}
+a{text-decoration:none;color:inherit}
+img{display:block}
+
+/* ANNOUNCEMENT BAR */
+.announce{background:linear-gradient(90deg,var(--purple-dark),var(--purple-mid));padding:9px 24px;text-align:center;font-size:13px;color:rgba(255,255,255,0.95);font-weight:500;letter-spacing:0.01em}
+.announce a{color:#FDE68A;font-weight:600;text-decoration:underline;text-underline-offset:2px}
+
+/* NAV */
+.nav{height:64px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 32px;gap:0;position:sticky;top:0;z-index:100}
+.nav-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.04em;color:var(--purple);margin-right:36px;flex-shrink:0}
+.nav-logo span{color:var(--wham)}
+.nav-links{display:flex;align-items:center;gap:2px;flex:1}
+.nav-link{font-size:14px;font-weight:500;color:var(--gray-700);padding:6px 12px;border-radius:8px;transition:background 0.15s,color 0.15s}
+.nav-link:hover,.nav-link.active{background:var(--purple-soft);color:var(--purple)}
+.nav-link.active{font-weight:600}
+.nav-search{flex:0 0 260px;position:relative;margin:0 16px}
+.nav-search input{width:100%;padding:8px 16px 8px 38px;border:1.5px solid var(--line);border-radius:100px;font-family:'Inter',sans-serif;font-size:13px;color:var(--ink);background:var(--bg-alt);outline:none}
+.nav-search input:focus{border-color:var(--purple);background:#fff}
+.nav-search input::placeholder{color:var(--gray-400)}
+.nav-search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--gray-400)}
+.nav-actions{display:flex;align-items:center;gap:8px}
+.nav-icon{width:36px;height:36px;border-radius:8px;background:var(--purple-xsoft);border:1px solid var(--line-soft);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;position:relative}
+.nav-badge{position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;font-size:9px;font-weight:700;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #fff;font-family:'JetBrains Mono',monospace}
+.nav-badge.blue{background:#3B82F6}
+.nav-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#1A0F00,#FF6B35);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;cursor:pointer;flex-shrink:0;font-family:'Space Grotesk',sans-serif}
+
+/* PAGE LAYOUT */
+.page-wrap{max-width:1200px;margin:0 auto;padding:32px 32px 64px}
+
+/* HERO BATTLE CARD */
+.hero-battle{background:linear-gradient(135deg,#1A0F00 0%,#3D1A00 40%,#CC3700 100%);border-radius:20px;padding:40px;margin-bottom:32px;position:relative;overflow:hidden}
+.hero-battle::before{content:'';position:absolute;top:-80px;right:-80px;width:320px;height:320px;border-radius:50%;background:rgba(255,180,0,0.08)}
+.hero-battle::after{content:'';position:absolute;bottom:-60px;left:20%;width:280px;height:280px;border-radius:50%;background:rgba(255,69,0,0.10)}
+.battle-live-badge{display:inline-flex;align-items:center;gap:6px;background:var(--red);color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:100px;letter-spacing:0.08em;margin-bottom:16px;position:relative;z-index:1;animation:pulse-badge 1.5s ease-in-out infinite}
+@keyframes pulse-badge{0%,100%{box-shadow:0 0 0 0 rgba(255,45,85,0.7)}50%{box-shadow:0 0 0 8px rgba(255,45,85,0)}}
+.battle-live-badge .dot{width:7px;height:7px;border-radius:50%;background:#fff;animation:pulse-dot 1.5s ease-in-out infinite}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:0.4}}
+.hero-battle-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:36px;color:#fff;letter-spacing:-0.02em;line-height:1.1;margin-bottom:8px;position:relative;z-index:1}
+.hero-battle-sub{font-size:14px;color:rgba(255,255,255,0.65);margin-bottom:28px;position:relative;z-index:1}
+.hero-battle-meta{display:flex;align-items:center;gap:32px;position:relative;z-index:1;flex-wrap:wrap}
+.timer-wrap{display:flex;flex-direction:column;gap:4px}
+.timer-label{font-size:11px;color:rgba(255,255,255,0.5);font-weight:600;letter-spacing:0.06em;text-transform:uppercase}
+.timer-display{font-family:'JetBrains Mono',monospace;font-size:42px;font-weight:600;color:#fff;letter-spacing:0.04em;line-height:1}
+.timer-display span{color:var(--wham)}
+.vote-count-hero{display:flex;flex-direction:column;gap:4px}
+.vote-count-hero .label{font-size:11px;color:rgba(255,255,255,0.5);font-weight:600;letter-spacing:0.06em;text-transform:uppercase}
+.vote-count-hero .value{font-family:'JetBrains Mono',monospace;font-size:32px;font-weight:600;color:#fff}
+.hero-progress-wrap{margin-top:24px;position:relative;z-index:1}
+.hero-progress-label{display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:8px}
+.hero-progress-bar{height:6px;background:rgba(255,255,255,0.15);border-radius:100px;overflow:hidden}
+.hero-progress-fill{height:100%;background:linear-gradient(90deg,var(--wham),var(--purple-mid));border-radius:100px;width:67%}
+
+/* MAIN + SIDEBAR LAYOUT */
+.battle-main{display:grid;grid-template-columns:1fr 340px;gap:28px;align-items:start}
+@media(max-width:900px){.battle-main{grid-template-columns:1fr}}
+
+/* ARENA */
+.section-label{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;color:var(--ink);letter-spacing:-0.01em;margin-bottom:16px}
+.battle-arena{background:#fff;border:1px solid var(--line);border-radius:16px;padding:28px;margin-bottom:24px}
+.arena-grid{display:grid;grid-template-columns:1fr 56px 1fr;gap:0;align-items:center}
+.vs-badge{width:56px;height:56px;border-radius:50%;background:var(--purple);color:#fff;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;display:flex;align-items:center;justify-content:center;align-self:center;flex-shrink:0;box-shadow:0 4px 16px rgba(255,69,0,0.35)}
+.meme-vote-card{background:var(--bg);border:2px solid var(--line);border-radius:14px;padding:20px;transition:border-color .2s}
+.meme-vote-card.leading{border-color:var(--purple-mid)}
+.meme-vote-card-img{width:100%;aspect-ratio:1;border-radius:10px;overflow:hidden;margin-bottom:14px;background:var(--gray-100)}
+.meme-vote-card-img img{width:100%;height:100%;object-fit:cover}
+.meme-vote-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;color:var(--ink);margin-bottom:3px}
+.meme-vote-tag{font-size:12px;color:var(--ink-mute);margin-bottom:4px}
+.meme-vote-by{font-size:12px;color:var(--gray-500);margin-bottom:14px}
+.meme-vote-by a{color:var(--purple);font-weight:600}
+.btn-vote{display:block;width:100%;padding:12px 0;border-radius:10px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;letter-spacing:0.01em;border:2px solid var(--purple);cursor:pointer;text-align:center;transition:all .15s}
+.btn-vote.filled{background:var(--purple);color:#fff}
+.btn-vote.filled:hover{background:var(--purple-dark)}
+.btn-vote.outline{background:transparent;color:var(--purple)}
+.btn-vote.outline:hover{background:var(--purple-soft)}
+.vote-bar-wrap{margin-top:14px}
+.vote-bar-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:6px}
+.vote-pct{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:13px;color:var(--purple)}
+.vote-count-sm{color:var(--gray-500)}
+.vote-bar{height:6px;background:var(--gray-100);border-radius:100px;overflow:hidden}
+.vote-bar-fill-orange{height:100%;background:var(--purple-mid);border-radius:100px}
+.vote-bar-fill-amber{height:100%;background:var(--wham);border-radius:100px}
+.voted-state{margin-top:16px;padding:10px 16px;background:var(--green-soft);border:1px solid var(--green);border-radius:10px;font-size:13px;font-weight:600;color:#007A33;text-align:center}
+
+/* ACTIVITY FEED */
+.activity-feed{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;height:fit-content}
+.activity-feed-header{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;color:var(--ink);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.live-dot{width:8px;height:8px;border-radius:50%;background:var(--red);animation:pulse-dot 1.5s ease-in-out infinite;flex-shrink:0}
+.activity-feed-sub{font-size:12px;color:var(--gray-500);margin-bottom:16px}
+.activity-list{display:flex;flex-direction:column;gap:0}
+.activity-item{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--line-soft)}
+.activity-item:last-child{border-bottom:none}
+.activity-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--purple-mid),var(--wham));flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;font-family:'Space Grotesk',sans-serif}
+.activity-text{flex:1;font-size:12px;color:var(--ink-soft);line-height:1.4}
+.activity-text strong{color:var(--purple);font-weight:600}
+.activity-text em{font-style:normal;color:var(--ink);font-weight:500}
+.activity-time{font-size:11px;color:var(--gray-400);font-family:'JetBrains Mono',monospace;white-space:nowrap;margin-top:1px}
+
+/* BATTLE LIST */
+.battles-section{margin-bottom:32px}
+.filter-tabs{display:flex;gap:4px;margin-bottom:20px;border-bottom:1px solid var(--line);padding-bottom:0}
+.filter-tab{padding:8px 18px;border-radius:8px 8px 0 0;font-size:13px;font-weight:600;cursor:pointer;border:1px solid transparent;border-bottom:none;color:var(--gray-500);background:transparent;transition:all .15s;font-family:'Inter',sans-serif;margin-bottom:-1px}
+.filter-tab.active{background:#fff;color:var(--purple);border-color:var(--line);border-bottom-color:#fff}
+.filter-tab:hover:not(.active){color:var(--ink);background:var(--bg-alt)}
+.battle-list{display:flex;flex-direction:column;gap:12px;margin-bottom:20px}
+.battle-row{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:16px;transition:border-color .15s,box-shadow .15s;cursor:pointer}
+.battle-row:hover{border-color:var(--purple-mid);box-shadow:0 2px 12px rgba(255,69,0,0.08)}
+.battle-row-emoji{font-size:28px;flex-shrink:0;width:44px;text-align:center}
+.battle-row-info{flex:1;min-width:0}
+.battle-row-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:var(--ink);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.battle-row-meta{font-size:12px;color:var(--gray-500)}
+.battle-row-meta span{margin-right:12px}
+.battle-row-meta .dojo-tag{color:var(--purple);font-weight:500}
+.battle-row-stats{text-align:right;flex-shrink:0}
+.battle-row-votes{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:var(--ink);display:block}
+.battle-row-time{font-size:12px;color:var(--gray-500)}
+.battle-row-time.live{color:var(--red);font-weight:600}
+.battle-status-badge{display:inline-block;padding:3px 10px;border-radius:100px;font-size:10px;font-weight:700;letter-spacing:0.06em;margin-left:8px}
+.badge-live{background:var(--red-soft);color:var(--red)}
+.badge-upcoming{background:var(--wham-soft);color:#7A4F00}
+.badge-ended{background:var(--gray-100);color:var(--gray-500)}
+.section-divider{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;color:var(--gray-500);letter-spacing:0.06em;text-transform:uppercase;margin:20px 0 12px;padding:0 4px}
+
+/* CREATE BATTLE SECTION */
+.create-section{background:#fff;border:1px solid var(--line);border-radius:16px;padding:28px;margin-bottom:32px}
+.create-section-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;color:var(--ink);margin-bottom:4px}
+.create-section-sub{font-size:14px;color:var(--gray-500);margin-bottom:24px}
+.form-row{margin-bottom:20px}
+.form-label{font-size:13px;font-weight:600;color:var(--ink-soft);margin-bottom:8px;display:block}
+.form-select{width:100%;padding:11px 16px;border:1.5px solid var(--line);border-radius:10px;font-size:14px;font-family:'Inter',sans-serif;color:var(--ink);background:#fff;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238A7060' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+.form-select:focus{border-color:var(--purple)}
+.form-input{width:100%;padding:11px 16px;border:1.5px solid var(--line);border-radius:10px;font-size:14px;font-family:'Inter',sans-serif;color:var(--ink);background:#fff;outline:none}
+.form-input:focus{border-color:var(--purple)}
+.form-input::placeholder{color:var(--gray-400)}
+.meme-picker-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:4px}
+.meme-picker-thumb{aspect-ratio:1;border-radius:8px;overflow:hidden;background:var(--gray-100);cursor:pointer;border:2px solid transparent;transition:border-color .15s;position:relative}
+.meme-picker-thumb img{width:100%;height:100%;object-fit:cover}
+.meme-picker-thumb.selected{border-color:var(--purple)}
+.meme-picker-thumb.selected::after{content:'✓';position:absolute;top:4px;right:4px;background:var(--purple);color:#fff;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;line-height:18px;text-align:center}
+.duration-radios{display:flex;gap:8px;flex-wrap:wrap}
+.duration-radio{flex:1;min-width:60px}
+.duration-radio input{display:none}
+.duration-radio label{display:block;text-align:center;padding:9px 12px;border:1.5px solid var(--line);border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;color:var(--ink-mute);transition:all .15s;font-family:'Inter',sans-serif}
+.duration-radio input:checked + label{background:var(--purple);color:#fff;border-color:var(--purple)}
+.duration-radio label:hover{border-color:var(--purple-mid);color:var(--purple)}
+.btn-start-battle{display:block;width:100%;padding:14px;background:var(--purple);color:#fff;font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;border-radius:12px;border:none;cursor:pointer;letter-spacing:0.01em;transition:background .15s}
+.btn-start-battle:hover{background:var(--purple-dark)}
+.two-col-form{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:700px){.two-col-form{grid-template-columns:1fr}}
+
+/* HALL OF FAME */
+.hof-section{margin-bottom:32px}
+.hof-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:700px){.hof-grid{grid-template-columns:1fr}}
+.hof-card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;transition:box-shadow .15s}
+.hof-card:hover{box-shadow:0 4px 20px rgba(26,15,0,0.10)}
+.hof-card-img{position:relative;aspect-ratio:4/3;background:var(--gray-100)}
+.hof-card-img img{width:100%;height:100%;object-fit:cover}
+.winner-badge{position:absolute;top:10px;left:10px;background:var(--wham);color:#1A0F00;font-size:10px;font-weight:800;padding:4px 10px;border-radius:100px;letter-spacing:0.06em;text-transform:uppercase}
+.hof-card-body{padding:14px 16px}
+.hof-card-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;color:var(--ink);margin-bottom:4px}
+.hof-card-meta{font-size:12px;color:var(--gray-500);margin-bottom:10px}
+.hof-card-votes{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--purple);margin-bottom:10px}
+.btn-replay{display:inline-block;font-size:12px;font-weight:600;color:var(--purple);padding:6px 14px;border:1.5px solid var(--purple-soft);border-radius:7px;background:var(--purple-soft);transition:all .15s}
+.btn-replay:hover{background:var(--purple);color:#fff;border-color:var(--purple)}
+
+/* FOOTER */
+.footer{background:#1A0F00;color:rgba(255,255,255,0.5);padding:32px;text-align:center;font-size:13px;margin-top:64px}
+.footer a{color:rgba(255,255,255,0.7);font-weight:600}
+.footer-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;color:#fff;letter-spacing:-0.04em;margin-bottom:10px}
+</style>
+</head>
+<body>
+
+<!-- ANNOUNCEMENT BAR -->
+<div class="announce">
+  #NaijaBattle is live · 3,241 votes cast · 47 minutes left 🔥
+  &nbsp;·&nbsp; <a href="#">Join the vote</a>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="01-landing.html" class="nav-logo">whamr<span>.</span></a>
+  <div class="nav-links">
+    <a href="01-landing.html" class="nav-link">Home</a>
+    <a href="02-memes-browser.html" class="nav-link">Memes</a>
+    <a href="06-explore.html" class="nav-link">Explore</a>
+    <a href="10-dojos.html" class="nav-link active">Dojos</a>
+    <a href="12-analytics.html" class="nav-link">Creator</a>
+  </div>
+  <div class="nav-search">
+    <span class="nav-search-icon">🔍</span>
+    <input type="text" placeholder="Search battles...">
+  </div>
+  <div class="nav-actions">
+    <a href="08-notifications.html" class="nav-icon">
+      🔔
+      <span class="nav-badge">4</span>
+    </a>
+    <a href="09-messages.html" class="nav-icon">
+      💬
+      <span class="nav-badge blue">2</span>
+    </a>
+    <a href="07-user-profile.html" class="nav-avatar">O</a>
+  </div>
+</nav>
+
+<!-- PAGE BODY -->
+<div class="page-wrap">
+
+  <!-- HERO BATTLE -->
+  <div class="hero-battle">
+    <div class="battle-live-badge">
+      <span class="dot"></span>
+      BATTLE LIVE
+    </div>
+    <div class="hero-battle-title">🇳🇬 Naija Reactions Showdown</div>
+    <div class="hero-battle-sub">Naija Meme HQ Dojo · Started 2h 41m ago · 47 min remaining</div>
+    <div class="hero-battle-meta">
+      <div class="timer-wrap">
+        <div class="timer-label">Time Remaining</div>
+        <div class="timer-display">00 <span>:</span> 47 <span>:</span> 23</div>
+      </div>
+      <div class="vote-count-hero">
+        <div class="label">Votes Cast</div>
+        <div class="value">3,241</div>
+      </div>
+    </div>
+    <div class="hero-progress-wrap">
+      <div class="hero-progress-label">
+        <span>Battle started</span>
+        <span>47 min left</span>
+        <span>Ends</span>
+      </div>
+      <div class="hero-progress-bar">
+        <div class="hero-progress-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN + SIDEBAR -->
+  <div class="battle-main">
+    <div>
+
+      <!-- BATTLE ARENA -->
+      <div class="section-label">Battle Arena</div>
+      <div class="battle-arena">
+        <div class="arena-grid">
+
+          <!-- LEFT CARD — LEADING -->
+          <div class="meme-vote-card leading">
+            <div class="meme-vote-card-img">
+              <img src="https://picsum.photos/seed/n1/300/300" alt="5000 Naira Pawpaw">
+            </div>
+            <div class="meme-vote-title">5000 Naira Pawpaw</div>
+            <div class="meme-vote-tag">Naija · Reaction</div>
+            <div class="meme-vote-by">by <a href="07-user-profile.html">@naijacontent</a></div>
+            <button class="btn-vote filled">VOTE 👈</button>
+            <div class="vote-bar-wrap">
+              <div class="vote-bar-row">
+                <span class="vote-pct">54%</span>
+                <span class="vote-count-sm">1,750 votes</span>
+              </div>
+              <div class="vote-bar">
+                <div class="vote-bar-fill-orange" style="width:54%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- VS -->
+          <div style="display:flex;justify-content:center">
+            <div class="vs-badge">VS</div>
+          </div>
+
+          <!-- RIGHT CARD — TRAILING -->
+          <div class="meme-vote-card">
+            <div class="meme-vote-card-img">
+              <img src="https://picsum.photos/seed/n2/300/300" alt="Can I See You Mr Ibu">
+            </div>
+            <div class="meme-vote-title">Can I See You Mr Ibu</div>
+            <div class="meme-vote-tag">Naija · Classic</div>
+            <div class="meme-vote-by">by <a href="07-user-profile.html">@memequeen</a></div>
+            <button class="btn-vote outline">VOTE 👉</button>
+            <div class="vote-bar-wrap">
+              <div class="vote-bar-row">
+                <span class="vote-pct" style="color:var(--wham)">46%</span>
+                <span class="vote-count-sm">1,491 votes</span>
+              </div>
+              <div class="vote-bar">
+                <div class="vote-bar-fill-amber" style="width:46%"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- VOTED STATE -->
+        <div class="voted-state">
+          You voted: 5000 Naira Pawpaw ✓
+        </div>
+      </div>
+
+      <!-- ALL BATTLES -->
+      <div class="battles-section">
+        <div class="section-label">All Battles</div>
+        <div class="filter-tabs">
+          <button class="filter-tab active">Active <span style="opacity:0.6;font-weight:500">(3)</span></button>
+          <button class="filter-tab">Upcoming <span style="opacity:0.6;font-weight:500">(2)</span></button>
+          <button class="filter-tab">Ended <span style="opacity:0.6;font-weight:500">(12)</span></button>
+        </div>
+
+        <div class="section-divider">Active Now</div>
+        <div class="battle-list">
+          <div class="battle-row">
+            <div class="battle-row-emoji">🇳🇬</div>
+            <div class="battle-row-info">
+              <div class="battle-row-title">Naija Reactions Showdown <span class="battle-status-badge badge-live">LIVE</span></div>
+              <div class="battle-row-meta">
+                <span class="dojo-tag">Naija Meme HQ</span>
+                <span>3,241 votes</span>
+              </div>
+            </div>
+            <div class="battle-row-stats">
+              <span class="battle-row-votes">3,241</span>
+              <span class="battle-row-time live">47 min left</span>
+            </div>
+          </div>
+          <div class="battle-row">
+            <div class="battle-row-emoji">💃</div>
+            <div class="battle-row-info">
+              <div class="battle-row-title">Best Dance Clip <span class="battle-status-badge badge-live">LIVE</span></div>
+              <div class="battle-row-meta">
+                <span class="dojo-tag">Dance & Vibes Dojo</span>
+                <span>1,847 votes</span>
+              </div>
+            </div>
+            <div class="battle-row-stats">
+              <span class="battle-row-votes">1,847</span>
+              <span class="battle-row-time live">2h 13m left</span>
+            </div>
+          </div>
+          <div class="battle-row">
+            <div class="battle-row-emoji">😂</div>
+            <div class="battle-row-info">
+              <div class="battle-row-title">LOL Championship Round 3 <span class="battle-status-badge badge-live">LIVE</span></div>
+              <div class="battle-row-meta">
+                <span class="dojo-tag">Global</span>
+                <span>5,102 votes</span>
+              </div>
+            </div>
+            <div class="battle-row-stats">
+              <span class="battle-row-votes">5,102</span>
+              <span class="battle-row-time live">8h left</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-divider">Upcoming</div>
+        <div class="battle-list">
+          <div class="battle-row">
+            <div class="battle-row-emoji">😔</div>
+            <div class="battle-row-info">
+              <div class="battle-row-title">Saddest Meme Ever <span class="battle-status-badge badge-upcoming">UPCOMING</span></div>
+              <div class="battle-row-meta">
+                <span class="dojo-tag">Football Meme FC</span>
+                <span>Invite-only</span>
+              </div>
+            </div>
+            <div class="battle-row-stats">
+              <span class="battle-row-votes" style="color:var(--gray-400)">—</span>
+              <span class="battle-row-time">Starts in 3h</span>
+            </div>
+          </div>
+          <div class="battle-row">
+            <div class="battle-row-emoji">⚽</div>
+            <div class="battle-row-info">
+              <div class="battle-row-title">Sports Reactions <span class="battle-status-badge badge-upcoming">UPCOMING</span></div>
+              <div class="battle-row-meta">
+                <span class="dojo-tag">Open dojo</span>
+                <span>Anyone can join</span>
+              </div>
+            </div>
+            <div class="battle-row-stats">
+              <span class="battle-row-votes" style="color:var(--gray-400)">—</span>
+              <span class="battle-row-time">Tomorrow 12:00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CREATE A BATTLE -->
+      <div class="create-section">
+        <div class="create-section-title">⚔️ Create a Battle</div>
+        <div class="create-section-sub">Pick two memes, set a duration, and let the Dojo decide.</div>
+
+        <div class="form-row">
+          <label class="form-label">Dojo</label>
+          <select class="form-select">
+            <option selected>Naija Meme HQ</option>
+            <option>Dance & Vibes Dojo</option>
+            <option>Football Meme FC</option>
+            <option>Global</option>
+          </select>
+        </div>
+
+        <div class="two-col-form">
+          <div class="form-row" style="margin-bottom:0">
+            <label class="form-label">Choose Meme A</label>
+            <div class="meme-picker-grid">
+              <div class="meme-picker-thumb selected">
+                <img src="https://picsum.photos/seed/p1/80/80" alt="">
+              </div>
+              <div class="meme-picker-thumb">
+                <img src="https://picsum.photos/seed/p2/80/80" alt="">
+              </div>
+              <div class="meme-picker-thumb">
+                <img src="https://picsum.photos/seed/p3/80/80" alt="">
+              </div>
+              <div class="meme-picker-thumb">
+                <img src="https://picsum.photos/seed/p4/80/80" alt="">
+              </div>
+              <div class="meme-picker-thumb">
+                <img src="https://picsum.photos/seed/p5/80/80" alt="">
+              </div>
+              <div class="meme-picker-thumb">
+                <img src="https://picsum.photos/seed/p6/80/80" alt="">
+              </div>
+            </div>
+          </div>
+          <div class="form-row" style="margin-bottom:0">
+            <label class="form-label">Choose Meme B</label>
+            <div class="meme-picker-grid">
+              <div class="meme-picker-thumb">
+                <img src="https://picsum.photos/seed/q1/80/80" alt="">
+              </div>
+              <div class="meme-picker-thumb selected">
+                <img src="https://picsum.photos/seed/q2/80/80" alt="">
+              </div>
+              <div class="meme-picker-thumb">
+                <img src="https://picsum.photos/seed/q3/80/80" alt="">
+              </div>
+              <div class="meme-picker-thumb">
+                <img src="https://picsum.photos/seed/q4/80/80" alt="">
+              </div>
+              <div class="meme-picker-thumb">
+                <img src="https://picsum.photos/seed/q5/80/80" alt="">
+              </div>
+              <div class="meme-picker-thumb">
+                <img src="https://picsum.photos/seed/q6/80/80" alt="">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row" style="margin-top:20px">
+          <label class="form-label">Duration</label>
+          <div class="duration-radios">
+            <div class="duration-radio">
+              <input type="radio" name="duration" id="d1h" value="1h">
+              <label for="d1h">1h</label>
+            </div>
+            <div class="duration-radio">
+              <input type="radio" name="duration" id="d3h" value="3h">
+              <label for="d3h">3h</label>
+            </div>
+            <div class="duration-radio">
+              <input type="radio" name="duration" id="d6h" value="6h" checked>
+              <label for="d6h">6h</label>
+            </div>
+            <div class="duration-radio">
+              <input type="radio" name="duration" id="d24h" value="24h">
+              <label for="d24h">24h</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label class="form-label">Battle Title</label>
+          <input type="text" class="form-input" placeholder="Battle title...">
+        </div>
+
+        <button class="btn-start-battle">⚔️ Start Battle</button>
+      </div>
+
+      <!-- HALL OF FAME -->
+      <div class="hof-section">
+        <div class="section-label">🏆 Hall of Fame — Past Winners</div>
+        <div class="hof-grid">
+          <div class="hof-card">
+            <div class="hof-card-img">
+              <img src="https://picsum.photos/seed/hof1/400/300" alt="Winner">
+              <div class="winner-badge">Winner</div>
+            </div>
+            <div class="hof-card-body">
+              <div class="hof-card-title">5000 Naira Pawpaw</div>
+              <div class="hof-card-meta">🇳🇬 Naija Reactions — May 10</div>
+              <div class="hof-card-votes">4,812 final votes · 62%</div>
+              <a href="03-meme-detail.html" class="btn-replay">Watch replay →</a>
+            </div>
+          </div>
+          <div class="hof-card">
+            <div class="hof-card-img">
+              <img src="https://picsum.photos/seed/hof2/400/300" alt="Winner">
+              <div class="winner-badge">Winner</div>
+            </div>
+            <div class="hof-card-body">
+              <div class="hof-card-title">Shaku Shaku Champion</div>
+              <div class="hof-card-meta">💃 Best Dance Clip — May 8</div>
+              <div class="hof-card-votes">2,310 final votes · 71%</div>
+              <a href="03-meme-detail.html" class="btn-replay">Watch replay →</a>
+            </div>
+          </div>
+          <div class="hof-card">
+            <div class="hof-card-img">
+              <img src="https://picsum.photos/seed/hof3/400/300" alt="Winner">
+              <div class="winner-badge">Winner</div>
+            </div>
+            <div class="hof-card-body">
+              <div class="hof-card-title">This Is Lagos Reaction</div>
+              <div class="hof-card-meta">😂 LOL Championship R2 — May 6</div>
+              <div class="hof-card-votes">6,901 final votes · 58%</div>
+              <a href="03-meme-detail.html" class="btn-replay">Watch replay →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /left col -->
+
+    <!-- RIGHT SIDEBAR — ACTIVITY FEED -->
+    <div>
+      <div class="activity-feed">
+        <div class="activity-feed-header">
+          <span class="live-dot"></span>
+          Live Activity
+        </div>
+        <div class="activity-feed-sub">Votes rolling in for #NaijaBattle</div>
+        <div class="activity-list">
+          <div class="activity-item">
+            <div class="activity-avatar">DK</div>
+            <div class="activity-text"><strong>@danceking</strong> voted for <em>5000 Naira Pawpaw</em></div>
+            <div class="activity-time">2s ago</div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-avatar" style="background:linear-gradient(135deg,#007AFF,#00C853)">LM</div>
+            <div class="activity-text"><strong>@laughmaster</strong> voted for <em>Mr Ibu</em></div>
+            <div class="activity-time">4s ago</div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-avatar" style="background:linear-gradient(135deg,#CC3700,#FFB800)">SV</div>
+            <div class="activity-text"><strong>@sadvibes_ng</strong> voted for <em>5000 Naira Pawpaw</em></div>
+            <div class="activity-time">6s ago</div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-avatar" style="background:linear-gradient(135deg,#374151,#FF6B35)">MK</div>
+            <div class="activity-text"><strong>@memeking01</strong> voted for <em>Mr Ibu</em></div>
+            <div class="activity-time">9s ago</div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-avatar" style="background:linear-gradient(135deg,#00C853,#007AFF)">AB</div>
+            <div class="activity-text"><strong>@abuja_boy</strong> voted for <em>5000 Naira Pawpaw</em></div>
+            <div class="activity-time">12s ago</div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-avatar" style="background:linear-gradient(135deg,#FF2D55,#FF6B35)">NQ</div>
+            <div class="activity-text"><strong>@naijaqueeen</strong> voted for <em>5000 Naira Pawpaw</em></div>
+            <div class="activity-time">16s ago</div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-avatar" style="background:linear-gradient(135deg,#FFB800,#CC3700)">ZM</div>
+            <div class="activity-text"><strong>@zeememe</strong> voted for <em>Mr Ibu</em></div>
+            <div class="activity-time">21s ago</div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-avatar" style="background:linear-gradient(135deg,#374151,#007AFF)">PH</div>
+            <div class="activity-text"><strong>@phcity_vibes</strong> voted for <em>5000 Naira Pawpaw</em></div>
+            <div class="activity-time">28s ago</div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-avatar" style="background:linear-gradient(135deg,#00C853,#FFB800)">LG</div>
+            <div class="activity-text"><strong>@lag_daily</strong> voted for <em>Mr Ibu</em></div>
+            <div class="activity-time">34s ago</div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-avatar" style="background:linear-gradient(135deg,#FF4500,#FFB800)">TN</div>
+            <div class="activity-text"><strong>@technaija_dev</strong> voted for <em>5000 Naira Pawpaw</em></div>
+            <div class="activity-time">41s ago</div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-avatar" style="background:linear-gradient(135deg,#CC3700,#374151)">BK</div>
+            <div class="activity-text"><strong>@buka_king</strong> voted for <em>Mr Ibu</em></div>
+            <div class="activity-time">49s ago</div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-avatar" style="background:linear-gradient(135deg,#007AFF,#FF4500)">AS</div>
+            <div class="activity-text"><strong>@aso_stunner</strong> voted for <em>5000 Naira Pawpaw</em></div>
+            <div class="activity-time">58s ago</div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-avatar" style="background:linear-gradient(135deg,#FF2D55,#374151)">OG</div>
+            <div class="activity-text"><strong>@ogmemes_9ja</strong> voted for <em>Mr Ibu</em></div>
+            <div class="activity-time">1m 10s ago</div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /sidebar -->
+  </div><!-- /battle-main -->
+</div><!-- /page-wrap -->
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-logo">whamr.</div>
+  <p style="margin-bottom:12px">The global meme-sharing platform. Find the perfect meme. Send the wham.</p>
+  <div style="display:flex;justify-content:center;gap:24px;font-size:13px;flex-wrap:wrap">
+    <a href="#">About</a><a href="#">Careers</a><a href="#">Blog</a>
+    <a href="#">Privacy</a><a href="#">Terms</a><a href="#">Help</a>
+  </div>
+  <div style="margin-top:16px;font-size:12px;opacity:0.5">© 2026 Whamr Ltd. All rights reserved.</div>
+</footer>
+
+<script src="./real-media.js"></script>
+</body>
+</html>

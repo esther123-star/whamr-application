@@ -1,0 +1,783 @@
+<!-- FILE: 21-collections.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Collections · Whamr</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#FFFAF5; --bg-alt:#FFF3E8; --card:#FFFFFF;
+  --ink:#1A0F00; --ink-soft:#4A3020; --ink-mute:#8A7060;
+  --line:#F0DDD0; --line-soft:#FBF0E8;
+  --purple:#FF4500; --purple-mid:#FF6B35; --purple-dark:#CC3700;
+  --purple-soft:#FFF1EC; --purple-xsoft:#FFF8F5;
+  --wham:#FFB800; --wham-soft:#FFF8DC;
+  --green:#00C853; --green-soft:#E8FFF0;
+  --gray-100:#F3F4F6; --gray-400:#9CA3AF; --gray-500:#6B7280; --gray-700:#374151;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;font-size:15px;background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;border:none;background:none;font-family:inherit}
+
+/* NAV */
+.nav{
+  height:64px;background:#fff;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;padding:0 32px;gap:0;
+  position:sticky;top:0;z-index:100;
+}
+.nav-logo{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;
+  font-size:22px;letter-spacing:-0.05em;color:var(--purple);
+  margin-right:32px;flex-shrink:0;
+}
+.nav-links{display:flex;align-items:center;gap:2px}
+.nav-link{
+  font-size:14px;font-weight:500;color:var(--gray-700);
+  padding:6px 12px;border-radius:8px;transition:background 0.15s,color 0.15s;white-space:nowrap;
+}
+.nav-link:hover{background:var(--purple-soft);color:var(--purple)}
+.nav-search-wrap{
+  flex:1;max-width:380px;margin:0 24px;position:relative;
+}
+.nav-search-wrap input{
+  width:100%;padding:9px 16px 9px 40px;border:1.5px solid var(--line);
+  border-radius:50px;font-family:'Inter',sans-serif;font-size:14px;
+  color:var(--ink);background:#fff;outline:none;
+}
+.nav-search-wrap input:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(255,69,0,0.12)}
+.nav-search-wrap input::placeholder{color:var(--gray-400)}
+.nav-search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--gray-400)}
+.nav-actions{display:flex;align-items:center;gap:8px;margin-left:auto;flex-shrink:0}
+.nav-icon-btn{
+  width:38px;height:38px;border-radius:9px;background:var(--gray-100);
+  border:1px solid var(--line);display:flex;align-items:center;justify-content:center;
+  font-size:16px;cursor:pointer;position:relative;
+}
+.nav-badge{
+  position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;
+  border-radius:9px;border:2px solid #fff;display:flex;align-items:center;
+  justify-content:center;font-size:10px;font-weight:700;padding:0 4px;
+}
+.badge-red{background:#FF2D55;color:#fff}
+.nav-avatar{
+  width:36px;height:36px;border-radius:50%;
+  background:linear-gradient(135deg,var(--purple-dark) 0%,var(--purple-mid) 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;color:#fff;font-weight:700;cursor:pointer;flex-shrink:0;
+  border:2px solid var(--purple-soft);
+}
+
+/* BREADCRUMB */
+.breadcrumb-bar{
+  background:#fff;border-bottom:1px solid var(--line);
+  padding:12px 32px;
+}
+.breadcrumb{
+  max-width:1200px;margin:0 auto;
+  display:flex;align-items:center;gap:8px;
+  font-size:13px;color:var(--gray-400);
+}
+.breadcrumb a{color:var(--purple);font-weight:500}
+.breadcrumb a:hover{text-decoration:underline}
+.breadcrumb-sep{color:var(--gray-400)}
+.breadcrumb-current{color:var(--ink);font-weight:600}
+
+/* CONTAINER */
+.container{max-width:1200px;margin:0 auto;padding:0 32px}
+
+/* PAGE HEADER */
+.page-header{padding:40px 0 32px;background:#fff;border-bottom:1px solid var(--line)}
+.page-header-inner{
+  max-width:1200px;margin:0 auto;padding:0 32px;
+  display:flex;align-items:flex-start;justify-content:space-between;gap:24px;
+}
+.page-header-text{}
+.page-title{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;
+  font-size:40px;color:var(--ink);letter-spacing:-0.03em;margin-bottom:6px;
+}
+.page-sub{font-size:15px;color:var(--ink-mute);margin-bottom:16px}
+.page-stats{
+  display:flex;align-items:center;gap:16px;
+}
+.page-stat-item{
+  display:flex;align-items:center;gap:6px;
+  font-size:13px;font-weight:500;color:var(--ink-soft);
+}
+.page-stat-item strong{
+  font-family:'JetBrains Mono',monospace;font-size:14px;
+  color:var(--purple);font-weight:600;
+}
+.page-stat-sep{color:var(--line);font-size:18px}
+.page-header-actions{
+  display:flex;align-items:center;gap:10px;flex-shrink:0;margin-top:8px;
+}
+.btn-orange{
+  display:inline-flex;align-items:center;gap:7px;
+  background:var(--purple);color:#fff;
+  font-size:14px;font-weight:600;padding:10px 20px;border-radius:10px;
+  border:none;cursor:pointer;font-family:'Inter',sans-serif;
+  transition:background 0.15s;white-space:nowrap;
+}
+.btn-orange:hover{background:var(--purple-dark)}
+.btn-outline{
+  display:inline-flex;align-items:center;gap:7px;
+  background:#fff;color:var(--ink-soft);
+  font-size:14px;font-weight:600;padding:10px 20px;border-radius:10px;
+  border:1.5px solid var(--line);cursor:pointer;font-family:'Inter',sans-serif;
+  transition:all 0.15s;white-space:nowrap;
+}
+.btn-outline:hover{border-color:var(--purple-mid);color:var(--purple);background:var(--purple-xsoft)}
+
+/* BODY LAYOUT */
+.body-layout{
+  display:grid;grid-template-columns:1fr 320px;gap:40px;
+  padding:40px 0 80px;
+  max-width:1200px;margin:0 auto;padding-left:32px;padding-right:32px;
+}
+
+/* COLLECTION GRID */
+.collection-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:28px;
+}
+.coll-card{
+  background:var(--card);border:1.5px solid var(--line);
+  border-radius:20px;overflow:hidden;
+  transition:box-shadow 0.2s,border-color 0.2s;
+  cursor:pointer;
+}
+.coll-card:hover{
+  box-shadow:0 8px 32px rgba(26,15,0,0.1);
+  border-color:var(--line-soft);
+}
+.coll-cover{
+  position:relative;height:140px;overflow:hidden;
+}
+.coll-cover-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:2px;
+  height:100%;
+}
+.coll-thumb{
+  width:100%;height:100%;object-fit:cover;display:block;
+}
+.coll-cover-overlay{
+  position:absolute;inset:0;
+  display:flex;align-items:flex-end;padding:12px;
+}
+.privacy-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;
+  border:1px solid rgba(255,255,255,0.3);backdrop-filter:blur(4px);
+}
+.privacy-badge.public{background:rgba(0,200,83,0.85);color:#fff}
+.privacy-badge.private{background:rgba(107,114,128,0.85);color:#fff}
+.coll-body{padding:16px 18px}
+.coll-name{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;
+  font-size:17px;color:var(--ink);margin-bottom:4px;
+}
+.coll-meta{
+  display:flex;align-items:center;gap:10px;
+  font-size:12px;color:var(--gray-400);margin-bottom:14px;
+  font-family:'JetBrains Mono',monospace;
+}
+.coll-meta-dot{width:3px;height:3px;border-radius:50%;background:var(--gray-400)}
+.coll-actions{
+  display:flex;align-items:center;gap:8px;padding-top:12px;
+  border-top:1px solid var(--line-soft);
+}
+.coll-action-btn{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:12px;font-weight:600;color:var(--gray-500);
+  padding:5px 10px;border-radius:8px;background:var(--gray-100);
+  border:none;cursor:pointer;font-family:'Inter',sans-serif;
+  transition:all 0.15s;
+}
+.coll-action-btn:hover{background:var(--purple-soft);color:var(--purple)}
+.coll-action-more{
+  margin-left:auto;width:30px;height:30px;border-radius:8px;
+  background:var(--gray-100);border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;color:var(--gray-400);
+}
+.coll-action-more:hover{background:var(--purple-soft);color:var(--purple)}
+
+/* COVER GRADIENTS */
+.coll-cover-gradient-orange{background:linear-gradient(135deg,#FF6B35 0%,#FFB800 100%)}
+.coll-cover-gradient-blue{background:linear-gradient(135deg,#2563EB 0%,#7C3AED 100%)}
+.coll-cover-gradient-yellow{background:linear-gradient(135deg,#FFB800 0%,#FF6B35 100%)}
+.coll-cover-gradient-purple{background:linear-gradient(135deg,#7C3AED 0%,#FF4500 100%)}
+
+/* NEW COLLECTION CARD */
+.new-coll-card{
+  border:2px dashed var(--line);border-radius:20px;
+  padding:32px 24px;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:14px;cursor:pointer;
+  transition:all 0.15s;background:transparent;
+  grid-column:1/-1;
+}
+.new-coll-card:hover{border-color:var(--purple-mid);background:var(--purple-xsoft)}
+.new-coll-icon{
+  width:48px;height:48px;border-radius:50%;
+  background:var(--purple-soft);display:flex;align-items:center;
+  justify-content:center;font-size:24px;color:var(--purple);
+}
+.new-coll-label{
+  font-family:'Space Grotesk',sans-serif;font-weight:600;
+  font-size:15px;color:var(--ink-mute);
+}
+.new-coll-input{
+  border:1.5px solid var(--line);border-radius:10px;
+  padding:10px 16px;font-size:14px;font-family:'Inter',sans-serif;
+  color:var(--ink);background:#fff;outline:none;
+  width:100%;max-width:320px;
+  transition:border-color 0.15s,box-shadow 0.15s;
+}
+.new-coll-input:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(255,69,0,0.12)}
+.new-coll-input::placeholder{color:var(--gray-400)}
+
+/* SIDEBAR */
+.sidebar{}
+.sidebar-section{
+  background:var(--card);border:1.5px solid var(--line);
+  border-radius:16px;padding:20px;margin-bottom:20px;
+}
+.sidebar-section-title{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;
+  font-size:15px;color:var(--ink);margin-bottom:4px;
+}
+.sidebar-section-sub{
+  font-size:12px;color:var(--ink-mute);margin-bottom:16px;
+  line-height:1.5;
+}
+.shared-coll-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 0;border-bottom:1px solid var(--line-soft);
+}
+.shared-coll-item:last-child{border-bottom:none;padding-bottom:0}
+.shared-avatar{
+  width:36px;height:36px;border-radius:50%;overflow:hidden;
+  flex-shrink:0;border:2px solid var(--line);
+}
+.shared-avatar img{width:100%;height:100%;object-fit:cover}
+.shared-info{flex:1;min-width:0}
+.shared-name{font-size:13px;font-weight:600;color:var(--ink);font-family:'Space Grotesk',sans-serif}
+.shared-meta{font-size:11px;color:var(--gray-400);font-family:'JetBrains Mono',monospace}
+.btn-view{
+  font-size:12px;font-weight:600;color:var(--purple);
+  padding:4px 10px;border-radius:7px;border:1.5px solid var(--purple);
+  background:transparent;cursor:pointer;font-family:'Inter',sans-serif;
+  flex-shrink:0;transition:all 0.15s;
+}
+.btn-view:hover{background:var(--purple-soft)}
+.quick-save-art{
+  text-align:center;padding:16px;
+  background:var(--bg-alt);border-radius:12px;
+  margin-top:4px;
+}
+.quick-save-art .art{font-size:40px;line-height:1;margin-bottom:8px}
+.quick-save-art p{font-size:12px;color:var(--ink-mute);line-height:1.55}
+.quick-save-art .heart{color:var(--purple)}
+
+/* SECTION DIVIDER */
+.section-divider{
+  display:flex;align-items:center;gap:16px;margin:48px 0 32px;
+  grid-column:1/-1;
+}
+.section-divider-line{flex:1;height:1px;background:var(--line)}
+.section-divider-label{
+  font-size:14px;font-weight:700;color:var(--ink);
+  font-family:'Space Grotesk',sans-serif;white-space:nowrap;
+  padding:8px 18px;background:var(--bg-alt);
+  border:1.5px solid var(--line);border-radius:20px;
+}
+
+/* COLLECTION DETAIL */
+.detail-section{margin-top:0}
+.detail-header{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  gap:16px;margin-bottom:24px;
+}
+.detail-title-block{}
+.detail-eyebrow{
+  font-size:11px;font-weight:700;color:var(--purple);
+  text-transform:uppercase;letter-spacing:0.08em;
+  font-family:'Space Grotesk',sans-serif;margin-bottom:4px;
+}
+.detail-title{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;
+  font-size:28px;color:var(--ink);letter-spacing:-0.02em;margin-bottom:6px;
+}
+.detail-meta{
+  display:flex;align-items:center;gap:12px;
+  font-size:13px;color:var(--gray-400);
+}
+.detail-creator{
+  display:flex;align-items:center;gap:6px;
+}
+.detail-creator-av{
+  width:22px;height:22px;border-radius:50%;overflow:hidden;border:1px solid var(--line);
+}
+.detail-creator-av img{width:100%;height:100%;object-fit:cover}
+.detail-actions{display:flex;align-items:center;gap:8px;flex-shrink:0;margin-top:8px}
+.btn-share{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:13px;font-weight:600;color:var(--ink-soft);
+  padding:8px 16px;border-radius:9px;
+  border:1.5px solid var(--line);background:#fff;cursor:pointer;
+  font-family:'Inter',sans-serif;transition:all 0.15s;
+}
+.btn-share:hover{border-color:var(--purple-mid);color:var(--purple);background:var(--purple-xsoft)}
+.btn-edit{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:13px;font-weight:600;color:var(--ink-soft);
+  padding:8px 16px;border-radius:9px;
+  border:1.5px solid var(--line);background:#fff;cursor:pointer;
+  font-family:'Inter',sans-serif;transition:all 0.15s;
+}
+.btn-edit:hover{border-color:var(--purple-mid);color:var(--purple);background:var(--purple-xsoft)}
+
+/* MEME GRID */
+.meme-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:16px;
+  margin-bottom:28px;
+}
+.meme-card{
+  background:var(--card);border:1.5px solid var(--line);
+  border-radius:14px;overflow:hidden;
+  transition:box-shadow 0.2s,border-color 0.2s;
+}
+.meme-card:hover{
+  box-shadow:0 6px 24px rgba(26,15,0,0.1);
+  border-color:var(--line-soft);
+}
+.meme-thumb{
+  width:100%;aspect-ratio:1;object-fit:cover;display:block;
+}
+.meme-body{padding:10px 12px}
+.meme-title{
+  font-size:12px;font-weight:600;color:var(--ink);
+  font-family:'Space Grotesk',sans-serif;
+  margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.btn-send{
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  width:100%;padding:7px;border-radius:8px;
+  background:var(--purple-soft);color:var(--purple);
+  font-size:12px;font-weight:600;border:none;cursor:pointer;
+  font-family:'Inter',sans-serif;transition:all 0.15s;
+}
+.btn-send:hover{background:var(--purple);color:#fff}
+.btn-add-more{
+  display:inline-flex;align-items:center;gap:7px;
+  background:#fff;color:var(--purple);
+  font-size:14px;font-weight:600;padding:11px 22px;border-radius:10px;
+  border:1.5px solid var(--purple);cursor:pointer;font-family:'Inter',sans-serif;
+  transition:all 0.15s;
+}
+.btn-add-more:hover{background:var(--purple-soft)}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="01-landing.html" class="nav-logo">whamr.</a>
+  <div class="nav-links">
+    <a href="01-landing.html" class="nav-link">Home</a>
+    <a href="02-memes-browser.html" class="nav-link">Memes</a>
+    <a href="06-explore.html" class="nav-link">Explore</a>
+    <a href="10-dojos.html" class="nav-link">Dojos</a>
+    <a href="12-analytics.html" class="nav-link">Creator</a>
+  </div>
+  <div class="nav-search-wrap">
+    <span class="nav-search-icon">🔍</span>
+    <input type="text" placeholder="Search memes, stickers…">
+  </div>
+  <div class="nav-actions">
+    <div class="nav-icon-btn">
+      🔔
+      <div class="nav-badge badge-red">3</div>
+    </div>
+    <div class="nav-avatar">M</div>
+  </div>
+</nav>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb-bar">
+  <div class="breadcrumb">
+    <a href="07-user-profile.html">My profile</a>
+    <span class="breadcrumb-sep">/</span>
+    <span class="breadcrumb-current">Collections</span>
+  </div>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="page-header-text">
+      <h1 class="page-title">My Collections</h1>
+      <p class="page-sub">Organise your saved memes into shareable packs.</p>
+      <div class="page-stats">
+        <div class="page-stat-item">
+          <strong>4</strong> collections
+        </div>
+        <span class="page-stat-sep">·</span>
+        <div class="page-stat-item">
+          <strong>87</strong> saved memes total
+        </div>
+      </div>
+    </div>
+    <div class="page-header-actions">
+      <button class="btn-orange">+ New Collection</button>
+      <button class="btn-outline">↓ Import saved</button>
+    </div>
+  </div>
+</div>
+
+<!-- BODY LAYOUT -->
+<div class="body-layout">
+
+  <!-- MAIN CONTENT -->
+  <div>
+
+    <!-- COLLECTION GRID -->
+    <div class="collection-grid">
+
+      <!-- 1: NAIJA FAVES -->
+      <div class="coll-card">
+        <div class="coll-cover">
+          <div class="coll-cover-grid">
+            <img class="coll-thumb" src="https://picsum.photos/seed/n1/160/140" alt="">
+            <img class="coll-thumb" src="https://picsum.photos/seed/n2/160/140" alt="">
+            <img class="coll-thumb" src="https://picsum.photos/seed/n3/160/140" alt="">
+            <img class="coll-thumb" src="https://picsum.photos/seed/n4/160/140" alt="">
+          </div>
+          <div class="coll-cover-overlay">
+            <span class="privacy-badge public">🌍 Public</span>
+          </div>
+        </div>
+        <div class="coll-body">
+          <div class="coll-name">🇳🇬 Naija Faves</div>
+          <div class="coll-meta">
+            <span>24 memes</span>
+            <span class="coll-meta-dot"></span>
+            <span>Updated 2 days ago</span>
+          </div>
+          <div class="coll-actions">
+            <button class="coll-action-btn">↗ Share</button>
+            <button class="coll-action-btn">✏️ Edit</button>
+            <button class="coll-action-more">···</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2: DANCE BANGERS -->
+      <div class="coll-card">
+        <div class="coll-cover">
+          <div class="coll-cover-grid">
+            <img class="coll-thumb" src="https://picsum.photos/seed/d1/160/140" alt="">
+            <img class="coll-thumb" src="https://picsum.photos/seed/d2/160/140" alt="">
+            <img class="coll-thumb" src="https://picsum.photos/seed/d3/160/140" alt="">
+            <img class="coll-thumb" src="https://picsum.photos/seed/d4/160/140" alt="">
+          </div>
+          <div class="coll-cover-overlay">
+            <span class="privacy-badge public">🌍 Public</span>
+          </div>
+        </div>
+        <div class="coll-body">
+          <div class="coll-name">💃 Dance Bangers</div>
+          <div class="coll-meta">
+            <span>18 memes</span>
+            <span class="coll-meta-dot"></span>
+            <span>Updated 2 days ago</span>
+          </div>
+          <div class="coll-actions">
+            <button class="coll-action-btn">↗ Share</button>
+            <button class="coll-action-btn">✏️ Edit</button>
+            <button class="coll-action-more">···</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3: WEEKDAY LOLS -->
+      <div class="coll-card">
+        <div class="coll-cover">
+          <div class="coll-cover-grid">
+            <img class="coll-thumb" src="https://picsum.photos/seed/l1/160/140" alt="">
+            <img class="coll-thumb" src="https://picsum.photos/seed/l2/160/140" alt="">
+            <img class="coll-thumb" src="https://picsum.photos/seed/l3/160/140" alt="">
+            <img class="coll-thumb" src="https://picsum.photos/seed/l4/160/140" alt="">
+          </div>
+          <div class="coll-cover-overlay">
+            <span class="privacy-badge private">🔒 Private</span>
+          </div>
+        </div>
+        <div class="coll-body">
+          <div class="coll-name">😂 Weekday LOLs</div>
+          <div class="coll-meta">
+            <span>31 memes</span>
+            <span class="coll-meta-dot"></span>
+            <span>Updated 2 days ago</span>
+          </div>
+          <div class="coll-actions">
+            <button class="coll-action-btn">↗ Share</button>
+            <button class="coll-action-btn">✏️ Edit</button>
+            <button class="coll-action-more">···</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4: REACTION PACK -->
+      <div class="coll-card">
+        <div class="coll-cover">
+          <div class="coll-cover-grid">
+            <img class="coll-thumb" src="https://picsum.photos/seed/r1/160/140" alt="">
+            <img class="coll-thumb" src="https://picsum.photos/seed/r2/160/140" alt="">
+            <img class="coll-thumb" src="https://picsum.photos/seed/r3/160/140" alt="">
+            <img class="coll-thumb" src="https://picsum.photos/seed/r4/160/140" alt="">
+          </div>
+          <div class="coll-cover-overlay">
+            <span class="privacy-badge public">🌍 Public</span>
+          </div>
+        </div>
+        <div class="coll-body">
+          <div class="coll-name">😮 Reaction Pack</div>
+          <div class="coll-meta">
+            <span>14 memes</span>
+            <span class="coll-meta-dot"></span>
+            <span>Updated 2 days ago</span>
+          </div>
+          <div class="coll-actions">
+            <button class="coll-action-btn">↗ Share</button>
+            <button class="coll-action-btn">✏️ Edit</button>
+            <button class="coll-action-more">···</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- NEW COLLECTION CARD -->
+      <div class="new-coll-card">
+        <div class="new-coll-icon">+</div>
+        <div class="new-coll-label">Create a new collection</div>
+        <input class="new-coll-input" type="text" placeholder="Name your collection…">
+      </div>
+
+    </div>
+    <!-- /COLLECTION GRID -->
+
+    <!-- DIVIDER -->
+    <div class="section-divider" style="margin-top:32px">
+      <div class="section-divider-line"></div>
+      <div class="section-divider-label">Collection: Naija Faves</div>
+      <div class="section-divider-line"></div>
+    </div>
+
+    <!-- COLLECTION DETAIL -->
+    <div class="detail-section">
+      <div class="detail-header">
+        <div class="detail-title-block">
+          <div class="detail-eyebrow">Collection detail</div>
+          <h2 class="detail-title">🇳🇬 Naija Faves</h2>
+          <div class="detail-meta">
+            <span>24 memes</span>
+            <span>·</span>
+            <div class="detail-creator">
+              <div class="detail-creator-av">
+                <img src="https://picsum.photos/seed/c1/22/22" alt="creator">
+              </div>
+              <span>by you</span>
+            </div>
+            <span>·</span>
+            <span>🌍 Public</span>
+          </div>
+        </div>
+        <div class="detail-actions">
+          <button class="btn-share">↗ Share</button>
+          <button class="btn-edit">✏️ Edit</button>
+        </div>
+      </div>
+
+      <!-- MEME GRID -->
+      <div class="meme-grid">
+        <div class="meme-card">
+          <img class="meme-thumb" src="https://picsum.photos/seed/nm1/200/200" alt="meme">
+          <div class="meme-body">
+            <div class="meme-title">Sapa no do me</div>
+            <button class="btn-send">Send →</button>
+          </div>
+        </div>
+        <div class="meme-card">
+          <img class="meme-thumb" src="https://picsum.photos/seed/nm2/200/200" alt="meme">
+          <div class="meme-body">
+            <div class="meme-title">Omo see level</div>
+            <button class="btn-send">Send →</button>
+          </div>
+        </div>
+        <div class="meme-card">
+          <img class="meme-thumb" src="https://picsum.photos/seed/nm3/200/200" alt="meme">
+          <div class="meme-body">
+            <div class="meme-title">Chop life abeg</div>
+            <button class="btn-send">Send →</button>
+          </div>
+        </div>
+        <div class="meme-card">
+          <img class="meme-thumb" src="https://picsum.photos/seed/nm4/200/200" alt="meme">
+          <div class="meme-body">
+            <div class="meme-title">This one na real gbedu</div>
+            <button class="btn-send">Send →</button>
+          </div>
+        </div>
+        <div class="meme-card">
+          <img class="meme-thumb" src="https://picsum.photos/seed/nm5/200/200" alt="meme">
+          <div class="meme-body">
+            <div class="meme-title">No wahala at all</div>
+            <button class="btn-send">Send →</button>
+          </div>
+        </div>
+        <div class="meme-card">
+          <img class="meme-thumb" src="https://picsum.photos/seed/nm6/200/200" alt="meme">
+          <div class="meme-body">
+            <div class="meme-title">E don do</div>
+            <button class="btn-send">Send →</button>
+          </div>
+        </div>
+        <div class="meme-card">
+          <img class="meme-thumb" src="https://picsum.photos/seed/nm7/200/200" alt="meme">
+          <div class="meme-body">
+            <div class="meme-title">Carry go</div>
+            <button class="btn-send">Send →</button>
+          </div>
+        </div>
+        <div class="meme-card">
+          <img class="meme-thumb" src="https://picsum.photos/seed/nm8/200/200" alt="meme">
+          <div class="meme-body">
+            <div class="meme-title">Shey you dey ok</div>
+            <button class="btn-send">Send →</button>
+          </div>
+        </div>
+      </div>
+      <!-- /MEME GRID -->
+
+      <a href="02-memes-browser.html">
+        <button class="btn-add-more">+ Add more memes</button>
+      </a>
+    </div>
+    <!-- /DETAIL -->
+
+  </div>
+  <!-- /MAIN CONTENT -->
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <!-- SHARED WITH ME -->
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Shared with me</div>
+      <div class="sidebar-section-sub">Collections other people have sent your way.</div>
+      <div class="shared-coll-item">
+        <div class="shared-avatar">
+          <img src="https://picsum.photos/seed/c2/36/36" alt="Naija Content">
+        </div>
+        <div class="shared-info">
+          <div class="shared-name">Pure Naija Vibes</div>
+          <div class="shared-meta">by @naijacontent · 41 memes</div>
+        </div>
+        <button class="btn-view">View</button>
+      </div>
+      <div class="shared-coll-item">
+        <div class="shared-avatar">
+          <img src="https://picsum.photos/seed/c3/36/36" alt="Dance King">
+        </div>
+        <div class="shared-info">
+          <div class="shared-name">Ultimate Dance Pack</div>
+          <div class="shared-meta">by @danceking · 22 memes</div>
+        </div>
+        <button class="btn-view">View</button>
+      </div>
+    </div>
+
+    <!-- QUICK SAVE -->
+    <div class="sidebar-section">
+      <div class="sidebar-section-title">Quick save</div>
+      <div class="quick-save-art">
+        <div class="art">❤️</div>
+        <p>Tap <span class="heart">♥</span> on any meme to save it. It lands here in Saved, ready to add to any collection.</p>
+      </div>
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--line-soft)">
+        <div style="font-size:12px;color:var(--gray-400);margin-bottom:10px">You have <strong style="color:var(--purple);font-family:'JetBrains Mono',monospace">12</strong> unsorted saves.</div>
+        <button class="btn-orange" style="font-size:13px;padding:9px 16px;border-radius:9px;width:100%">
+          Sort saves into collections
+        </button>
+      </div>
+    </div>
+
+    <!-- TIPS -->
+    <div class="sidebar-section" style="background:var(--purple-xsoft);border-color:var(--purple-soft)">
+      <div style="font-size:12px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:0.07em;font-family:'Space Grotesk',sans-serif;margin-bottom:8px">Pro tip</div>
+      <p style="font-size:13px;color:var(--ink-soft);line-height:1.55">Make a collection public and share the link anywhere. Friends can copy your whole pack in one tap.</p>
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <button class="btn-orange" style="font-size:12px;padding:7px 14px;border-radius:8px;flex:1">Share a collection</button>
+      </div>
+    </div>
+
+  </aside>
+  <!-- /SIDEBAR -->
+
+</div>
+<!-- /BODY LAYOUT -->
+
+<!-- FOOTER -->
+<footer style="background:var(--ink);color:rgba(255,255,255,0.6);padding:40px 0 24px">
+  <div style="max-width:1200px;margin:0 auto;padding:0 32px">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:32px;margin-bottom:32px">
+      <div>
+        <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.05em;color:#fff;margin-bottom:8px">whamr.</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.4);max-width:220px;line-height:1.5">Find the perfect meme. Send the wham. Built for the internet.</div>
+      </div>
+      <div style="display:flex;gap:48px">
+        <div>
+          <h4 style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;font-family:'Space Grotesk',sans-serif">Explore</h4>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:8px">
+            <li><a href="06-explore.html" style="font-size:13px;color:rgba(255,255,255,0.55)">Trending</a></li>
+            <li><a href="06-explore.html" style="font-size:13px;color:rgba(255,255,255,0.55)">Categories</a></li>
+            <li><a href="10-dojos.html" style="font-size:13px;color:rgba(255,255,255,0.55)">Dojos</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;font-family:'Space Grotesk',sans-serif">Company</h4>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:8px">
+            <li><a href="#" style="font-size:13px;color:rgba(255,255,255,0.55)">About</a></li>
+            <li><a href="#" style="font-size:13px;color:rgba(255,255,255,0.55)">Blog</a></li>
+            <li><a href="#" style="font-size:13px;color:rgba(255,255,255,0.55)">Careers</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;font-family:'Space Grotesk',sans-serif">Legal</h4>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:8px">
+            <li><a href="#" style="font-size:13px;color:rgba(255,255,255,0.55)">Terms</a></li>
+            <li><a href="#" style="font-size:13px;color:rgba(255,255,255,0.55)">Privacy</a></li>
+            <li><a href="#" style="font-size:13px;color:rgba(255,255,255,0.55)">Content Policy</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,0.08);padding-top:20px;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:12px;color:rgba(255,255,255,0.3)">© 2024 whamr. All rights reserved.</span>
+      <div style="display:flex;gap:20px">
+        <a href="#" style="font-size:12px;color:rgba(255,255,255,0.4)">Status</a>
+        <a href="#" style="font-size:12px;color:rgba(255,255,255,0.4)">API</a>
+        <a href="#" style="font-size:12px;color:rgba(255,255,255,0.4)">Help</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="./real-media.js"></script>
+</body>
+</html>

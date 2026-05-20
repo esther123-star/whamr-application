@@ -1,0 +1,734 @@
+<!-- FILE: 24-creator-hub.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creator Hub · Whamr</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#FFFAF5; --bg-alt:#FFF3E8; --card:#FFFFFF;
+  --ink:#1A0F00; --ink-soft:#4A3020; --ink-mute:#8A7060;
+  --line:#F0DDD0; --line-soft:#FBF0E8;
+  --purple:#FF4500; --purple-mid:#FF6B35; --purple-dark:#CC3700;
+  --purple-soft:#FFF1EC; --purple-xsoft:#FFF8F5; --purple-bright:#FF8C60;
+  --wham:#FFB800; --wham-soft:#FFF8DC; --wham-bright:#FFD60A;
+  --green:#00C853; --green-soft:#E8FFF0;
+  --amber:#FFB800; --red:#FF2D55; --red-soft:#FFF0F3; --blue:#007AFF;
+  --gray-50:#F9FAFB; --gray-100:#F3F4F6; --gray-200:#E5E7EB;
+  --gray-400:#9CA3AF; --gray-500:#6B7280; --gray-700:#374151; --gray-900:#111827;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;font-size:15px;background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;border:none;background:none;font-family:inherit}
+
+/* ── NAV ── */
+.nav{height:64px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 28px;gap:12px;position:sticky;top:0;z-index:100}
+.nav-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.05em;color:var(--purple);flex-shrink:0}
+.nav-links{display:flex;align-items:center;gap:2px;margin-left:12px}
+.nav-link{font-size:14px;font-weight:500;color:var(--gray-700);padding:6px 11px;border-radius:8px;transition:background 0.15s,color 0.15s;white-space:nowrap}
+.nav-link:hover,.nav-link.active{background:var(--purple-soft);color:var(--purple)}
+.nav-link.active{font-weight:600}
+.nav-search-wrap{flex:1;max-width:380px;margin:0 auto;position:relative}
+.nav-search-wrap input{width:100%;padding:9px 16px 9px 40px;border:1.5px solid var(--line);border-radius:50px;font-family:'Inter',sans-serif;font-size:14px;color:var(--ink);background:#fff;outline:none}
+.nav-search-wrap input:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(255,69,0,0.12)}
+.nav-search-wrap input::placeholder{color:var(--gray-400)}
+.nav-search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--gray-400)}
+.nav-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.btn-upload{display:inline-flex;align-items:center;gap:6px;background:var(--purple);color:#fff;font-size:13px;font-weight:600;padding:8px 16px;border-radius:9px;border:none;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif}
+.btn-upload:hover{background:var(--purple-dark)}
+.nav-icon-btn{width:38px;height:38px;border-radius:9px;background:var(--gray-100);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;position:relative;flex-shrink:0}
+.nav-badge{position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;border-radius:9px;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;padding:0 4px}
+.badge-red{background:var(--red);color:#fff}
+.badge-blue{background:#2563EB;color:#fff}
+.nav-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--purple-dark) 0%,var(--purple-mid) 100%);display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;font-weight:700;cursor:pointer;flex-shrink:0;border:2px solid var(--purple-soft)}
+
+/* ── COVER / HERO ── */
+.creator-cover{
+  width:100%;height:260px;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#FF4500 0%,#CC3700 35%,#8B1A00 70%,#1A0800 100%);
+}
+.cover-pattern{
+  position:absolute;inset:0;opacity:0.15;
+  background-image:radial-gradient(circle at 20% 50%,rgba(255,184,0,0.6) 0%,transparent 50%),
+    radial-gradient(circle at 80% 20%,rgba(255,107,53,0.5) 0%,transparent 40%);
+}
+.cover-overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(26,8,0,0.55) 100%)}
+
+/* ── PROFILE BAR ── */
+.profile-bar{background:#fff;border-bottom:1px solid var(--line)}
+.profile-bar-inner{
+  max-width:1200px;margin:0 auto;padding:0 32px 20px;
+  display:flex;align-items:flex-end;gap:20px;position:relative;
+}
+.creator-avatar-wrap{
+  margin-top:-40px;flex-shrink:0;
+  width:96px;height:96px;border-radius:50%;
+  border:4px solid #fff;box-shadow:0 4px 20px rgba(26,5,0,0.2);
+  background:var(--purple);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:38px;color:#fff;
+  position:relative;
+}
+.creator-avatar-badge{
+  position:absolute;bottom:2px;right:2px;
+  width:22px;height:22px;border-radius:50%;background:var(--purple);
+  border:2px solid #fff;display:flex;align-items:center;justify-content:center;
+  font-size:12px;color:#fff;font-weight:700;
+}
+.profile-info{flex:1;min-width:0;padding-top:16px}
+.profile-name-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+.profile-name{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:26px;color:var(--ink);letter-spacing:-0.02em}
+.v-badge{display:inline-flex;align-items:center;gap:3px;background:var(--purple);color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:50px;font-family:'Space Grotesk',sans-serif}
+.creator-badge{display:inline-flex;align-items:center;gap:3px;background:#FFD60A;color:#1A0F00;font-size:11px;font-weight:700;padding:3px 9px;border-radius:50px;font-family:'Space Grotesk',sans-serif}
+.profile-handle{font-size:14px;color:var(--ink-mute);font-weight:500;margin-bottom:6px}
+.profile-bio{font-size:14px;color:var(--ink-soft);line-height:1.55;margin-bottom:12px;max-width:560px}
+.stats-row{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.stat-pill{display:flex;align-items:center;gap:6px;font-size:13.5px}
+.stat-pill .num{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:15px;color:var(--ink)}
+.stat-pill .lbl{color:var(--gray-500);font-size:13px}
+.stat-sep{width:1px;height:18px;background:var(--line)}
+.rating-stars{color:var(--wham);font-size:13px}
+.profile-actions{display:flex;align-items:flex-end;gap:10px;flex-shrink:0;padding-bottom:2px;flex-wrap:wrap}
+.btn-follow{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--purple);color:#fff;font-size:13px;font-weight:600;
+  padding:9px 20px;border-radius:9px;border:none;cursor:pointer;
+  font-family:'Inter',sans-serif;transition:background 0.15s;white-space:nowrap;
+}
+.btn-follow:hover{background:var(--purple-dark)}
+.btn-tip{
+  display:inline-flex;align-items:center;gap:6px;
+  background:#fff;color:#92400E;font-size:13px;font-weight:600;
+  padding:9px 18px;border-radius:9px;border:1.5px solid var(--wham);cursor:pointer;
+  font-family:'Inter',sans-serif;transition:all 0.15s;white-space:nowrap;
+}
+.btn-tip:hover{background:var(--wham-soft);border-color:#D97706}
+.btn-msg{
+  display:inline-flex;align-items:center;gap:6px;
+  background:#fff;color:var(--gray-700);font-size:13px;font-weight:600;
+  padding:9px 18px;border-radius:9px;border:1.5px solid var(--line);cursor:pointer;
+  font-family:'Inter',sans-serif;transition:all 0.15s;white-space:nowrap;
+}
+.btn-msg:hover{border-color:var(--gray-400)}
+.btn-more{
+  width:38px;height:38px;border-radius:9px;background:#fff;border:1.5px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;
+  color:var(--gray-500);transition:border-color 0.15s;
+}
+.btn-more:hover{border-color:var(--gray-400)}
+
+/* ── TABS ── */
+.profile-tabs{
+  max-width:1200px;margin:0 auto;padding:0 32px;
+  display:flex;align-items:center;gap:4px;border-bottom:1px solid var(--line);
+  background:#fff;
+}
+.ptab{
+  font-size:14px;font-weight:600;color:var(--gray-500);padding:14px 20px;
+  border-bottom:3px solid transparent;cursor:pointer;transition:color 0.15s;
+  white-space:nowrap;display:flex;align-items:center;gap:6px;
+}
+.ptab:hover{color:var(--ink)}
+.ptab.active{color:var(--purple);border-bottom-color:var(--purple)}
+.ptab-count{
+  background:var(--purple-soft);color:var(--purple);font-size:11px;font-weight:700;
+  padding:2px 7px;border-radius:50px;font-family:'JetBrains Mono',monospace;
+}
+
+/* ── MAIN LAYOUT ── */
+.page-body{max-width:1200px;margin:0 auto;padding:32px 32px 64px;display:grid;grid-template-columns:1fr 320px;gap:28px;align-items:start}
+
+/* ── MEME GRID SECTION ── */
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.section-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;color:var(--ink)}
+.section-count{font-size:13px;color:var(--gray-500);font-weight:500}
+.sort-select{
+  padding:7px 12px;border:1.5px solid var(--line);border-radius:8px;
+  font-family:'Inter',sans-serif;font-size:13px;color:var(--ink);background:#fff;
+  cursor:pointer;outline:none;
+}
+.sort-select:focus{border-color:var(--purple)}
+.meme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.meme-card{
+  background:#fff;border-radius:14px;overflow:hidden;border:1px solid var(--line);
+  cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;
+}
+.meme-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(255,69,0,0.13)}
+.meme-thumb{
+  width:100%;aspect-ratio:4/3;background:var(--bg-alt);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.meme-thumb img{width:100%;height:100%;object-fit:cover}
+.meme-rank{
+  position:absolute;top:8px;left:8px;
+  background:rgba(26,15,0,0.72);color:#fff;backdrop-filter:blur(4px);
+  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;
+  padding:3px 8px;border-radius:6px;
+}
+.meme-info{padding:12px 14px 14px}
+.meme-title{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13.5px;color:var(--ink);margin-bottom:6px;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meme-meta{display:flex;align-items:center;justify-content:space-between}
+.meme-sends{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--gray-500);font-weight:500}
+.meme-fire{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:12px;color:var(--purple);font-weight:700;
+  background:var(--purple-soft);padding:3px 8px;border-radius:6px;
+  font-family:'JetBrains Mono',monospace;
+}
+.send-btn{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  margin:0 14px 12px;padding:8px;border-radius:9px;
+  background:var(--purple-soft);color:var(--purple);
+  font-size:12px;font-weight:600;border:none;cursor:pointer;
+  transition:background 0.15s;font-family:'Inter',sans-serif;width:calc(100% - 28px);
+}
+.send-btn:hover{background:var(--purple);color:#fff}
+
+/* ── ABOUT SECTION ── */
+.about-section{background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px;margin-top:28px}
+.about-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;color:var(--ink);margin-bottom:18px}
+.about-row{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--line-soft)}
+.about-row:last-child{border-bottom:none;padding-bottom:0}
+.about-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-mute);width:140px;flex-shrink:0;padding-top:2px;font-family:'Space Grotesk',sans-serif}
+.about-val{font-size:14px;color:var(--ink-soft)}
+.about-val a{color:var(--purple);font-weight:500}
+.about-val a:hover{text-decoration:underline}
+.cat-pill{display:inline-flex;align-items:center;gap:4px;background:var(--purple-soft);color:var(--purple);font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;margin-right:6px;font-family:'Space Grotesk',sans-serif}
+.report-link{display:block;text-align:center;font-size:12px;color:var(--gray-400);margin-top:16px;cursor:pointer}
+.report-link:hover{color:var(--red)}
+
+/* ── SIDEBAR ── */
+.sidebar{display:flex;flex-direction:column;gap:20px}
+.sidebar-card{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.sidebar-card-head{padding:18px 20px 14px;border-bottom:1px solid var(--line-soft)}
+.sidebar-card-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:var(--ink)}
+.sidebar-card-sub{font-size:12.5px;color:var(--gray-500);margin-top:3px}
+.sidebar-card-body{padding:16px 20px 20px}
+
+/* Sticker pack */
+.sticker-thumbnails{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.sticker-thumb{
+  aspect-ratio:1;border-radius:10px;background:var(--bg-alt);overflow:hidden;
+  border:1px solid var(--line);display:flex;align-items:center;justify-content:center;
+}
+.sticker-thumb img{width:100%;height:100%;object-fit:cover}
+.pack-meta{font-size:12.5px;color:var(--gray-500);margin-bottom:14px}
+.pack-meta strong{color:var(--ink)}
+.btn-add-wa{
+  display:flex;align-items:center;justify-content:center;gap:6px;width:100%;
+  background:var(--green);color:#fff;font-size:13px;font-weight:700;
+  padding:10px 16px;border-radius:9px;border:none;cursor:pointer;
+  font-family:'Inter',sans-serif;transition:background 0.15s;margin-bottom:8px;
+}
+.btn-add-wa:hover{background:#00A844}
+.pack-alts{display:flex;gap:8px}
+.btn-alt-platform{
+  flex:1;background:#fff;color:var(--gray-700);font-size:12px;font-weight:600;
+  padding:8px 10px;border-radius:8px;border:1.5px solid var(--line);cursor:pointer;
+  font-family:'Inter',sans-serif;text-align:center;transition:border-color 0.15s;
+}
+.btn-alt-platform:hover{border-color:var(--gray-400)}
+
+/* Tip card */
+.tip-amounts{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.tip-btn{
+  flex:1;min-width:60px;padding:8px 6px;border-radius:8px;
+  background:#fff;border:1.5px solid var(--line);
+  font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;
+  color:var(--ink);cursor:pointer;transition:all 0.15s;text-align:center;
+}
+.tip-btn:hover{border-color:var(--wham);color:#92400E;background:var(--wham-soft)}
+.tip-btn.selected{background:var(--wham-soft);border-color:var(--wham);color:#92400E}
+.tip-custom{width:100%;padding:9px 12px;border:1.5px solid var(--line);border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--ink);outline:none;margin-bottom:12px}
+.tip-custom:focus{border-color:var(--wham)}
+.btn-send-tip{
+  display:flex;align-items:center;justify-content:center;gap:6px;width:100%;
+  background:var(--wham);color:#1A0F00;font-size:14px;font-weight:700;
+  padding:11px 16px;border-radius:9px;border:none;cursor:pointer;
+  font-family:'Inter',sans-serif;transition:background 0.15s;
+}
+.btn-send-tip:hover{background:#E6A600}
+.tip-powered{text-align:center;font-size:11.5px;color:var(--gray-400);margin-top:10px}
+.tip-powered strong{color:var(--gray-500)}
+
+/* ── LEADERBOARD ── */
+.leaderboard-section{margin-top:28px}
+.lb-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;color:var(--ink);margin-bottom:14px}
+.lb-card{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.lb-row{display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid var(--line-soft);transition:background 0.12s;cursor:pointer}
+.lb-row:last-child{border-bottom:none}
+.lb-row:hover{background:var(--bg-alt)}
+.lb-row.highlight{background:var(--purple-xsoft)}
+.lb-rank{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:15px;color:var(--ink-mute);width:22px;flex-shrink:0;text-align:center}
+.lb-rank.gold{color:#D97706}
+.lb-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--purple-dark),var(--purple-mid));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;font-family:'Space Grotesk',sans-serif}
+.lb-info{flex:1;min-width:0}
+.lb-handle{font-size:14px;font-weight:600;color:var(--ink)}
+.lb-sends{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--gray-500)}
+.lb-delta{font-size:12.5px;font-weight:600;flex-shrink:0}
+.lb-delta.up{color:var(--green)}
+.lb-delta.same{color:var(--gray-400)}
+.lb-delta.down{color:var(--red)}
+.lb-footer{padding:14px 18px;border-top:1px solid var(--line-soft);text-align:center}
+.lb-footer a{font-size:13px;font-weight:600;color:var(--purple)}
+.lb-footer a:hover{text-decoration:underline}
+
+/* ── FOOTER ── */
+.footer{background:var(--ink);color:rgba(255,255,255,0.6);padding:40px 0 24px}
+.footer-inner{max-width:1200px;margin:0 auto;padding:0 32px}
+.footer-top{display:flex;align-items:flex-start;justify-content:space-between;gap:32px;margin-bottom:32px}
+.footer-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.05em;color:#fff;margin-bottom:8px}
+.footer-tagline{font-size:13px;color:rgba(255,255,255,0.4);max-width:220px;line-height:1.5}
+.footer-links{display:flex;gap:48px}
+.footer-col h4{font-size:11px;font-weight:700;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;font-family:'Space Grotesk',sans-serif}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.footer-col li a{font-size:13px;color:rgba(255,255,255,0.55)}
+.footer-col li a:hover{color:#fff}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.08);padding-top:20px;display:flex;align-items:center;justify-content:space-between}
+.footer-copy{font-size:12px;color:rgba(255,255,255,0.3)}
+.footer-bl{display:flex;gap:20px}
+.footer-bl a{font-size:12px;color:rgba(255,255,255,0.4)}
+.footer-bl a:hover{color:rgba(255,255,255,0.8)}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="01-landing.html" class="nav-logo">whamr.</a>
+  <div class="nav-links">
+    <a href="01-landing.html" class="nav-link">Home</a>
+    <a href="02-memes-browser.html" class="nav-link">Memes</a>
+    <a href="06-explore.html" class="nav-link">Explore</a>
+    <a href="10-dojos.html" class="nav-link">Dojos</a>
+    <a href="12-analytics.html" class="nav-link">Creator</a>
+  </div>
+  <div class="nav-search-wrap">
+    <span class="nav-search-icon">🔍</span>
+    <input type="text" placeholder="Search memes, creators, stickers...">
+  </div>
+  <div class="nav-actions">
+    <a href="04-upload-flow.html"><button class="btn-upload">+ Upload</button></a>
+    <a href="08-notifications.html">
+      <div class="nav-icon-btn">🔔<span class="nav-badge badge-red">3</span></div>
+    </a>
+    <a href="09-messages.html">
+      <div class="nav-icon-btn">💬<span class="nav-badge badge-blue">1</span></div>
+    </a>
+    <a href="07-user-profile.html">
+      <div class="nav-avatar">Y</div>
+    </a>
+  </div>
+</nav>
+
+<!-- COVER -->
+<div class="creator-cover">
+  <div class="cover-pattern"></div>
+  <div class="cover-overlay"></div>
+</div>
+
+<!-- PROFILE BAR -->
+<div class="profile-bar">
+  <div class="profile-bar-inner">
+    <div class="creator-avatar-wrap">
+      N
+      <div class="creator-avatar-badge">✓</div>
+    </div>
+    <div class="profile-info">
+      <div class="profile-name-row">
+        <span class="profile-name">Naija Content</span>
+        <span class="v-badge">✓ Verified</span>
+        <span class="creator-badge">⭐ Creator</span>
+      </div>
+      <div class="profile-handle">@naijacontent</div>
+      <div class="profile-bio">Your daily dose of Naija reactions, Nollywood gold, and pure pidgin energy. 🇳🇬</div>
+      <div class="stats-row">
+        <div class="stat-pill"><span class="num">15.2k</span><span class="lbl">followers</span></div>
+        <div class="stat-sep"></div>
+        <div class="stat-pill"><span class="num">63</span><span class="lbl">uploads</span></div>
+        <div class="stat-sep"></div>
+        <div class="stat-pill"><span class="num">284k</span><span class="lbl">total sends</span></div>
+        <div class="stat-sep"></div>
+        <div class="stat-pill">
+          <span class="rating-stars">★★★★★</span>
+          <span class="num" style="font-size:14px">4.8</span>
+          <span class="lbl">creator rating</span>
+        </div>
+      </div>
+    </div>
+    <div class="profile-actions">
+      <button class="btn-follow">Follow ♥</button>
+      <button class="btn-tip">Tip creator 💰</button>
+      <a href="09-messages.html"><button class="btn-msg">Message →</button></a>
+      <button class="btn-more">···</button>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div style="background:#fff;border-bottom:1px solid var(--line)">
+  <div class="profile-tabs" style="border-bottom:none">
+    <div class="ptab active">Memes <span class="ptab-count">63</span></div>
+    <div class="ptab">Stickers <span class="ptab-count">24</span></div>
+    <div class="ptab">Collections <span class="ptab-count">8</span></div>
+    <div class="ptab">About</div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="page-body">
+
+  <!-- LEFT: MEMES GRID -->
+  <div>
+    <div class="section-head">
+      <div>
+        <div class="section-title">Memes</div>
+        <div class="section-count">24 memes shown · 63 total</div>
+      </div>
+      <select class="sort-select">
+        <option selected>Most sent</option>
+        <option>Newest</option>
+        <option>Top rated</option>
+        <option>Trending</option>
+      </select>
+    </div>
+
+    <div class="meme-grid">
+
+      <!-- Card 1 -->
+      <div class="meme-card">
+        <div class="meme-thumb">
+          <img src="https://picsum.photos/seed/naija1/320/240" alt="5000 Naira Pawpaw">
+          <span class="meme-rank">#1</span>
+        </div>
+        <div class="meme-info">
+          <div class="meme-title">5000 Naira Pawpaw</div>
+          <div class="meme-meta">
+            <span class="meme-sends">1,844 sends</span>
+            <span class="meme-fire">🔥 99</span>
+          </div>
+        </div>
+        <button class="send-btn">Send →</button>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="meme-card">
+        <div class="meme-thumb">
+          <img src="https://picsum.photos/seed/naija2/320/240" alt="Can I See You Mr Ibu">
+          <span class="meme-rank">#2</span>
+        </div>
+        <div class="meme-info">
+          <div class="meme-title">Can I See You Mr Ibu</div>
+          <div class="meme-meta">
+            <span class="meme-sends">1,086 sends</span>
+            <span class="meme-fire">🔥 94</span>
+          </div>
+        </div>
+        <button class="send-btn">Send →</button>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="meme-card">
+        <div class="meme-thumb">
+          <img src="https://picsum.photos/seed/naija3/320/240" alt="Am Rich">
+          <span class="meme-rank">#3</span>
+        </div>
+        <div class="meme-info">
+          <div class="meme-title">Am Rich</div>
+          <div class="meme-meta">
+            <span class="meme-sends">1,203 sends</span>
+            <span class="meme-fire">🔥 91</span>
+          </div>
+        </div>
+        <button class="send-btn">Send →</button>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="meme-card">
+        <div class="meme-thumb">
+          <img src="https://picsum.photos/seed/naija4/320/240" alt="Business Grammar">
+        </div>
+        <div class="meme-info">
+          <div class="meme-title">Business Grammar</div>
+          <div class="meme-meta">
+            <span class="meme-sends">811 sends</span>
+            <span class="meme-fire">🔥 86</span>
+          </div>
+        </div>
+        <button class="send-btn">Send →</button>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="meme-card">
+        <div class="meme-thumb">
+          <img src="https://picsum.photos/seed/naija5/320/240" alt="Aki Iss">
+        </div>
+        <div class="meme-info">
+          <div class="meme-title">Aki Iss</div>
+          <div class="meme-meta">
+            <span class="meme-sends">892 sends</span>
+            <span class="meme-fire">🔥 88</span>
+          </div>
+        </div>
+        <button class="send-btn">Send →</button>
+      </div>
+
+      <!-- Card 6 -->
+      <div class="meme-card">
+        <div class="meme-thumb">
+          <img src="https://picsum.photos/seed/naija6/320/240" alt="Clap of Regret">
+        </div>
+        <div class="meme-info">
+          <div class="meme-title">Clap of Regret</div>
+          <div class="meme-meta">
+            <span class="meme-sends">744 sends</span>
+            <span class="meme-fire">🔥 83</span>
+          </div>
+        </div>
+        <button class="send-btn">Send →</button>
+      </div>
+
+      <!-- Card 7 -->
+      <div class="meme-card">
+        <div class="meme-thumb">
+          <img src="https://picsum.photos/seed/naija7/320/240" alt="Break Is Like That of a Fowl">
+        </div>
+        <div class="meme-info">
+          <div class="meme-title">Break Is Like That of a Fowl</div>
+          <div class="meme-meta">
+            <span class="meme-sends">967 sends</span>
+            <span class="meme-fire">🔥 89</span>
+          </div>
+        </div>
+        <button class="send-btn">Send →</button>
+      </div>
+
+      <!-- Card 8 -->
+      <div class="meme-card">
+        <div class="meme-thumb">
+          <img src="https://picsum.photos/seed/naija8/320/240" alt="Bigger Scream — Patience Ozokwo">
+        </div>
+        <div class="meme-info">
+          <div class="meme-title">Bigger Scream — Patience Ozokwo</div>
+          <div class="meme-meta">
+            <span class="meme-sends">631 sends</span>
+            <span class="meme-fire">🔥 80</span>
+          </div>
+        </div>
+        <button class="send-btn">Send →</button>
+      </div>
+
+      <!-- Card 9 -->
+      <div class="meme-card">
+        <div class="meme-thumb">
+          <img src="https://picsum.photos/seed/naija9/320/240" alt="Ahhhhh Scream">
+        </div>
+        <div class="meme-info">
+          <div class="meme-title">Ahhhhh Scream</div>
+          <div class="meme-meta">
+            <span class="meme-sends">842 sends</span>
+            <span class="meme-fire">🔥 85</span>
+          </div>
+        </div>
+        <button class="send-btn">Send →</button>
+      </div>
+
+    </div>
+
+    <!-- ABOUT TAB CONTENT -->
+    <div class="about-section">
+      <div class="about-title">About @naijacontent</div>
+
+      <div class="about-row">
+        <div class="about-label">Creator since</div>
+        <div class="about-val">January 2024</div>
+      </div>
+      <div class="about-row">
+        <div class="about-label">Total uploads</div>
+        <div class="about-val">63 memes &amp; stickers</div>
+      </div>
+      <div class="about-row">
+        <div class="about-label">Top categories</div>
+        <div class="about-val">
+          <span class="cat-pill">Naija 48</span>
+          <span class="cat-pill">Reactions 9</span>
+          <span class="cat-pill">Random 6</span>
+        </div>
+      </div>
+      <div class="about-row">
+        <div class="about-label">Most sent meme</div>
+        <div class="about-val">"5000 Naira Pawpaw" — 1,844 sends</div>
+      </div>
+      <div class="about-row">
+        <div class="about-label">Links</div>
+        <div class="about-val">
+          <a href="#">Instagram @naijacontent</a> &nbsp;·&nbsp;
+          <a href="#">TikTok @naijacontent</a>
+        </div>
+      </div>
+
+      <div class="report-link">Report creator</div>
+    </div>
+
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+
+    <!-- Sticker Pack -->
+    <div class="sidebar-card">
+      <div class="sidebar-card-head">
+        <div class="sidebar-card-title">Naija Reacts Pack v1</div>
+        <div class="sidebar-card-sub">Featured sticker pack by @naijacontent</div>
+      </div>
+      <div class="sidebar-card-body">
+        <div class="sticker-thumbnails">
+          <div class="sticker-thumb"><img src="https://picsum.photos/seed/stk1/80/80" alt=""></div>
+          <div class="sticker-thumb"><img src="https://picsum.photos/seed/stk2/80/80" alt=""></div>
+          <div class="sticker-thumb"><img src="https://picsum.photos/seed/stk3/80/80" alt=""></div>
+          <div class="sticker-thumb"><img src="https://picsum.photos/seed/stk4/80/80" alt=""></div>
+          <div class="sticker-thumb"><img src="https://picsum.photos/seed/stk5/80/80" alt=""></div>
+          <div class="sticker-thumb"><img src="https://picsum.photos/seed/stk6/80/80" alt=""></div>
+        </div>
+        <div class="pack-meta"><strong>24 stickers</strong> · WhatsApp format · <strong style="color:var(--green)">Free</strong></div>
+        <button class="btn-add-wa">Add to WhatsApp →</button>
+        <div class="pack-alts">
+          <button class="btn-alt-platform">Telegram</button>
+          <button class="btn-alt-platform">Download ZIP</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tip Card -->
+    <div class="sidebar-card">
+      <div class="sidebar-card-head">
+        <div class="sidebar-card-title">Support Naija Content</div>
+        <div class="sidebar-card-sub">Tips go directly to the creator (90% — Whamr takes 10%).</div>
+      </div>
+      <div class="sidebar-card-body">
+        <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink-mute);margin-bottom:8px;font-family:'Space Grotesk',sans-serif">Choose amount</div>
+        <div class="tip-amounts">
+          <button class="tip-btn">₦500</button>
+          <button class="tip-btn selected">₦1,000</button>
+          <button class="tip-btn">₦2,500</button>
+          <button class="tip-btn" style="flex-basis:100%">Custom ✏️</button>
+        </div>
+        <input class="tip-custom" type="text" placeholder="Enter custom amount (₦)">
+        <button class="btn-send-tip">Send tip 💰</button>
+        <div class="tip-powered">Powered by <strong>Whamr Wallet</strong></div>
+      </div>
+    </div>
+
+    <!-- Creator Leaderboard Snippet -->
+    <div class="leaderboard-section">
+      <div class="lb-title">Top creators this week</div>
+      <div class="lb-card">
+        <div class="lb-row highlight">
+          <div class="lb-rank gold">1</div>
+          <div class="lb-avatar" style="background:var(--purple)">N</div>
+          <div class="lb-info">
+            <div class="lb-handle">@naijacontent</div>
+            <div class="lb-sends">3,841 sends this week</div>
+          </div>
+          <div class="lb-delta up">▲ +2</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank">2</div>
+          <div class="lb-avatar" style="background:#9333EA">M</div>
+          <div class="lb-info">
+            <div class="lb-handle">@memequeen</div>
+            <div class="lb-sends">2,104 sends</div>
+          </div>
+          <div class="lb-delta same">→ same</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank">3</div>
+          <div class="lb-avatar" style="background:#0284C7">D</div>
+          <div class="lb-info">
+            <div class="lb-handle">@danceking</div>
+            <div class="lb-sends">1,847 sends</div>
+          </div>
+          <div class="lb-delta up">▲ +1</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank">4</div>
+          <div class="lb-avatar" style="background:#059669">L</div>
+          <div class="lb-info">
+            <div class="lb-handle">@laughmaster</div>
+            <div class="lb-sends">1,203 sends</div>
+          </div>
+          <div class="lb-delta down">▼ -1</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-rank">5</div>
+          <div class="lb-avatar" style="background:#374151">S</div>
+          <div class="lb-info">
+            <div class="lb-handle">@sadvibes_ng</div>
+            <div class="lb-sends">891 sends</div>
+          </div>
+          <div class="lb-delta same">→ same</div>
+        </div>
+        <div class="lb-footer">
+          <a href="22-trending.html">View full leaderboard →</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo">whamr.</div>
+        <div class="footer-tagline">Find the perfect meme. Send the wham. Built for the internet.</div>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Explore</h4>
+          <ul>
+            <li><a href="06-explore.html">Trending</a></li>
+            <li><a href="06-explore.html">Categories</a></li>
+            <li><a href="10-dojos.html">Dojos</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Careers</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Terms</a></li>
+            <li><a href="#">Privacy</a></li>
+            <li><a href="#">Content Policy</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2025 whamr. All rights reserved.</span>
+      <div class="footer-bl">
+        <a href="#">Status</a>
+        <a href="#">API</a>
+        <a href="27-help.html">Help</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="./real-media.js"></script>
+</body>
+</html>
