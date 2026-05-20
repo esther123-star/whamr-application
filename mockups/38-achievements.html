@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Achievements · Whamr</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:#FFFAF5; --bg-alt:#FFF3E8; --card:#FFFFFF;
+      --ink:#1A0F00; --ink-soft:#4A3020; --ink-mute:#8A7060;
+      --line:#F0DDD0; --line-soft:#FBF0E8;
+      --purple:#FF4500; --purple-mid:#FF6B35; --purple-dark:#CC3700; --purple-soft:#FFF1EC;
+      --wham:#FFB800; --wham-soft:#FFF8DC;
+      --green:#00C853; --green-soft:#E8FFF0;
+      --gray-100:#F3F4F6; --gray-400:#9CA3AF; --gray-500:#6B7280; --gray-700:#374151;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      height: 64px;
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      padding: 0 32px;
+      gap: 32px;
+    }
+
+    .nav-logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--purple);
+      text-decoration: none;
+      margin-right: 8px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 4px;
+      flex: 1;
+    }
+
+    .nav-links a {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ink-soft);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .nav-links a:hover {
+      background: var(--bg-alt);
+      color: var(--ink);
+    }
+
+    .nav-icons {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+    }
+
+    .nav-icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--bg-alt);
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+
+    .nav-icon-btn:hover { background: var(--line); }
+
+    .nav-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--purple);
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    /* MAIN LAYOUT */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    /* PAGE HEADER */
+    .page-eyebrow {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: 8px;
+    }
+
+    .page-h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 40px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 12px;
+      line-height: 1.15;
+    }
+
+    .page-sub {
+      font-size: 16px;
+      color: var(--ink-soft);
+      max-width: 560px;
+      line-height: 1.6;
+      margin-bottom: 40px;
+    }
+
+    /* STATS STRIP */
+    .stats-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .stat-icon {
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+
+    .stat-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--ink-mute);
+      margin-top: 3px;
+    }
+
+    .stat-card.streak .stat-value { color: var(--purple); }
+
+    /* STREAK CARD */
+    .streak-card {
+      background: linear-gradient(135deg, #FF4500 0%, #FF6B35 50%, #FFB800 100%);
+      border-radius: 20px;
+      padding: 36px 40px;
+      margin-bottom: 40px;
+      display: flex;
+      align-items: flex-start;
+      gap: 32px;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .streak-card::before {
+      content: '';
+      position: absolute;
+      top: -40px;
+      right: -40px;
+      width: 200px;
+      height: 200px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50%;
+    }
+
+    .streak-card::after {
+      content: '';
+      position: absolute;
+      bottom: -60px;
+      right: 80px;
+      width: 150px;
+      height: 150px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 50%;
+    }
+
+    .streak-big-icon {
+      font-size: 64px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .streak-content { flex: 1; position: relative; z-index: 1; }
+
+    .streak-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 52px;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .streak-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      opacity: 0.92;
+    }
+
+    .streak-desc {
+      font-size: 14px;
+      opacity: 0.82;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .streak-circles {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .streak-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .streak-circle.filled {
+      background: rgba(255,255,255,0.9);
+      border-color: transparent;
+      color: var(--purple);
+    }
+
+    .streak-circle.empty {
+      background: rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.5);
+    }
+
+    .streak-hint {
+      font-size: 13px;
+      opacity: 0.85;
+      margin-bottom: 16px;
+    }
+
+    .streak-milestones {
+      display: flex;
+      gap: 16px;
+    }
+
+    .streak-milestone {
+      background: rgba(255,255,255,0.15);
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    /* SECTION HEADINGS */
+    .section-heading {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+
+    .section-sub {
+      font-size: 13px;
+      color: var(--ink-mute);
+      margin-bottom: 24px;
+    }
+
+    /* BADGE GRID */
+    .badge-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .badge-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px 20px 20px;
+      text-align: center;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+
+    .badge-card:hover {
+      box-shadow: 0 4px 20px rgba(255,69,0,0.1);
+      transform: translateY(-2px);
+    }
+
+    .badge-card.locked {
+      opacity: 0.55;
+      filter: grayscale(0.5);
+    }
+
+    .badge-card.locked:hover {
+      opacity: 0.7;
+      filter: grayscale(0.3);
+    }
+
+    .badge-emoji {
+      font-size: 40px;
+      margin-bottom: 10px;
+      display: block;
+      line-height: 1;
+    }
+
+    .badge-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 5px;
+    }
+
+    .badge-desc {
+      font-size: 12px;
+      color: var(--ink-soft);
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+
+    .badge-date {
+      font-size: 11px;
+      color: var(--ink-mute);
+      font-style: italic;
+    }
+
+    .badge-earned-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      background: var(--green);
+      border-radius: 50%;
+      margin-right: 4px;
+      vertical-align: middle;
+    }
+
+    /* PROGRESS BAR */
+    .badge-progress-label {
+      font-size: 11px;
+      color: var(--ink-mute);
+      margin-bottom: 5px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .progress-bar-track {
+      background: var(--gray-100);
+      border-radius: 4px;
+      height: 6px;
+      overflow: hidden;
+      margin-bottom: 4px;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(90deg, var(--purple), var(--purple-mid));
+    }
+
+    .progress-bar-fill.yellow { background: linear-gradient(90deg, var(--wham), #FFCA28); }
+
+    .badge-cta-link {
+      font-size: 11px;
+      color: var(--purple);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .badge-cta-link:hover { text-decoration: underline; }
+
+    .badge-requires {
+      font-size: 10px;
+      color: var(--gray-400);
+      margin-top: 4px;
+      background: var(--gray-100);
+      border-radius: 4px;
+      padding: 2px 6px;
+      display: inline-block;
+    }
+
+    .tier-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      margin: 32px 0 12px;
+    }
+
+    /* SECRET BADGE SECTION */
+    .secret-card {
+      background: #1A0F00;
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin: 32px 0;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .secret-icon { font-size: 36px; flex-shrink: 0; }
+
+    .secret-text {
+      font-size: 16px;
+      color: rgba(255,255,255,0.85);
+      line-height: 1.5;
+    }
+
+    .secret-text strong { color: #fff; }
+
+    /* RECENTLY UNLOCKED */
+    .recent-section {
+      margin-top: 48px;
+    }
+
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .timeline-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--line-soft);
+      position: relative;
+    }
+
+    .timeline-item:last-child { border-bottom: none; }
+
+    .timeline-badge {
+      font-size: 28px;
+      flex-shrink: 0;
+      width: 48px;
+      height: 48px;
+      background: var(--purple-soft);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .timeline-content { flex: 1; }
+
+    .timeline-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 3px;
+    }
+
+    .timeline-title span {
+      color: var(--purple);
+      background: var(--purple-soft);
+      border-radius: 6px;
+      padding: 1px 7px;
+      font-size: 13px;
+    }
+
+    .timeline-detail {
+      font-size: 13px;
+      color: var(--ink-soft);
+      margin-top: 3px;
+      font-style: italic;
+    }
+
+    .timeline-time {
+      font-size: 12px;
+      color: var(--ink-mute);
+      flex-shrink: 0;
+      margin-top: 3px;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--line);
+      background: var(--card);
+      padding: 24px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--ink-mute);
+    }
+
+    footer a {
+      color: var(--ink-mute);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    footer a:hover { color: var(--purple); }
+
+    .footer-logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      color: var(--purple);
+      font-size: 16px;
+    }
+
+    @media (max-width: 900px) {
+      .badge-grid { grid-template-columns: repeat(2, 1fr); }
+      .stats-strip { grid-template-columns: repeat(2, 1fr); }
+      .streak-card { flex-direction: column; gap: 16px; }
+      .streak-big-icon { font-size: 48px; }
+      .streak-number { font-size: 40px; }
+    }
+
+    @media (max-width: 540px) {
+      .badge-grid { grid-template-columns: 1fr 1fr; }
+      nav { padding: 0 16px; gap: 12px; }
+      main { padding: 28px 16px 60px; }
+      .page-h1 { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="01-landing.html" class="nav-logo">whamr.</a>
+    <div class="nav-links">
+      <a href="01-landing.html">Home</a>
+      <a href="02-memes-browser.html">Memes</a>
+      <a href="06-explore.html">Explore</a>
+      <a href="22-trending.html">Trending</a>
+      <a href="10-dojos.html">Dojos</a>
+      <a href="12-analytics.html">Creator</a>
+    </div>
+    <div class="nav-icons">
+      <a href="08-notifications.html" class="nav-icon-btn" title="Notifications">🔔</a>
+      <a href="09-messages.html" class="nav-icon-btn" title="Messages">💬</a>
+      <a href="07-user-profile.html" class="nav-avatar" title="Profile">H</a>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- PAGE HEADER -->
+    <div class="page-eyebrow">Your Progress</div>
+    <h1 class="page-h1">Achievements</h1>
+    <p class="page-sub">Earn badges by sending, saving, creating, and connecting. Some are secret — discover them yourself.</p>
+
+    <!-- STATS STRIP -->
+    <div class="stats-strip">
+      <div class="stat-card">
+        <div class="stat-icon">🏅</div>
+        <div>
+          <div class="stat-value">12</div>
+          <div class="stat-label">badges earned</div>
+        </div>
+      </div>
+      <div class="stat-card streak">
+        <div class="stat-icon">🔥</div>
+        <div>
+          <div class="stat-value">7</div>
+          <div class="stat-label">day streak</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📤</div>
+        <div>
+          <div class="stat-value">63</div>
+          <div class="stat-label">total sends</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div>
+          <div class="stat-value">8</div>
+          <div class="stat-label">followers</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STREAK CARD -->
+    <div class="streak-card">
+      <div class="streak-big-icon">🔥</div>
+      <div class="streak-content">
+        <div class="streak-number">7-day streak</div>
+        <div class="streak-title">You're on fire this week.</div>
+        <div class="streak-desc">You've opened and sent a meme every day this week.</div>
+        <div class="streak-circles">
+          <div class="streak-circle filled">1</div>
+          <div class="streak-circle filled">2</div>
+          <div class="streak-circle filled">3</div>
+          <div class="streak-circle filled">4</div>
+          <div class="streak-circle filled">5</div>
+          <div class="streak-circle filled">6</div>
+          <div class="streak-circle filled">7</div>
+          <div class="streak-circle empty">8</div>
+          <div class="streak-circle empty">9</div>
+          <div class="streak-circle empty">10</div>
+        </div>
+        <div class="streak-hint">3 more days to unlock the 'Hot Streak' badge 🔥</div>
+        <div class="streak-milestones">
+          <div class="streak-milestone">10 days → 🔥 Hot Streak</div>
+          <div class="streak-milestone">30 days → 🔥 Unstoppable</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EARNED BADGES -->
+    <div class="section-heading">Earned Badges</div>
+    <div class="section-sub">12 badges unlocked · Keep going to earn more</div>
+
+    <div class="tier-label">Sender tier</div>
+    <div class="badge-grid">
+
+      <div class="badge-card">
+        <span class="badge-emoji">📤</span>
+        <div class="badge-name">First Send</div>
+        <div class="badge-desc">Sent your first meme</div>
+        <div class="badge-date"><span class="badge-earned-dot"></span>Earned 4 months ago</div>
+      </div>
+
+      <div class="badge-card">
+        <span class="badge-emoji">📤</span>
+        <div class="badge-name">Send Machine</div>
+        <div class="badge-desc">50 total sends</div>
+        <div class="badge-date"><span class="badge-earned-dot"></span>Earned 3 months ago</div>
+      </div>
+
+      <div class="badge-card">
+        <span class="badge-emoji">📤</span>
+        <div class="badge-name">Wham Pro</div>
+        <div class="badge-desc">500 sends across all platforms</div>
+        <div class="badge-date"><span class="badge-earned-dot"></span>Earned 1 month ago</div>
+      </div>
+
+    </div>
+
+    <div class="tier-label">Content tier</div>
+    <div class="badge-grid">
+
+      <div class="badge-card">
+        <span class="badge-emoji">⬆️</span>
+        <div class="badge-name">Uploader</div>
+        <div class="badge-desc">Uploaded your first meme</div>
+        <div class="badge-date"><span class="badge-earned-dot"></span>Earned 3 months ago</div>
+      </div>
+
+      <div class="badge-card">
+        <span class="badge-emoji">⬆️</span>
+        <div class="badge-name">Content Creator</div>
+        <div class="badge-desc">10 uploads</div>
+        <div class="badge-date"><span class="badge-earned-dot"></span>Earned 2 months ago</div>
+      </div>
+
+      <div class="badge-card">
+        <span class="badge-emoji">⬆️</span>
+        <div class="badge-name">Prolific</div>
+        <div class="badge-desc">50 uploads</div>
+        <div class="badge-date"><span class="badge-earned-dot"></span>Earned 3 weeks ago</div>
+      </div>
+
+    </div>
+
+    <div class="tier-label">Social tier</div>
+    <div class="badge-grid">
+
+      <div class="badge-card">
+        <span class="badge-emoji">❤️</span>
+        <div class="badge-name">Heartbreaker</div>
+        <div class="badge-desc">Saved 25 memes</div>
+        <div class="badge-date"><span class="badge-earned-dot"></span>Earned 3 months ago</div>
+      </div>
+
+      <div class="badge-card">
+        <span class="badge-emoji">🥋</span>
+        <div class="badge-name">Dojo Member</div>
+        <div class="badge-desc">Joined your first Dojo</div>
+        <div class="badge-date"><span class="badge-earned-dot"></span>Earned 2 months ago</div>
+      </div>
+
+      <div class="badge-card">
+        <span class="badge-emoji">⚔️</span>
+        <div class="badge-name">Battle Veteran</div>
+        <div class="badge-desc">Participated in 5 battles</div>
+        <div class="badge-date"><span class="badge-earned-dot"></span>Earned 1 month ago</div>
+      </div>
+
+    </div>
+
+    <div class="tier-label">Creator tier</div>
+    <div class="badge-grid">
+
+      <div class="badge-card">
+        <span class="badge-emoji">✅</span>
+        <div class="badge-name">Naija Voice</div>
+        <div class="badge-desc">Uploaded 10 Naija category memes</div>
+        <div class="badge-date"><span class="badge-earned-dot"></span>Earned 1 month ago</div>
+      </div>
+
+      <div class="badge-card">
+        <span class="badge-emoji">🏆</span>
+        <div class="badge-name">Challenge Winner</div>
+        <div class="badge-desc">Won a Daily Challenge</div>
+        <div class="badge-date"><span class="badge-earned-dot"></span>Earned 2 weeks ago</div>
+      </div>
+
+      <div class="badge-card">
+        <span class="badge-emoji">🔥</span>
+        <div class="badge-name">Trending</div>
+        <div class="badge-desc">A meme you uploaded reached #1 trending</div>
+        <div class="badge-date"><span class="badge-earned-dot"></span>Earned 1 week ago</div>
+      </div>
+
+    </div>
+
+    <!-- LOCKED BADGES -->
+    <div class="section-heading" style="margin-top: 48px;">Locked Badges</div>
+    <div class="section-sub">8 badges still to unlock — you're making progress on several</div>
+
+    <div class="badge-grid">
+
+      <div class="badge-card locked">
+        <span class="badge-emoji">🔥</span>
+        <div class="badge-name">Hot Streak 🔒</div>
+        <div class="badge-desc">10-day streak</div>
+        <div class="badge-progress-label">7 / 10 days</div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" style="width:70%;"></div>
+        </div>
+      </div>
+
+      <div class="badge-card locked">
+        <span class="badge-emoji">🌍</span>
+        <div class="badge-name">Global Sender 🔒</div>
+        <div class="badge-desc">Share to 5 different platforms</div>
+        <div class="badge-progress-label">3 / 5 platforms</div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" style="width:60%;"></div>
+        </div>
+      </div>
+
+      <div class="badge-card locked">
+        <span class="badge-emoji">👑</span>
+        <div class="badge-name">Whamr Legend 🔒</div>
+        <div class="badge-desc">1,000 total sends</div>
+        <div class="badge-progress-label">63 / 1,000 sends</div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" style="width:7%;"></div>
+        </div>
+      </div>
+
+      <div class="badge-card locked">
+        <span class="badge-emoji">🥇</span>
+        <div class="badge-name">Triple Crown 🔒</div>
+        <div class="badge-desc">Win 3 Daily Challenges</div>
+        <div class="badge-progress-label">1 / 3 wins</div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill yellow" style="width:33%;"></div>
+        </div>
+      </div>
+
+      <div class="badge-card locked">
+        <span class="badge-emoji">🤝</span>
+        <div class="badge-name">Community Builder 🔒</div>
+        <div class="badge-desc">Refer 3 friends who join</div>
+        <div class="badge-progress-label">1 / 3 referrals</div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill yellow" style="width:33%;"></div>
+        </div>
+      </div>
+
+      <div class="badge-card locked">
+        <span class="badge-emoji">📦</span>
+        <div class="badge-name">Pack Publisher 🔒</div>
+        <div class="badge-desc">Publish a WhatsApp sticker pack</div>
+        <div class="badge-progress-label">0% complete</div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" style="width:0%;"></div>
+        </div>
+        <div class="badge-requires">Requires Creator plan</div>
+      </div>
+
+      <div class="badge-card locked">
+        <span class="badge-emoji">🌟</span>
+        <div class="badge-name">Verified Creator 🔒</div>
+        <div class="badge-desc">Get your ✓ badge on Whamr</div>
+        <div style="margin-top:10px;">
+          <a href="34-creator-verify.html" class="badge-cta-link">Apply for verification →</a>
+        </div>
+      </div>
+
+      <div class="badge-card locked">
+        <span class="badge-emoji">🎭</span>
+        <div class="badge-name">Category Master 🔒</div>
+        <div class="badge-desc">Upload 5 memes in every category</div>
+        <div class="badge-progress-label">4 / 11 categories</div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" style="width:36%;"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SECRET BADGES -->
+    <div class="secret-card">
+      <div class="secret-icon">🕵️</div>
+      <div class="secret-text">
+        <strong>3 secret badges remain undiscovered.</strong> Keep sending, exploring, and connecting to unlock them. Some badges only appear when you least expect it.
+      </div>
+    </div>
+
+    <!-- RECENTLY UNLOCKED -->
+    <div class="recent-section">
+      <div class="section-heading">Recently Unlocked</div>
+      <div class="section-sub">Your last 3 badge milestones</div>
+
+      <div class="timeline">
+
+        <div class="timeline-item">
+          <div class="timeline-badge">🔥</div>
+          <div class="timeline-content">
+            <div class="timeline-title">
+              <span>Trending</span> badge unlocked
+            </div>
+            <div class="timeline-detail">"Your meme 'Big Laugh — Jide Kosoko' hit #1 trending"</div>
+          </div>
+          <div class="timeline-time">1 week ago</div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-badge">🏆</div>
+          <div class="timeline-content">
+            <div class="timeline-title">
+              <span>Challenge Winner</span> badge unlocked
+            </div>
+            <div class="timeline-detail">"Won Friday's Naija Reaction challenge"</div>
+          </div>
+          <div class="timeline-time">2 weeks ago</div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-badge">⬆️</div>
+          <div class="timeline-content">
+            <div class="timeline-title">
+              <span>Prolific</span> badge unlocked
+            </div>
+            <div class="timeline-detail">"50th upload reached"</div>
+          </div>
+          <div class="timeline-time">3 weeks ago</div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="footer-logo">whamr.</span>
+    <span>© 2026 Whamr · Global meme platform</span>
+    <a href="27-help.html">Help</a>
+  </footer>
+
+  <script src="./real-media.js"></script>
+</body>
+</html>

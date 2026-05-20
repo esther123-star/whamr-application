@@ -1,0 +1,898 @@
+<!-- FILE: 40-stories.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stories · Whamr</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#FFFAF5; --bg-alt:#FFF3E8; --card:#FFFFFF;
+  --ink:#1A0F00; --ink-soft:#4A3020; --ink-mute:#8A7060;
+  --line:#F0DDD0; --line-soft:#FBF0E8;
+  --purple:#FF4500; --purple-mid:#FF6B35; --purple-dark:#CC3700; --purple-soft:#FFF1EC;
+  --wham:#FFB800; --wham-soft:#FFF8DC;
+  --green:#00C853; --green-soft:#E8FFF0;
+  --gray-100:#F3F4F6; --gray-400:#9CA3AF; --gray-500:#6B7280; --gray-700:#374151;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;font-size:15px;background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;border:none;background:none;font-family:inherit}
+img{display:block;max-width:100%}
+
+/* ── NAV ── */
+.nav{
+  height:64px;background:#fff;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;padding:0 28px;gap:12px;
+  position:sticky;top:0;z-index:200;
+}
+.nav-logo{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;
+  font-size:22px;letter-spacing:-0.05em;color:var(--purple);
+  flex-shrink:0;margin-right:4px;
+}
+.nav-links{display:flex;align-items:center;gap:2px;margin-left:8px}
+.nav-link{
+  font-size:14px;font-weight:500;color:var(--gray-700);
+  padding:6px 11px;border-radius:8px;transition:background 0.15s,color 0.15s;white-space:nowrap;
+}
+.nav-link:hover{background:var(--purple-soft);color:var(--purple)}
+.nav-link.active{background:var(--purple-soft);color:var(--purple);font-weight:600}
+.nav-search-wrap{flex:1;max-width:380px;margin:0 auto;position:relative}
+.nav-search-wrap input{
+  width:100%;padding:9px 16px 9px 40px;
+  border:1.5px solid var(--line);border-radius:50px;
+  font-family:'Inter',sans-serif;font-size:14px;color:var(--ink);background:#fff;outline:none;
+}
+.nav-search-wrap input:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(255,69,0,0.12)}
+.nav-search-wrap input::placeholder{color:var(--gray-400)}
+.nav-search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--gray-400)}
+.nav-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.nav-icon-btn{
+  width:38px;height:38px;border-radius:9px;background:var(--gray-100);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;position:relative;
+}
+.nav-badge{
+  position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;
+  border-radius:9px;border:2px solid #fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;padding:0 4px;
+}
+.badge-red{background:#FF2D55;color:#fff}
+.badge-blue{background:#2563EB;color:#fff}
+.nav-avatar{
+  width:36px;height:36px;border-radius:50%;
+  background:linear-gradient(135deg,var(--purple-dark) 0%,var(--purple-mid) 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;color:#fff;font-weight:700;cursor:pointer;
+  border:2px solid var(--purple-soft);flex-shrink:0;
+}
+
+/* ── STORIES STRIP ── */
+.stories-strip-wrap{
+  background:#fff;border-bottom:1px solid var(--line);
+  position:sticky;top:64px;z-index:150;
+}
+.stories-strip{
+  max-width:1200px;margin:0 auto;padding:14px 28px;
+  display:flex;align-items:flex-start;gap:16px;
+  overflow-x:auto;scrollbar-width:none;
+}
+.stories-strip::-webkit-scrollbar{display:none}
+
+.story-bubble{
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  cursor:pointer;flex-shrink:0;width:64px;
+}
+.story-bubble:hover .bubble-ring{transform:scale(1.05)}
+.bubble-ring{
+  width:56px;height:56px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  padding:2px;transition:transform 0.15s;
+}
+.ring-orange{background:conic-gradient(var(--purple) 0%, var(--purple-mid) 100%)}
+.ring-gray{background:var(--gray-400)}
+.ring-dashed{
+  background:none;
+  border:2px dashed var(--purple-mid);
+  padding:3px;
+}
+.bubble-avatar{
+  width:48px;height:48px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;border:2.5px solid #fff;overflow:hidden;
+  background:var(--bg-alt);
+}
+.bubble-avatar.add-btn{
+  background:var(--purple-soft);font-size:20px;color:var(--purple);
+  border-color:var(--purple-soft);
+}
+.avatar-text{
+  width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;color:#fff;
+}
+.av-nc{background:linear-gradient(135deg,#FF4500,#FF6B35)}
+.av-dk{background:linear-gradient(135deg,#6B35FF,#9B65FF)}
+.av-mq{background:linear-gradient(135deg,#FF35A0,#FF65C0)}
+.av-lm{background:linear-gradient(135deg,#374151,#6B7280)}
+.av-sv{background:linear-gradient(135deg,#00C853,#00A844)}
+.av-nf{background:linear-gradient(135deg,#374151,#6B7280)}
+.av-sm{background:linear-gradient(135deg,#2563EB,#3B82F6)}
+.bubble-name{
+  font-size:11px;font-weight:500;color:var(--ink-soft);
+  text-align:center;max-width:60px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.2;
+}
+.bubble-name.watched{color:var(--gray-400)}
+
+/* ── LAYOUT ── */
+.container{max-width:1200px;margin:0 auto;padding:0 28px}
+.page-body{padding:32px 0 80px}
+
+/* ── ACTIVE STORY VIEWER ── */
+.viewer-section{margin-bottom:40px;display:flex;flex-direction:column;align-items:center}
+.section-label{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;
+  text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-mute);
+  margin-bottom:16px;width:100%;max-width:800px;
+  display:flex;align-items:center;gap:10px;
+}
+.section-label::after{content:'';flex:1;height:1px;background:var(--line)}
+
+.story-viewer{
+  width:100%;max-width:800px;background:#1A0F00;border-radius:20px;
+  overflow:hidden;border:1px solid rgba(255,255,255,0.06);
+  box-shadow:0 24px 64px rgba(0,0,0,0.3);
+}
+
+/* Progress bars */
+.viewer-progress{
+  display:flex;gap:4px;padding:14px 16px 10px;
+}
+.progress-seg{
+  flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,0.2);overflow:hidden;
+}
+.progress-seg.filled{background:var(--purple)}
+.progress-seg.active{background:rgba(255,255,255,0.2);overflow:hidden}
+.progress-seg.active::after{
+  content:'';display:block;width:55%;height:100%;
+  background:var(--purple);border-radius:2px;
+}
+
+/* Creator row */
+.viewer-creator-row{
+  display:flex;align-items:center;gap:10px;padding:0 16px 12px;
+}
+.viewer-av{
+  width:38px;height:38px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;color:#fff;
+}
+.viewer-creator-info{flex:1}
+.viewer-creator-name{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;color:#fff;
+  display:flex;align-items:center;gap:5px;
+}
+.viewer-verified{color:var(--purple-mid);font-size:13px}
+.viewer-meta{font-size:12px;color:rgba(255,255,255,0.5);display:flex;align-items:center;gap:10px}
+.meta-dot{width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,0.3)}
+.viewer-close{
+  width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.1);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;color:rgba(255,255,255,0.7);cursor:pointer;
+  transition:background 0.15s;flex-shrink:0;
+}
+.viewer-close:hover{background:rgba(255,255,255,0.2)}
+
+/* Content area */
+.viewer-content{
+  margin:0 16px;border-radius:14px;overflow:hidden;
+  height:400px;position:relative;
+  background:linear-gradient(160deg,#CC3700 0%,#FF6B35 50%,#FFB800 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:12px;
+}
+.viewer-content-emoji{font-size:64px;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.3))}
+.viewer-content-title{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:28px;
+  color:#fff;text-align:center;text-shadow:0 2px 12px rgba(0,0,0,0.4);
+  padding:0 24px;
+}
+.viewer-content-sub{
+  font-size:14px;color:rgba(255,255,255,0.88);text-align:center;
+  padding:0 32px;line-height:1.5;text-shadow:0 1px 8px rgba(0,0,0,0.3);
+  max-width:420px;
+}
+.viewer-nav-left,
+.viewer-nav-right{
+  position:absolute;top:50%;transform:translateY(-50%);
+  width:44px;height:44px;border-radius:50%;
+  background:rgba(0,0,0,0.35);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;color:#fff;cursor:pointer;
+  transition:background 0.15s;backdrop-filter:blur(4px);
+}
+.viewer-nav-left{left:12px}
+.viewer-nav-right{right:12px}
+.viewer-nav-left:hover,.viewer-nav-right:hover{background:rgba(0,0,0,0.55)}
+
+/* Bottom actions */
+.viewer-actions{padding:14px 16px 16px;display:flex;align-items:center;gap:10px}
+.react-buttons{display:flex;gap:6px}
+.react-btn{
+  width:40px;height:40px;border-radius:50%;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.12);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;cursor:pointer;transition:background 0.15s,transform 0.1s;
+}
+.react-btn:hover{background:rgba(255,255,255,0.18);transform:scale(1.15)}
+.viewer-reply-input{
+  flex:1;padding:10px 14px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.15);
+  border-radius:50px;
+  font-family:'Inter',sans-serif;font-size:13px;
+  color:rgba(255,255,255,0.7);outline:none;
+}
+.viewer-reply-input::placeholder{color:rgba(255,255,255,0.4)}
+.viewer-reply-input:focus{border-color:var(--purple-mid);background:rgba(255,255,255,0.12)}
+.btn-send-story{
+  padding:10px 18px;border-radius:50px;
+  background:var(--purple);color:#fff;
+  font-size:13px;font-weight:600;font-family:'Space Grotesk',sans-serif;
+  border:none;cursor:pointer;white-space:nowrap;
+  transition:background 0.15s;
+}
+.btn-send-story:hover{background:var(--purple-dark)}
+
+/* Viewer nav row */
+.viewer-nav-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 16px 14px;border-top:1px solid rgba(255,255,255,0.06);
+}
+.viewer-prev,.viewer-next{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:13px;font-weight:600;color:rgba(255,255,255,0.6);
+  cursor:pointer;padding:6px 12px;border-radius:8px;
+  transition:background 0.15s,color 0.15s;
+}
+.viewer-prev:hover,.viewer-next:hover{background:rgba(255,255,255,0.08);color:#fff}
+.viewer-story-counter{
+  font-family:'JetBrains Mono',monospace;font-size:12px;
+  color:rgba(255,255,255,0.35);
+}
+
+/* ── MY STORY SECTION ── */
+.my-story-section{margin-bottom:40px}
+.section-heading{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;
+  color:var(--ink);margin-bottom:16px;letter-spacing:-0.02em;
+}
+
+.my-story-card{
+  background:#fff;border:1px solid var(--line);border-radius:16px;
+  padding:24px;display:flex;align-items:flex-start;gap:20px;
+}
+.my-story-thumb{
+  width:80px;height:100px;border-radius:12px;flex-shrink:0;
+  background:linear-gradient(135deg,#FF4500,#FFB800);
+  display:flex;align-items:center;justify-content:center;font-size:32px;
+}
+.my-story-info{flex:1}
+.my-story-title{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;
+  color:var(--ink);margin-bottom:4px;
+}
+.my-story-time{font-size:13px;color:var(--ink-mute);margin-bottom:12px}
+.my-story-viewers{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.viewers-count{
+  font-family:'JetBrains Mono',monospace;font-weight:600;font-size:14px;
+  color:var(--purple);display:flex;align-items:center;gap:5px;
+}
+.viewer-avatars{display:flex}
+.viewer-avatar-sm{
+  width:24px;height:24px;border-radius:50%;border:2px solid #fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;color:#fff;margin-left:-6px;font-family:'Space Grotesk',sans-serif;
+}
+.viewer-avatar-sm:first-child{margin-left:0}
+.my-story-actions{display:flex;gap:8px}
+.btn-story-action{
+  padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600;
+  font-family:'Space Grotesk',sans-serif;cursor:pointer;transition:all 0.15s;
+}
+.btn-edit{background:var(--purple-soft);color:var(--purple);border:1px solid rgba(255,69,0,0.2)}
+.btn-edit:hover{background:var(--purple);color:#fff}
+.btn-archive{background:var(--gray-100);color:var(--gray-700);border:1px solid var(--line)}
+.btn-archive:hover{background:var(--gray-700);color:#fff}
+.btn-delete{background:#fff;color:#FF2D55;border:1px solid #FFDDE4}
+.btn-delete:hover{background:#FF2D55;color:#fff}
+
+/* No story yet */
+.add-story-card{
+  background:#fff;border:2px dashed var(--line);border-radius:16px;
+  padding:32px;text-align:center;display:none;
+}
+.add-story-icon{font-size:48px;margin-bottom:12px}
+.add-story-title{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;
+  color:var(--ink);margin-bottom:6px;
+}
+.add-story-sub{font-size:14px;color:var(--ink-mute);max-width:340px;margin:0 auto 20px;line-height:1.5}
+.btn-add-story{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:11px 22px;border-radius:10px;
+  background:var(--purple);color:#fff;
+  font-size:14px;font-weight:700;font-family:'Space Grotesk',sans-serif;
+  border:none;cursor:pointer;transition:background 0.15s;margin-bottom:16px;
+}
+.btn-add-story:hover{background:var(--purple-dark)}
+.story-options{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+.story-option-btn{
+  padding:8px 14px;border-radius:8px;background:var(--bg-alt);
+  font-size:13px;font-weight:500;color:var(--ink-soft);
+  border:1px solid var(--line);cursor:pointer;transition:all 0.15s;
+}
+.story-option-btn:hover{background:var(--purple-soft);color:var(--purple);border-color:rgba(255,69,0,0.2)}
+
+/* ── CREATOR GRID SECTION ── */
+.grid-section{margin-bottom:40px}
+.story-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:14px;
+}
+
+.story-card{
+  width:100%;aspect-ratio:4/5;border-radius:14px;overflow:hidden;
+  position:relative;cursor:pointer;
+  transition:transform 0.15s,box-shadow 0.15s;
+  border:3px solid transparent;
+}
+.story-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,0.15)}
+.story-card.unwatched{border-color:var(--purple)}
+.story-card.add-prompt{
+  background:none;border:2px dashed var(--line);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:8px;
+}
+.story-card.add-prompt:hover{border-color:var(--purple);background:var(--purple-soft)}
+.add-prompt-icon{font-size:36px}
+.add-prompt-text{
+  font-size:13px;font-weight:600;font-family:'Space Grotesk',sans-serif;
+  color:var(--ink-mute);text-align:center;
+}
+.add-prompt:hover .add-prompt-text{color:var(--purple)}
+
+.sc-bg{width:100%;height:100%;position:absolute;inset:0}
+.sc-bg-1{background:linear-gradient(160deg,#CC3700,#FF6B35,#FFB800)}
+.sc-bg-2{background:linear-gradient(160deg,#6B35FF,#9B65FF,#C89FFF)}
+.sc-bg-3{background:linear-gradient(160deg,#FF35A0,#FF6B35,#FFD60A)}
+.sc-bg-4{background:linear-gradient(160deg,#00C853,#00A844,#007A30)}
+.sc-bg-5{background:linear-gradient(160deg,#2563EB,#3B82F6,#60A5FA)}
+.sc-bg-6{background:linear-gradient(160deg,#7C3AED,#A78BFA,#C4B5FD)}
+.sc-bg-7{background:linear-gradient(160deg,#DC2626,#F87171,#FCA5A5)}
+
+.sc-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.7) 100%);
+  display:flex;flex-direction:column;justify-content:space-between;padding:10px;
+}
+.sc-top{display:flex;align-items:flex-start;justify-content:space-between}
+.sc-avatar{
+  width:32px;height:32px;border-radius:50%;border:2px solid #fff;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:12px;color:#fff;
+}
+.sc-badges{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.sc-time-badge{
+  background:rgba(0,0,0,0.55);color:#fff;
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;
+  padding:3px 7px;border-radius:6px;white-space:nowrap;backdrop-filter:blur(4px);
+}
+.sc-expiring{background:var(--purple);color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;letter-spacing:0.05em;font-family:'Space Grotesk',sans-serif;text-transform:uppercase}
+
+.sc-bottom{display:flex;flex-direction:column;gap:2px}
+.sc-name{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,0.5)}
+.sc-views{
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(255,255,255,0.7);
+  display:flex;align-items:center;gap:4px;
+}
+
+/* ── STORY STATS SECTION ── */
+.stats-section{margin-bottom:40px}
+.story-stats-card{
+  background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;
+}
+.stats-header{
+  padding:20px 24px 16px;border-bottom:1px solid var(--line-soft);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.stats-header-title{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;
+  color:var(--ink);letter-spacing:-0.02em;
+}
+.stats-body{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+.stat-item{
+  padding:20px 24px;border-right:1px solid var(--line-soft);
+  display:flex;flex-direction:column;gap:4px;
+}
+.stat-item:last-child{border-right:none}
+.stat-label{font-size:12px;font-weight:500;color:var(--ink-mute);text-transform:uppercase;letter-spacing:0.05em}
+.stat-value{
+  font-family:'JetBrains Mono',monospace;font-weight:700;font-size:28px;
+  color:var(--purple);line-height:1;
+}
+.stat-sub{font-size:12px;color:var(--ink-mute);margin-top:2px}
+.stats-footer{
+  padding:16px 24px;border-top:1px solid var(--line-soft);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.stats-most-viewed{
+  display:flex;align-items:center;gap:10px;
+}
+.stats-mv-label{font-size:12px;color:var(--ink-mute);font-weight:500}
+.stats-mv-title{
+  font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px;color:var(--ink);
+}
+.stats-mv-count{
+  font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--purple);
+}
+.btn-create-story{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:10px 20px;border-radius:10px;
+  background:var(--purple);color:#fff;
+  font-size:14px;font-weight:700;font-family:'Space Grotesk',sans-serif;
+  border:none;cursor:pointer;transition:background 0.15s;white-space:nowrap;
+}
+.btn-create-story:hover{background:var(--purple-dark)}
+
+/* ── FOOTER ── */
+.footer{background:var(--ink);color:rgba(255,255,255,0.6);padding:40px 0 24px;margin-top:64px}
+.footer-inner{max-width:1200px;margin:0 auto;padding:0 28px}
+.footer-top{display:flex;align-items:flex-start;justify-content:space-between;gap:32px;margin-bottom:32px}
+.footer-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.05em;color:#fff;margin-bottom:8px}
+.footer-tagline{font-size:13px;color:rgba(255,255,255,0.4);max-width:220px;line-height:1.5}
+.footer-links{display:flex;gap:48px}
+.footer-col h4{font-size:11px;font-weight:700;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;font-family:'Space Grotesk',sans-serif}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.footer-col li a{font-size:13px;color:rgba(255,255,255,0.55)}
+.footer-col li a:hover{color:#fff}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.08);padding-top:20px;display:flex;align-items:center;justify-content:space-between}
+.footer-copy{font-size:12px;color:rgba(255,255,255,0.3)}
+.footer-bl{display:flex;gap:20px}
+.footer-bl a{font-size:12px;color:rgba(255,255,255,0.4)}
+.footer-bl a:hover{color:rgba(255,255,255,0.8)}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="01-landing.html" class="nav-logo">whamr.</a>
+  <div class="nav-links">
+    <a href="01-landing.html" class="nav-link">Home</a>
+    <a href="02-memes-browser.html" class="nav-link">Memes</a>
+    <a href="06-explore.html" class="nav-link">Explore</a>
+    <a href="22-trending.html" class="nav-link">Trending</a>
+    <a href="10-dojos.html" class="nav-link">Dojos</a>
+    <a href="12-analytics.html" class="nav-link">Creator</a>
+  </div>
+  <div class="nav-search-wrap">
+    <span class="nav-search-icon">🔍</span>
+    <input type="text" placeholder="Search memes, creators, dojos...">
+  </div>
+  <div class="nav-actions">
+    <a href="08-notifications.html" class="nav-icon-btn">
+      🔔
+      <span class="nav-badge badge-red">3</span>
+    </a>
+    <a href="09-messages.html" class="nav-icon-btn">
+      💬
+      <span class="nav-badge badge-blue">1</span>
+    </a>
+    <a href="07-user-profile.html" class="nav-avatar">NC</a>
+  </div>
+</nav>
+
+<!-- STORIES STRIP -->
+<div class="stories-strip-wrap">
+  <div class="stories-strip">
+
+    <!-- Add Story bubble -->
+    <div class="story-bubble">
+      <div class="bubble-ring ring-dashed">
+        <div class="bubble-avatar add-btn">➕</div>
+      </div>
+      <div class="bubble-name">Add Story</div>
+    </div>
+
+    <!-- @naijacontent — unwatched -->
+    <div class="story-bubble">
+      <div class="bubble-ring ring-orange">
+        <div class="bubble-avatar"><div class="avatar-text av-nc">NC</div></div>
+      </div>
+      <div class="bubble-name">naijacontent</div>
+    </div>
+
+    <!-- @danceking — unwatched -->
+    <div class="story-bubble">
+      <div class="bubble-ring ring-orange">
+        <div class="bubble-avatar"><div class="avatar-text av-dk">DK</div></div>
+      </div>
+      <div class="bubble-name">danceking</div>
+    </div>
+
+    <!-- @memequeen — unwatched -->
+    <div class="story-bubble">
+      <div class="bubble-ring ring-orange">
+        <div class="bubble-avatar"><div class="avatar-text av-mq">MQ</div></div>
+      </div>
+      <div class="bubble-name">memequeen</div>
+    </div>
+
+    <!-- @laughmaster — watched -->
+    <div class="story-bubble">
+      <div class="bubble-ring ring-gray">
+        <div class="bubble-avatar"><div class="avatar-text av-lm">LM</div></div>
+      </div>
+      <div class="bubble-name watched">laughmaster</div>
+    </div>
+
+    <!-- @sadvibes_ng — unwatched -->
+    <div class="story-bubble">
+      <div class="bubble-ring ring-orange">
+        <div class="bubble-avatar"><div class="avatar-text av-sv">SV</div></div>
+      </div>
+      <div class="bubble-name">sadvibes_ng</div>
+    </div>
+
+    <!-- @naijafan — watched -->
+    <div class="story-bubble">
+      <div class="bubble-ring ring-gray">
+        <div class="bubble-avatar"><div class="avatar-text av-nf">NF</div></div>
+      </div>
+      <div class="bubble-name watched">naijafan</div>
+    </div>
+
+    <!-- @sportsmemer — unwatched -->
+    <div class="story-bubble">
+      <div class="bubble-ring ring-orange">
+        <div class="bubble-avatar"><div class="avatar-text av-sm">SM</div></div>
+      </div>
+      <div class="bubble-name">sportsmemer</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PAGE BODY -->
+<div class="container">
+  <div class="page-body">
+
+    <!-- ACTIVE STORY VIEWER -->
+    <div class="viewer-section">
+      <div class="section-label">Now Viewing</div>
+
+      <div class="story-viewer">
+        <!-- Progress bars -->
+        <div class="viewer-progress">
+          <div class="progress-seg filled"></div>
+          <div class="progress-seg filled"></div>
+          <div class="progress-seg active"></div>
+          <div class="progress-seg"></div>
+          <div class="progress-seg"></div>
+        </div>
+
+        <!-- Creator row -->
+        <div class="viewer-creator-row">
+          <div class="viewer-av av-nc" style="background:linear-gradient(135deg,#FF4500,#FF6B35)">NC</div>
+          <div class="viewer-creator-info">
+            <div class="viewer-creator-name">
+              @naijacontent
+              <span class="viewer-verified">✓</span>
+            </div>
+            <div class="viewer-meta">
+              <span>2h ago</span>
+              <span class="meta-dot"></span>
+              <span>👁 14 views</span>
+            </div>
+          </div>
+          <button class="viewer-close">×</button>
+        </div>
+
+        <!-- Content area -->
+        <div class="viewer-content">
+          <div class="viewer-content-emoji">🎬</div>
+          <div class="viewer-content-title">Drop of the week 🔥</div>
+          <div class="viewer-content-sub">5000 Naira Pawpaw is back trending — send it to someone who needs it</div>
+          <button class="viewer-nav-left">‹</button>
+          <button class="viewer-nav-right">›</button>
+        </div>
+
+        <!-- Emoji reactions + reply -->
+        <div class="viewer-actions">
+          <div class="react-buttons">
+            <button class="react-btn">😂</button>
+            <button class="react-btn">❤️</button>
+            <button class="react-btn">🔥</button>
+            <button class="react-btn">😮</button>
+          </div>
+          <a href="09-messages.html" style="flex:1;display:contents">
+            <input class="viewer-reply-input" type="text" placeholder="Reply to @naijacontent...">
+          </a>
+          <button class="btn-send-story">Send →</button>
+        </div>
+
+        <!-- Prev / Next navigation -->
+        <div class="viewer-nav-row">
+          <button class="viewer-prev">← Previous story</button>
+          <span class="viewer-story-counter">3 / 5</span>
+          <button class="viewer-next">Next story →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MY STORY (creator view) -->
+    <div class="my-story-section">
+      <div class="section-heading">Your Story</div>
+
+      <!-- Story exists -->
+      <div class="my-story-card">
+        <div class="my-story-thumb">🎬</div>
+        <div class="my-story-info">
+          <div class="my-story-title">Drop of the week 🔥</div>
+          <div class="my-story-time">Posted 3h ago · Expires in 21h</div>
+          <div class="my-story-viewers">
+            <div class="viewers-count">👁 14 views</div>
+            <div class="viewer-avatars">
+              <div class="viewer-avatar-sm" style="background:linear-gradient(135deg,#6B35FF,#9B65FF)">D</div>
+              <div class="viewer-avatar-sm" style="background:linear-gradient(135deg,#FF35A0,#FF65C0)">M</div>
+              <div class="viewer-avatar-sm" style="background:linear-gradient(135deg,#00C853,#00A844)">S</div>
+              <div class="viewer-avatar-sm" style="background:linear-gradient(135deg,#2563EB,#3B82F6)">L</div>
+              <div class="viewer-avatar-sm" style="background:var(--gray-500);font-size:9px">+10</div>
+            </div>
+          </div>
+          <div class="my-story-actions">
+            <button class="btn-story-action btn-edit">Edit</button>
+            <button class="btn-story-action btn-archive">Archive</button>
+            <button class="btn-story-action btn-delete">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CREATOR GRID: Stories from people you follow -->
+    <div class="grid-section">
+      <div class="section-heading">Stories from people you follow</div>
+
+      <div class="story-grid">
+
+        <!-- 1: @naijacontent -->
+        <div class="story-card unwatched">
+          <div class="sc-bg sc-bg-1"></div>
+          <div class="sc-overlay">
+            <div class="sc-top">
+              <div class="sc-avatar av-nc" style="background:linear-gradient(135deg,#FF4500,#FF6B35)">NC</div>
+              <div class="sc-badges">
+                <div class="sc-time-badge">22h left</div>
+              </div>
+            </div>
+            <div class="sc-bottom">
+              <div class="sc-name">@naijacontent</div>
+              <div class="sc-views">👁 14 views</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2: @danceking -->
+        <div class="story-card unwatched">
+          <div class="sc-bg sc-bg-2"></div>
+          <div class="sc-overlay">
+            <div class="sc-top">
+              <div class="sc-avatar" style="background:linear-gradient(135deg,#6B35FF,#9B65FF)">DK</div>
+              <div class="sc-badges">
+                <div class="sc-time-badge">20h left</div>
+              </div>
+            </div>
+            <div class="sc-bottom">
+              <div class="sc-name">@danceking</div>
+              <div class="sc-views">👁 8 views</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3: @memequeen -->
+        <div class="story-card unwatched">
+          <div class="sc-bg sc-bg-3"></div>
+          <div class="sc-overlay">
+            <div class="sc-top">
+              <div class="sc-avatar" style="background:linear-gradient(135deg,#FF35A0,#FF65C0)">MQ</div>
+              <div class="sc-badges">
+                <div class="sc-time-badge">18h left</div>
+              </div>
+            </div>
+            <div class="sc-bottom">
+              <div class="sc-name">@memequeen</div>
+              <div class="sc-views">👁 23 views</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4: @sadvibes_ng -->
+        <div class="story-card unwatched">
+          <div class="sc-bg sc-bg-4"></div>
+          <div class="sc-overlay">
+            <div class="sc-top">
+              <div class="sc-avatar" style="background:linear-gradient(135deg,#00C853,#00A844)">SV</div>
+              <div class="sc-badges">
+                <div class="sc-time-badge">6h left</div>
+                <div class="sc-expiring">Expiring</div>
+              </div>
+            </div>
+            <div class="sc-bottom">
+              <div class="sc-name">@sadvibes_ng</div>
+              <div class="sc-views">👁 4 views</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5: @sportsmemer -->
+        <div class="story-card unwatched">
+          <div class="sc-bg sc-bg-5"></div>
+          <div class="sc-overlay">
+            <div class="sc-top">
+              <div class="sc-avatar" style="background:linear-gradient(135deg,#2563EB,#3B82F6)">SM</div>
+              <div class="sc-badges">
+                <div class="sc-time-badge">14h left</div>
+              </div>
+            </div>
+            <div class="sc-bottom">
+              <div class="sc-name">@sportsmemer</div>
+              <div class="sc-views">👁 6 views</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6: @naijafan (watched, expiring soon) -->
+        <div class="story-card" style="border-color:var(--gray-400)">
+          <div class="sc-bg sc-bg-6"></div>
+          <div class="sc-overlay">
+            <div class="sc-top">
+              <div class="sc-avatar" style="background:linear-gradient(135deg,#7C3AED,#A78BFA)">NF</div>
+              <div class="sc-badges">
+                <div class="sc-time-badge">2h left</div>
+                <div class="sc-expiring">Expiring</div>
+              </div>
+            </div>
+            <div class="sc-bottom">
+              <div class="sc-name">@naijafan</div>
+              <div class="sc-views">👁 31 views</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7: @laughmaster -->
+        <div class="story-card" style="border-color:var(--gray-400)">
+          <div class="sc-bg sc-bg-7"></div>
+          <div class="sc-overlay">
+            <div class="sc-top">
+              <div class="sc-avatar" style="background:linear-gradient(135deg,#DC2626,#F87171)">LM</div>
+              <div class="sc-badges">
+                <div class="sc-time-badge">19h left</div>
+              </div>
+            </div>
+            <div class="sc-bottom">
+              <div class="sc-name">@laughmaster</div>
+              <div class="sc-views">👁 11 views</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 8: Add Story prompt card -->
+        <div class="story-card add-prompt">
+          <div class="add-prompt-icon">➕</div>
+          <div class="add-prompt-text">Your Story</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- STORY STATS -->
+    <div class="stats-section">
+      <div class="section-heading">Your Story Performance</div>
+
+      <div class="story-stats-card">
+        <div class="stats-header">
+          <div class="stats-header-title">This week</div>
+          <button class="btn-create-story">Create a story now →</button>
+        </div>
+        <div class="stats-body">
+          <div class="stat-item">
+            <div class="stat-label">Views this week</div>
+            <div class="stat-value">89</div>
+            <div class="stat-sub">Across all stories</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Avg. per story</div>
+            <div class="stat-value">18</div>
+            <div class="stat-sub">Viewers per story</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Stories posted</div>
+            <div class="stat-value">5</div>
+            <div class="stat-sub">This week</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Best time to post</div>
+            <div class="stat-value" style="font-size:20px">7–9 PM</div>
+            <div class="stat-sub">Based on your audience</div>
+          </div>
+        </div>
+        <div class="stats-footer">
+          <div class="stats-most-viewed">
+            <div>
+              <div class="stats-mv-label">Most viewed story</div>
+              <div class="stats-mv-title">Naija drop — 5000 Naira</div>
+            </div>
+            <div class="stats-mv-count">31 views</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo">whamr.</div>
+        <div class="footer-tagline">Find the perfect meme. Send the wham. Built for the internet.</div>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Discover</h4>
+          <ul>
+            <li><a href="22-trending.html">Trending</a></li>
+            <li><a href="06-explore.html">Explore</a></li>
+            <li><a href="10-dojos.html">Dojos</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Careers</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Terms</a></li>
+            <li><a href="#">Privacy</a></li>
+            <li><a href="#">Content Policy</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2026 whamr. All rights reserved.</span>
+      <div class="footer-bl">
+        <a href="#">Status</a>
+        <a href="#">API</a>
+        <a href="27-help.html">Help</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="./real-media.js"></script>
+</body>
+</html>
