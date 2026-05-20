@@ -229,7 +229,7 @@ a{text-decoration:none;color:inherit}
         <div class="step-code">cd scripts
 npm install
 node upload-to-r2.js</div>
-        <div class="step-note">The script uploads 4 files in parallel, skips anything already on R2, retries failures 3 times, and shows live progress. Re-run any time you add new memes — it won't re-upload what's already there.</div>
+        <div class="step-note">The script uploads 4 files in parallel, skips anything already on R2, retries failures 3 times, and shows live progress. Re-run any time you add new memes: it won't re-upload what's already there.</div>
       </div>
     </div>
 
@@ -239,7 +239,7 @@ node upload-to-r2.js</div>
         <div class="step-title">Regenerate the catalog</div>
         <div class="step-desc">After the upload completes, generate a fresh <code style="background:var(--gray-100);padding:1px 6px;border-radius:4px;font-family:monospace;font-size:13px">data/memes.json</code> with R2 URLs:</div>
         <div class="step-code">node generate-catalog.js</div>
-        <div class="step-desc">This reads the upload manifest, AI-categorises every file, deduplicates, and writes <code style="background:var(--gray-100);padding:1px 6px;border-radius:4px;font-family:monospace;font-size:13px">data/memes.json</code> pointing at your R2 bucket. Then commit and push — the live site instantly serves real content.</div>
+        <div class="step-desc">This reads the upload manifest, AI-categorises every file, deduplicates, and writes <code style="background:var(--gray-100);padding:1px 6px;border-radius:4px;font-family:monospace;font-size:13px">data/memes.json</code> pointing at your R2 bucket. Then commit and push. The live site instantly serves real content.</div>
       </div>
     </div>
 
@@ -307,11 +307,11 @@ node upload-to-r2.js</div>
 
   <!-- SUCCESS STATE -->
   <div class="result-panel">
-    <div class="result-title">✓ Upload complete — 9,128 files on R2</div>
-    <div class="result-row">catalog.json written — 8,609 unique items (519 dupes removed)</div>
+    <div class="result-title">✓ Upload complete: 9,128 files on R2</div>
+    <div class="result-row">catalog.json written: 8,609 unique items (519 dupes removed)</div>
     <div class="result-row">data/memes.json updated with R2 public URLs</div>
     <div class="result-row">~3.3 GB uploaded · $0 bandwidth cost</div>
-    <div class="result-row">Next: <code style="background:rgba(0,200,83,0.1);padding:1px 6px;border-radius:4px;font-family:monospace;font-size:12px">git add data/memes.json && git push</code> — live site updates instantly</div>
+    <div class="result-row">Next: <code style="background:rgba(0,200,83,0.1);padding:1px 6px;border-radius:4px;font-family:monospace;font-size:12px">git add data/memes.json && git push</code>: live site updates instantly</div>
   </div>
 
   <!-- ─── SECTION: VERIFY THE UPLOAD ─── -->
@@ -329,7 +329,7 @@ curl -I "https://pub-xxxx.r2.dev/Meme/5000%20naira%20pawpaw.mp4"
       <div class="verify-note-body">
         <code>Content-Type: video/mp4</code> confirms the file type is set correctly.
         <code>Cache-Control: public, max-age=31536000</code> means the CDN will serve it fast worldwide.
-        No <code>X-Error</code> headers should appear. A 403 means public access is not enabled — go back to Step 1 and toggle it on in your bucket settings.
+        No <code>X-Error</code> headers should appear. A 403 means public access is not enabled. Go back to Step 1 and toggle it on in your bucket settings.
       </div>
     </div>
   </div>
@@ -340,11 +340,11 @@ curl -I "https://pub-xxxx.r2.dev/Meme/5000%20naira%20pawpaw.mp4"
     <p class="extra-sub">After upload, regenerate memes.json so the site serves R2 URLs.</p>
 
     <div style="margin-bottom:10px">
-      <div style="font-size:12px;font-weight:700;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Step 1 — Regenerate catalog</div>
+      <div style="font-size:12px;font-weight:700;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Step 1: Regenerate catalog</div>
       <div class="step-code">node scripts/generate-catalog.js</div>
     </div>
     <div style="margin-bottom:16px">
-      <div style="font-size:12px;font-weight:700;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Step 2 — Commit and push</div>
+      <div style="font-size:12px;font-weight:700;color:var(--ink-mute);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Step 2: Commit and push</div>
       <div class="step-code">git add data/memes.json && git commit -m "chore: switch to R2 CDN" && git push</div>
     </div>
     <div class="step-note">The live site at <strong>whamr-application.vercel.app</strong> will update in ~30 seconds after push.</div>
@@ -396,7 +396,7 @@ curl -I "https://pub-xxxx.r2.dev/Meme/5000%20naira%20pawpaw.mp4"
         </tr>
       </tbody>
     </table>
-    <div class="cost-note">Compare to Cloudinary: 25 GB bandwidth cap on the free tier, then paid overages. R2 has no egress fees at any scale — the whole library costs essentially nothing to serve.</div>
+    <div class="cost-note">Compare to Cloudinary: 25 GB bandwidth cap on the free tier, then paid overages. R2 has no egress fees at any scale. The whole library costs essentially nothing to serve.</div>
   </div>
 
   <!-- ─── SECTION: TROUBLESHOOTING ─── -->
@@ -411,7 +411,7 @@ curl -I "https://pub-xxxx.r2.dev/Meme/5000%20naira%20pawpaw.mp4"
           <span class="faq-q-icon">▼</span>
         </div>
         <div class="faq-a">
-          Check that Public Access is enabled in your R2 bucket Settings. It must be explicitly allowed — creating the bucket does not enable it by default. Go to <strong>dash.cloudflare.com → R2 → whamr-media → Settings → Public Access → Allow Access</strong>.
+          Check that Public Access is enabled in your R2 bucket Settings. It must be explicitly allowed. Creating the bucket does not enable it by default. Go to <strong>dash.cloudflare.com → R2 → whamr-media → Settings → Public Access → Allow Access</strong>.
         </div>
       </div>
 
@@ -441,7 +441,7 @@ curl -I "https://pub-xxxx.r2.dev/Meme/5000%20naira%20pawpaw.mp4"
           <span class="faq-q-icon">▼</span>
         </div>
         <div class="faq-a">
-          Check that <code>R2_ACCOUNT_ID</code> and <code>R2_ACCESS_KEY_ID</code> are set correctly in your <code>.env.r2</code> file. Visit <strong>dash.cloudflare.com</strong> to verify your credentials — the Account ID is shown in the right-hand sidebar of the dashboard homepage. Make sure the API token has <strong>Object Read &amp; Write</strong> permission scoped to the <code>whamr-media</code> bucket.
+          Check that <code>R2_ACCOUNT_ID</code> and <code>R2_ACCESS_KEY_ID</code> are set correctly in your <code>.env.r2</code> file. Visit <strong>dash.cloudflare.com</strong> to verify your credentials. The Account ID is shown in the right-hand sidebar of the dashboard homepage. Make sure the API token has <strong>Object Read &amp; Write</strong> permission scoped to the <code>whamr-media</code> bucket.
         </div>
       </div>
 
