@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Whamr — Team Brief & Specifications v2.1</title>
+  <title>Whamr: Team Brief & Specifications v2.1</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
@@ -623,9 +623,8 @@
       <a href="#s11"><span class="num">11</span> Build Order</a>
       <a href="#s12"><span class="num">12</span> Role Definitions</a>
       <a href="#s13"><span class="num">13</span> Writing Style Guide</a>
-      <a href="#s14"><span class="num">14</span> Domain Strategy</a>
-      <a href="#s15"><span class="num">15</span> Technical Architecture</a>
-      <a href="#s16"><span class="num">16</span> Decision Log</a>
+      <a href="#s14"><span class="num">14</span> Technical Architecture</a>
+      <a href="#s15"><span class="num">15</span> Decision Log</a>
     </nav>
   </div>
 
@@ -697,19 +696,19 @@
             </tr>
             <tr>
               <td>Primary market</td>
-              <td>Global — Nigeria as anchor market</td>
+              <td>Global, Nigeria as anchor market</td>
             </tr>
           </tbody>
         </table>
       </div>
 
       <div class="callout">
-        <strong>What Whamr does.</strong> A user opens Whamr, types "Nigerian side-eye" or "happy birthday" in plain English, gets exactly the right meme or sticker, and taps Share — straight to WhatsApp or Telegram, in under ten seconds. No scrolling through unrelated results. No signing up. No ads. Just the send.
+        <strong>What Whamr does.</strong> A user opens Whamr, types "Nigerian side-eye" or "happy birthday" in plain English, gets exactly the right meme or sticker, and taps Share, straight to WhatsApp or Telegram, in under ten seconds. No scrolling through unrelated results. No signing up. No ads. Just the send.
       </div>
 
-      <p>Whamr is designed around one core action: the send. Every feature — search, browse, share, favorites, upload — exists to make that send faster and more satisfying. The platform sits at the intersection of Giphy's catalog depth and the Naija cultural intelligence that no Western meme platform has built properly.</p>
+      <p>Whamr is designed around one core action: the send. Every feature (search, browse, share, favorites, upload) exists to make that send faster and more satisfying. The platform sits at the intersection of Giphy's catalog depth and the Naija cultural intelligence that no Western meme platform has built properly.</p>
 
-      <p>The product is globally scoped. Naija content is the primary differentiator and anchor for the initial user base, not a regional limitation. The catalog, categories, and community tools all support content from any culture — the AI search understands slang, the community tabs let anyone add origin context, and the Sticker Pack Export works with WhatsApp packs from any region.</p>
+      <p>The product is globally scoped. Naija content is the primary differentiator and anchor for the initial user base, not a regional limitation. The catalog, categories, and community tools all support content from any culture. The AI search understands slang, the community tabs let anyone add origin context, and the Sticker Pack Export works with WhatsApp packs from any region.</p>
     </section>
 
     <!-- ═══════════════════════════════════════════════════ -->
@@ -736,7 +735,7 @@
             <tr>
               <td>413 memes &amp; stickers in live catalog</td>
               <td><span class="badge-live">✓ Live</span></td>
-              <td>Cloudinary CDN — public URLs</td>
+              <td>Cloudinary CDN, public URLs</td>
             </tr>
             <tr>
               <td>9,128 real local media files</td>
@@ -766,7 +765,7 @@
             <tr>
               <td>Community tabs (Discussion, Origin, Variants)</td>
               <td><span class="badge-live">✓ Live</span></td>
-              <td>localStorage — per meme ID</td>
+              <td>localStorage, per meme ID</td>
             </tr>
             <tr>
               <td>Favorites (localStorage)</td>
@@ -781,12 +780,12 @@
             <tr>
               <td>Cloudflare R2 upload script</td>
               <td><span class="badge-ready">✓ Ready</span></td>
-              <td><span class="mono">node scripts/upload-to-r2.js</span> — run to go live</td>
+              <td><span class="mono">node scripts/upload-to-r2.js</span>, run to go live</td>
             </tr>
             <tr>
               <td>User accounts</td>
               <td><span class="badge-no">✗ Not built</span></td>
-              <td>Clerk auth integrated in UI only — no session data</td>
+              <td>Clerk auth integrated in UI only, no session data</td>
             </tr>
             <tr>
               <td>Backend database</td>
@@ -803,7 +802,7 @@
       </div>
 
       <div class="callout callout-wham">
-        <strong>Biggest unlock.</strong> Running <span class="mono">node scripts/upload-to-r2.js</span> moves all 9,128 files to Cloudflare R2 and updates the catalog URLs. That single command takes the live catalog from 413 to 9,128 items — the biggest immediate product improvement available.
+        <strong>Biggest unlock.</strong> Running <span class="mono">node scripts/upload-to-r2.js</span> moves all 9,128 files to Cloudflare R2 and updates the catalog URLs. That single command takes the live catalog from 413 to 9,128 items. That is the biggest immediate product improvement available.
       </div>
     </section>
 
@@ -880,7 +879,7 @@
             <tr>
               <td class="mono">catalog-full.json</td>
               <td class="mono">8,609</td>
-              <td>All unique items — deduplicated, all categories</td>
+              <td>All unique items, deduplicated, all categories</td>
             </tr>
             <tr>
               <td class="mono">catalog-memes.json</td>
@@ -915,7 +914,7 @@
         <h2 class="section-title">Screen Inventory</h2>
       </div>
 
-      <p>19 mockup screens covering all core user journeys. Each screen is self-contained HTML/CSS/JS — openable in any browser without a server. All screens live in <span class="mono">mockups/</span> and are linked from <span class="mono">mockups/index.html</span>.</p>
+      <p>19 mockup screens covering all core user journeys. Each screen is self-contained HTML/CSS/JS, openable in any browser without a server. All screens live in <span class="mono">mockups/</span> and are linked from <span class="mono">mockups/index.html</span>.</p>
 
       <div class="table-wrap">
         <table>
@@ -1046,7 +1045,7 @@
               <td>Share Link</td>
               <td class="mono"><a href="mockups/17-share-link.html" style="color:var(--purple);font-weight:600;text-decoration:underline;text-underline-offset:2px">17-share-link.html</a></td>
               <td class="mono">1047</td>
-              <td>Public OG share page — meme preview, share options, guest and signed-in states</td>
+              <td>Public OG share page: meme preview, share options, guest and signed-in states</td>
             </tr>
             <tr>
               <td class="mono">18</td>
@@ -1067,7 +1066,7 @@
       </div>
 
       <div class="callout">
-        <strong>Index file.</strong> <span class="mono">mockups/index.html</span> links all 19 screens plus <span class="mono">brand-guidelines.html</span>. Share this URL with stakeholders — it works in any browser with no server required.
+        <strong>Index file.</strong> <span class="mono">mockups/index.html</span> links all 19 screens plus <span class="mono">brand-guidelines.html</span>. Share this URL with stakeholders. It works in any browser with no server required.
       </div>
     </section>
 
@@ -1080,7 +1079,7 @@
         <h2 class="section-title">AI Features Specification</h2>
       </div>
 
-      <p>Four AI features power Whamr's intelligence layer. All four run client-side in the current prototype — no API calls, no backend. They are fast, free, and work offline.</p>
+      <p>Four AI features power Whamr's intelligence layer. All four run client-side in the current prototype, no API calls, no backend. They are fast, free, and work offline.</p>
 
       <!-- A. Natural Language Search -->
       <div class="spec-block">
@@ -1098,11 +1097,11 @@
         </div>
         <div class="spec-row">
           <span class="k">Scoring</span>
-          <span class="v"><span class="mono">aiScore()</span> runs fuzzy match — 1.0 exact · 0.9 prefix · 0.85 contains · 0.75 token prefix</span>
+          <span class="v"><span class="mono">aiScore()</span> runs fuzzy match: 1.0 exact · 0.9 prefix · 0.85 contains · 0.75 token prefix</span>
         </div>
         <div class="spec-row">
           <span class="k">Intent detection</span>
-          <span class="v"><span class="mono">detectIntent()</span> — regex patterns map queries to category hints</span>
+          <span class="v"><span class="mono">detectIntent()</span> runs regex patterns that map queries to category hints</span>
         </div>
         <div class="spec-row">
           <span class="k">Synonym clusters</span>
@@ -1118,7 +1117,7 @@
         </div>
         <div class="spec-row">
           <span class="k">Known limitation</span>
-          <span class="v">Searches by title / filename — not visual content. Use Origin tab to add searchable descriptions for memes with unclear filenames.</span>
+          <span class="v">Searches by title / filename, not visual content. Use Origin tab to add searchable descriptions for memes with unclear filenames.</span>
         </div>
         <div class="spec-row">
           <span class="k">Scale limit</span>
@@ -1150,7 +1149,7 @@
         </div>
         <div class="spec-row">
           <span class="k">Deduplication</span>
-          <span class="v">Jaccard similarity on word sets, threshold 0.9 — removes near-duplicate filenames (519 removed from 9,128)</span>
+          <span class="v">Jaccard similarity on word sets, threshold 0.9, removes near-duplicate filenames (519 removed from 9,128)</span>
         </div>
         <div class="spec-row">
           <span class="k">Output per item</span>
@@ -1174,7 +1173,7 @@
         </div>
         <div class="spec-row">
           <span class="k">Storage</span>
-          <span class="v">localStorage — keyed by meme ID, survives page refresh, local per device</span>
+          <span class="v">localStorage, keyed by meme ID, survives page refresh, local per device</span>
         </div>
         <div class="spec-row">
           <span class="k">Discussion tab</span>
@@ -1182,7 +1181,7 @@
         </div>
         <div class="spec-row">
           <span class="k">Origin tab</span>
-          <span class="v">Fields: year, source platform, history text — editable by any visitor, no account required</span>
+          <span class="v">Fields: year, source platform, history text, editable by any visitor, no account required</span>
         </div>
         <div class="spec-row">
           <span class="k">Variants tab</span>
@@ -1190,7 +1189,7 @@
         </div>
         <div class="spec-row">
           <span class="k">Purpose</span>
-          <span class="v">Crowdsource the metadata that can't be inferred from filenames — context, cultural meaning, history</span>
+          <span class="v">Crowdsource the metadata that can't be inferred from filenames: context, cultural meaning, history</span>
         </div>
         <div class="spec-row">
           <span class="k">Migration path</span>
@@ -1210,7 +1209,7 @@
         </div>
         <div class="spec-row">
           <span class="k">Method</span>
-          <span class="v">Jaccard similarity — word-set intersection divided by union — on normalised titles</span>
+          <span class="v">Jaccard similarity (word-set intersection divided by union) on normalised titles</span>
         </div>
         <div class="spec-row">
           <span class="k">Threshold</span>
@@ -1218,7 +1217,7 @@
         </div>
         <div class="spec-row">
           <span class="k">Output</span>
-          <span class="v">Returns the most similar existing item — shown as a warning card before the user confirms upload</span>
+          <span class="v">Returns the most similar existing item, shown as a warning card before the user confirms upload</span>
         </div>
         <div class="spec-row">
           <span class="k">User action</span>
@@ -1263,16 +1262,16 @@
       </div>
 
       <h3>Discussion Tabs</h3>
-      <p>Each meme has a Discussion tab in its detail modal. Users post comments with a display name they type inline — no account required. Comments show timestamp and a <span class="mono">timeAgo()</span> display. All data lives in localStorage under the meme's ID key.</p>
+      <p>Each meme has a Discussion tab in its detail modal. Users post comments with a display name they type inline, no account required. Comments show timestamp and a <span class="mono">timeAgo()</span> display. All data lives in localStorage under the meme's ID key.</p>
 
       <h3>Origin Tabs</h3>
-      <p>The Origin tab lets anyone record the meme's history: year it appeared, source platform (Twitter, TikTok, Nollywood, etc.), and a free-text narrative. This is the mechanism for adding searchable context to memes whose filenames give no clues. It's also where Naija meme provenance gets documented — which movie scene, which musician, which viral moment.</p>
+      <p>The Origin tab lets anyone record the meme's history: year it appeared, source platform (Twitter, TikTok, Nollywood, etc.), and a free-text narrative. This is the mechanism for adding searchable context to memes whose filenames give no clues. It's also where Naija meme provenance gets documented: which movie scene, which musician, which viral moment.</p>
 
       <h3>Variants Tabs</h3>
-      <p>Variants are external links to remixed or extended versions of the meme — the original YouTube clip, a TikTok remix, an extended Twitter thread. Users paste a URL and a title. This builds a web of related content without hosting it all.</p>
+      <p>Variants are external links to remixed or extended versions of the meme: the original YouTube clip, a TikTok remix, an extended Twitter thread. Users paste a URL and a title. This builds a web of related content without hosting it all.</p>
 
       <h3>Direct Messages</h3>
-      <p>The DM screen (09-messages.html) shows a conversation list on the left and a thread on the right. The thread has an inline sticker picker — users can search and insert a meme directly into the message without leaving the chat. This is the core send-inside-Whamr use case.</p>
+      <p>The DM screen (09-messages.html) shows a conversation list on the left and a thread on the right. The thread has an inline sticker picker. Users can search and insert a meme directly into the message without leaving the chat. This is the core send-inside-Whamr use case.</p>
 
       <h3>Notifications</h3>
       <p>The Notifications screen (08-notifications.html) shows an activity feed tabbed by All, Likes, Comments, and Follows. Notifications link back to the relevant meme or profile.</p>
@@ -1303,13 +1302,13 @@
               <td class="mono">id</td>
               <td>string (MD5, 12-char)</td>
               <td class="mono">c4a2f8b3e910</td>
-              <td>Derived from file path — stable, deterministic</td>
+              <td>Derived from file path, stable and deterministic</td>
             </tr>
             <tr>
               <td class="mono">title</td>
               <td>string (max 70)</td>
               <td>"5000 Naira Pawpaw"</td>
-              <td>Cleaned from filename — title-case, delimiters removed</td>
+              <td>Cleaned from filename: title-case, delimiters removed</td>
             </tr>
             <tr>
               <td class="mono">type</td>
@@ -1321,7 +1320,7 @@
               <td class="mono">category</td>
               <td>enum</td>
               <td class="mono">naija</td>
-              <td>AI-assigned from keyword rules — lowercase in JSON</td>
+              <td>AI-assigned from keyword rules, lowercase in JSON</td>
             </tr>
             <tr>
               <td class="mono">tags</td>
@@ -1345,19 +1344,19 @@
               <td class="mono">size</td>
               <td>number (bytes)</td>
               <td class="mono">8253440</td>
-              <td>Raw file size — used to estimate R2 storage usage</td>
+              <td>Raw file size, used to estimate R2 storage usage</td>
             </tr>
             <tr>
               <td class="mono">shareCount</td>
               <td>number</td>
               <td class="mono">1844</td>
-              <td>Simulated in prototype — will be real with backend</td>
+              <td>Simulated in prototype, will be real with backend</td>
             </tr>
             <tr>
               <td class="mono">viewCount</td>
               <td>number</td>
               <td class="mono">27200</td>
-              <td>Simulated in prototype — will be real with backend</td>
+              <td>Simulated in prototype, will be real with backend</td>
             </tr>
           </tbody>
         </table>
@@ -1462,7 +1461,7 @@
             <tr><td>Send / CTA button</td><td>Orange <span class="mono">#FF4500</span>, 8px radius, Space Grotesk 600, 14px, white text</td></tr>
             <tr><td>Category pill</td><td><span class="mono">#FFF1EC</span> bg, <span class="mono">#FF4500</span> text, 100px radius, Inter 500, 13px</td></tr>
             <tr><td>Modal</td><td>Centered, white bg, 20px radius, dark backdrop <span class="mono">rgba(0,0,0,0.6)</span></td></tr>
-            <tr><td>Header gradient</td><td><span class="mono">#1A0F00 → #CC3700 → #FF6B35</span> — 135deg</td></tr>
+            <tr><td>Header gradient</td><td><span class="mono">#1A0F00 → #CC3700 → #FF6B35</span>, 135deg</td></tr>
             <tr><td>Stat numbers</td><td>JetBrains Mono 600, <span class="mono">--purple</span> color, large size (28–40px)</td></tr>
           </tbody>
         </table>
@@ -1470,7 +1469,7 @@
 
       <h3>Dual Theme Note</h3>
       <div class="callout">
-        <strong>Two design modes exist.</strong> The live Next.js site uses a dark theme (<span class="mono">#0a0a0f</span> bg) that matches Clerk's dark modal aesthetic. The static HTML mockups use the warm sunset theme (<span class="mono">#FFFAF5</span> bg, <span class="mono">#FF4500</span> primary) shown in this document. Both are valid — the dark theme suits signed-in product screens, the warm theme suits discovery and marketing.
+        <strong>Two design modes exist.</strong> The live Next.js site uses a dark theme (<span class="mono">#0a0a0f</span> bg) that matches Clerk's dark modal aesthetic. The static HTML mockups use the warm sunset theme (<span class="mono">#FFFAF5</span> bg, <span class="mono">#FF4500</span> primary) shown in this document. Both are valid. The dark theme suits signed-in product screens; the warm theme suits discovery and marketing.
       </div>
     </section>
 
@@ -1610,20 +1609,20 @@
       </div>
 
       <h3>Free Tier (Current)</h3>
-      <p>Browse, save, share, and download: free, no account, no ads. Upload: free, stored locally (IndexedDB) or to Cloudinary. This is the current state — the full product experience is free with no paywall.</p>
+      <p>Browse, save, share, and download: free, no account, no ads. Upload: free, stored locally (IndexedDB) or to Cloudinary. This is the current state: the full product experience is free with no paywall.</p>
 
       <h3>Creator Tier (Planned)</h3>
       <ul class="task-list">
-        <li>Persistent uploads — files stored server-side, not lost when localStorage clears</li>
-        <li>Analytics dashboard — real view, share, and follower data tied to their uploads</li>
-        <li>Creator profile — public page with follower system, meme grid, bio</li>
-        <li>Monetisation tools — donations, tipping, or pay-to-send branded packs</li>
+        <li>Persistent uploads: files stored server-side, not lost when localStorage clears</li>
+        <li>Analytics dashboard: real view, share, and follower data tied to their uploads</li>
+        <li>Creator profile: public page with follower system, meme grid, bio</li>
+        <li>Monetisation tools: donations, tipping, or pay-to-send branded packs</li>
       </ul>
 
       <h3>API Tier (Planned)</h3>
       <ul class="task-list">
-        <li>REST API access to the meme catalog — search, browse, fetch by ID or category</li>
-        <li>Free tier: 100 requests/day — for developers building bots or integrations</li>
+        <li>REST API access to the meme catalog: search, browse, fetch by ID or category</li>
+        <li>Free tier: 100 requests/day, for developers building bots or integrations</li>
         <li>Pro tier: higher rate limits for production apps (pricing TBD)</li>
       </ul>
 
@@ -1636,8 +1635,8 @@
           <tbody>
             <tr><td>Creator subscriptions</td><td>Monthly fee for persistent storage + analytics</td><td>Phase 3</td></tr>
             <tr><td>API licensing</td><td>Pro tier API for developers and brands</td><td>Phase 4</td></tr>
-            <tr><td>Branded sticker packs</td><td>Sponsored content — brands pay to feature sticker packs</td><td>Phase 4</td></tr>
-            <tr><td>Creator tips</td><td>Users tip creators directly — Whamr takes a cut</td><td>Phase 3</td></tr>
+            <tr><td>Branded sticker packs</td><td>Sponsored content: brands pay to feature sticker packs</td><td>Phase 4</td></tr>
+            <tr><td>Creator tips</td><td>Users tip creators directly. Whamr takes a cut.</td><td>Phase 3</td></tr>
           </tbody>
         </table>
       </div>
@@ -1658,15 +1657,15 @@
 
       <div class="phase">
         <div class="phase-title">
-          Phase 0 — Foundation
+          Phase 0: Foundation
           <span class="phase-badge phase-done">Done</span>
         </div>
         <ul class="task-list">
-          <li>19 static HTML mockup screens — all major journeys covered</li>
-          <li>Real media catalog — 8,609 unique items cataloged in JSON</li>
-          <li>AI natural language search — live in script.js</li>
-          <li>Community tabs — Discussion, Origin, Variants in localStorage</li>
-          <li>R2 upload script — node scripts/upload-to-r2.js ready to run</li>
+          <li>19 static HTML mockup screens, all major journeys covered</li>
+          <li>Real media catalog: 8,609 unique items cataloged in JSON</li>
+          <li>AI natural language search, live in script.js</li>
+          <li>Community tabs: Discussion, Origin, Variants in localStorage</li>
+          <li>R2 upload script, node scripts/upload-to-r2.js ready to run</li>
           <li>9 Fastify microservice schemas written</li>
           <li>Prisma database schemas written</li>
         </ul>
@@ -1674,7 +1673,7 @@
 
       <div class="phase">
         <div class="phase-title">
-          Phase 1 — MVP
+          Phase 1: MVP
           <span class="phase-badge phase-next">Next</span>
         </div>
         <ul class="task-list">
@@ -1688,40 +1687,40 @@
 
       <div class="phase">
         <div class="phase-title">
-          Phase 2 — Community
+          Phase 2: Community
           <span class="phase-badge phase-later">P1</span>
         </div>
         <ul class="task-list">
-          <li>Persist community data server-side — migrate from localStorage to PostgreSQL</li>
-          <li>Dojos with real membership — join, post, battle</li>
-          <li>Push notifications — likes, comments, follows</li>
-          <li>DMs with meme sharing — inline sticker picker in chat</li>
+          <li>Persist community data server-side: migrate from localStorage to PostgreSQL</li>
+          <li>Dojos with real membership: join, post, battle</li>
+          <li>Push notifications: likes, comments, follows</li>
+          <li>DMs with meme sharing: inline sticker picker in chat</li>
         </ul>
       </div>
 
       <div class="phase">
         <div class="phase-title">
-          Phase 3 — Creator
+          Phase 3: Creator
           <span class="phase-badge phase-later">P2</span>
         </div>
         <ul class="task-list">
-          <li>Creator dashboard — analytics tied to real share and view data</li>
-          <li>Sticker pack builder — generate actual WhatsApp and Telegram packs</li>
-          <li>Upload moderation — AI content check before publish</li>
-          <li>Meme editor — canvas editor connected to real templates and catalog</li>
+          <li>Creator dashboard: analytics tied to real share and view data</li>
+          <li>Sticker pack builder: generate actual WhatsApp and Telegram packs</li>
+          <li>Upload moderation: AI content check before publish</li>
+          <li>Meme editor: canvas editor connected to real templates and catalog</li>
         </ul>
       </div>
 
       <div class="phase">
         <div class="phase-title">
-          Phase 4 — Growth
+          Phase 4: Growth
           <span class="phase-badge phase-later">Plan 2.0</span>
         </div>
         <ul class="task-list">
-          <li>Mobile app — React Native, iOS and Android</li>
-          <li>Meme API — developer access, rate-limited free tier</li>
-          <li>Creator monetisation — subscriptions, tips, branded packs</li>
-          <li>Localised content packs — curated collections by region (West Africa, UK diaspora, etc.)</li>
+          <li>Mobile app: React Native, iOS and Android</li>
+          <li>Meme API: developer access, rate-limited free tier</li>
+          <li>Creator monetisation: subscriptions, tips, branded packs</li>
+          <li>Localised content packs: curated collections by region (West Africa, UK diaspora, etc.)</li>
         </ul>
       </div>
     </section>
@@ -1758,12 +1757,12 @@
             <tr>
               <td><strong>Frontend</strong></td>
               <td>Next.js web app, UI components, search UX, infinite scroll</td>
-              <td>src/web-app/ — all pages and components</td>
+              <td>src/web-app/, all pages and components</td>
             </tr>
             <tr>
               <td><strong>Backend</strong></td>
               <td>Fastify microservices, Prisma schemas, API design, auth integration</td>
-              <td>src/services/ — 9 service directories</td>
+              <td>src/services/, 9 service directories</td>
             </tr>
             <tr>
               <td><strong>DevOps</strong></td>
@@ -1785,7 +1784,7 @@
       </div>
 
       <div class="callout">
-        <strong>Current team structure.</strong> Whamr is in prototype stage — roles above describe the full-team picture as the platform scales. At this stage, one person or a small group covers multiple roles. The most critical immediate roles are Frontend (to ship Phase 1) and DevOps (to run the R2 upload).
+        <strong>Current team structure.</strong> Whamr is in prototype stage. Roles above describe the full-team picture as the platform scales. At this stage, one person or a small group covers multiple roles. The most critical immediate roles are Frontend (to ship Phase 1) and DevOps (to run the R2 upload).
       </div>
     </section>
 
@@ -1805,8 +1804,8 @@
             <tr><th>Element</th><th>Correct</th><th>Wrong</th></tr>
           </thead>
           <tbody>
-            <tr><td>Tagline</td><td>"Send the wham." — lowercase, period included</td><td>"Send The Wham" or "send the wham"</td></tr>
-            <tr><td>Brand name</td><td>Whamr — capital W, lowercase rest</td><td>WHAMR, whamr, "the Whamr"</td></tr>
+            <tr><td>Tagline</td><td>"Send the wham." (lowercase, period included)</td><td>"Send The Wham" or "send the wham"</td></tr>
+            <tr><td>Brand name</td><td>Whamr, capital W, lowercase rest</td><td>WHAMR, whamr, "the Whamr"</td></tr>
             <tr><td>Tone</td><td>Direct, punchy, action verbs. Short sentences.</td><td>Long clauses, passive voice, corporate hedging</td></tr>
           </tbody>
         </table>
@@ -1844,82 +1843,16 @@
       <div class="example-bad">"Our world-class, best-in-class innovative platform takes your meme game to the next level." ✗</div>
 
       <h3>Voice Notes</h3>
-      <p>Whamr is Naija-aware but globally readable. Use pidgin references where they land naturally — but never as performance. The product speaks to a 19-year-old in Lagos and a 25-year-old in East London with the same directness. Naija culture is the flavour, not the fence.</p>
+      <p>Whamr is Naija-aware but globally readable. Use pidgin references where they land naturally, but never as performance. The product speaks to a 19-year-old in Lagos and a 25-year-old in East London with the same directness. Naija culture is the flavour, not the fence.</p>
       <p>Numbers give confidence. Prefer "413 memes" over "hundreds of memes." Prefer "Share in one tap" over "Share quickly." Specificity is respect for the reader.</p>
     </section>
 
     <!-- ═══════════════════════════════════════════════════ -->
-    <!-- 14. DOMAIN STRATEGY -->
+    <!-- 14. TECHNICAL ARCHITECTURE -->
     <!-- ═══════════════════════════════════════════════════ -->
     <section class="section" id="s14">
       <div class="section-header">
         <span class="section-pill">14</span>
-        <h2 class="section-title">Domain Strategy</h2>
-      </div>
-
-      <div class="callout">
-        <strong>whamr.com is taken.</strong> Current deployment runs at <span class="mono">whamr-application.vercel.app</span>. A permanent domain is needed before any marketing push.
-      </div>
-
-      <h3>Top Domain Candidates</h3>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Domain</th>
-              <th>Rationale</th>
-              <th>Verdict</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="mono">jollify.com</td>
-              <td>Action verb, globally readable, connects to joy and celebration — "to jollify" is understood in Naija and diaspora English</td>
-              <td><strong>Top pick</strong></td>
-            </tr>
-            <tr>
-              <td class="mono">whamz.com</td>
-              <td>Closest to Whamr — easy transition for early users, clear brand continuity</td>
-              <td>Strong alternative</td>
-            </tr>
-            <tr>
-              <td class="mono">gbedu.com</td>
-              <td>Yoruba word for music / vibes — deep Naija roots, memorable, short</td>
-              <td>Bold pick</td>
-            </tr>
-            <tr>
-              <td class="mono">memzy.com</td>
-              <td>Generic meme domain — clear category signal, globally understood</td>
-              <td>Safe choice</td>
-            </tr>
-            <tr>
-              <td class="mono">gigly.com</td>
-              <td>Captures the laughter angle — light, global, easy to say</td>
-              <td>Option</td>
-            </tr>
-            <tr>
-              <td class="mono">laffr.com</td>
-              <td>Naija slang "laff" (laugh) in Whamr-style spelling — stays in brand family</td>
-              <td>Option</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h3>Recommendation</h3>
-      <p><strong>jollify.com</strong> is the primary recommendation. It works globally without explanation, it evokes the right feeling (send something that makes them jollify), and it has room to grow beyond memes if the platform expands. <strong>whamz.com</strong> is the backup if brand continuity with "Whamr" matters more.</p>
-
-      <div class="callout callout-wham">
-        <strong>Current links.</strong> GitHub: <span class="mono">github.com/esther123-star/whamr-application</span> · Vercel: <span class="mono">whamr-application.vercel.app</span>
-      </div>
-    </section>
-
-    <!-- ═══════════════════════════════════════════════════ -->
-    <!-- 15. TECHNICAL ARCHITECTURE -->
-    <!-- ═══════════════════════════════════════════════════ -->
-    <section class="section" id="s15">
-      <div class="section-header">
-        <span class="section-pill">15</span>
         <h2 class="section-title">Technical Architecture</h2>
       </div>
 
@@ -1930,13 +1863,13 @@
             <tr><th>Layer</th><th>Technology</th><th>Notes</th></tr>
           </thead>
           <tbody>
-            <tr><td>Framework</td><td>Next.js 14, React 18, TypeScript</td><td>App Router — no Pages Router</td></tr>
+            <tr><td>Framework</td><td>Next.js 14, React 18, TypeScript</td><td>App Router, no Pages Router</td></tr>
             <tr><td>Styling</td><td>TailwindCSS</td><td>Utility-first, custom tokens in tailwind.config</td></tr>
             <tr><td>Routing</td><td>App Router</td><td>Server and client components mixed</td></tr>
-            <tr><td>Auth</td><td>Clerk</td><td>Integrated in UI — sessions not yet active</td></tr>
-            <tr><td>Static mockups</td><td>Plain HTML / CSS / JS</td><td>No framework — open in browser directly</td></tr>
+            <tr><td>Auth</td><td>Clerk</td><td>Integrated in UI, sessions not yet active</td></tr>
+            <tr><td>Static mockups</td><td>Plain HTML / CSS / JS</td><td>No framework, open in browser directly</td></tr>
             <tr><td>Search</td><td>Custom JS in script.js</td><td>Client-side synonym expansion + fuzzy scoring</td></tr>
-            <tr><td>Storage</td><td>localStorage + IndexedDB</td><td>Favorites and uploads — device-local</td></tr>
+            <tr><td>Storage</td><td>localStorage + IndexedDB</td><td>Favorites and uploads, device-local</td></tr>
             <tr><td>Hosting</td><td>Vercel</td><td>Continuous deployment from GitHub</td></tr>
           </tbody>
         </table>
@@ -1949,11 +1882,11 @@
             <tr><th>Service</th><th>Responsibility</th></tr>
           </thead>
           <tbody>
-            <tr><td class="mono">api-gateway</td><td>Entry point — auth validation, rate limiting, routing to services</td></tr>
+            <tr><td class="mono">api-gateway</td><td>Entry point: auth validation, rate limiting, routing to services</td></tr>
             <tr><td class="mono">content-service</td><td>Catalog CRUD, search index, category management</td></tr>
-            <tr><td class="mono">user-service</td><td>User profiles, follows, favorites — synced with Clerk</td></tr>
+            <tr><td class="mono">user-service</td><td>User profiles, follows, favorites, synced with Clerk</td></tr>
             <tr><td class="mono">social-service</td><td>Comments, community tabs, DMs, Dojos</td></tr>
-            <tr><td class="mono">media-processing</td><td>Upload pipeline — resize, thumbnail, format conversion</td></tr>
+            <tr><td class="mono">media-processing</td><td>Upload pipeline: resize, thumbnail, format conversion</td></tr>
             <tr><td class="mono">ai-service</td><td>Search scoring, auto-categorisation, duplicate detection</td></tr>
             <tr><td class="mono">analytics-service</td><td>View tracking, share events, creator dashboard data</td></tr>
             <tr><td class="mono">distribution</td><td>Share link generation, OG metadata, CDN cache control</td></tr>
@@ -1995,21 +1928,21 @@
     </section>
 
     <!-- ═══════════════════════════════════════════════════ -->
-    <!-- 16. DECISION LOG -->
+    <!-- 15. DECISION LOG -->
     <!-- ═══════════════════════════════════════════════════ -->
-    <section class="section" id="s16">
+    <section class="section" id="s15">
       <div class="section-header">
-        <span class="section-pill">16</span>
+        <span class="section-pill">15</span>
         <h2 class="section-title">Decision Log</h2>
       </div>
 
-      <p>Key architectural and product decisions made during development — recorded here so the team understands not just what was built, but why.</p>
+      <p>Key architectural and product decisions made during development, recorded here so the team understands not just what was built, but why.</p>
 
       <div class="decision">
         <div class="decision-num">01</div>
         <div class="decision-body">
           <strong>Static HTML mockups over framework prototypes</strong>
-          <p>All 19 screens are plain HTML/CSS/JS — no Node server, no bundler. Anyone can open them in a browser from a file path. Faster iteration for design review, easier to share with stakeholders who are not technical, and zero environment setup friction.</p>
+          <p>All 19 screens are plain HTML/CSS/JS, no Node server, no bundler. Anyone can open them in a browser from a file path. Faster iteration for design review, easier to share with stakeholders who are not technical, and zero environment setup friction.</p>
         </div>
       </div>
 
@@ -2017,7 +1950,7 @@
         <div class="decision-num">02</div>
         <div class="decision-body">
           <strong>Cloudinary → Cloudflare R2 migration planned</strong>
-          <p>Cloudinary's free tier caps egress at 25 GB/month. Cloudflare R2 has zero egress fees. The entire 9,128-file library (~9 GB) fits in R2's 10 GB free tier. The upload script is written and ready — this migration is the single highest-leverage task to unlock the full catalog.</p>
+          <p>Cloudinary's free tier caps egress at 25 GB/month. Cloudflare R2 has zero egress fees. The entire 9,128-file library (~9 GB) fits in R2's 10 GB free tier. The upload script is written and ready. This migration is the single highest-impact task to unlock the full catalog.</p>
         </div>
       </div>
 
@@ -2025,7 +1958,7 @@
         <div class="decision-num">03</div>
         <div class="decision-body">
           <strong>AI search in script.js, not a backend API</strong>
-          <p>Prototype speed. Client-side synonym expansion and fuzzy scoring works well for 413 items and is still usable at 8,609. No API latency, no server cost. At 10k+ items the in-memory scan becomes slow — migrate to Meilisearch or Algolia then.</p>
+          <p>Prototype speed. Client-side synonym expansion and fuzzy scoring works well for 413 items and is still usable at 8,609. No API latency, no server cost. At 10k+ items the in-memory scan becomes slow: migrate to Meilisearch or Algolia then.</p>
         </div>
       </div>
 
@@ -2041,15 +1974,15 @@
         <div class="decision-num">05</div>
         <div class="decision-body">
           <strong>Catalog generated from filenames, not visual analysis</strong>
-          <p>Extracting meaningful tags from video frames requires expensive ML infrastructure (a vision model, GPU time, API costs). Filename keyword matching gives ~80% accuracy for categorisation at this scale for free. Good enough for prototype — improve with human review or a vision API when the catalog is live and the audience is real.</p>
+          <p>Extracting meaningful tags from video frames requires expensive ML infrastructure (a vision model, GPU time, API costs). Filename keyword matching gives ~80% accuracy for categorisation at this scale for free. Good enough for prototype. Improve with human review or a vision API when the catalog is live and the audience is real.</p>
         </div>
       </div>
 
       <div class="decision">
         <div class="decision-num">06</div>
         <div class="decision-body">
-          <strong>19 mockup screens — covering all core user journeys</strong>
-          <p>The screen list was designed to cover every user journey: discover → view → share → create → upload → community → admin → mobile. 19 screens is comprehensive without being excessive. Each screen is designed to stand alone so stakeholders can review individual journeys without needing the full flow.</p>
+          <strong>19 mockup screens, covering all core user journeys</strong>
+          <p>The screen list was designed to cover every user journey: discover → view → share → create → upload → community → admin → mobile. 19 screens is thorough without being excessive. Each screen is designed to stand alone so stakeholders can review individual journeys without needing the full flow.</p>
         </div>
       </div>
 
@@ -2057,31 +1990,23 @@
         <div class="decision-num">07</div>
         <div class="decision-body">
           <strong>Naija content as primary differentiator</strong>
-          <p>No major meme platform prioritises Nigerian or African content. Giphy and Tenor have minimal Naija coverage — largely what gets uploaded by individuals. Whamr has a dedicated Naija category, Naija-aware synonym expansion in the AI search, and a library built around real Nigerian cultural moments. This is the defensible position no Western platform can replicate quickly.</p>
+          <p>No major meme platform prioritises Nigerian or African content. Giphy and Tenor have minimal Naija coverage, largely what gets uploaded by individuals. Whamr has a dedicated Naija category, Naija-aware synonym expansion in the AI search, and a library built around real Nigerian cultural moments. This is the defensible position no Western platform can replicate quickly.</p>
         </div>
       </div>
 
       <div class="decision">
         <div class="decision-num">08</div>
         <div class="decision-body">
-          <strong>whamr.com domain taken — running on Vercel subdomain</strong>
-          <p>The current <span class="mono">whamr-application.vercel.app</span> URL is fine for prototype and stakeholder review but not for any public launch. Domain decision should happen before Phase 1 ships. Top candidates are jollify.com (globally brandable) and whamz.com (brand continuity).</p>
+          <strong>Dual design system: dark theme on live site, warm theme on mockups</strong>
+          <p>The live Next.js site uses a dark theme (<span class="mono">#0a0a0f</span>) that matches Clerk's dark modal aesthetic. The static HTML mockups use the warm sunset palette (<span class="mono">#FFFAF5</span> + <span class="mono">#FF4500</span>). Both are intentional. The dark theme suits signed-in product screens. The warm theme suits discovery, marketing, and design review.</p>
         </div>
       </div>
 
       <div class="decision">
         <div class="decision-num">09</div>
         <div class="decision-body">
-          <strong>Dual design system — dark theme on live site, warm theme on mockups</strong>
-          <p>The live Next.js site uses a dark theme (<span class="mono">#0a0a0f</span>) that matches Clerk's dark modal aesthetic. The static HTML mockups use the warm sunset palette (<span class="mono">#FFFAF5</span> + <span class="mono">#FF4500</span>). Both are intentional. The dark theme suits signed-in product screens. The warm theme suits discovery, marketing, and design review.</p>
-        </div>
-      </div>
-
-      <div class="decision">
-        <div class="decision-num">10</div>
-        <div class="decision-body">
           <strong>IntersectionObserver for infinite scroll, no pagination library</strong>
-          <p>No external dependency, no bundle weight, works in all modern browsers. 24 items per page keeps initial load fast. The sentinel div is placed 300px before the viewport edge — this early trigger means the next batch loads before the user reaches the bottom, so scroll feels instant. Simple, fast, and zero maintenance.</p>
+          <p>No external dependency, no bundle weight, works in all modern browsers. 24 items per page keeps initial load fast. The sentinel div is placed 300px before the viewport edge. This early trigger means the next batch loads before the user reaches the bottom, so scroll feels instant. Simple, fast, and zero maintenance.</p>
         </div>
       </div>
     </section>
