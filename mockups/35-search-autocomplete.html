@@ -1,0 +1,1106 @@
+<!-- FILE: 35-search-autocomplete.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Search · Whamr</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#FFFAF5; --bg-alt:#FFF3E8; --card:#FFFFFF;
+  --ink:#1A0F00; --ink-soft:#4A3020; --ink-mute:#8A7060;
+  --line:#F0DDD0; --line-soft:#FBF0E8;
+  --purple:#FF4500; --purple-mid:#FF6B35; --purple-dark:#CC3700; --purple-soft:#FFF1EC;
+  --wham:#FFB800; --wham-soft:#FFF8DC;
+  --green:#00C853; --green-soft:#E8FFF0;
+  --gray-100:#F3F4F6; --gray-400:#9CA3AF; --gray-500:#6B7280; --gray-700:#374151;
+  /* Extended */
+  --purple-xsoft:#FFF8F5; --purple-bright:#FF8C60;
+  --red:#FF2D55; --red-soft:#FFF0F3;
+  --gray-50:#F9FAFB; --gray-200:#E5E7EB; --gray-900:#111827;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;font-size:15px;background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;border:none;background:none;font-family:inherit}
+
+/* ── NAV ── */
+.nav{
+  height:64px;background:#fff;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;padding:0 32px;gap:0;
+  position:sticky;top:0;z-index:100;
+}
+.nav-logo{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;
+  font-size:22px;letter-spacing:-0.05em;color:var(--purple);
+  margin-right:32px;flex-shrink:0;
+}
+.nav-links{display:flex;align-items:center;gap:2px}
+.nav-link{
+  font-size:14px;font-weight:500;color:var(--gray-700);
+  padding:6px 12px;border-radius:8px;transition:background 0.15s,color 0.15s;white-space:nowrap;
+}
+.nav-link:hover{background:var(--purple-soft);color:var(--purple)}
+.nav-search{
+  flex:1;max-width:380px;margin:0 16px;
+  display:flex;align-items:center;
+  border:1.5px solid var(--line);border-radius:50px;
+  background:#fff;overflow:hidden;
+  transition:border-color 0.2s,box-shadow 0.2s;
+}
+.nav-search input{
+  flex:1;border:none;outline:none;padding:0 16px;
+  font-size:13.5px;font-family:'Inter',sans-serif;color:var(--ink);background:transparent;
+}
+.nav-search input::placeholder{color:var(--gray-400)}
+.nav-search-btn{
+  background:var(--purple);color:#fff;
+  border:none;padding:0 16px;height:38px;
+  font-size:13px;font-weight:600;font-family:'Inter',sans-serif;
+  display:flex;align-items:center;gap:6px;
+  transition:background 0.15s;white-space:nowrap;
+}
+.nav-search-btn:hover{background:var(--purple-dark)}
+.nav-actions{display:flex;align-items:center;gap:8px;margin-left:auto;flex-shrink:0}
+.btn-upload{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--purple);color:#fff;
+  font-size:13px;font-weight:600;padding:8px 16px;border-radius:9px;
+  border:none;cursor:pointer;font-family:'Inter',sans-serif;
+  transition:background 0.15s;white-space:nowrap;
+}
+.btn-upload:hover{background:var(--purple-dark)}
+.nav-icon-btn{
+  width:36px;height:36px;border-radius:8px;
+  background:var(--purple-xsoft);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;cursor:pointer;position:relative;
+}
+.nav-badge{
+  position:absolute;top:-4px;right:-4px;
+  min-width:16px;height:16px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:700;color:#fff;padding:0 4px;
+  border:1.5px solid #fff;
+}
+.nav-badge.red{background:var(--red)}
+.nav-badge.blue{background:#2563EB}
+.nav-avatar{
+  width:34px;height:34px;border-radius:50%;
+  background:linear-gradient(135deg,#1A0F00 0%,#4A1000 30%,#CC3700 60%,#FF4500 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;color:#fff;font-weight:700;cursor:pointer;flex-shrink:0;
+  border:2px solid var(--purple-soft);font-family:'Space Grotesk',sans-serif;
+}
+
+/* ── PAGE HEADER ── */
+.page-header{
+  background:var(--bg);border-bottom:1px solid var(--line);
+  padding:40px 32px 32px;
+  max-width:1200px;margin:0 auto;
+}
+.page-header h1{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;
+  font-size:36px;letter-spacing:-0.03em;color:var(--ink);
+  margin-bottom:6px;
+}
+.page-header-sub{font-size:15px;color:var(--ink-mute)}
+
+/* ── MOCKUP STATE DIVIDER ── */
+.state-divider{
+  display:flex;align-items:center;gap:16px;
+  padding:0 32px;margin:40px 0 32px;
+  max-width:1200px;margin-left:auto;margin-right:auto;
+}
+.state-divider-line{flex:1;height:1px;background:var(--line)}
+.state-divider-label{
+  font-family:'Inter',sans-serif;font-size:10.5px;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.12em;color:var(--gray-400);
+  white-space:nowrap;padding:4px 12px;border-radius:100px;
+  background:var(--gray-100);border:1px solid var(--gray-200);
+  flex-shrink:0;
+}
+
+/* ── SEARCH ZONE (shared outer wrapper for all 3 states) ── */
+.search-zone{
+  max-width:1200px;margin:0 auto;padding:0 32px;
+}
+
+/* ── BIG SEARCH BAR ── */
+.big-search-wrap{position:relative;margin-bottom:32px}
+.big-search-bar{
+  display:flex;align-items:center;
+  border:2px solid var(--purple);border-radius:14px;
+  background:#fff;
+  box-shadow:0 0 0 5px rgba(255,69,0,0.10),0 4px 24px rgba(255,69,0,0.08);
+  overflow:hidden;
+  height:64px;
+}
+.big-search-bar.unfocused{
+  border-color:var(--line);
+  box-shadow:0 2px 12px rgba(26,15,0,0.06);
+}
+.big-search-bar.filled .big-search-clear{display:flex}
+.big-search-icon{
+  width:56px;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;color:var(--gray-400);flex-shrink:0;
+}
+.big-search-input{
+  flex:1;border:none;outline:none;
+  font-family:'Inter',sans-serif;font-size:17px;font-weight:500;
+  color:var(--ink);background:transparent;
+  padding:0 4px;
+}
+.big-search-input::placeholder{color:var(--gray-400);font-weight:400;font-size:15px}
+.big-search-clear{
+  width:36px;height:36px;border-radius:8px;
+  background:var(--gray-100);border:1px solid var(--line);
+  display:none;align-items:center;justify-content:center;
+  color:var(--gray-500);font-size:14px;margin-right:4px;flex-shrink:0;
+}
+.big-search-mic{
+  width:44px;height:44px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--gray-400);font-size:18px;margin-right:8px;
+  cursor:pointer;transition:background 0.15s;flex-shrink:0;
+}
+.big-search-mic:hover{background:var(--gray-100);color:var(--purple)}
+
+/* ── STATE 1: RECENT + TRENDING + CATEGORIES ── */
+.s1-layout{display:grid;grid-template-columns:1fr;gap:28px}
+
+.recent-row{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.recent-row-label{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;
+  color:var(--ink);margin-bottom:12px;
+}
+.clear-all{
+  margin-left:auto;font-size:12.5px;font-weight:600;color:var(--purple);
+  cursor:pointer;
+}
+.clear-all:hover{text-decoration:underline}
+.recent-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--bg-alt);border:1px solid var(--line);
+  border-radius:100px;padding:6px 12px 6px 14px;
+  font-size:13.5px;color:var(--ink-soft);cursor:pointer;
+  transition:background 0.15s,border-color 0.15s;
+}
+.recent-pill:hover{background:var(--purple-soft);border-color:var(--line);}
+.recent-pill-x{
+  width:16px;height:16px;border-radius:50%;
+  background:var(--gray-200);color:var(--gray-500);
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:700;flex-shrink:0;
+}
+
+.trending-section-title{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;
+  color:var(--ink);margin-bottom:12px;
+}
+.trending-list{
+  background:var(--card);border:1px solid var(--line);border-radius:12px;
+  overflow:hidden;
+}
+.trending-item{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 16px;border-bottom:1px solid var(--line-soft);
+  cursor:pointer;transition:background 0.12s;
+}
+.trending-item:last-child{border-bottom:none}
+.trending-item:hover{background:var(--bg-alt)}
+.trending-rank{
+  font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;
+  color:var(--gray-400);width:20px;text-align:center;flex-shrink:0;
+}
+.trending-icon{font-size:14px;flex-shrink:0;width:18px;text-align:center}
+.trending-query{flex:1;font-size:14px;color:var(--ink-soft);font-weight:500}
+.trending-count{
+  font-family:'JetBrains Mono',monospace;font-size:12px;
+  color:var(--gray-400);flex-shrink:0;
+}
+.trending-badge-hot{
+  display:inline-flex;align-items:center;gap:3px;
+  font-size:10px;font-weight:700;color:#DC2626;
+  background:#FEF2F2;padding:2px 7px;border-radius:100px;
+  border:1px solid #FECACA;flex-shrink:0;
+}
+.trending-badge-up{
+  display:inline-flex;align-items:center;
+  font-size:10px;font-weight:700;color:#059669;
+  background:var(--green-soft);padding:2px 7px;border-radius:100px;
+  border:1px solid #A7F3D0;flex-shrink:0;
+}
+.trending-badge-steady{
+  display:inline-flex;align-items:center;
+  font-size:10px;font-weight:600;color:var(--gray-500);
+  background:var(--gray-100);padding:2px 7px;border-radius:100px;
+  flex-shrink:0;
+}
+
+.category-section-title{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;
+  color:var(--ink);margin-bottom:12px;
+}
+.category-pills{display:flex;flex-wrap:wrap;gap:10px}
+.cat-pill{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:8px 16px;border-radius:100px;
+  font-size:13.5px;font-weight:600;cursor:pointer;
+  transition:all 0.15s;border:1.5px solid var(--line);
+  background:var(--card);color:var(--ink-soft);
+}
+.cat-pill:hover{border-color:var(--purple);color:var(--purple);background:var(--purple-soft)}
+
+/* ── STATE 2: AUTOCOMPLETE DROPDOWN ── */
+.s2-relative{position:relative}
+.autocomplete-dropdown{
+  position:absolute;top:calc(100% + 8px);left:0;right:0;
+  background:#fff;border:1.5px solid var(--line);border-radius:14px;
+  box-shadow:0 12px 48px rgba(26,15,0,0.14),0 4px 16px rgba(26,15,0,0.08);
+  overflow:hidden;z-index:50;
+}
+.ac-row{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 16px;cursor:pointer;
+  transition:background 0.1s;
+  border-bottom:1px solid var(--line-soft);
+}
+.ac-row:last-child{border-bottom:none}
+.ac-row:hover,.ac-row.active{background:var(--purple-soft)}
+.ac-row.active .ac-text .ac-bold{color:var(--purple)}
+.ac-icon{
+  width:32px;height:32px;border-radius:8px;
+  background:var(--gray-100);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;flex-shrink:0;
+}
+.ac-icon.purple-bg{background:var(--purple-soft);border-color:var(--purple-soft)}
+.ac-icon.wham-bg{background:var(--wham-soft);border-color:var(--wham-soft)}
+.ac-icon.green-bg{background:var(--green-soft);border-color:var(--green-soft)}
+.ac-text{flex:1;min-width:0}
+.ac-text .ac-bold{font-size:14px;font-weight:500;color:var(--ink)}
+.ac-text .ac-bold em{font-style:normal;font-weight:700}
+.ac-type{font-size:11.5px;color:var(--gray-400);font-weight:500;margin-top:1px}
+.ac-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.ac-kbd{
+  font-family:'JetBrains Mono',monospace;font-size:10.5px;
+  background:var(--gray-100);border:1px solid var(--gray-200);
+  border-bottom:2px solid var(--gray-200);
+  color:var(--gray-500);padding:2px 7px;border-radius:5px;
+}
+.ac-meta{font-size:11.5px;color:var(--gray-400)}
+.ac-follow-btn{
+  font-size:12px;font-weight:600;color:var(--purple);
+  background:var(--purple-soft);border:1px solid var(--purple-soft);
+  padding:3px 10px;border-radius:7px;white-space:nowrap;
+}
+.ac-separator{
+  padding:7px 16px 5px;
+  font-size:10.5px;font-weight:700;color:var(--gray-400);
+  text-transform:uppercase;letter-spacing:0.1em;
+  background:var(--gray-50);border-bottom:1px solid var(--line-soft);
+}
+.ac-check{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:15px;height:15px;border-radius:50%;background:var(--wham);
+  color:#1A0F00;font-size:8px;font-weight:800;margin-left:3px;
+  flex-shrink:0;
+}
+.ac-avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:linear-gradient(135deg,#FF4500,#CC3700);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;color:#fff;flex-shrink:0;
+  font-family:'Space Grotesk',sans-serif;
+}
+.ac-avatar.b{background:linear-gradient(135deg,#7C3AED,#5B21B6)}
+
+.ai-hint{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 16px;
+  font-size:12.5px;color:var(--ink-mute);
+  border-top:1px solid var(--line-soft);
+  background:var(--bg);
+  margin-top:12px;border-radius:10px;
+  border:1px solid var(--line-soft);
+}
+.ai-hint-star{color:var(--wham);font-size:14px;flex-shrink:0}
+.ai-tags{display:flex;gap:6px;margin-left:4px}
+.ai-tag{
+  display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;
+  background:var(--wham-soft);color:#92400E;
+  padding:2px 8px;border-radius:5px;border:1px solid rgba(255,184,0,0.3);
+}
+
+/* ── STATE 3: RESULTS ── */
+.results-layout{display:grid;grid-template-columns:1fr 280px;gap:28px;align-items:start}
+
+.ai-intent-banner{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 18px;border-radius:10px;
+  background:#FFF8F0;border:1px solid rgba(255,107,53,0.25);
+  margin-bottom:16px;
+}
+.ai-intent-star{color:var(--wham);font-size:15px;flex-shrink:0}
+.ai-intent-text{font-size:13.5px;color:var(--ink-soft)}
+.ai-intent-text strong{color:var(--ink);font-weight:600}
+.ai-intent-count{
+  margin-left:auto;font-family:'JetBrains Mono',monospace;
+  font-size:12px;color:var(--ink-mute);flex-shrink:0;
+}
+
+.filter-row{
+  display:flex;align-items:center;gap:8px;margin-bottom:20px;
+  flex-wrap:wrap;
+}
+.filter-pill{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:6px 14px;border-radius:100px;
+  font-size:13px;font-weight:600;cursor:pointer;
+  transition:all 0.12s;border:1.5px solid var(--line);
+  color:var(--ink-mute);background:var(--card);
+}
+.filter-pill.active{
+  background:var(--purple);color:#fff;border-color:var(--purple);
+}
+.filter-pill-count{
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  opacity:0.7;
+}
+.filter-sort{
+  margin-left:auto;
+  padding:6px 14px;border-radius:8px;
+  font-size:13px;font-weight:600;color:var(--ink-soft);
+  background:var(--card);border:1.5px solid var(--line);
+  cursor:pointer;appearance:none;
+  font-family:'Inter',sans-serif;
+}
+
+.results-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.meme-card{
+  background:var(--card);border:1px solid var(--line);border-radius:12px;
+  overflow:hidden;cursor:pointer;
+  transition:transform 0.15s,box-shadow 0.15s;
+}
+.meme-card:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(26,15,0,0.1)}
+.meme-img-wrap{
+  aspect-ratio:1/1;background:var(--bg-alt);
+  overflow:hidden;position:relative;
+}
+.meme-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform 0.2s}
+.meme-card:hover .meme-img-wrap img{transform:scale(1.04)}
+.meme-type-badge{
+  position:absolute;top:8px;right:8px;
+  font-size:10px;font-weight:700;color:#fff;
+  background:rgba(26,15,0,0.65);backdrop-filter:blur(4px);
+  padding:2px 7px;border-radius:5px;
+  font-family:'JetBrains Mono',monospace;
+}
+.meme-body{padding:12px 14px}
+.meme-cat{
+  display:inline-block;font-size:10.5px;font-weight:700;
+  color:var(--purple);background:var(--purple-soft);
+  padding:2px 8px;border-radius:5px;margin-bottom:6px;
+  text-transform:uppercase;letter-spacing:0.05em;
+}
+.meme-title{
+  font-family:'Space Grotesk',sans-serif;font-weight:600;
+  font-size:13.5px;color:var(--ink);margin-bottom:8px;
+  line-height:1.35;
+}
+.meme-meta{
+  display:flex;align-items:center;justify-content:space-between;
+}
+.meme-sends{
+  font-family:'JetBrains Mono',monospace;font-size:12px;
+  color:var(--ink-mute);display:flex;align-items:center;gap:4px;
+}
+.meme-sends-icon{color:var(--purple);font-size:10px}
+.meme-send-btn{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:12px;font-weight:600;color:var(--purple);
+  background:var(--purple-soft);border:1px solid rgba(255,69,0,0.15);
+  padding:4px 10px;border-radius:7px;transition:background 0.15s;
+}
+.meme-send-btn:hover{background:var(--purple);color:#fff}
+
+.load-more-wrap{text-align:center;margin-top:20px;padding-top:4px}
+.load-more-info{
+  font-size:13px;color:var(--ink-mute);margin-bottom:12px;
+}
+.btn-load-more{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 28px;border-radius:10px;
+  font-size:14px;font-weight:700;font-family:'Space Grotesk',sans-serif;
+  color:var(--purple);background:var(--purple-soft);
+  border:1.5px solid rgba(255,69,0,0.2);cursor:pointer;
+  transition:all 0.15s;
+}
+.btn-load-more:hover{background:var(--purple);color:#fff}
+
+/* ── SIDEBAR ── */
+.sidebar-card{
+  background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:18px 16px;margin-bottom:14px;
+}
+.sidebar-title{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;
+  font-size:13.5px;color:var(--ink);margin-bottom:12px;
+}
+.related-search-list{display:flex;flex-direction:column;gap:7px}
+.related-search-item{
+  display:flex;align-items:center;gap:8px;
+  font-size:13.5px;color:var(--ink-soft);cursor:pointer;
+  padding:4px 0;
+  border-bottom:1px solid var(--line-soft);
+  transition:color 0.12s;
+}
+.related-search-item:last-child{border-bottom:none}
+.related-search-item:hover{color:var(--purple)}
+.related-search-icon{color:var(--gray-400);font-size:12px}
+
+.try-also-list{display:flex;flex-direction:column;gap:8px}
+.try-also-item{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 10px;border-radius:8px;background:var(--bg-alt);
+  cursor:pointer;transition:background 0.12s;
+  font-size:13px;color:var(--ink-soft);
+}
+.try-also-item:hover{background:var(--purple-soft);color:var(--purple)}
+.try-also-em{font-weight:600;color:var(--ink)}
+
+.top-creator-card{
+  background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:18px 16px;
+}
+.top-creator-header{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;
+  font-size:11px;text-transform:uppercase;letter-spacing:0.1em;
+  color:var(--ink-mute);margin-bottom:12px;
+}
+.top-creator-row{display:flex;align-items:center;gap:10px}
+.top-creator-avatar{
+  width:42px;height:42px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,#FF4500,#CC3700);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:700;color:#fff;
+  font-family:'Space Grotesk',sans-serif;
+}
+.top-creator-info{flex:1;min-width:0}
+.top-creator-handle{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;
+  font-size:14px;color:var(--ink);display:flex;align-items:center;gap:5px;
+}
+.top-creator-check{
+  width:15px;height:15px;border-radius:50%;background:var(--wham);
+  color:#1A0F00;font-size:8px;font-weight:800;
+  display:inline-flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.top-creator-stat{font-size:12px;color:var(--ink-mute);margin-top:2px}
+.btn-follow{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:12px;font-weight:700;font-family:'Space Grotesk',sans-serif;
+  color:#fff;background:var(--purple);
+  padding:6px 12px;border-radius:8px;border:none;cursor:pointer;
+  flex-shrink:0;transition:background 0.15s;
+}
+.btn-follow:hover{background:var(--purple-dark)}
+
+/* ── FOOTER ── */
+.footer{background:#1A0F00;margin-top:72px}
+.footer-inner{max-width:1200px;margin:0 auto;padding:48px 32px 24px}
+.footer-top{display:flex;gap:48px;margin-bottom:32px}
+.footer-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.04em;color:#fff;margin-bottom:8px}
+.footer-tagline{font-size:13px;color:rgba(255,255,255,0.4);line-height:1.6;max-width:220px}
+.footer-links{display:flex;gap:48px;margin-left:auto}
+.footer-col h4{font-size:12px;font-weight:700;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:14px}
+.footer-col ul{list-style:none}
+.footer-col li+li{margin-top:8px}
+.footer-col a{font-size:13.5px;color:rgba(255,255,255,0.6);transition:color 0.15s}
+.footer-col a:hover{color:#fff}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.08);padding-top:20px;display:flex;align-items:center;justify-content:space-between}
+.footer-copy{font-size:12.5px;color:rgba(255,255,255,0.35)}
+.footer-bl{display:flex;gap:20px}
+.footer-bl a{font-size:12.5px;color:rgba(255,255,255,0.4);transition:color 0.15s}
+.footer-bl a:hover{color:rgba(255,255,255,0.8)}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="01-landing.html" class="nav-logo">whamr.</a>
+  <div class="nav-links">
+    <a href="01-landing.html" class="nav-link">Home</a>
+    <a href="02-memes-browser.html" class="nav-link">Memes</a>
+    <a href="06-explore.html" class="nav-link">Explore</a>
+    <a href="22-trending.html" class="nav-link">Trending</a>
+    <a href="10-dojos.html" class="nav-link">Dojos</a>
+    <a href="12-analytics.html" class="nav-link">Creator</a>
+  </div>
+  <div class="nav-search">
+    <input type="text" placeholder="Search memes & stickers…">
+    <button class="nav-search-btn">Search</button>
+  </div>
+  <div class="nav-actions">
+    <a href="08-notifications.html" class="nav-icon-btn">
+      🔔
+      <span class="nav-badge red">3</span>
+    </a>
+    <a href="09-messages.html" class="nav-icon-btn">
+      💬
+      <span class="nav-badge blue">1</span>
+    </a>
+    <a href="07-user-profile.html" class="nav-avatar">E</a>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div style="background:#fff;border-bottom:1px solid var(--line);padding:40px 32px 32px">
+  <div style="max-width:1200px;margin:0 auto">
+    <h1 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:36px;letter-spacing:-0.03em;color:var(--ink);margin-bottom:6px">Search</h1>
+    <p style="font-size:15px;color:var(--ink-mute)">413 memes &amp; stickers &middot; AI-powered &middot; Type what you feel</p>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════ -->
+<!--  STATE 1: EMPTY / FOCUSED                     -->
+<!-- ══════════════════════════════════════════════ -->
+
+<div class="state-divider">
+  <div class="state-divider-line"></div>
+  <div class="state-divider-label">State 1: Empty / Focused</div>
+  <div class="state-divider-line"></div>
+</div>
+
+<div class="search-zone">
+
+  <!-- Big search bar — empty, focused -->
+  <div class="big-search-wrap">
+    <div class="big-search-bar">
+      <div class="big-search-icon">🔍</div>
+      <input class="big-search-input" type="text" placeholder='Try "funny naija", "dance moves", "sad crying meme"…' readonly>
+      <button class="big-search-mic" title="Voice search">🎤</button>
+    </div>
+  </div>
+
+  <!-- RECENT SEARCHES -->
+  <div style="margin-bottom:28px">
+    <div style="display:flex;align-items:center;margin-bottom:12px">
+      <div class="recent-row-label">Recent searches</div>
+      <button class="clear-all">Clear all</button>
+    </div>
+    <div class="recent-row">
+      <span class="recent-pill">funny naija 🇳🇬 <span class="recent-pill-x">×</span></span>
+      <span class="recent-pill">sad crying <span class="recent-pill-x">×</span></span>
+      <span class="recent-pill">azonto dance <span class="recent-pill-x">×</span></span>
+      <span class="recent-pill">birthday meme <span class="recent-pill-x">×</span></span>
+      <span class="recent-pill">coffin dancers <span class="recent-pill-x">×</span></span>
+    </div>
+  </div>
+
+  <!-- TRENDING SEARCHES -->
+  <div style="margin-bottom:28px">
+    <div class="trending-section-title">Trending searches</div>
+    <div class="trending-list">
+      <div class="trending-item">
+        <span class="trending-rank">1</span>
+        <span class="trending-icon">🔥</span>
+        <span class="trending-query">5000 naira pawpaw</span>
+        <span class="trending-count">1,844</span>
+        <span class="trending-badge-hot">🔥 Hot</span>
+      </div>
+      <div class="trending-item">
+        <span class="trending-rank">2</span>
+        <span class="trending-icon">🔥</span>
+        <span class="trending-query">naija reaction</span>
+        <span class="trending-count">1,203</span>
+        <span class="trending-badge-hot">🔥 Hot</span>
+      </div>
+      <div class="trending-item">
+        <span class="trending-rank">3</span>
+        <span class="trending-icon">↑</span>
+        <span class="trending-query">renegade dance</span>
+        <span class="trending-count">892</span>
+        <span class="trending-badge-up">↑ Rising</span>
+      </div>
+      <div class="trending-item">
+        <span class="trending-rank">4</span>
+        <span class="trending-icon">↑</span>
+        <span class="trending-query">sad crying scene</span>
+        <span class="trending-count">756</span>
+        <span class="trending-badge-up">↑ Rising</span>
+      </div>
+      <div class="trending-item">
+        <span class="trending-rank">5</span>
+        <span class="trending-icon">→</span>
+        <span class="trending-query">birthday meme</span>
+        <span class="trending-count">634</span>
+        <span class="trending-badge-steady">→ Steady</span>
+      </div>
+      <div class="trending-item">
+        <span class="trending-rank">6</span>
+        <span class="trending-icon">→</span>
+        <span class="trending-query">panda laughing</span>
+        <span class="trending-count">521</span>
+        <span class="trending-badge-steady">→ Steady</span>
+      </div>
+      <div class="trending-item">
+        <span class="trending-rank">7</span>
+        <span class="trending-icon">↑</span>
+        <span class="trending-query">coffin dancers</span>
+        <span class="trending-count">489</span>
+        <span class="trending-badge-up">↑ Rising</span>
+      </div>
+      <div class="trending-item">
+        <span class="trending-rank">8</span>
+        <span class="trending-icon">→</span>
+        <span class="trending-query">sports reaction</span>
+        <span class="trending-count">412</span>
+        <span class="trending-badge-steady">→ Steady</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- BROWSE BY CATEGORY -->
+  <div style="margin-bottom:20px">
+    <div class="category-section-title">Browse by category</div>
+    <div class="category-pills">
+      <a href="23-category.html" class="cat-pill">😮 Reactions</a>
+      <a href="23-category.html" class="cat-pill">🇳🇬 Naija</a>
+      <a href="23-category.html" class="cat-pill">💃 Dance</a>
+      <a href="23-category.html" class="cat-pill">😂 Laughing</a>
+      <a href="23-category.html" class="cat-pill">😔 Sad</a>
+      <a href="23-category.html" class="cat-pill">🎂 Birthday</a>
+      <a href="23-category.html" class="cat-pill">❤️ Love</a>
+      <a href="23-category.html" class="cat-pill">⚽ Sports</a>
+      <a href="23-category.html" class="cat-pill">😬 Awkward</a>
+      <a href="23-category.html" class="cat-pill">🎲 Random</a>
+      <a href="23-category.html" class="cat-pill">🖼 Stickers</a>
+    </div>
+  </div>
+
+</div><!-- /search-zone -->
+
+
+<!-- ══════════════════════════════════════════════ -->
+<!--  STATE 2: TYPING — query = "naija re"         -->
+<!-- ══════════════════════════════════════════════ -->
+
+<div class="state-divider" style="margin-top:56px">
+  <div class="state-divider-line"></div>
+  <div class="state-divider-label">State 2: Typing (autocomplete) — query "naija re"</div>
+  <div class="state-divider-line"></div>
+</div>
+
+<div class="search-zone">
+
+  <div class="big-search-wrap s2-relative">
+
+    <!-- Search bar with partial query -->
+    <div class="big-search-bar">
+      <div class="big-search-icon" style="color:var(--purple)">🔍</div>
+      <input class="big-search-input" type="text" value="naija re" readonly style="caret-color:var(--purple)">
+      <div class="big-search-clear" style="display:flex">×</div>
+      <button class="big-search-mic">🎤</button>
+    </div>
+
+    <!-- AUTOCOMPLETE DROPDOWN -->
+    <div class="autocomplete-dropdown">
+
+      <!-- Row 1 — top suggestion (active / highlighted) -->
+      <div class="ac-row active">
+        <div class="ac-icon purple-bg">🔍</div>
+        <div class="ac-text">
+          <div class="ac-bold"><em>naija re</em>action</div>
+          <div class="ac-type">Naija</div>
+        </div>
+        <div class="ac-right">
+          <span class="ac-kbd">↵ to search</span>
+        </div>
+      </div>
+
+      <!-- Row 2 -->
+      <div class="ac-row">
+        <div class="ac-icon wham-bg">🇳🇬</div>
+        <div class="ac-text">
+          <div class="ac-bold"><em>Naija re</em>actions</div>
+          <div class="ac-type">Category page</div>
+        </div>
+        <div class="ac-right">
+          <span class="ac-meta">Category</span>
+        </div>
+      </div>
+
+      <!-- Row 3 -->
+      <div class="ac-row">
+        <div class="ac-icon">🎬</div>
+        <div class="ac-text">
+          <div class="ac-bold"><em>Naija re</em>action meme compilations</div>
+          <div class="ac-type">Meme</div>
+        </div>
+        <div class="ac-right">
+          <span class="ac-meta">Meme</span>
+        </div>
+      </div>
+
+      <!-- Row 4 -->
+      <div class="ac-row">
+        <div class="ac-icon">🔍</div>
+        <div class="ac-text">
+          <div class="ac-bold"><em>naija re</em>action videos</div>
+          <div class="ac-type">234 results</div>
+        </div>
+        <div class="ac-right">
+          <span class="ac-meta" style="font-family:'JetBrains Mono',monospace;font-size:12px">234</span>
+        </div>
+      </div>
+
+      <!-- Creators separator -->
+      <div class="ac-separator">Creators matching "naija"</div>
+
+      <!-- Row 5 — Creator 1 -->
+      <div class="ac-row">
+        <div class="ac-avatar">E</div>
+        <div class="ac-text">
+          <div class="ac-bold" style="display:flex;align-items:center;gap:3px">
+            @naijacontent
+            <span class="ac-check">✓</span>
+          </div>
+          <div class="ac-type">15.2k followers</div>
+        </div>
+        <div class="ac-right">
+          <span class="ac-follow-btn">View profile</span>
+        </div>
+      </div>
+
+      <!-- Row 6 — Creator 2 -->
+      <div class="ac-row">
+        <div class="ac-avatar b">N</div>
+        <div class="ac-text">
+          <div class="ac-bold">@naijafan</div>
+          <div class="ac-type">3.8k followers</div>
+        </div>
+        <div class="ac-right">
+          <span class="ac-follow-btn">View profile</span>
+        </div>
+      </div>
+
+      <!-- Tags separator -->
+      <div class="ac-separator">Tags</div>
+
+      <!-- Row 7 — Tag 1 -->
+      <div class="ac-row">
+        <div class="ac-icon green-bg" style="font-size:13px">🏷</div>
+        <div class="ac-text">
+          <div class="ac-bold">#naija</div>
+          <div class="ac-type">1.8k uses</div>
+        </div>
+        <div class="ac-right">
+          <a href="29-hashtag.html" style="font-size:12px;color:var(--purple);font-weight:600">Browse →</a>
+        </div>
+      </div>
+
+      <!-- Row 8 — Tag 2 -->
+      <div class="ac-row">
+        <div class="ac-icon green-bg" style="font-size:13px">🏷</div>
+        <div class="ac-text">
+          <div class="ac-bold">#naijahumor</div>
+          <div class="ac-type">432 uses</div>
+        </div>
+        <div class="ac-right">
+          <span class="ac-meta" style="font-family:'JetBrains Mono',monospace;font-size:12px">432</span>
+        </div>
+      </div>
+
+    </div><!-- /autocomplete-dropdown -->
+
+  </div><!-- /big-search-wrap -->
+
+  <!-- AI INTENT HINT -->
+  <div class="ai-hint" style="margin-top:320px">
+    <span class="ai-hint-star">✦</span>
+    <span style="font-size:12.5px;color:var(--ink-mute)">AI detected:</span>
+    <div class="ai-tags">
+      <span class="ai-tag">Naija</span>
+      <span class="ai-tag">Reactions</span>
+    </div>
+    <span style="font-size:12.5px;color:var(--ink-mute);margin-left:4px">— showing best matches first</span>
+  </div>
+
+</div><!-- /search-zone -->
+
+
+<!-- ══════════════════════════════════════════════ -->
+<!--  STATE 3: RESULTS — query = "naija reaction"  -->
+<!-- ══════════════════════════════════════════════ -->
+
+<div class="state-divider" style="margin-top:56px">
+  <div class="state-divider-line"></div>
+  <div class="state-divider-label">State 3: Results — query "naija reaction"</div>
+  <div class="state-divider-line"></div>
+</div>
+
+<div class="search-zone" style="padding-bottom:20px">
+
+  <!-- Search bar with full query + clear -->
+  <div class="big-search-wrap">
+    <div class="big-search-bar">
+      <div class="big-search-icon" style="color:var(--purple)">🔍</div>
+      <input class="big-search-input" type="text" value="naija reaction" readonly>
+      <div class="big-search-clear" style="display:flex">×</div>
+      <button class="big-search-mic">🎤</button>
+    </div>
+  </div>
+
+  <!-- AI INTENT BANNER -->
+  <div class="ai-intent-banner">
+    <span class="ai-intent-star">✦</span>
+    <span class="ai-intent-text">
+      AI matched: <strong>Naija · Reactions</strong> — matches by title, tags &amp; synonyms
+    </span>
+    <span class="ai-intent-count">18 results</span>
+  </div>
+
+  <!-- FILTER ROW -->
+  <div class="filter-row">
+    <button class="filter-pill active">All <span class="filter-pill-count">18</span></button>
+    <button class="filter-pill">Memes <span class="filter-pill-count">12</span></button>
+    <button class="filter-pill">Stickers <span class="filter-pill-count">4</span></button>
+    <button class="filter-pill">GIFs <span class="filter-pill-count">2</span></button>
+    <select class="filter-sort">
+      <option selected>Most relevant ▼</option>
+      <option>Most recent</option>
+      <option>Most sent</option>
+    </select>
+  </div>
+
+  <!-- 2-COL: RESULTS + SIDEBAR -->
+  <div class="results-layout">
+
+    <!-- RESULTS GRID -->
+    <div>
+      <div class="results-grid">
+
+        <!-- Card 1 -->
+        <div class="meme-card">
+          <div class="meme-img-wrap">
+            <img src="https://picsum.photos/seed/mribunaija/400/400" alt="Can I See You Mr Ibu">
+            <span class="meme-type-badge">mp4</span>
+          </div>
+          <div class="meme-body">
+            <span class="meme-cat">Naija</span>
+            <div class="meme-title">Can I See You Mr Ibu</div>
+            <div class="meme-meta">
+              <span class="meme-sends"><span class="meme-sends-icon">↗</span> 1,086 sends</span>
+              <button class="meme-send-btn">Send →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="meme-card">
+          <div class="meme-img-wrap">
+            <img src="https://picsum.photos/seed/patienceozokwo/400/400" alt="Bigger Scream Patience Ozokwo">
+            <span class="meme-type-badge">mp4</span>
+          </div>
+          <div class="meme-body">
+            <span class="meme-cat">Reactions</span>
+            <div class="meme-title">Bigger Scream — Patience Ozokwo</div>
+            <div class="meme-meta">
+              <span class="meme-sends"><span class="meme-sends-icon">↗</span> 631 sends</span>
+              <button class="meme-send-btn">Send →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="meme-card">
+          <div class="meme-img-wrap">
+            <img src="https://picsum.photos/seed/clapofregret/400/400" alt="Clap of Regret">
+            <span class="meme-type-badge">gif</span>
+          </div>
+          <div class="meme-body">
+            <span class="meme-cat">Naija</span>
+            <div class="meme-title">Clap of Regret</div>
+            <div class="meme-meta">
+              <span class="meme-sends"><span class="meme-sends-icon">↗</span> 744 sends</span>
+              <button class="meme-send-btn">Send →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="meme-card">
+          <div class="meme-img-wrap">
+            <img src="https://picsum.photos/seed/azontoghost/400/400" alt="Azonto Ghost Wow">
+            <span class="meme-type-badge">mp4</span>
+          </div>
+          <div class="meme-body">
+            <span class="meme-cat">Reactions</span>
+            <div class="meme-title">Azonto Ghost Wow</div>
+            <div class="meme-meta">
+              <span class="meme-sends"><span class="meme-sends-icon">↗</span> 774 sends</span>
+              <button class="meme-send-btn">Send →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="meme-card">
+          <div class="meme-img-wrap">
+            <img src="https://picsum.photos/seed/akiiss/400/400" alt="Aki Iss">
+            <span class="meme-type-badge">mp4</span>
+          </div>
+          <div class="meme-body">
+            <span class="meme-cat">Naija</span>
+            <div class="meme-title">Aki Iss</div>
+            <div class="meme-meta">
+              <span class="meme-sends"><span class="meme-sends-icon">↗</span> 892 sends</span>
+              <button class="meme-send-btn">Send →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="meme-card">
+          <div class="meme-img-wrap">
+            <img src="https://picsum.photos/seed/ahhhhscream/400/400" alt="Ahhhhh Scream">
+            <span class="meme-type-badge">mp4</span>
+          </div>
+          <div class="meme-body">
+            <span class="meme-cat">Reactions</span>
+            <div class="meme-title">Ahhhhh Scream</div>
+            <div class="meme-meta">
+              <span class="meme-sends"><span class="meme-sends-icon">↗</span> 842 sends</span>
+              <button class="meme-send-btn">Send →</button>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /results-grid -->
+
+      <!-- LOAD MORE -->
+      <div class="load-more-wrap">
+        <div class="load-more-info">Showing 6 of 18 results</div>
+        <button class="btn-load-more">Load more →</button>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <aside>
+
+      <!-- Related searches -->
+      <div class="sidebar-card">
+        <div class="sidebar-title">Related searches</div>
+        <div class="related-search-list">
+          <div class="related-search-item">
+            <span class="related-search-icon">🔍</span> naija meme
+          </div>
+          <div class="related-search-item">
+            <span class="related-search-icon">🔍</span> nollywood reaction
+          </div>
+          <div class="related-search-item">
+            <span class="related-search-icon">🔍</span> mr ibu
+          </div>
+          <div class="related-search-item">
+            <span class="related-search-icon">🔍</span> patience ozokwo
+          </div>
+        </div>
+      </div>
+
+      <!-- Try also -->
+      <div class="sidebar-card">
+        <div class="sidebar-title">Try also</div>
+        <div class="try-also-list">
+          <a href="23-category.html" class="try-also-item">
+            😮 <span><span class="try-also-em">Reactions</span> category</span>
+          </a>
+          <a href="29-hashtag.html" class="try-also-item">
+            🏷 <span><span class="try-also-em">#naija</span> hashtag</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Top creator for this search -->
+      <div class="top-creator-card">
+        <div class="top-creator-header">Top creator for this search</div>
+        <div class="top-creator-row">
+          <div class="top-creator-avatar">E</div>
+          <div class="top-creator-info">
+            <div class="top-creator-handle">
+              @naijacontent
+              <span class="top-creator-check">✓</span>
+            </div>
+            <div class="top-creator-stat">63 Naija uploads</div>
+          </div>
+          <button class="btn-follow">Follow</button>
+        </div>
+      </div>
+
+    </aside>
+
+  </div><!-- /results-layout -->
+
+</div><!-- /search-zone -->
+
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo">whamr.</div>
+        <div class="footer-tagline">Find the perfect meme. Send the wham. Built for the internet.</div>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Discover</h4>
+          <ul>
+            <li><a href="22-trending.html">Trending</a></li>
+            <li><a href="06-explore.html">Explore</a></li>
+            <li><a href="23-category.html">Categories</a></li>
+            <li><a href="10-dojos.html">Dojos</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Careers</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Terms</a></li>
+            <li><a href="#">Privacy</a></li>
+            <li><a href="#">Content Policy</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2026 whamr. All rights reserved.</span>
+      <div class="footer-bl">
+        <a href="#">Status</a>
+        <a href="#">API</a>
+        <a href="27-help.html">Help</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="./real-media.js"></script>
+</body>
+</html>
