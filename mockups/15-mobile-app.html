@@ -67,7 +67,10 @@ img{display:block}
 
 /* PHONES ROW */
 .phones-row-label{font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;color:rgba(255,255,255,0.25);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:20px;text-align:center}
-.phones-row{display:flex;justify-content:center;gap:24px;margin-bottom:24px;flex-wrap:wrap}
+.phones-row{display:flex;justify-content:flex-start;gap:24px;margin-bottom:24px;flex-wrap:nowrap;overflow-x:auto;padding-bottom:16px;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,0.15) transparent}
+.phones-row::-webkit-scrollbar{height:6px}
+.phones-row::-webkit-scrollbar-track{background:transparent}
+.phones-row::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.15);border-radius:3px}
 
 /* PHONE FRAME */
 .phone{
@@ -267,6 +270,123 @@ img{display:block}
 .component-table td:nth-child(3){font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--wham-bright)}
 .color-swatch{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:4px;vertical-align:middle}
 
+/* ── PHONE STATUS BAR ── */
+.m-status-bar{display:flex;align-items:center;justify-content:space-between;padding:5px 10px 2px;background:transparent;font-size:7px;font-weight:600;font-family:'JetBrains Mono',monospace;color:var(--ink)}
+.m-status-bar.dark-bar{color:#fff}
+.m-status-icons{display:flex;align-items:center;gap:2px;font-size:7px}
+
+/* ── BACK ROW ── */
+.m-back-row{display:flex;align-items:center;gap:5px;padding:4px 8px 4px;border-bottom:1px solid var(--line-soft)}
+.m-back-arrow{font-size:11px;color:var(--purple);line-height:1;flex-shrink:0}
+.m-back-crumb{font-size:8px;font-weight:600;color:var(--purple);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:'Space Grotesk',sans-serif}
+
+/* ── MEME DETAIL v2 (discussion) ── */
+.m-media-box{width:100%;height:76px;background:linear-gradient(135deg,#1A0F00,#CC3700);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
+.m-detail-title-sm{font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:700;color:var(--ink);margin:5px 8px 2px}
+.m-stats-inline{font-size:7px;color:var(--ink-mute);padding:0 8px 4px;font-family:'JetBrains Mono',monospace;border-bottom:1px solid var(--line-soft)}
+.m-tab-row{display:flex;border-bottom:1px solid var(--line-soft)}
+.m-tab{flex:1;text-align:center;font-size:7px;font-weight:600;padding:4px 2px;color:var(--ink-mute);font-family:'Inter',sans-serif;white-space:nowrap}
+.m-tab.active{color:var(--purple);border-bottom:2px solid var(--purple)}
+
+/* COMMENT ITEMS */
+.m-comments{padding:0 6px;flex:1;overflow:hidden}
+.m-comment-row{display:flex;gap:4px;padding:4px 0;border-bottom:1px solid var(--line-soft)}
+.m-comment-avatar{width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,#1E3A5F,#3B82F6);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:6px;font-weight:700;color:#fff;font-family:'Space Grotesk',sans-serif}
+.m-comment-body{flex:1;min-width:0}
+.m-comment-handle{font-size:7px;font-weight:700;color:var(--ink);font-family:'Space Grotesk',sans-serif}
+.m-comment-text{font-size:7px;color:var(--ink-mute);line-height:1.3}
+.m-comment-time{font-size:6px;color:var(--gray-400);font-family:'JetBrains Mono',monospace;flex-shrink:0}
+
+/* COMMENT INPUT */
+.m-comment-input-row{display:flex;align-items:center;gap:4px;padding:4px 6px;border-top:1px solid var(--line-soft);background:#fff}
+.m-comment-field{flex:1;font-size:7px;color:var(--gray-400);padding:3px 6px;border:1px solid var(--line);border-radius:6px;font-family:'Inter',sans-serif;background:#fff}
+.m-send-comment{background:var(--purple);color:#fff;font-size:6px;font-weight:700;padding:3px 6px;border-radius:5px;border:none;font-family:'Space Grotesk',sans-serif;white-space:nowrap}
+
+/* ── TRENDING SCREEN ── */
+.m-trending-header{padding:6px 8px 3px;display:flex;align-items:center;justify-content:space-between}
+.m-trending-title{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;color:var(--ink)}
+.m-day-tab-row{display:flex;gap:3px;padding:0 8px 4px}
+.m-day-tab{font-size:7px;font-weight:600;padding:2px 7px;border-radius:100px;color:var(--ink-mute);border:1px solid var(--line-soft);font-family:'Inter',sans-serif}
+.m-day-tab.active{background:var(--purple);color:#fff;border-color:var(--purple)}
+.m-rank-cards{padding:0 6px;display:flex;flex-direction:column;gap:4px}
+.m-rank-card{display:flex;align-items:center;gap:5px;background:#fff;border:1px solid var(--line-soft);border-radius:7px;padding:5px 6px;box-shadow:0 1px 4px rgba(0,0,0,0.04)}
+.m-rank-badge{width:18px;height:18px;border-radius:5px;background:linear-gradient(135deg,var(--purple-dark),var(--purple-mid));display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;color:#fff;font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.m-rank-badge.gold{background:linear-gradient(135deg,#B8860B,#FFD700)}
+.m-rank-badge.silver{background:linear-gradient(135deg,#6B7280,#9CA3AF)}
+.m-rank-badge.bronze{background:linear-gradient(135deg,#92400E,#D97706)}
+.m-rank-thumb{width:28px;height:28px;border-radius:5px;flex-shrink:0}
+.m-rank-info{flex:1;min-width:0}
+.m-rank-name{font-size:8px;font-weight:700;color:var(--ink);font-family:'Space Grotesk',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.m-rank-sends{font-size:7px;color:var(--ink-mute);font-family:'JetBrains Mono',monospace}
+.m-rank-trend{font-size:7px;font-weight:700;color:var(--green);font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.m-more-btn{margin:5px 6px 0;width:calc(100% - 12px);background:var(--purple);color:#fff;font-size:8px;font-weight:700;padding:5px;border-radius:7px;border:none;font-family:'Space Grotesk',sans-serif;text-align:center;display:block}
+
+/* ── BATTLE SCREEN ── */
+.m-battle-header{background:linear-gradient(135deg,#0D0500,#1A0F00);padding:6px 8px 5px;display:flex;align-items:center;gap:5px;border-bottom:1px solid rgba(255,150,0,0.2)}
+.m-battle-live-dot{width:7px;height:7px;border-radius:50%;background:#FF4500;animation:pulse 1s ease-in-out infinite;flex-shrink:0}
+.m-battle-label{font-family:'Space Grotesk',sans-serif;font-size:9px;font-weight:700;color:#fff;letter-spacing:0.06em}
+.m-battle-timer{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:var(--wham-bright);text-align:center;padding:5px 0 3px;background:linear-gradient(135deg,#0D0500,#1A0F00);letter-spacing:0.04em}
+.m-battle-cards{padding:4px 6px;display:flex;flex-direction:column;gap:3px}
+.m-battle-card{border-radius:7px;padding:5px 7px;display:flex;align-items:center;gap:5px}
+.m-battle-card.top{background:rgba(255,69,0,0.08);border:1.5px solid var(--purple)}
+.m-battle-card.bottom{background:rgba(255,184,0,0.07);border:1.5px solid var(--amber)}
+.m-battle-emoji{font-size:16px;flex-shrink:0}
+.m-battle-info{flex:1;min-width:0}
+.m-battle-name{font-family:'Space Grotesk',sans-serif;font-size:8px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.m-battle-pct{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--purple)}
+.m-battle-card.bottom .m-battle-pct{color:var(--amber)}
+.m-vote-btn{font-size:7px;font-weight:700;padding:3px 6px;border-radius:5px;border:none;font-family:'Space Grotesk',sans-serif;flex-shrink:0;cursor:pointer}
+.m-vote-btn.orange{background:var(--purple);color:#fff}
+.m-vote-btn.outline{background:transparent;color:var(--amber);border:1px solid var(--amber)}
+.m-vote-bar{margin:2px 6px;height:6px;border-radius:3px;background:var(--line-soft);overflow:hidden;display:flex}
+.m-vote-bar-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--purple-mid))}
+.m-vote-bar-fill-b{height:100%;background:linear-gradient(90deg,var(--amber),var(--wham-bright))}
+.m-battle-meta{font-size:7px;color:var(--ink-mute);text-align:center;padding:3px 0;font-family:'JetBrains Mono',monospace}
+
+/* ── NOTIF SCREEN v2 ── */
+.m-notif-header-v2{display:flex;align-items:center;justify-content:space-between;padding:6px 8px 3px}
+.m-notif-title-v2{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;color:var(--ink)}
+.m-mark-all{font-size:7px;color:var(--purple);font-weight:600;font-family:'Inter',sans-serif}
+.m-notif-thumb{width:20px;height:20px;border-radius:4px;flex-shrink:0}
+
+/* ── CREATOR PROFILE MOBILE ── */
+.m-creator-cover{height:40px;background:linear-gradient(135deg,#1A0F00,#CC3700,#D97706)}
+.m-creator-avatar-wrap{padding:0 8px}
+.m-creator-ava{width:34px;height:34px;border-radius:50%;background:var(--purple);border:3px solid #fff;margin-top:-17px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;font-family:'Space Grotesk',sans-serif;box-shadow:0 2px 8px rgba(0,0,0,0.2);flex-shrink:0}
+.m-creator-info{padding:2px 8px 0}
+.m-creator-name-lg{font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:700;color:var(--ink)}
+.m-creator-handle{font-size:7px;color:var(--ink-mute)}
+.m-creator-bio{font-size:7px;color:var(--ink-soft);padding:2px 8px;line-height:1.4}
+.m-creator-stats-row{display:flex;gap:0;padding:4px 8px;border-bottom:1px solid var(--line-soft);border-top:1px solid var(--line-soft);margin:3px 0}
+.m-creator-stat{flex:1;text-align:center}
+.m-creator-stat-num{font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;color:var(--ink)}
+.m-creator-stat-lbl{font-size:6px;color:var(--gray-400)}
+.m-creator-stat+.m-creator-stat{border-left:1px solid var(--line-soft)}
+.m-creator-btns{display:flex;gap:4px;padding:4px 6px}
+.m-follow-full{flex:1;background:var(--purple);color:#fff;font-size:7px;font-weight:700;padding:4px;border-radius:6px;border:none;font-family:'Space Grotesk',sans-serif;text-align:center}
+.m-tip-btn{background:transparent;color:var(--purple);font-size:7px;font-weight:700;padding:4px 8px;border-radius:6px;border:1.5px solid var(--purple);font-family:'Space Grotesk',sans-serif;white-space:nowrap}
+.m-creator-tabs{display:flex;border-bottom:1px solid var(--line-soft)}
+.m-creator-tab{flex:1;text-align:center;font-size:7px;font-weight:600;padding:4px;color:var(--ink-mute);font-family:'Inter',sans-serif}
+.m-creator-tab.active{color:var(--purple);border-bottom:2px solid var(--purple)}
+.m-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;padding:2px 4px}
+.m-grid-3-tile{border-radius:4px;aspect-ratio:1/1;overflow:hidden}
+
+/* ── DOWNLOAD SECTION ── */
+.download-section{max-width:720px;margin:64px auto 56px;text-align:center;padding:0 24px}
+.download-heading{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;color:#fff;letter-spacing:-0.03em;margin-bottom:6px}
+.download-heading span{color:var(--wham-bright)}
+.download-sub{font-size:15px;color:rgba(255,255,255,0.5);margin-bottom:32px}
+.store-buttons{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.store-btn{display:inline-flex;align-items:center;gap:10px;background:#111;border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:12px 20px;text-decoration:none;transition:background .15s,border-color .15s;min-width:172px}
+.store-btn:hover{background:#1A1A1A;border-color:rgba(255,255,255,0.3)}
+.store-btn-icon{font-size:24px;flex-shrink:0;line-height:1}
+.store-btn-text{text-align:left}
+.store-btn-sub{font-size:10px;color:rgba(255,255,255,0.4);font-family:'Inter',sans-serif;display:block;line-height:1;margin-bottom:2px}
+.store-btn-name{font-size:14px;font-weight:700;color:#fff;font-family:'Space Grotesk',sans-serif;display:block;line-height:1}
+.download-alt{font-size:12px;color:rgba(255,255,255,0.35);margin-top:4px}
+.download-alt a{color:rgba(255,255,255,0.55);text-decoration:underline;text-underline-offset:2px}
+.download-alt a:hover{color:#fff}
+
 /* FOOTER */
 .footer{background:#000;color:rgba(255,255,255,0.3);padding:32px;text-align:center;font-size:13px;border-top:1px solid rgba(255,255,255,0.06)}
 .footer a{color:rgba(255,255,255,0.5);font-weight:600}
@@ -309,8 +429,8 @@ img{display:block}
 
 <div class="content">
 
-  <!-- ROW 1: 4 phones -->
-  <div class="phones-row-label">Row 1, Home, Memes, Upload, Meme Detail</div>
+  <!-- ROW 1: 9 phones — scrollable -->
+  <div class="phones-row-label">Scroll → Home · Memes · Upload · Meme Detail · Discussion · Trending · Battle · Notifications · Creator Profile</div>
   <div class="phones-row">
 
     <!-- PHONE 1: Home Feed -->
@@ -515,6 +635,362 @@ img{display:block}
       </div>
     </div>
 
+    <!-- PHONE 5: Meme Detail — Discussion Tab -->
+    <div>
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <!-- Status bar -->
+          <div class="m-status-bar">
+            <span>9:41</span>
+            <div class="m-status-icons"><span>●●●</span> <span>WiFi</span> <span>🔋</span></div>
+          </div>
+          <!-- Back + breadcrumb -->
+          <div class="m-back-row">
+            <span class="m-back-arrow">‹</span>
+            <span class="m-back-crumb">Naija Meme HQ</span>
+          </div>
+          <!-- Meme media -->
+          <div class="m-media-box">🎬</div>
+          <!-- Title + stats -->
+          <div class="m-detail-title-sm">5000 Naira Pawpaw</div>
+          <div class="m-stats-inline">1,844 sends · 🔥99 virality · Naija</div>
+          <!-- Tabs -->
+          <div class="m-tab-row">
+            <div class="m-tab">Share</div>
+            <div class="m-tab active">Discussion</div>
+            <div class="m-tab">Origin</div>
+            <div class="m-tab">Variants</div>
+          </div>
+          <!-- Comments -->
+          <div class="m-comments">
+            <div class="m-comment-row">
+              <div class="m-comment-avatar" style="background:linear-gradient(135deg,#064E3B,#059669)">D</div>
+              <div class="m-comment-body">
+                <div class="m-comment-handle">@danceking</div>
+                <div class="m-comment-text">lmao this gets me every time 😂</div>
+              </div>
+              <div class="m-comment-time">2h</div>
+            </div>
+            <div class="m-comment-row">
+              <div class="m-comment-avatar" style="background:linear-gradient(135deg,#92400E,#D97706)">M</div>
+              <div class="m-comment-body">
+                <div class="m-comment-handle">@memequeen</div>
+                <div class="m-comment-text">Classic Naija energy 🇳🇬</div>
+              </div>
+              <div class="m-comment-time">4h</div>
+            </div>
+          </div>
+          <!-- Comment input -->
+          <div class="m-comment-input-row">
+            <div class="m-comment-field">Add a comment…</div>
+            <button class="m-send-comment">Send</button>
+          </div>
+          <!-- Bottom nav -->
+          <div class="m-bottom-nav">
+            <div class="m-nav-item"><div class="m-nav-icon">🏠</div><div class="m-nav-label">Home</div></div>
+            <div class="m-nav-item active"><div class="m-nav-icon">🔍</div><div class="m-nav-label" style="color:var(--purple)">Memes</div></div>
+            <div class="m-nav-item" style="justify-content:center"><div class="m-fab">+</div><div class="m-nav-label" style="margin-top:2px">Upload</div></div>
+            <div class="m-nav-item"><div class="m-nav-icon">🔔</div><div class="m-nav-label">Alerts</div></div>
+            <div class="m-nav-item"><div class="m-nav-icon">👤</div><div class="m-nav-label">Me</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">
+        <div class="phone-label-title">Meme Detail — Discussion</div>
+        <div class="phone-label-sub">Community tab · comments</div>
+      </div>
+    </div>
+
+    <!-- PHONE 6: Trending -->
+    <div>
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <!-- Status bar -->
+          <div class="m-status-bar">
+            <span>9:41</span>
+            <div class="m-status-icons"><span>●●●</span> <span>WiFi</span> <span>🔋</span></div>
+          </div>
+          <!-- Header -->
+          <div class="m-trending-header">
+            <div class="m-trending-title">Trending 🔥</div>
+          </div>
+          <!-- Day tabs -->
+          <div class="m-day-tab-row">
+            <div class="m-day-tab active">Today</div>
+            <div class="m-day-tab">Week</div>
+            <div class="m-day-tab">Month</div>
+          </div>
+          <!-- Rank cards -->
+          <div class="m-rank-cards">
+            <!-- #1 -->
+            <div class="m-rank-card">
+              <div class="m-rank-badge gold">#1</div>
+              <div class="m-rank-thumb" style="background:linear-gradient(135deg,#CC3700,#FF8C60)"></div>
+              <div class="m-rank-info">
+                <div class="m-rank-name">5000 Naira Pawpaw</div>
+                <div class="m-rank-sends">1,844 sends</div>
+              </div>
+              <div class="m-rank-trend">▲+68%</div>
+            </div>
+            <!-- #2 -->
+            <div class="m-rank-card">
+              <div class="m-rank-badge silver">#2</div>
+              <div class="m-rank-thumb" style="background:linear-gradient(135deg,#1E3A5F,#3B82F6)"></div>
+              <div class="m-rank-info">
+                <div class="m-rank-name">Big Laugh — Jide Kosoko</div>
+                <div class="m-rank-sends">1,560 sends</div>
+              </div>
+              <div class="m-rank-trend">▲+54%</div>
+            </div>
+            <!-- #3 -->
+            <div class="m-rank-card">
+              <div class="m-rank-badge bronze">#3</div>
+              <div class="m-rank-thumb" style="background:linear-gradient(135deg,#064E3B,#059669)"></div>
+              <div class="m-rank-info">
+                <div class="m-rank-name">Billy Madison Dance</div>
+                <div class="m-rank-sends">1,422 sends</div>
+              </div>
+              <div class="m-rank-trend">▲+41%</div>
+            </div>
+          </div>
+          <!-- More button -->
+          <div class="m-more-btn">More trending →</div>
+          <!-- Bottom nav -->
+          <div class="m-bottom-nav">
+            <div class="m-nav-item"><div class="m-nav-icon">🏠</div><div class="m-nav-label">Home</div></div>
+            <div class="m-nav-item active"><div class="m-nav-icon">🔍</div><div class="m-nav-label" style="color:var(--purple)">Memes</div></div>
+            <div class="m-nav-item" style="justify-content:center"><div class="m-fab">+</div><div class="m-nav-label" style="margin-top:2px">Upload</div></div>
+            <div class="m-nav-item"><div class="m-nav-icon">🔔</div><div class="m-nav-label">Alerts</div></div>
+            <div class="m-nav-item"><div class="m-nav-icon">👤</div><div class="m-nav-label">Me</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">
+        <div class="phone-label-title">Trending</div>
+        <div class="phone-label-sub">🔥 Today · rank cards</div>
+      </div>
+    </div>
+
+    <!-- PHONE 7: Meme Battle -->
+    <div>
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen" style="background:#0D0500">
+          <!-- Status bar (dark) -->
+          <div class="m-status-bar dark-bar">
+            <span>9:41</span>
+            <div class="m-status-icons"><span>●●●</span> <span>WiFi</span> <span>🔋</span></div>
+          </div>
+          <!-- Battle header -->
+          <div class="m-battle-header">
+            <div class="m-battle-live-dot"></div>
+            <div class="m-battle-label">⚔️ BATTLE LIVE</div>
+          </div>
+          <!-- Timer -->
+          <div class="m-battle-timer">00 : 47 : 23</div>
+          <!-- Battle cards -->
+          <div class="m-battle-cards">
+            <!-- Top card -->
+            <div class="m-battle-card top">
+              <div class="m-battle-emoji">🎭</div>
+              <div class="m-battle-info">
+                <div class="m-battle-name">5000 Naira Pawpaw</div>
+                <div class="m-battle-pct">54%</div>
+              </div>
+              <button class="m-vote-btn orange">VOTE 👆</button>
+            </div>
+            <!-- Vote bar -->
+            <div class="m-vote-bar">
+              <div class="m-vote-bar-fill" style="width:54%"></div>
+              <div class="m-vote-bar-fill-b" style="width:46%"></div>
+            </div>
+            <!-- Bottom card -->
+            <div class="m-battle-card bottom">
+              <div class="m-battle-emoji">😂</div>
+              <div class="m-battle-info">
+                <div class="m-battle-name">Mr Ibu Scene</div>
+                <div class="m-battle-pct">46%</div>
+              </div>
+              <button class="m-vote-btn outline">VOTE 👇</button>
+            </div>
+          </div>
+          <!-- Meta -->
+          <div class="m-battle-meta">3,241 votes cast · 47 min left</div>
+          <!-- Bottom nav -->
+          <div class="m-bottom-nav" style="background:#111;border-top:1px solid rgba(255,255,255,0.08)">
+            <div class="m-nav-item"><div class="m-nav-icon">🏠</div><div class="m-nav-label" style="color:rgba(255,255,255,0.4)">Home</div></div>
+            <div class="m-nav-item"><div class="m-nav-icon">🔍</div><div class="m-nav-label" style="color:rgba(255,255,255,0.4)">Memes</div></div>
+            <div class="m-nav-item" style="justify-content:center"><div class="m-fab">+</div><div class="m-nav-label" style="margin-top:2px;color:rgba(255,255,255,0.4)">Upload</div></div>
+            <div class="m-nav-item"><div class="m-nav-icon">🔔</div><div class="m-nav-label" style="color:rgba(255,255,255,0.4)">Alerts</div></div>
+            <div class="m-nav-item"><div class="m-nav-icon">👤</div><div class="m-nav-label" style="color:rgba(255,255,255,0.4)">Me</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">
+        <div class="phone-label-title">Meme Battle</div>
+        <div class="phone-label-sub">⚔️ Live · vote UI</div>
+      </div>
+    </div>
+
+    <!-- PHONE 8: Notifications v2 -->
+    <div>
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <!-- Status bar -->
+          <div class="m-status-bar">
+            <span>9:41</span>
+            <div class="m-status-icons"><span>●●●</span> <span>WiFi</span> <span>🔋</span></div>
+          </div>
+          <!-- Header -->
+          <div class="m-notif-header-v2">
+            <div class="m-notif-title-v2">Notifications</div>
+            <div class="m-mark-all">Mark all read</div>
+          </div>
+          <!-- Filter row -->
+          <div class="m-filter-pills" style="padding:0 8px 5px">
+            <div class="m-filter-pill active">All</div>
+            <div class="m-filter-pill">Likes</div>
+            <div class="m-filter-pill">Comments</div>
+            <div class="m-filter-pill">Follows</div>
+          </div>
+          <!-- Notification rows -->
+          <div class="m-notif-list">
+            <!-- 1 -->
+            <div class="m-notif-row">
+              <div class="m-notif-avatar" style="background:linear-gradient(135deg,#064E3B,#059669)">D</div>
+              <div class="m-notif-text"><strong>@danceking</strong> liked "5000 Naira Pawpaw"</div>
+              <div class="m-notif-dot"></div>
+              <div class="m-notif-time">2m</div>
+              <div class="m-notif-thumb" style="background:linear-gradient(135deg,#CC3700,#FF8C60)"></div>
+            </div>
+            <!-- 2 -->
+            <div class="m-notif-row">
+              <div class="m-notif-avatar" style="background:linear-gradient(135deg,#92400E,#D97706)">M</div>
+              <div class="m-notif-text"><strong>@memequeen</strong> commented on your meme</div>
+              <div class="m-notif-dot"></div>
+              <div class="m-notif-time">8m</div>
+              <div class="m-notif-thumb" style="background:linear-gradient(135deg,#B8860B,#FFD700)"></div>
+            </div>
+            <!-- 3 -->
+            <div class="m-notif-row">
+              <div class="m-notif-avatar" style="background:linear-gradient(135deg,#1E3A5F,#3B82F6)">N</div>
+              <div class="m-notif-text"><strong>@naijacontent</strong> started following you</div>
+              <div class="m-notif-dot"></div>
+              <div class="m-notif-time">15m</div>
+            </div>
+            <!-- 4 -->
+            <div class="m-notif-row">
+              <div class="m-notif-avatar" style="background:linear-gradient(135deg,#064E3B,#059669)">L</div>
+              <div class="m-notif-text"><strong>@laughmaster</strong> liked "Am Rich"</div>
+              <div class="m-notif-time">1h</div>
+              <div class="m-notif-thumb" style="background:linear-gradient(135deg,#064E3B,#059669)"></div>
+            </div>
+            <!-- 5 -->
+            <div class="m-notif-row">
+              <div class="m-notif-avatar" style="background:linear-gradient(135deg,#4C1D95,#7C3AED)">S</div>
+              <div class="m-notif-text"><strong>@sadvibes_ng</strong> replied to your comment</div>
+              <div class="m-notif-time">2h</div>
+              <div class="m-notif-thumb" style="background:linear-gradient(135deg,#4C1D95,#7C3AED)"></div>
+            </div>
+          </div>
+          <div style="text-align:center;padding:6px 0 2px;font-size:8px;color:var(--purple);font-weight:600;font-family:'Inter',sans-serif">Load more</div>
+          <!-- Bottom nav -->
+          <div class="m-bottom-nav">
+            <div class="m-nav-item"><div class="m-nav-icon">🏠</div><div class="m-nav-label">Home</div></div>
+            <div class="m-nav-item"><div class="m-nav-icon">🔍</div><div class="m-nav-label">Memes</div></div>
+            <div class="m-nav-item" style="justify-content:center"><div class="m-fab">+</div><div class="m-nav-label" style="margin-top:2px">Upload</div></div>
+            <div class="m-nav-item active"><div class="m-nav-icon">🔔</div><div class="m-nav-label" style="color:var(--purple)">Alerts</div><div class="m-nav-badge">5</div></div>
+            <div class="m-nav-item"><div class="m-nav-icon">👤</div><div class="m-nav-label">Me</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">
+        <div class="phone-label-title">Notifications</div>
+        <div class="phone-label-sub">🔔 5 items · filter row</div>
+      </div>
+    </div>
+
+    <!-- PHONE 9: Creator Profile -->
+    <div>
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <!-- Status bar -->
+          <div class="m-status-bar">
+            <span>9:41</span>
+            <div class="m-status-icons"><span>●●●</span> <span>WiFi</span> <span>🔋</span></div>
+          </div>
+          <!-- Back row -->
+          <div class="m-back-row">
+            <span class="m-back-arrow">‹</span>
+            <span class="m-back-crumb">Creator</span>
+          </div>
+          <!-- Cover -->
+          <div class="m-creator-cover"></div>
+          <!-- Avatar -->
+          <div class="m-creator-avatar-wrap">
+            <div class="m-creator-ava">N</div>
+          </div>
+          <!-- Name + handle -->
+          <div class="m-creator-info">
+            <div class="m-creator-name-lg">Naija Content <span style="font-size:6px;background:var(--purple-xsoft);color:var(--purple);padding:1px 3px;border-radius:3px;font-weight:700">✓</span></div>
+            <div class="m-creator-handle">@naijacontent</div>
+          </div>
+          <div class="m-creator-bio">Serving Naija culture daily. Memes, vibes &amp; good energy only.</div>
+          <!-- Stats -->
+          <div class="m-creator-stats-row">
+            <div class="m-creator-stat">
+              <div class="m-creator-stat-num">15.2k</div>
+              <div class="m-creator-stat-lbl">followers</div>
+            </div>
+            <div class="m-creator-stat">
+              <div class="m-creator-stat-num">63</div>
+              <div class="m-creator-stat-lbl">uploads</div>
+            </div>
+            <div class="m-creator-stat">
+              <div class="m-creator-stat-num">284k</div>
+              <div class="m-creator-stat-lbl">sends</div>
+            </div>
+          </div>
+          <!-- Action buttons -->
+          <div class="m-creator-btns">
+            <button class="m-follow-full">Follow</button>
+            <button class="m-tip-btn">Tip 💰</button>
+          </div>
+          <!-- Tabs -->
+          <div class="m-creator-tabs">
+            <div class="m-creator-tab active">Memes</div>
+            <div class="m-creator-tab">Stickers</div>
+            <div class="m-creator-tab">Collections</div>
+          </div>
+          <!-- 2×3 grid -->
+          <div class="m-grid-3">
+            <div class="m-grid-3-tile" style="background:linear-gradient(135deg,#CC3700,#FF8C60)"></div>
+            <div class="m-grid-3-tile" style="background:linear-gradient(135deg,#1E3A5F,#3B82F6)"></div>
+            <div class="m-grid-3-tile" style="background:linear-gradient(135deg,#064E3B,#059669)"></div>
+            <div class="m-grid-3-tile" style="background:linear-gradient(135deg,#92400E,#D97706)"></div>
+            <div class="m-grid-3-tile" style="background:linear-gradient(135deg,#4C1D95,#7C3AED)"></div>
+            <div class="m-grid-3-tile" style="background:linear-gradient(135deg,#B8860B,#FFD700)"></div>
+          </div>
+          <!-- Bottom nav -->
+          <div class="m-bottom-nav">
+            <div class="m-nav-item"><div class="m-nav-icon">🏠</div><div class="m-nav-label">Home</div></div>
+            <div class="m-nav-item"><div class="m-nav-icon">🔍</div><div class="m-nav-label">Memes</div></div>
+            <div class="m-nav-item" style="justify-content:center"><div class="m-fab">+</div><div class="m-nav-label" style="margin-top:2px">Upload</div></div>
+            <div class="m-nav-item"><div class="m-nav-icon">🔔</div><div class="m-nav-label">Alerts</div></div>
+            <div class="m-nav-item active"><div class="m-nav-icon">👤</div><div class="m-nav-label" style="color:var(--purple)">Me</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">
+        <div class="phone-label-title">Creator Profile</div>
+        <div class="phone-label-sub">👤 public · 2×3 grid</div>
+      </div>
+    </div>
+
   </div>
 
   <!-- ROW 2: 3 phones -->
@@ -703,6 +1179,29 @@ img{display:block}
       </div>
     </div>
 
+  </div>
+
+  <!-- DOWNLOAD SECTION -->
+  <div class="download-section">
+    <div class="download-heading">Download the <span>Whamr</span> app</div>
+    <div class="download-sub">Available on iOS &amp; Android</div>
+    <div class="store-buttons">
+      <a href="20-onboarding.html" class="store-btn">
+        <div class="store-btn-icon">🍎</div>
+        <div class="store-btn-text">
+          <span class="store-btn-sub">Download on the</span>
+          <span class="store-btn-name">App Store</span>
+        </div>
+      </a>
+      <a href="20-onboarding.html" class="store-btn">
+        <div class="store-btn-icon">▶</div>
+        <div class="store-btn-text">
+          <span class="store-btn-sub">Get it on</span>
+          <span class="store-btn-name">Google Play</span>
+        </div>
+      </a>
+    </div>
+    <div class="download-alt">Or <a href="01-landing.html">use Whamr in your browser</a> — no download needed</div>
   </div>
 
   <!-- SECTION: Bottom Nav Spec -->

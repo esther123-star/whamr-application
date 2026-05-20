@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>#naija · Whamr</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:#FFFAF5; --bg-alt:#FFF3E8; --card:#FFFFFF;
+      --ink:#1A0F00; --ink-soft:#4A3020; --ink-mute:#8A7060;
+      --line:#F0DDD0; --line-soft:#FBF0E8;
+      --purple:#FF4500; --purple-mid:#FF6B35; --purple-dark:#CC3700; --purple-soft:#FFF1EC;
+      --wham:#FFB800; --wham-soft:#FFF8DC;
+      --green:#00C853; --green-soft:#E8FFF0;
+      --gray-100:#F3F4F6; --gray-400:#9CA3AF; --gray-500:#6B7280; --gray-700:#374151;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: 64px;
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      gap: 32px;
+    }
+
+    .nav-logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--purple);
+      text-decoration: none;
+      margin-right: 8px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex: 1;
+    }
+
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ink-soft);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .nav-links a:hover { background: var(--line-soft); color: var(--ink); }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+    }
+
+    .nav-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      text-decoration: none;
+      background: var(--line-soft);
+      transition: background 0.15s;
+    }
+
+    .nav-icon:hover { background: var(--line); }
+
+    .nav-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid var(--purple);
+      cursor: pointer;
+    }
+
+    .nav-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* ── Hashtag Hero ── */
+    .hashtag-hero {
+      background: linear-gradient(160deg, #1A0F00 0%, #2D1500 60%, #3D1A00 100%);
+      padding: 72px 24px 56px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hashtag-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(255,69,0,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hashtag-hero-inner {
+      position: relative;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    .hashtag-display {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(56px, 10vw, 92px);
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 28px;
+    }
+
+    .hashtag-hash { color: var(--purple); }
+    .hashtag-word { color: #fff; }
+
+    .hashtag-stats-strip {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+
+    .hstat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .hstat-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 22px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .hstat-lbl {
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+      margin-top: 2px;
+    }
+
+    .hstat-divider {
+      width: 1px;
+      height: 36px;
+      background: rgba(255,255,255,0.15);
+    }
+
+    .trending-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,184,0,0.15);
+      border: 1px solid rgba(255,184,0,0.4);
+      color: var(--wham);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 5px 14px;
+      border-radius: 100px;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .follow-btn {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 10px 24px;
+      border-radius: 100px;
+      border: 2px solid rgba(255,255,255,0.6);
+      background: transparent;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .follow-btn:hover,
+    .follow-btn.following {
+      background: var(--purple);
+      border-color: var(--purple);
+    }
+
+    .see-all-link {
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .see-all-link:hover { color: var(--purple-mid); }
+
+    /* ── Page layout ── */
+    .page-layout {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 40px;
+      align-items: start;
+    }
+
+    .main-col { min-width: 0; }
+    .side-col { padding-top: 40px; }
+
+    /* ── Section styles ── */
+    .section { margin-top: 48px; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .section-link {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--purple);
+      text-decoration: none;
+    }
+
+    .section-link:hover { text-decoration: underline; }
+
+    /* ── Horizontal scroll cards ── */
+    .scroll-row {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      scroll-snap-type: x mandatory;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .scroll-row::-webkit-scrollbar { display: none; }
+
+    .scroll-card {
+      flex: 0 0 240px;
+      scroll-snap-align: start;
+      background: var(--card);
+      border: 1.5px solid var(--line);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+    }
+
+    .scroll-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+
+    .scroll-card-img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .scroll-card-body {
+      padding: 12px 14px;
+    }
+
+    .scroll-card-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .scroll-card-stats {
+      display: flex;
+      gap: 12px;
+    }
+
+    .sc-stat {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      color: var(--ink-mute);
+    }
+
+    .sc-stat strong {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--ink);
+    }
+
+    /* ── Tag cloud ── */
+    .tag-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag-pill {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 7px 14px;
+      border-radius: 100px;
+      background: var(--purple-soft);
+      color: var(--purple-dark);
+      border: 1.5px solid rgba(255,69,0,0.15);
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+
+    .tag-pill:hover {
+      background: var(--purple);
+      color: #fff;
+      border-color: var(--purple);
+    }
+
+    /* ── Meme grid ── */
+    .meme-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .meme-card {
+      background: var(--card);
+      border: 1.5px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .meme-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.09);
+    }
+
+    .meme-card-img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .meme-card-body {
+      padding: 10px 12px;
+    }
+
+    .meme-card-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .meme-card-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .meme-card-handle {
+      font-size: 11px;
+      color: var(--ink-mute);
+    }
+
+    .meme-card-sends {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--ink-soft);
+    }
+
+    /* ── Contributor cards ── */
+    .contributor-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .contributor-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--card);
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 14px;
+      transition: border-color 0.15s;
+    }
+
+    .contributor-card:hover { border-color: var(--purple-mid); }
+
+    .contrib-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .contrib-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+    .contrib-info { flex: 1; }
+
+    .contrib-name {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--ink);
+    }
+
+    .contrib-handle {
+      font-size: 12px;
+      color: var(--ink-mute);
+    }
+
+    .contrib-uses {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--purple);
+    }
+
+    .contrib-uses-lbl {
+      font-size: 10px;
+      color: var(--ink-mute);
+      text-align: right;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar-card {
+      background: var(--card);
+      border: 1.5px solid var(--line);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .sidebar-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 16px;
+    }
+
+    .trending-tag-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .trending-tag-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line-soft);
+      text-decoration: none;
+      transition: background 0.12s;
+    }
+
+    .trending-tag-item:last-child { border-bottom: none; }
+
+    .trending-tag-item:hover { background: var(--line-soft); margin: 0 -10px; padding: 10px; border-radius: 8px; }
+
+    .tt-rank {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ink-mute);
+      width: 16px;
+      flex-shrink: 0;
+    }
+
+    .tt-info { flex: 1; }
+
+    .tt-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .tt-count {
+      font-size: 12px;
+      color: var(--ink-mute);
+    }
+
+    .tt-badge {
+      font-size: 12px;
+    }
+
+    /* Info card */
+    .info-card {
+      background: var(--purple-soft);
+      border: 1.5px solid rgba(255,69,0,0.15);
+      border-radius: 16px;
+      padding: 18px 20px;
+    }
+
+    .info-card-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+
+    .info-card p {
+      font-size: 13px;
+      color: var(--ink-soft);
+      line-height: 1.55;
+      margin-bottom: 10px;
+    }
+
+    .info-card a {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--purple);
+      text-decoration: none;
+    }
+
+    .info-card a:hover { text-decoration: underline; }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--ink);
+      color: rgba(255,255,255,0.5);
+      font-size: 13px;
+      padding: 32px 24px;
+      margin-top: 80px;
+      text-align: center;
+    }
+
+    footer a {
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+      margin: 0 10px;
+    }
+
+    footer a:hover { color: #fff; }
+
+    .footer-logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--purple);
+      display: block;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <a href="01-landing.html" class="nav-logo">whamr.</a>
+    <div class="nav-links">
+      <a href="01-landing.html">Home</a>
+      <a href="02-memes-browser.html">Memes</a>
+      <a href="06-explore.html">Explore</a>
+      <a href="22-trending.html">Trending</a>
+      <a href="10-dojos.html">Dojos</a>
+      <a href="12-analytics.html">Creator</a>
+    </div>
+    <div class="nav-actions">
+      <a href="08-notifications.html" class="nav-icon" title="Notifications">🔔</a>
+      <a href="09-messages.html" class="nav-icon" title="Messages">💬</a>
+      <a href="07-user-profile.html" class="nav-avatar">
+        <img src="https://picsum.photos/seed/me/36/36" alt="Profile" />
+      </a>
+    </div>
+  </nav>
+
+  <!-- Hashtag Hero -->
+  <div class="hashtag-hero">
+    <div class="hashtag-hero-inner">
+      <div class="hashtag-display">
+        <span class="hashtag-hash">#</span><span class="hashtag-word">naija</span>
+      </div>
+
+      <div class="hashtag-stats-strip">
+        <div class="hstat">
+          <span class="hstat-val">29</span>
+          <span class="hstat-lbl">memes tagged</span>
+        </div>
+        <div class="hstat-divider"></div>
+        <div class="hstat">
+          <span class="hstat-val">1.8k</span>
+          <span class="hstat-lbl">total uses</span>
+        </div>
+        <div class="hstat-divider"></div>
+        <div class="hstat">
+          <span class="hstat-val">3</span>
+          <span class="hstat-lbl">top creators</span>
+        </div>
+        <div class="hstat-divider"></div>
+        <div class="hstat">
+          <span class="trending-badge">🔥 #1 trending tag this week</span>
+        </div>
+      </div>
+
+      <div class="hero-actions">
+        <button class="follow-btn" id="followBtn" onclick="this.classList.toggle('following'); this.textContent = this.classList.contains('following') ? '✓ Following #naija' : 'Follow #naija'">
+          Follow #naija
+        </button>
+        <a href="23-category.html" class="see-all-link">See all Naija →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main layout -->
+  <div class="page-layout">
+
+    <!-- Main Column -->
+    <div class="main-col">
+
+      <!-- Top Memes Horizontal Scroll -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title">Top #naija memes</div>
+          <a href="23-category.html" class="section-link">See all →</a>
+        </div>
+
+        <div class="scroll-row">
+          <div class="scroll-card">
+            <img class="scroll-card-img" src="https://picsum.photos/seed/n1/240/140" alt="5000 Naira Pawpaw" />
+            <div class="scroll-card-body">
+              <div class="scroll-card-title">5000 Naira Pawpaw</div>
+              <div class="scroll-card-stats">
+                <div class="sc-stat"><strong>1,844</strong> sends</div>
+                <div class="sc-stat"><strong>27.2k</strong> views</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="scroll-card">
+            <img class="scroll-card-img" src="https://picsum.photos/seed/n2/240/140" alt="Am Rich" />
+            <div class="scroll-card-body">
+              <div class="scroll-card-title">Am Rich</div>
+              <div class="scroll-card-stats">
+                <div class="sc-stat"><strong>1,086</strong> sends</div>
+                <div class="sc-stat"><strong>15.9k</strong> views</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="scroll-card">
+            <img class="scroll-card-img" src="https://picsum.photos/seed/n3/240/140" alt="Big Laugh — Jide Kosoko" />
+            <div class="scroll-card-body">
+              <div class="scroll-card-title">Big Laugh — Jide Kosoko</div>
+              <div class="scroll-card-stats">
+                <div class="sc-stat"><strong>1,560</strong> sends</div>
+                <div class="sc-stat"><strong>22.9k</strong> views</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="scroll-card">
+            <img class="scroll-card-img" src="https://picsum.photos/seed/n4/240/140" alt="Naija Agbero Life" />
+            <div class="scroll-card-body">
+              <div class="scroll-card-title">Naija Agbero Life</div>
+              <div class="scroll-card-stats">
+                <div class="sc-stat"><strong>744</strong> sends</div>
+                <div class="sc-stat"><strong>10.1k</strong> views</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="scroll-card">
+            <img class="scroll-card-img" src="https://picsum.photos/seed/n5/240/140" alt="Mr Ibu Last Drama" />
+            <div class="scroll-card-body">
+              <div class="scroll-card-title">Mr Ibu Last Drama</div>
+              <div class="scroll-card-stats">
+                <div class="sc-stat"><strong>621</strong> sends</div>
+                <div class="sc-stat"><strong>8.8k</strong> views</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="scroll-card">
+            <img class="scroll-card-img" src="https://picsum.photos/seed/n6/240/140" alt="Nollywood Plot Twist" />
+            <div class="scroll-card-body">
+              <div class="scroll-card-title">Nollywood Plot Twist</div>
+              <div class="scroll-card-stats">
+                <div class="sc-stat"><strong>509</strong> sends</div>
+                <div class="sc-stat"><strong>7.4k</strong> views</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Related Tags -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title">Tags people also use with #naija</div>
+        </div>
+        <div class="tag-cloud">
+          <a href="29-hashtag.html" class="tag-pill">#nollywood</a>
+          <a href="29-hashtag.html" class="tag-pill">#pidgin</a>
+          <a href="29-hashtag.html" class="tag-pill">#mribu</a>
+          <a href="29-hashtag.html" class="tag-pill">#jidekosoko</a>
+          <a href="29-hashtag.html" class="tag-pill">#waitwhat</a>
+          <a href="29-hashtag.html" class="tag-pill">#naijareaction</a>
+          <a href="29-hashtag.html" class="tag-pill">#5000naira</a>
+          <a href="29-hashtag.html" class="tag-pill">#naijahumor</a>
+          <a href="29-hashtag.html" class="tag-pill">#afrobeats</a>
+          <a href="29-hashtag.html" class="tag-pill">#viral</a>
+        </div>
+      </div>
+
+      <!-- Recently Tagged -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title">Recently tagged with #naija</div>
+          <a href="#" class="section-link">View all →</a>
+        </div>
+
+        <div class="meme-grid">
+          <div class="meme-card">
+            <img class="meme-card-img" src="https://picsum.photos/seed/rn1/300/120" alt="5000 Naira Pawpaw" />
+            <div class="meme-card-body">
+              <div class="meme-card-title">5000 Naira Pawpaw</div>
+              <div class="meme-card-meta">
+                <span class="meme-card-handle">@naijacontent</span>
+                <span class="meme-card-sends">1,844 sends</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="meme-card">
+            <img class="meme-card-img" src="https://picsum.photos/seed/rn2/300/120" alt="Am Rich" />
+            <div class="meme-card-body">
+              <div class="meme-card-title">Am Rich</div>
+              <div class="meme-card-meta">
+                <span class="meme-card-handle">@naijafan</span>
+                <span class="meme-card-sends">1,086 sends</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="meme-card">
+            <img class="meme-card-img" src="https://picsum.photos/seed/rn3/300/120" alt="Big Laugh — Jide Kosoko" />
+            <div class="meme-card-body">
+              <div class="meme-card-title">Big Laugh — Jide Kosoko</div>
+              <div class="meme-card-meta">
+                <span class="meme-card-handle">@memequeen</span>
+                <span class="meme-card-sends">1,560 sends</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="meme-card">
+            <img class="meme-card-img" src="https://picsum.photos/seed/rn4/300/120" alt="Nollywood Shock Face" />
+            <div class="meme-card-body">
+              <div class="meme-card-title">Nollywood Shock Face</div>
+              <div class="meme-card-meta">
+                <span class="meme-card-handle">@naijacontent</span>
+                <span class="meme-card-sends">892 sends</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="meme-card">
+            <img class="meme-card-img" src="https://picsum.photos/seed/rn5/300/120" alt="Lagos Traffic Suffer" />
+            <div class="meme-card-body">
+              <div class="meme-card-title">Lagos Traffic Suffer</div>
+              <div class="meme-card-meta">
+                <span class="meme-card-handle">@naijafan</span>
+                <span class="meme-card-sends">744 sends</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="meme-card">
+            <img class="meme-card-img" src="https://picsum.photos/seed/rn6/300/120" alt="Mr Ibu Last Drama" />
+            <div class="meme-card-body">
+              <div class="meme-card-title">Mr Ibu Last Drama</div>
+              <div class="meme-card-meta">
+                <span class="meme-card-handle">@memequeen</span>
+                <span class="meme-card-sends">621 sends</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="meme-card">
+            <img class="meme-card-img" src="https://picsum.photos/seed/rn7/300/120" alt="Agbero Driver" />
+            <div class="meme-card-body">
+              <div class="meme-card-title">Agbero Driver</div>
+              <div class="meme-card-meta">
+                <span class="meme-card-handle">@naijacontent</span>
+                <span class="meme-card-sends">509 sends</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="meme-card">
+            <img class="meme-card-img" src="https://picsum.photos/seed/rn8/300/120" alt="Nollywood Plot Twist" />
+            <div class="meme-card-body">
+              <div class="meme-card-title">Nollywood Plot Twist</div>
+              <div class="meme-card-meta">
+                <span class="meme-card-handle">@naijafan</span>
+                <span class="meme-card-sends">487 sends</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="meme-card">
+            <img class="meme-card-img" src="https://picsum.photos/seed/rn9/300/120" alt="Pidgin Madness" />
+            <div class="meme-card-body">
+              <div class="meme-card-title">Pidgin Madness</div>
+              <div class="meme-card-meta">
+                <span class="meme-card-handle">@memequeen</span>
+                <span class="meme-card-sends">431 sends</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Contributors -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title">Most active with #naija</div>
+        </div>
+        <div class="contributor-row">
+          <div class="contributor-card">
+            <div class="contrib-avatar"><img src="https://picsum.photos/seed/c5/40/40" alt="Naija Content" /></div>
+            <div class="contrib-info">
+              <div class="contrib-name">Naija Content</div>
+              <div class="contrib-handle">@naijacontent ✓</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="contrib-uses">48 uses</div>
+              <div class="contrib-uses-lbl">of #naija</div>
+            </div>
+          </div>
+
+          <div class="contributor-card">
+            <div class="contrib-avatar"><img src="https://picsum.photos/seed/c1/40/40" alt="Meme Queen" /></div>
+            <div class="contrib-info">
+              <div class="contrib-name">Meme Queen</div>
+              <div class="contrib-handle">@memequeen ✓</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="contrib-uses">12 uses</div>
+              <div class="contrib-uses-lbl">of #naija</div>
+            </div>
+          </div>
+
+          <div class="contributor-card">
+            <div class="contrib-avatar"><img src="https://picsum.photos/seed/c7/40/40" alt="Naija Fan" /></div>
+            <div class="contrib-info">
+              <div class="contrib-name">Naija Fan</div>
+              <div class="contrib-handle">@naijafan</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="contrib-uses">8 uses</div>
+              <div class="contrib-uses-lbl">of #naija</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Sidebar -->
+    <div class="side-col">
+
+      <!-- Trending Hashtags -->
+      <div class="sidebar-card">
+        <div class="sidebar-title">Other trending tags right now</div>
+        <div class="trending-tag-list">
+          <a href="29-hashtag.html" class="trending-tag-item">
+            <span class="tt-rank">1</span>
+            <div class="tt-info">
+              <div class="tt-name">#naija</div>
+              <div class="tt-count">1.8k uses</div>
+            </div>
+            <span class="tt-badge">🔥</span>
+          </a>
+          <a href="29-hashtag.html" class="trending-tag-item">
+            <span class="tt-rank">2</span>
+            <div class="tt-info">
+              <div class="tt-name">#dance</div>
+              <div class="tt-count">1.2k uses</div>
+            </div>
+            <span class="tt-badge" style="color:var(--green);font-size:11px;font-weight:600;">▲ rising</span>
+          </a>
+          <a href="29-hashtag.html" class="trending-tag-item">
+            <span class="tt-rank">3</span>
+            <div class="tt-info">
+              <div class="tt-name">#laughing</div>
+              <div class="tt-count">980 uses</div>
+            </div>
+            <span class="tt-badge"></span>
+          </a>
+          <a href="29-hashtag.html" class="trending-tag-item">
+            <span class="tt-rank">4</span>
+            <div class="tt-info">
+              <div class="tt-name">#viral</div>
+              <div class="tt-count">872 uses</div>
+            </div>
+            <span class="tt-badge"></span>
+          </a>
+          <a href="29-hashtag.html" class="trending-tag-item">
+            <span class="tt-rank">5</span>
+            <div class="tt-info">
+              <div class="tt-name">#nollywood</div>
+              <div class="tt-count">654 uses</div>
+            </div>
+            <span class="tt-badge"></span>
+          </a>
+          <a href="29-hashtag.html" class="trending-tag-item">
+            <span class="tt-rank">6</span>
+            <div class="tt-info">
+              <div class="tt-name">#reactions</div>
+              <div class="tt-count">521 uses</div>
+            </div>
+            <span class="tt-badge"></span>
+          </a>
+          <a href="29-hashtag.html" class="trending-tag-item">
+            <span class="tt-rank">7</span>
+            <div class="tt-info">
+              <div class="tt-name">#birthday</div>
+              <div class="tt-count">433 uses</div>
+            </div>
+            <span class="tt-badge"></span>
+          </a>
+          <a href="29-hashtag.html" class="trending-tag-item">
+            <span class="tt-rank">8</span>
+            <div class="tt-info">
+              <div class="tt-name">#sadmemes</div>
+              <div class="tt-count">389 uses</div>
+            </div>
+            <span class="tt-badge"></span>
+          </a>
+        </div>
+      </div>
+
+      <!-- How to use tags -->
+      <div class="info-card">
+        <div class="info-card-title">How tags work on whamr</div>
+        <p>Add tags when uploading to help people find your memes. Tags are matched by AI search — #naija will surface in searches for "nigeria", "nollywood", "lagos", and related terms.</p>
+        <a href="04-upload-flow.html">Start uploading with tags →</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <span class="footer-logo">whamr.</span>
+    <div style="margin-bottom:10px;">
+      <a href="01-landing.html">Home</a>
+      <a href="02-memes-browser.html">Memes</a>
+      <a href="06-explore.html">Explore</a>
+      <a href="22-trending.html">Trending</a>
+      <a href="10-dojos.html">Dojos</a>
+      <a href="27-help.html">Help</a>
+    </div>
+    <div>© 2026 Whamr. All rights reserved.</div>
+  </footer>
+
+  <script src="./real-media.js"></script>
+</body>
+</html>

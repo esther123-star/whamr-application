@@ -1,0 +1,707 @@
+<!-- FILE: 31-changelog.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What's New · Whamr</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#FFFAF5; --bg-alt:#FFF3E8; --card:#FFFFFF;
+  --ink:#1A0F00; --ink-soft:#4A3020; --ink-mute:#8A7060;
+  --line:#F0DDD0; --line-soft:#FBF0E8;
+  --purple:#FF4500; --purple-mid:#FF6B35; --purple-dark:#CC3700; --purple-soft:#FFF1EC;
+  --wham:#FFB800; --wham-soft:#FFF8DC;
+  --green:#00C853; --green-soft:#E8FFF0;
+  --gray-100:#F3F4F6; --gray-400:#9CA3AF; --gray-500:#6B7280; --gray-700:#374151;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;font-size:15px;background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;border:none;background:none;font-family:inherit}
+
+/* ── NAV ── */
+.nav{height:64px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 28px;gap:12px;position:sticky;top:0;z-index:100}
+.nav-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.05em;color:var(--purple);flex-shrink:0}
+.nav-links{display:flex;align-items:center;gap:2px;margin-left:12px}
+.nav-link{font-size:14px;font-weight:500;color:var(--gray-700);padding:6px 11px;border-radius:8px;transition:background 0.15s,color 0.15s;white-space:nowrap}
+.nav-link:hover,.nav-link.active{background:var(--purple-soft);color:var(--purple)}
+.nav-link.active{font-weight:600}
+.nav-search-wrap{flex:1;max-width:380px;margin:0 auto;position:relative}
+.nav-search-wrap input{width:100%;padding:9px 16px 9px 40px;border:1.5px solid var(--line);border-radius:50px;font-family:'Inter',sans-serif;font-size:14px;color:var(--ink);background:#fff;outline:none}
+.nav-search-wrap input:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(255,69,0,0.12)}
+.nav-search-wrap input::placeholder{color:var(--gray-400)}
+.nav-search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--gray-400)}
+.nav-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.btn-upload{display:inline-flex;align-items:center;gap:6px;background:var(--purple);color:#fff;font-size:13px;font-weight:600;padding:8px 16px;border-radius:9px;border:none;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif}
+.btn-upload:hover{background:var(--purple-dark)}
+.nav-icon-btn{width:38px;height:38px;border-radius:9px;background:var(--gray-100);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;position:relative;flex-shrink:0}
+.nav-badge{position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;border-radius:9px;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;padding:0 4px}
+.badge-red{background:#FF2D55;color:#fff}
+.badge-blue{background:#2563EB;color:#fff}
+.nav-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--purple-dark) 0%,var(--purple-mid) 100%);display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;font-weight:700;cursor:pointer;flex-shrink:0;border:2px solid var(--purple-soft)}
+
+/* ── ANNOUNCEMENT BAR ── */
+.announce-bar{
+  background:var(--ink);
+  color:#fff;
+  font-size:13px;
+  font-weight:500;
+  text-align:center;
+  padding:10px 24px;
+  font-family:'Inter',sans-serif;
+  letter-spacing:0.01em;
+}
+.announce-bar span{
+  color:var(--wham);
+  font-weight:700;
+}
+
+/* ── LAYOUT ── */
+.container{max-width:800px;margin:0 auto;padding:0 24px}
+.container-wide{max-width:1120px;margin:0 auto;padding:0 24px}
+
+/* ── PAGE HEADER ── */
+.page-header{
+  padding:64px 24px 48px;
+  max-width:800px;
+  margin:0 auto;
+}
+.eyebrow{
+  font-size:12px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:0.12em;
+  color:var(--purple);
+  margin-bottom:14px;
+  font-family:'Space Grotesk',sans-serif;
+}
+.page-header h1{
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:700;
+  font-size:clamp(28px,5vw,44px);
+  letter-spacing:-0.03em;
+  color:var(--ink);
+  margin-bottom:12px;
+  line-height:1.1;
+}
+.page-header-sub{
+  font-size:17px;
+  color:var(--ink-mute);
+  line-height:1.6;
+  margin-bottom:32px;
+  max-width:520px;
+}
+.subscribe-row{
+  display:flex;
+  align-items:center;
+  gap:0;
+  max-width:460px;
+  background:#fff;
+  border:1.5px solid var(--line);
+  border-radius:11px;
+  overflow:hidden;
+  transition:border-color 0.2s,box-shadow 0.2s;
+}
+.subscribe-row:focus-within{
+  border-color:var(--purple);
+  box-shadow:0 0 0 3px rgba(255,69,0,0.1);
+}
+.subscribe-row input{
+  flex:1;
+  border:none;
+  outline:none;
+  padding:13px 16px;
+  font-family:'Inter',sans-serif;
+  font-size:14px;
+  color:var(--ink);
+  background:transparent;
+}
+.subscribe-row input::placeholder{color:var(--gray-400)}
+.subscribe-btn{
+  background:var(--purple);
+  color:#fff;
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:700;
+  font-size:13px;
+  padding:0 20px;
+  min-height:48px;
+  white-space:nowrap;
+  border:none;
+  cursor:pointer;
+  transition:background 0.15s;
+  flex-shrink:0;
+}
+.subscribe-btn:hover{background:var(--purple-dark)}
+
+/* ── TIMELINE ── */
+.timeline{
+  max-width:800px;
+  margin:0 auto;
+  padding:0 24px 80px;
+}
+.timeline-entry{
+  display:grid;
+  grid-template-columns:100px 1fr;
+  gap:0 28px;
+  margin-bottom:48px;
+  position:relative;
+}
+.timeline-left{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  padding-top:2px;
+  gap:8px;
+}
+.timeline-date{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;
+  font-weight:600;
+  color:var(--ink-mute);
+  white-space:nowrap;
+  text-align:right;
+  line-height:1.3;
+}
+.version-chip{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;
+  font-weight:700;
+  background:var(--purple-soft);
+  color:var(--purple);
+  padding:3px 9px;
+  border-radius:20px;
+  border:1px solid rgba(255,69,0,0.2);
+  white-space:nowrap;
+}
+.timeline-line{
+  position:absolute;
+  left:108px;
+  top:6px;
+  bottom:-48px;
+  width:2px;
+  background:var(--line);
+}
+.timeline-entry:last-child .timeline-line{
+  display:none;
+}
+.timeline-dot{
+  position:absolute;
+  left:104px;
+  top:4px;
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:var(--purple);
+  border:2px solid #fff;
+  box-shadow:0 0 0 2px var(--purple);
+}
+.timeline-body{
+  background:#fff;
+  border:1.5px solid var(--line);
+  border-left:4px solid var(--purple);
+  border-radius:0 14px 14px 0;
+  padding:22px 24px 20px;
+}
+.timeline-top-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:10px;
+  flex-wrap:wrap;
+}
+.badge{
+  font-size:10px;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:0.1em;
+  padding:3px 9px;
+  border-radius:6px;
+  font-family:'Space Grotesk',sans-serif;
+  white-space:nowrap;
+}
+.badge-major{background:var(--purple);color:#fff}
+.badge-feature{background:#2563EB;color:#fff}
+.badge-fix{background:var(--green);color:#fff}
+.badge-improvement{background:var(--wham);color:#1A0F00}
+.badge-launch{background:var(--green);color:#fff}
+
+.entry-title{
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:700;
+  font-size:18px;
+  letter-spacing:-0.02em;
+  color:var(--ink);
+  margin-bottom:14px;
+  line-height:1.3;
+}
+.entry-list{
+  list-style:none;
+  padding:0;
+  margin-bottom:16px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.entry-list li{
+  font-size:14px;
+  color:var(--ink-soft);
+  padding-left:20px;
+  position:relative;
+  line-height:1.55;
+}
+.entry-list li::before{
+  content:'';
+  position:absolute;
+  left:0;
+  top:9px;
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:var(--purple-mid);
+  flex-shrink:0;
+}
+.tag-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-top:16px;
+}
+.tag-pill{
+  font-size:11px;
+  font-weight:600;
+  padding:3px 10px;
+  border-radius:20px;
+  background:var(--gray-100);
+  color:var(--gray-700);
+  font-family:'Space Grotesk',sans-serif;
+  border:1px solid #E5E7EB;
+}
+
+/* ── SUBSCRIBE BOTTOM ── */
+.subscribe-bottom{
+  background:var(--ink);
+  padding:72px 24px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.subscribe-bottom::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(ellipse 50% 60% at 20% 50%, rgba(255,69,0,0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 50% at 80% 40%, rgba(255,184,0,0.12) 0%, transparent 55%);
+  pointer-events:none;
+}
+.subscribe-bottom-content{
+  position:relative;
+  max-width:500px;
+  margin:0 auto;
+}
+.subscribe-bottom h2{
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:700;
+  font-size:32px;
+  color:#fff;
+  letter-spacing:-0.03em;
+  margin-bottom:12px;
+}
+.subscribe-bottom p{
+  font-size:16px;
+  color:rgba(255,255,255,0.65);
+  line-height:1.6;
+  margin-bottom:32px;
+}
+.subscribe-bottom-row{
+  display:flex;
+  align-items:center;
+  gap:0;
+  max-width:420px;
+  margin:0 auto 20px;
+  background:rgba(255,255,255,0.1);
+  border:1.5px solid rgba(255,255,255,0.2);
+  border-radius:11px;
+  overflow:hidden;
+  backdrop-filter:blur(4px);
+}
+.subscribe-bottom-row:focus-within{
+  border-color:var(--purple);
+}
+.subscribe-bottom-row input{
+  flex:1;
+  border:none;
+  outline:none;
+  padding:14px 18px;
+  font-family:'Inter',sans-serif;
+  font-size:14px;
+  color:#fff;
+  background:transparent;
+}
+.subscribe-bottom-row input::placeholder{color:rgba(255,255,255,0.4)}
+.subscribe-bottom-btn{
+  background:var(--purple);
+  color:#fff;
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:700;
+  font-size:13px;
+  padding:0 22px;
+  min-height:52px;
+  white-space:nowrap;
+  border:none;
+  cursor:pointer;
+  transition:background 0.15s;
+  flex-shrink:0;
+}
+.subscribe-bottom-btn:hover{background:var(--purple-dark)}
+.subscribe-follow{
+  font-size:13px;
+  color:rgba(255,255,255,0.45);
+}
+.subscribe-follow a{
+  color:rgba(255,255,255,0.7);
+  text-decoration:underline;
+}
+.subscribe-follow a:hover{color:#fff}
+
+/* ── FOOTER ── */
+footer{
+  background:#fff;
+  border-top:1px solid var(--line);
+  padding:40px 24px;
+}
+.footer-inner{
+  max-width:1120px;
+  margin:0 auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:16px;
+}
+.footer-logo{
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:700;
+  font-size:20px;
+  letter-spacing:-0.05em;
+  color:var(--purple);
+}
+.footer-links{
+  display:flex;
+  gap:20px;
+  flex-wrap:wrap;
+}
+.footer-link{
+  font-size:13px;
+  color:var(--ink-mute);
+  transition:color 0.15s;
+}
+.footer-link:hover{color:var(--purple)}
+.footer-copy{
+  font-size:12px;
+  color:var(--gray-400);
+}
+</style>
+</head>
+<body>
+
+<!-- ── ANNOUNCEMENT BAR ── -->
+<div class="announce-bar">
+  <span>🆕 v2.1 Final</span> &nbsp;·&nbsp; 27 screens &nbsp;·&nbsp; 9,128 real media files &nbsp;·&nbsp; AI search live
+</div>
+
+<!-- ── NAV ── -->
+<nav class="nav">
+  <a href="01-landing.html" class="nav-logo">whamr.</a>
+  <div class="nav-links">
+    <a href="01-landing.html" class="nav-link">Home</a>
+    <a href="02-memes-browser.html" class="nav-link">Memes</a>
+    <a href="06-explore.html" class="nav-link">Explore</a>
+    <a href="22-trending.html" class="nav-link">Trending</a>
+    <a href="10-dojos.html" class="nav-link">Dojos</a>
+    <a href="24-creator-hub.html" class="nav-link">Creator</a>
+  </div>
+  <div class="nav-search-wrap">
+    <span class="nav-search-icon">🔍</span>
+    <input type="text" placeholder="Search memes & stickers…">
+  </div>
+  <div class="nav-actions">
+    <button class="nav-icon-btn">
+      🔔
+      <span class="nav-badge badge-red">3</span>
+    </button>
+    <a href="09-messages.html" class="nav-icon-btn" style="display:flex;align-items:center;justify-content:center;text-decoration:none;">
+      💬
+      <span class="nav-badge badge-blue">1</span>
+    </a>
+    <a href="07-user-profile.html">
+      <div class="nav-avatar">JA</div>
+    </a>
+    <button class="btn-upload">+ Upload</button>
+  </div>
+</nav>
+
+<!-- ── PAGE HEADER ── -->
+<header class="page-header">
+  <div class="eyebrow">Product Updates</div>
+  <h1>What's new in Whamr</h1>
+  <p class="page-header-sub">Every update, fix, and improvement — in one place.</p>
+  <div class="subscribe-row">
+    <input type="email" placeholder="your@email.com">
+    <button class="subscribe-btn">Notify me of updates</button>
+  </div>
+</header>
+
+<!-- ── TIMELINE ── -->
+<section class="timeline">
+
+  <!-- ENTRY 1 — v2.1 Final -->
+  <article class="timeline-entry">
+    <div class="timeline-left">
+      <div class="timeline-date">May<br>2026</div>
+      <div class="version-chip">v2.1</div>
+    </div>
+    <div class="timeline-line"></div>
+    <div class="timeline-dot"></div>
+    <div class="timeline-body">
+      <div class="timeline-top-row">
+        <span class="badge badge-major">Major Update</span>
+      </div>
+      <h2 class="entry-title">27-screen platform &middot; Community tabs &middot; AI search live</h2>
+      <ul class="entry-list">
+        <li>8 new screens: Onboarding, Collections, Trending, Category, Creator Hub, Meme Battle, Pricing, Help Centre</li>
+        <li>Community tabs on every meme: Discussion &middot; Origin &amp; History &middot; Variants (localStorage)</li>
+        <li>AI natural language search with synonym expansion and intent detection</li>
+        <li>9,128 real media files cataloged and uploaded</li>
+        <li>All "coming soon" placeholders replaced with working features</li>
+        <li>Full nav interconnection — every page links to every relevant page</li>
+      </ul>
+      <div class="tag-row">
+        <span class="tag-pill">New screens</span>
+        <span class="tag-pill">AI</span>
+        <span class="tag-pill">Community</span>
+        <span class="tag-pill">Media</span>
+      </div>
+    </div>
+  </article>
+
+  <!-- ENTRY 2 — v2.0 -->
+  <article class="timeline-entry">
+    <div class="timeline-left">
+      <div class="timeline-date">April<br>2026</div>
+      <div class="version-chip">v2.0</div>
+    </div>
+    <div class="timeline-line"></div>
+    <div class="timeline-dot"></div>
+    <div class="timeline-body">
+      <div class="timeline-top-row">
+        <span class="badge badge-feature">Feature</span>
+      </div>
+      <h2 class="entry-title">Real media library &middot; Catalog generator &middot; R2 hosting</h2>
+      <ul class="entry-list">
+        <li>9,128 real memes and stickers copied and cataloged from local library</li>
+        <li>AI auto-categorisation using 13 keyword rule arrays</li>
+        <li>Duplicate detection via Jaccard similarity (519 dupes removed)</li>
+        <li>Cloudflare R2 upload script (4 parallel workers, retry, progress display)</li>
+        <li>generate-catalog.js produces memes.json with R2 public URLs</li>
+      </ul>
+      <div class="tag-row">
+        <span class="tag-pill">Media</span>
+        <span class="tag-pill">AI</span>
+        <span class="tag-pill">Infrastructure</span>
+      </div>
+    </div>
+  </article>
+
+  <!-- ENTRY 3 — v1.9 -->
+  <article class="timeline-entry">
+    <div class="timeline-left">
+      <div class="timeline-date">March<br>2026</div>
+      <div class="version-chip">v1.9</div>
+    </div>
+    <div class="timeline-line"></div>
+    <div class="timeline-dot"></div>
+    <div class="timeline-body">
+      <div class="timeline-top-row">
+        <span class="badge badge-feature">Feature</span>
+      </div>
+      <h2 class="entry-title">Infinite scroll &middot; Meme battle arena &middot; Sticker pack export</h2>
+      <ul class="entry-list">
+        <li>IntersectionObserver infinite scroll (24 per page) replaces load-more button</li>
+        <li>Meme battle feature: live voting, countdown timer, activity feed</li>
+        <li>Sticker pack export: 4-step wizard for WhatsApp, Telegram, Signal, Discord, iMessage</li>
+        <li>Bulk select mode with floating action bar</li>
+      </ul>
+      <div class="tag-row">
+        <span class="tag-pill">Core</span>
+        <span class="tag-pill">Community</span>
+        <span class="tag-pill">Creator</span>
+      </div>
+    </div>
+  </article>
+
+  <!-- ENTRY 4 — v1.8 -->
+  <article class="timeline-entry">
+    <div class="timeline-left">
+      <div class="timeline-date">Feb<br>2026</div>
+      <div class="version-chip">v1.8</div>
+    </div>
+    <div class="timeline-line"></div>
+    <div class="timeline-dot"></div>
+    <div class="timeline-body">
+      <div class="timeline-top-row">
+        <span class="badge badge-feature">Feature</span>
+      </div>
+      <h2 class="entry-title">Creator Hub &middot; Pricing tiers &middot; Leaderboard</h2>
+      <ul class="entry-list">
+        <li>Creator public profile with tip jar (&#8358; amounts), sticker pack download, follower stats</li>
+        <li>Free / Creator ($7/mo) / API ($29/mo) pricing tiers with comparison table</li>
+        <li>Weekly leaderboard: top 10 creators + top 10 memes + battle champions</li>
+      </ul>
+      <div class="tag-row">
+        <span class="tag-pill">Creator</span>
+        <span class="tag-pill">Business</span>
+      </div>
+    </div>
+  </article>
+
+  <!-- ENTRY 5 — v1.7 -->
+  <article class="timeline-entry">
+    <div class="timeline-left">
+      <div class="timeline-date">Jan<br>2026</div>
+      <div class="version-chip">v1.7</div>
+    </div>
+    <div class="timeline-line"></div>
+    <div class="timeline-dot"></div>
+    <div class="timeline-body">
+      <div class="timeline-top-row">
+        <span class="badge badge-improvement">Improvement</span>
+      </div>
+      <h2 class="entry-title">Nav interconnection &middot; Missing footers fixed &middot; Coming soon removed</h2>
+      <ul class="entry-list">
+        <li>All nav icons now link to real pages (notifications, messages, avatar &rarr; profile)</li>
+        <li>Missing footers added to upload, editor, messages pages</li>
+        <li>2 "Coming Soon" category cards &rarr; Birthday (38) and Love (41) categories</li>
+        <li>Creator monetisation links replaced across settings and analytics</li>
+      </ul>
+      <div class="tag-row">
+        <span class="tag-pill">Fix</span>
+        <span class="tag-pill">Navigation</span>
+      </div>
+    </div>
+  </article>
+
+  <!-- ENTRY 6 — v1.6 -->
+  <article class="timeline-entry">
+    <div class="timeline-left">
+      <div class="timeline-date">Dec<br>2025</div>
+      <div class="version-chip">v1.6</div>
+    </div>
+    <div class="timeline-line"></div>
+    <div class="timeline-dot"></div>
+    <div class="timeline-body">
+      <div class="timeline-top-row">
+        <span class="badge badge-feature">Feature</span>
+      </div>
+      <h2 class="entry-title">Team Brief &middot; Documentation &middot; Role definitions</h2>
+      <ul class="entry-list">
+        <li>WHAMR_TEAM_BRIEF.html: 1,923-line comprehensive specification document</li>
+        <li>16 sections: platform overview, AI specs, data model, competitor analysis, build order, roles, style guide, decision log</li>
+        <li>Mockup gallery updated to match Solevant documentation standard</li>
+      </ul>
+      <div class="tag-row">
+        <span class="tag-pill">Documentation</span>
+      </div>
+    </div>
+  </article>
+
+  <!-- ENTRY 7 — v1.5 -->
+  <article class="timeline-entry">
+    <div class="timeline-left">
+      <div class="timeline-date">Nov<br>2025</div>
+      <div class="version-chip">v1.5</div>
+    </div>
+    <div class="timeline-line"></div>
+    <div class="timeline-dot"></div>
+    <div class="timeline-body">
+      <div class="timeline-top-row">
+        <span class="badge badge-fix">Fix</span>
+      </div>
+      <h2 class="entry-title">Image injection scoped &middot; R2 setup page &middot; Brand guidelines</h2>
+      <ul class="entry-list">
+        <li>real-media.js: scoped title/tag injection to .meme-card containers only (fixed gallery index showing meme names as screen titles)</li>
+        <li>New 19-r2-setup.html: Cloudflare R2 upload guide with live progress mockup</li>
+        <li>Brand guidelines page expanded with complete color system and component patterns</li>
+      </ul>
+      <div class="tag-row">
+        <span class="tag-pill">Fix</span>
+        <span class="tag-pill">Documentation</span>
+      </div>
+    </div>
+  </article>
+
+  <!-- ENTRY 8 — v1.0 -->
+  <article class="timeline-entry">
+    <div class="timeline-left">
+      <div class="timeline-date">Oct<br>2025</div>
+      <div class="version-chip" style="background:var(--green-soft);color:#007A33;border-color:rgba(0,200,83,0.25)">v1.0</div>
+    </div>
+    <div class="timeline-line"></div>
+    <div class="timeline-dot" style="background:var(--green);box-shadow:0 0 0 2px var(--green)"></div>
+    <div class="timeline-body" style="border-left-color:var(--green)">
+      <div class="timeline-top-row">
+        <span class="badge badge-launch">Launch</span>
+      </div>
+      <h2 class="entry-title">Initial launch &middot; 19 screens &middot; 413 memes</h2>
+      <ul class="entry-list">
+        <li>19 HTML mockup screens covering all core user journeys</li>
+        <li>413 memes and stickers from Cloudinary CDN</li>
+        <li>AI search with synonym expansion</li>
+        <li>9 share platforms: WhatsApp, Telegram, X, Facebook, Reddit, LinkedIn, Pinterest, Email, Download</li>
+        <li>Community: Dojos, Profiles, Messages, Notifications</li>
+      </ul>
+      <div class="tag-row">
+        <span class="tag-pill">Launch</span>
+      </div>
+    </div>
+  </article>
+
+</section>
+
+<!-- ── SUBSCRIBE BOTTOM ── -->
+<section class="subscribe-bottom">
+  <div class="subscribe-bottom-content">
+    <h2>Stay in the loop</h2>
+    <p>New features drop regularly. Get notified when something big lands.</p>
+    <div class="subscribe-bottom-row">
+      <input type="email" placeholder="your@email.com">
+      <button class="subscribe-bottom-btn">Subscribe</button>
+    </div>
+    <p class="subscribe-follow">Or follow <a href="#">@whamr on X</a> for real-time updates</p>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-inner">
+    <a href="01-landing.html" class="footer-logo">whamr.</a>
+    <div class="footer-links">
+      <a href="01-landing.html" class="footer-link">Home</a>
+      <a href="02-memes-browser.html" class="footer-link">Browse</a>
+      <a href="22-trending.html" class="footer-link">Trending</a>
+      <a href="10-dojos.html" class="footer-link">Dojos</a>
+      <a href="26-pricing.html" class="footer-link">Pricing</a>
+      <a href="27-help.html" class="footer-link">Help</a>
+      <a href="31-changelog.html" class="footer-link active" style="color:var(--purple)">Changelog</a>
+    </div>
+    <span class="footer-copy">&copy; 2026 Whamr. All rights reserved.</span>
+  </div>
+</footer>
+
+<script src="./real-media.js"></script>
+</body>
+</html>

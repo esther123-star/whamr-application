@@ -166,6 +166,57 @@ img{display:block}
 .footer{background:#1A0F00;color:rgba(255,255,255,0.5);padding:32px;text-align:center;font-size:13px;margin-top:64px}
 .footer a{color:rgba(255,255,255,0.7);font-weight:600}
 .footer-logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;color:#fff;letter-spacing:-0.04em;margin-bottom:10px}
+
+/* ── CONNECTED ACCOUNTS PANEL ── */
+.connected-account-row{display:flex;align-items:center;gap:14px;padding:16px 0;border-bottom:1px solid var(--line-soft)}
+.connected-account-row:last-of-type{border-bottom:none}
+.ca-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;flex-shrink:0;border:1px solid var(--line);background:#F9FAFB}
+.ca-icon.google{background:#fff;color:#EA4335;border-color:#DADCE0;font-family:'Space Grotesk',sans-serif}
+.ca-icon.apple{background:#000;color:#fff;font-size:22px}
+.ca-icon.twitter{background:#000;color:#fff;font-size:15px;font-family:'Space Grotesk',sans-serif;letter-spacing:-0.04em}
+.ca-details{flex:1}
+.ca-name{font-size:14px;font-weight:700;color:var(--ink)}
+.ca-sub{font-size:12px;color:var(--ink-mute);margin-top:2px}
+.ca-status-connected{font-size:12px;font-weight:600;color:var(--green);display:flex;align-items:center;gap:4px;margin-right:10px}
+.btn-disconnect{font-size:12px;font-weight:600;color:var(--red);background:var(--red-soft);border:1.5px solid var(--red);padding:6px 12px;border-radius:7px;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap}
+.btn-connect-social{font-size:12px;font-weight:600;color:#fff;background:var(--purple);border:none;padding:6px 14px;border-radius:7px;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap}
+.ca-footer-note{font-size:12px;color:var(--ink-mute);margin-top:16px;padding-top:14px;border-top:1px solid var(--line-soft);line-height:1.6}
+
+/* ── API & DEVELOPER PANEL ── */
+.api-key-row{display:flex;align-items:center;gap:10px;background:var(--bg-alt);border:1.5px solid var(--line);border-radius:10px;padding:12px 16px;margin:12px 0 8px}
+.api-key-val{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--ink);flex:1;letter-spacing:0.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btn-api-action{font-size:12px;font-weight:600;padding:6px 12px;border-radius:7px;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;border:1.5px solid var(--line);background:#fff;color:var(--ink-soft)}
+.btn-api-action:hover{background:var(--purple-xsoft);color:var(--purple);border-color:var(--line-soft)}
+.btn-api-danger{font-size:12px;font-weight:600;padding:6px 12px;border-radius:7px;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap;border:1.5px solid var(--red);background:var(--red-soft);color:var(--red)}
+.api-rate-note{font-size:12px;color:var(--ink-mute);margin-bottom:18px}
+.api-usage-row{margin-bottom:20px}
+.api-usage-label{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:6px}
+.api-usage-bar-outer{height:8px;background:var(--line);border-radius:100px;overflow:hidden;margin-bottom:5px}
+.api-usage-bar-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--purple),var(--purple-mid));width:23%}
+.api-usage-sub{font-size:12px;color:var(--ink-mute);font-family:'JetBrains Mono',monospace}
+.api-links{display:flex;gap:16px;flex-wrap:wrap;margin-top:18px;padding-top:16px;border-top:1px solid var(--line-soft)}
+.api-link{font-size:13px;font-weight:600;color:var(--purple)}
+.api-link:hover{text-decoration:underline;text-underline-offset:2px}
+
+/* ── BILLING PANEL ── */
+.billing-current-plan{display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,var(--purple-xsoft),#fff);border:1.5px solid var(--purple-soft);border-radius:12px;padding:18px 20px;margin-bottom:20px}
+.billing-plan-badge{display:inline-flex;align-items:center;gap:8px;background:var(--purple);color:#fff;font-size:13px;font-weight:700;padding:5px 14px;border-radius:100px}
+.billing-plan-meta{font-size:13px;color:var(--ink-mute);margin-top:6px}
+.billing-plan-meta strong{color:var(--ink)}
+.billing-plan-actions{display:flex;gap:8px}
+.billing-info-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line-soft);font-size:13px;color:var(--ink)}
+.billing-info-row:last-of-type{border-bottom:none}
+.billing-info-label{color:var(--ink-mute);font-weight:500;width:150px;flex-shrink:0}
+.billing-info-val{font-weight:600;flex:1}
+.billing-update-link{font-size:12px;font-weight:600;color:var(--purple);margin-left:8px}
+.billing-update-link:hover{text-decoration:underline;text-underline-offset:2px}
+.billing-features-list{list-style:none;margin:16px 0;display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.billing-features-list li{font-size:13px;color:var(--ink-mute);display:flex;align-items:center;gap:6px}
+.billing-features-list li::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0}
+.billing-danger-zone{border:1.5px solid var(--red);border-radius:12px;padding:18px 20px;margin-top:22px}
+.billing-danger-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;color:var(--red);margin-bottom:6px}
+.billing-danger-desc{font-size:12px;color:var(--ink-mute);margin-bottom:12px;line-height:1.6}
+.btn-cancel-plan{font-size:13px;font-weight:700;color:var(--red);background:var(--red-soft);border:1.5px solid var(--red);padding:9px 18px;border-radius:8px;cursor:pointer;font-family:'Inter',sans-serif}
 </style>
 </head>
 <body>
@@ -180,6 +231,7 @@ img{display:block}
     <a href="01-landing.html" class="nav-link">Home</a>
     <a href="02-memes-browser.html" class="nav-link">Memes</a>
     <a href="06-explore.html" class="nav-link">Explore</a>
+    <a href="22-trending.html" class="nav-link">Trending</a>
     <a href="10-dojos.html" class="nav-link">Dojos</a>
   </div>
   <div class="nav-search">
@@ -210,6 +262,9 @@ img{display:block}
     <div class="sidebar-nav-item"><span class="sidebar-icon">🔒</span> Privacy</div>
     <div class="sidebar-nav-item"><span class="sidebar-icon">⚙️</span> Account</div>
     <div class="sidebar-nav-item"><span class="sidebar-icon">⚡</span> Subscription</div>
+    <div class="sidebar-nav-item"><span class="sidebar-icon">🔗</span> Connected Accounts</div>
+    <div class="sidebar-nav-item"><span class="sidebar-icon">🛠️</span> API & Developer</div>
+    <div class="sidebar-nav-item"><span class="sidebar-icon">💳</span> Billing</div>
   </aside>
 
   <div class="settings-content">
@@ -369,7 +424,7 @@ img{display:block}
       </div>
     </div>
 
-    <!-- SUBSCRIPTION -->
+    <!-- SUBSCRIPTION (kept for plan overview) -->
     <div class="settings-section">
       <div class="section-header">
         <div class="section-header-title">Subscription</div>
@@ -431,6 +486,124 @@ img{display:block}
             <tr><td>-</td><td>Free tier</td><td>$0.00</td><td><span class="billing-status free">Free</span></td><td>-</td></tr>
           </tbody>
         </table>
+      </div>
+    </div>
+
+    <!-- CONNECTED ACCOUNTS -->
+    <div class="settings-section">
+      <div class="section-header">
+        <div class="section-header-title">Connected Accounts</div>
+      </div>
+      <div class="section-body">
+        <p style="font-size:13px;color:var(--ink-mute);margin-bottom:20px;line-height:1.6">Link your social accounts for easier sign-in and cross-posting.</p>
+
+        <!-- Google -->
+        <div class="connected-account-row">
+          <div class="ca-icon google">G</div>
+          <div class="ca-details">
+            <div class="ca-name">Google</div>
+            <div class="ca-sub">Connected as memequeen@gmail.com</div>
+          </div>
+          <span class="ca-status-connected">✓ Connected</span>
+          <button class="btn-disconnect">Disconnect</button>
+        </div>
+
+        <!-- Apple -->
+        <div class="connected-account-row">
+          <div class="ca-icon apple">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="#fff"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+          </div>
+          <div class="ca-details">
+            <div class="ca-name">Apple</div>
+            <div class="ca-sub">Not connected</div>
+          </div>
+          <button class="btn-connect-social">Connect</button>
+        </div>
+
+        <!-- Twitter / X -->
+        <div class="connected-account-row">
+          <div class="ca-icon twitter">𝕏</div>
+          <div class="ca-details">
+            <div class="ca-name">Twitter / X</div>
+            <div class="ca-sub">Not connected</div>
+          </div>
+          <button class="btn-connect-social">Connect</button>
+        </div>
+
+        <p class="ca-footer-note">Connected accounts can be used to sign in even if you forget your password.</p>
+      </div>
+    </div>
+
+    <!-- API & DEVELOPER -->
+    <div class="settings-section">
+      <div class="section-header">
+        <div class="section-header-title">API & Developer Access</div>
+      </div>
+      <div class="section-body">
+        <p style="font-size:13px;color:var(--ink-mute);margin-bottom:18px;line-height:1.6">Use your API key to access the Whamr catalog programmatically. Creator plan required.</p>
+
+        <label class="form-label">Your API key</label>
+        <div class="api-key-row">
+          <span class="api-key-val">whamr_sk_live_••••••••••••••••••••••</span>
+          <button class="btn-api-action">Reveal</button>
+          <button class="btn-api-action">Copy</button>
+          <button class="btn-api-danger">Regenerate</button>
+        </div>
+        <div class="api-rate-note">1,000 requests / day on Creator plan · 10,000 on API plan</div>
+
+        <div class="api-usage-row">
+          <div class="api-usage-label">Usage this month</div>
+          <div class="api-usage-bar-outer"><div class="api-usage-bar-fill"></div></div>
+          <div class="api-usage-sub">231 / 1,000 requests used</div>
+        </div>
+
+        <div class="api-links">
+          <a href="27-help.html" class="api-link">View API documentation →</a>
+          <a href="26-pricing.html" class="api-link">Upgrade for higher limits →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- BILLING & SUBSCRIPTION (detailed) -->
+    <div class="settings-section">
+      <div class="section-header">
+        <div class="section-header-title">Billing &amp; Subscription</div>
+      </div>
+      <div class="section-body">
+
+        <div class="billing-current-plan">
+          <div>
+            <div style="margin-bottom:6px"><span class="billing-plan-badge">Creator Plan — $7 / month</span></div>
+            <div class="billing-plan-meta">Active plan · renews automatically each month</div>
+          </div>
+          <div class="billing-plan-actions">
+            <a href="26-pricing.html" class="btn-api-action" style="text-decoration:none;display:inline-block;font-size:12px;font-weight:600;padding:6px 14px;border-radius:7px;background:#fff;color:var(--ink-soft);border:1.5px solid var(--line)">View all plans →</a>
+          </div>
+        </div>
+
+        <div class="billing-info-row">
+          <span class="billing-info-label">Next billing date</span>
+          <span class="billing-info-val">June 7, 2026 · <strong>$7.00</strong></span>
+        </div>
+        <div class="billing-info-row">
+          <span class="billing-info-label">Payment method</span>
+          <span class="billing-info-val">Visa •••• 4242 · Expires 09/27 <a href="#" class="billing-update-link">Update card</a></span>
+        </div>
+
+        <div style="margin-top:16px;margin-bottom:4px;font-size:13px;font-weight:700;color:var(--ink)">What's included</div>
+        <ul class="billing-features-list">
+          <li>Unlimited cloud uploads &amp; CDN hosting</li>
+          <li>Full creator analytics dashboard (90 days)</li>
+          <li>Earnings &amp; tip revenue share</li>
+          <li>Sticker pack publisher &amp; verified badge</li>
+        </ul>
+
+        <div class="billing-danger-zone">
+          <div class="billing-danger-title">Cancel subscription</div>
+          <div class="billing-danger-desc">Your uploads remain accessible for 30 days after cancellation. After that, your account reverts to the free tier and cloud-hosted content becomes unavailable.</div>
+          <button class="btn-cancel-plan">Cancel plan</button>
+        </div>
+
       </div>
     </div>
 
@@ -516,7 +689,7 @@ img{display:block}
   <div class="footer-logo">whamr.</div>
   <p style="margin-bottom:12px">The global meme-sharing platform. Find the perfect meme. Send the wham.</p>
   <div style="display:flex;justify-content:center;gap:24px;font-size:13px;flex-wrap:wrap">
-    <a href="#">About</a><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Help</a>
+    <a href="#">About</a><a href="#">Privacy</a><a href="#">Terms</a><a href="27-help.html">Help</a>
   </div>
   <div style="margin-top:16px;font-size:12px;opacity:0.5">© 2026 Whamr Ltd. All rights reserved.</div>
 </footer>
