@@ -194,6 +194,16 @@
       .wam-greeting { font-size: 14px; color: #8a8a96; white-space: nowrap; }
       .wam-navbtn { padding: 9px 18px; border-radius: 100px; border: 1px solid rgba(255,255,255,0.12); background: #14141c; color: #f5f5f7; font-size: 13.5px; font-weight: 600; cursor: pointer; font-family: inherit; }
       .wam-navbtn-primary { background: #ff3366; border-color: #ff3366; color: #fff; }
+
+      /* Public comment system styles */
+      .discuss-actions { display: flex; gap: 8px; margin-top: 8px; }
+      .discuss-act { background: none; border: 1px solid rgba(255,255,255,0.15); color: #8a8a96; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 100px; cursor: pointer; font-family: inherit; }
+      .discuss-act:hover { color: #f5f5f7; border-color: rgba(255,255,255,0.3); }
+      .discuss-del:hover { color: #ef4444; border-color: #ef4444; }
+      .discuss-report:hover { color: #ffe34d; border-color: #ffe34d; }
+      .discuss-you { font-size: 10px; font-weight: 700; color: #ff3366; background: rgba(255,51,102,0.12); padding: 1px 7px; border-radius: 100px; margin-left: 6px; }
+      .discuss-reported { font-size: 10px; font-weight: 700; color: #ffe34d; background: rgba(255,227,77,0.12); padding: 1px 7px; border-radius: 100px; margin-left: 6px; }
+      .discuss-login-prompt a { color: #ff3366; text-decoration: none; font-weight: 600; }
     `;
     document.head.appendChild(s);
   }
