@@ -669,31 +669,183 @@
     return Math.floor(d / 86400) + "d ago";
   }
 
-  function renderDiscussTab(meme) {
-    const data = getCommunity(meme.id);
+  // ----- Public comments (Supabase) -----
+  // Admin user id: this account can delete ANY comment (moderation).
+  const ADMIN_USER_ID = "2f9e8690-d8af-497b-aee2-03cb1816e462";
+
+  function authUser() {
+    return (window.WhamrAuth && window.WhamrAuth.getUser) ? window.WhamrAuth.getUser() : null;
+  }
+  function isAdmin() {
+    const u = authUser();
+    return u && u.id === ADMIN_USER_ID;
+  }
+
+  async function renderDiscussTab(meme) {
     const list = el.discussList;
     if (!list) return;
-    if (el.discussCount) el.discussCount.textContent = data.discussions.length || "";
 
-    if (!data.discussions.length) {
-      list.innerHTML = '<div class="discuss-empty">No discussion yet. Be the first to share context or a reaction.</div>';
+    // Show the form only to logged-in users; otherwise prompt to log in.
+    updateDiscussForm();
+
+    list.innerHTML = '<div class="discuss-empty">Loading comments…</div>';
+
+    if (!(window.WhamrAuth && window.WhamrAuth.db)) {
+      list.innerHTML = '<div class="discuss-empty">Comments unavailable.</div>';
       return;
     }
+
+    // Read all comments for this meme, newest first.
+    const { data, error } = await window.WhamrAuth.db
+      .from("comments")
+      .select("*")
+      .eq("meme_id", meme.id)
+      .order("created_at", { ascending: false });
+
+    // Guard: if the modal moved to another meme while we were loading, stop.
+    if (!state.currentModal || state.currentModal.id !== meme.id) return;
+
+    if (error) {
+      list.innerHTML = '<div class="discuss-empty">Could not load comments.</div>';
+      return;
+    }
+
+    if (el.discussCount) el.discussCount.textContent = data.length || "";
+
+    if (!data.length) {
+      list.innerHTML = '<div class="discuss-empty">No comments yet. Be the first to say something.</div>';
+      return;
+    }
+
+    const me = authUser();
+    const admin = isAdmin();
     list.innerHTML = "";
-    [...data.discussions].reverse().forEach(post => {
+    data.forEach(function (post) {
       const div = document.createElement("div");
       div.className = "discuss-post";
-      const initial = (post.author || "A").charAt(0).toUpperCase();
-      div.innerHTML = `
-        <div class="discuss-post-header">
-          <div class="discuss-avatar">${initial}</div>
-          <span class="discuss-name">${post.author || "Anonymous"}</span>
-          <span class="discuss-time">${timeAgo(post.ts)}</span>
-        </div>
-        <div class="discuss-text">${post.text.replace(/</g,"&lt;")}</div>
-      `;
+      const name = post.author_name || "Someone";
+      const initial = name.charAt(0).toUpperCase();
+      const mine = me && post.user_id === me.id;
+      const canDelete = mine || admin;
+
+      // Action buttons: report (anyone logged in), delete (own or admin)
+      let actions = "";
+      if (me) {
+        if (canDelete) {
+          actions += '<button class="discuss-act discuss-del" data-id="' + post.id + '">Delete</button>';
+        }
+        if (!mine && !post.reported) {
+          actions += '<button class="discuss-act discuss-report" data-id="' + post.id + '">Report</button>';
+        }
+      }
+      const reportedTag = post.reported
+        ? '<span class="discuss-reported">reported</span>'
+        : "";
+
+      div.innerHTML =
+        '<div class="discuss-post-header">' +
+          '<div class="discuss-avatar">' + escapeHtmlC(initial) + '</div>' +
+          '<span class="discuss-name">' + escapeHtmlC(name) + '</span>' +
+          (mine ? '<span class="discuss-you">you</span>' : '') +
+          reportedTag +
+          '<span class="discuss-time">' + timeAgoIso(post.created_at) + '</span>' +
+        '</div>' +
+        '<div class="discuss-text">' + escapeHtmlC(post.text) + '</div>' +
+        (actions ? '<div class="discuss-actions">' + actions + '</div>' : '');
       list.appendChild(div);
     });
+
+    // Wire up delete buttons
+    list.querySelectorAll(".discuss-del").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        deleteComment(btn.getAttribute("data-id"), meme);
+      });
+    });
+    // Wire up report buttons
+    list.querySelectorAll(".discuss-report").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        reportComment(btn.getAttribute("data-id"), meme);
+      });
+    });
+  }
+
+  // Show/hide the comment form depending on login state.
+  function updateDiscussForm() {
+    if (!el.discussForm) return;
+    const u = authUser();
+    if (u) {
+      el.discussForm.style.display = "";
+      // Prefill the name field with the user's email handle, lock it.
+      if (el.discussName) {
+        el.discussName.value = u.email ? u.email.split("@")[0] : "";
+        el.discussName.readOnly = true;
+        el.discussName.style.display = "none"; // we use account name, hide the field
+      }
+      if (el.discussText) el.discussText.placeholder = "Add a public comment…";
+    } else {
+      el.discussForm.style.display = "none";
+      // Put a gentle login prompt above the (hidden) form.
+      let prompt = el.discussForm.parentElement.querySelector(".discuss-login-prompt");
+      if (!prompt) {
+        prompt = document.createElement("div");
+        prompt.className = "discuss-login-prompt discuss-empty";
+        prompt.innerHTML = 'Please <a href="#" class="discuss-login-link">log in</a> to comment.';
+        el.discussForm.parentElement.insertBefore(prompt, el.discussForm);
+        const link = prompt.querySelector(".discuss-login-link");
+        if (link) link.addEventListener("click", function (e) {
+          e.preventDefault();
+          if (window.WhamrAuth) window.WhamrAuth.openModal();
+        });
+      }
+      prompt.style.display = "";
+    }
+    // If logged in, remove any lingering prompt
+    if (u) {
+      const prompt = el.discussForm.parentElement.querySelector(".discuss-login-prompt");
+      if (prompt) prompt.style.display = "none";
+    }
+  }
+
+  async function deleteComment(commentId, meme) {
+    if (!window.WhamrAuth || !window.WhamrAuth.db) return;
+    if (!confirm("Delete this comment?")) return;
+    const { error } = await window.WhamrAuth.db
+      .from("comments")
+      .delete()
+      .eq("id", commentId);
+    if (error) {
+      showToast("Could not delete");
+    } else {
+      showToast("Comment deleted");
+      renderDiscussTab(meme);
+    }
+  }
+
+  async function reportComment(commentId, meme) {
+    if (!window.WhamrAuth || !window.WhamrAuth.db) return;
+    const { error } = await window.WhamrAuth.db
+      .from("comments")
+      .update({ reported: true })
+      .eq("id", commentId);
+    if (error) {
+      showToast("Could not report");
+    } else {
+      showToast("Reported. Thank you.");
+      renderDiscussTab(meme);
+    }
+  }
+
+  // Small local helpers (kept separate so we don't touch existing ones)
+  function escapeHtmlC(str) {
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  }
+  function timeAgoIso(iso) {
+    const ts = new Date(iso).getTime();
+    if (isNaN(ts)) return "";
+    return timeAgo(ts);
   }
 
   function renderOriginTab(meme) {
@@ -1092,25 +1244,45 @@
       tab.addEventListener("click", () => openCommunityTab(tab.dataset.tab));
     });
 
-    // Discussion form submit
+    // Discussion form submit -> save a public comment to Supabase
     if (el.discussForm) {
-      el.discussForm.addEventListener("submit", (e) => {
+      el.discussForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         const meme = state.currentModal;
         if (!meme) return;
+
+        const u = authUser();
+        if (!u) {
+          if (window.WhamrAuth) window.WhamrAuth.openModal();
+          return;
+        }
+
         const text = (el.discussText.value || "").trim();
         if (!text) return;
-        const data = getCommunity(meme.id);
-        data.discussions.push({
-          id: Date.now().toString(36),
-          author: (el.discussName.value || "").trim() || "Anonymous",
-          text,
-          ts: Date.now(),
-        });
-        saveCommunity(meme.id, data);
+
+        if (!window.WhamrAuth || !window.WhamrAuth.db) {
+          showToast("Comments unavailable");
+          return;
+        }
+
+        const authorName = u.email ? u.email.split("@")[0] : "Someone";
+
+        const { error } = await window.WhamrAuth.db
+          .from("comments")
+          .insert({
+            meme_id: meme.id,
+            user_id: u.id,
+            author_name: authorName,
+            text: text,
+          });
+
+        if (error) {
+          showToast("Could not post comment");
+          return;
+        }
+
         el.discussText.value = "";
         renderDiscussTab(meme);
-        if (el.discussCount) el.discussCount.textContent = data.discussions.length;
         showToast("Comment posted");
       });
     }
