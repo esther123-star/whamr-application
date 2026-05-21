@@ -173,11 +173,28 @@
   };
 
   /* ============================================
-     Favorites — localStorage
+     Favorites — localStorage (instant) + Supabase (synced when logged in)
+     ============================================
+     Design: localStorage stays the instant layer so the site feels fast and
+     keeps working for logged-out users exactly as before. If the user is
+     logged in (via WhamrAuth / Supabase), we ALSO sync in the background so
+     favourites follow them across devices. If Supabase is down or the user is
+     logged out, everything still works locally — the cloud is a bonus layer.
      ============================================ */
   const FAV_KEY = "whamr-favorites";
 
+  // Is the shared auth layer available on this page?
+  function authReady() {
+    return typeof window !== "undefined" && window.WhamrAuth;
+  }
+  function currentUserId() {
+    if (!authReady()) return null;
+    const u = window.WhamrAuth.getUser();
+    return u ? u.id : null;
+  }
+
   function loadFavorites() {
+    // Always load the local copy first — instant, no waiting.
     try {
       const raw = localStorage.getItem(FAV_KEY);
       if (raw) state.favorites = new Set(JSON.parse(raw));
@@ -185,14 +202,103 @@
       state.favorites = new Set();
     }
   }
+
   function saveFavorites() {
     try { localStorage.setItem(FAV_KEY, JSON.stringify([...state.favorites])); } catch (e) {}
   }
+
   function toggleFavorite(id) {
-    if (state.favorites.has(id)) { state.favorites.delete(id); saveFavorites(); return false; }
-    state.favorites.add(id); saveFavorites(); return true;
+    if (state.favorites.has(id)) {
+      state.favorites.delete(id);
+      saveFavorites();
+      cloudRemoveFavorite(id); // background, only runs if logged in
+      return false;
+    }
+    state.favorites.add(id);
+    saveFavorites();
+    cloudAddFavorite(id); // background, only runs if logged in
+    return true;
   }
+
   function isFavorited(id) { return state.favorites.has(id); }
+
+  /* ---- Supabase sync (all fail silently; never block the UI) ---- */
+
+  // Add one favourite to the cloud (if logged in)
+  async function cloudAddFavorite(id) {
+    const userId = currentUserId();
+    if (!userId) return;
+    try {
+      await window.WhamrAuth.db
+        .from("favorites")
+        .insert({ user_id: userId, meme_id: id });
+    } catch (e) {
+      // ignore — local copy already saved, cloud is best-effort
+    }
+  }
+
+  // Remove one favourite from the cloud (if logged in)
+  async function cloudRemoveFavorite(id) {
+    const userId = currentUserId();
+    if (!userId) return;
+    try {
+      await window.WhamrAuth.db
+        .from("favorites")
+        .delete()
+        .eq("user_id", userId)
+        .eq("meme_id", id);
+    } catch (e) {
+      // ignore
+    }
+  }
+
+  // On login: pull the user's cloud favourites and merge with local,
+  // then push any local-only ones up so both sides end up complete.
+  async function syncFavoritesFromCloud() {
+    const userId = currentUserId();
+    if (!userId) return;
+    try {
+      const { data, error } = await window.WhamrAuth.db
+        .from("favorites")
+        .select("meme_id")
+        .eq("user_id", userId);
+      if (error || !data) return;
+
+      const cloudIds = new Set(data.map(function (r) { return r.meme_id; }));
+      const localIds = new Set(state.favorites);
+
+      // Merge: union of both sides
+      const merged = new Set([...cloudIds, ...localIds]);
+      state.favorites = merged;
+      saveFavorites();
+
+      // Push local-only ones up to the cloud
+      const toPush = [...localIds].filter(function (id) { return !cloudIds.has(id); });
+      if (toPush.length) {
+        const rows = toPush.map(function (id) {
+          return { user_id: userId, meme_id: id };
+        });
+        try {
+          await window.WhamrAuth.db.from("favorites").insert(rows);
+        } catch (e) { /* ignore */ }
+      }
+
+      // Redraw so the merged favourites show up
+      if (typeof renderGrid === "function") renderGrid();
+      if (typeof IS_LIBRARY !== "undefined" && IS_LIBRARY && typeof renderFilters === "function") {
+        renderFilters();
+      }
+    } catch (e) {
+      // ignore — local copy is fine
+    }
+  }
+
+  // When auth state changes (login/logout), re-sync.
+  if (authReady()) {
+    window.WhamrAuth.onChange(function (user) {
+      if (user) syncFavoritesFromCloud();
+    });
+  }
 
   /* ============================================
      IndexedDB for uploads
