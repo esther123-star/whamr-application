@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About · Whamr</title>
+  <meta name="description" content="Why Whamr exists: finding the right Naija meme to send your friend should take 3 seconds, not 3 minutes." />
+  <meta name="theme-color" content="#0a0a0f" />
+  <meta property="og:title" content="About · Whamr" />
+  <meta property="og:description" content="Built for the send. The story behind Whamr." />
+  <meta property="og:type" content="website" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .legal-wrap {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 0 32px;
+      position: relative;
+      z-index: 2;
+    }
+    .story-section { padding: 20px 0 40px; }
+    .story-block { margin: 0 auto 40px; }
+    .story-block h2 {
+      font-family: var(--font-sans);
+      font-weight: 700;
+      font-size: clamp(22px, 3vw, 30px);
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin: 0 0 16px;
+    }
+    .story-block p {
+      font-size: 16px;
+      line-height: 1.75;
+      color: var(--text-muted);
+      margin: 0 0 16px;
+    }
+    .story-block p:last-child { margin-bottom: 0; }
+    .story-accent { color: var(--accent); font-weight: 600; }
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin: 8px 0 0;
+    }
+    .value-card {
+      padding: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      transition: all var(--transition);
+    }
+    .value-card:hover {
+      border-color: var(--accent-soft);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-card);
+    }
+    .value-card h3 {
+      font-family: var(--font-sans);
+      font-weight: 700;
+      font-size: 17px;
+      color: var(--text);
+      margin: 0 0 8px;
+      letter-spacing: -0.01em;
+    }
+    .value-card p {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin: 0;
+    }
+    @media (max-width: 560px) {
+      .values-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="page-nav">
+    <a href="index.html" class="page-nav-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      Home
+    </a>
+    <a href="index.html" class="page-nav-brand">
+      <div class="logo">whamr<span class="logo-dot">.</span></div>
+    </a>
+    <div class="page-nav-links">
+      <a href="memes.html" class="hero-nav-link">All memes</a>
+      <a href="how-it-works.html" class="hero-nav-link">How it works</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="page-hero">
+    <div class="page-hero-content">
+      <div class="section-eyebrow">About Whamr</div>
+      <h1 class="page-hero-title">
+        Built for <span class="page-hero-title-accent">the send.</span>
+      </h1>
+      <p class="page-hero-sub">
+        Whamr started with a simple problem: finding the right Naija meme to send your friend should take 3 seconds, not 3 minutes. That is the whole idea.
+      </p>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="about" style="padding-top: 20px;">
+    <div class="legal-wrap">
+      <div class="about-side" style="grid-template-columns: repeat(4, 1fr);">
+        <div class="about-fact">
+          <div class="about-fact-num">9,128</div>
+          <div class="about-fact-label">Real media files</div>
+        </div>
+        <div class="about-fact">
+          <div class="about-fact-num">11</div>
+          <div class="about-fact-label">Categories</div>
+        </div>
+        <div class="about-fact">
+          <div class="about-fact-num">9</div>
+          <div class="about-fact-label">Share platforms</div>
+        </div>
+        <div class="about-fact">
+          <div class="about-fact-num">1<span style="font-size:0.5em;">tap</span></div>
+          <div class="about-fact-label">To send</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STORY -->
+  <section class="story-section">
+    <div class="legal-wrap">
+      <div class="story-block">
+        <h2>It started with a WhatsApp argument</h2>
+        <p>
+          Someone sent the wrong meme at the wrong moment. The vibe was off. The group chat went quiet. Not because the meme was offensive, but because it was the wrong one entirely. You know the difference. So did we.
+        </p>
+        <p>
+          We built Whamr because meme culture is real culture, and <span class="story-accent">Naija meme culture especially deserves better tooling</span>. The big global libraries do not know who Patience Ozokwo is. They do not have the 5000 Naira Pawpaw clip. They do not understand the difference between "funny naija" and just "funny." We do.
+        </p>
+      </div>
+
+      <div class="story-block">
+        <h2>A real library, properly built</h2>
+        <p>
+          The library has thousands of real files: video clips, WhatsApp stickers, reactions, birthday memes, Nollywood moments, dance clips, and sports reactions. Every one of them categorised, tagged, and ready to send to exactly the right person at exactly the right moment.
+        </p>
+        <p>
+          No accounts needed to browse. No ads cluttering the page. Just you, the meme, and one tap to send it wherever your people are.
+        </p>
+      </div>
+
+      <div class="story-block">
+        <h2>What we believe</h2>
+        <div class="values-grid">
+          <div class="value-card">
+            <h3>Meme culture is real culture</h3>
+            <p>How people communicate through memes is a genuine language. It deserves tools made with care, not an afterthought.</p>
+          </div>
+          <div class="value-card">
+            <h3>Naija-rooted, globally fluent</h3>
+            <p>Nigerian content is some of the most creative on the internet. We start there, and we build outward.</p>
+          </div>
+          <div class="value-card">
+            <h3>Built for the way we share</h3>
+            <p>People share in WhatsApp groups, Telegram channels, and Twitter threads, not in stock photo libraries. We build for that.</p>
+          </div>
+          <div class="value-card">
+            <h3>Fast beats fancy</h3>
+            <p>The best meme tool is the one that gets out of your way. Find it, send it, done.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="story-block" style="text-align:center; margin-top: 8px;">
+        <div class="hero-actions" style="margin-bottom:0; animation:none;">
+          <a href="memes.html" class="btn-hero btn-hero-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            <span>Browse all memes</span>
+          </a>
+          <a href="how-it-works.html" class="btn-hero btn-hero-ghost">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            <span>See how it works</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="logo footer-logo">whamr<span class="logo-dot">.</span></div>
+        <p class="footer-tag">Send the wham.</p>
+      </div>
+      <div class="footer-links">
+        <a href="memes.html">All memes</a>
+        <a href="how-it-works.html">How it works</a>
+        <a href="about.html">About</a>
+        <a href="terms.html">Terms</a>
+        <a href="privacy.html">Privacy</a>
+      </div>
+      <div class="footer-meta">
+        <p>built for the send</p>
+        <p class="footer-version">v2.1 · prototype</p>
+        <p class="footer-attribution">Stickers by <a href="https://openmoji.org" target="_blank" rel="noopener">OpenMoji</a> &mdash; CC BY-SA 4.0</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
