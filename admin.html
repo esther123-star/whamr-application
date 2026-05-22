@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Moderation · Whamr Admin</title>
+  <meta name="theme-color" content="#0a0a0f" />
+  <meta name="robots" content="noindex, nofollow" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="whamr-auth.js"></script>
+
+  <style>
+    .admin-wrap { max-width: 820px; margin: 0 auto; padding: 32px 24px 80px; position: relative; z-index: 2; }
+    .admin-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+    .admin-title { font-family: var(--font-sans); font-weight: 800; font-size: 26px; letter-spacing: -0.03em; margin: 0; color: var(--text); }
+    .admin-gate { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 40px 28px; text-align: center; }
+    .admin-gate h2 { font-size: 18px; color: var(--text); margin: 0 0 8px; }
+    .admin-gate p { color: var(--text-muted); font-size: 14px; margin: 0 0 18px; }
+    .admin-section-label { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin: 28px 0 12px; }
+    .admin-section-label.reported { color: var(--accent-yellow); }
+    .cmt {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 14px 16px; margin-bottom: 10px;
+    }
+    .cmt.is-reported { border-color: rgba(255,227,77,0.4); background: linear-gradient(135deg, rgba(255,227,77,0.05), var(--surface)); }
+    .cmt-top { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+    .cmt-author { font-weight: 600; font-size: 13px; color: var(--text); }
+    .cmt-meme { font-size: 11px; color: var(--text-subtle); background: var(--surface-active); padding: 2px 8px; border-radius: 100px; }
+    .cmt-flag { font-size: 10px; font-weight: 700; color: var(--accent-yellow); background: rgba(255,227,77,0.12); padding: 2px 8px; border-radius: 100px; }
+    .cmt-time { font-size: 11px; color: var(--text-subtle); margin-left: auto; }
+    .cmt-text { font-size: 14px; color: var(--text-muted); line-height: 1.55; margin-bottom: 10px; word-break: break-word; }
+    .cmt-actions { display: flex; gap: 8px; }
+    .cmt-btn { font-size: 12px; font-weight: 600; padding: 6px 14px; border-radius: 100px; border: 1px solid var(--border-strong); background: var(--surface-active); color: var(--text); cursor: pointer; font-family: inherit; }
+    .cmt-btn.del:hover { color: #fff; background: var(--danger); border-color: var(--danger); }
+    .cmt-btn.ok:hover { color: #000; background: var(--accent-yellow); border-color: var(--accent-yellow); }
+    .admin-empty { color: var(--text-subtle); font-size: 14px; padding: 16px 0; }
+    .admin-status { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+    .admin-refresh { font-size: 12px; font-weight: 600; padding: 8px 16px; border-radius: 100px; border: 1px solid var(--border-strong); background: var(--surface); color: var(--text); cursor: pointer; font-family: inherit; }
+  </style>
+</head>
+<body>
+
+  <div class="admin-wrap">
+    <div class="admin-head">
+      <h1 class="admin-title">Comment Moderation</h1>
+      <button class="admin-refresh" id="refresh-btn">Refresh</button>
+    </div>
+
+    <!-- Gate: only the admin UID gets past this -->
+    <div id="gate" class="admin-gate">
+      <h2>Checking access…</h2>
+      <p>This page is for Whamr moderators only.</p>
+      <div id="gate-area"></div>
+    </div>
+
+    <!-- The actual moderation content, hidden until access confirmed -->
+    <div id="panel" hidden>
+      <div class="admin-status" id="status"></div>
+
+      <div class="admin-section-label reported">Reported comments</div>
+      <div id="reported-list"></div>
+
+      <div class="admin-section-label">All recent comments</div>
+      <div id="all-list"></div>
+    </div>
+  </div>
+
+  <script>
+    // The one admin. Only this user sees the moderation panel.
+    const ADMIN_USER_ID = "2f9e8690-d8af-497b-aee2-03cb1816e462";
+
+    const gate     = document.getElementById("gate");
+    const gateArea = document.getElementById("gate-area");
+    const panel    = document.getElementById("panel");
+    const statusEl = document.getElementById("status");
+    const reportedList = document.getElementById("reported-list");
+    const allList  = document.getElementById("all-list");
+
+    function db() { return window.WhamrAuth && window.WhamrAuth.db; }
+
+    // React to login state. Only the admin UID unlocks the panel.
+    window.WhamrAuth.onChange(function (user) {
+      if (user && user.id === ADMIN_USER_ID) {
+        gate.hidden = true;
+        panel.hidden = false;
+        loadAll();
+      } else {
+        gate.hidden = false;
+        panel.hidden = true;
+        if (user) {
+          gate.querySelector("h2").textContent = "Not authorised";
+          gate.querySelector("p").textContent = "This account is not a moderator.";
+          gateArea.innerHTML = '<button class="admin-refresh" onclick="window.WhamrAuth.logout()">Log out</button>';
+        } else {
+          gate.querySelector("h2").textContent = "Moderator login";
+          gate.querySelector("p").textContent = "Log in with your admin account to moderate comments.";
+          gateArea.innerHTML = '<button class="admin-refresh" id="login-btn">Log In</button>';
+          var b = document.getElementById("login-btn");
+          if (b) b.addEventListener("click", function () { window.WhamrAuth.openModal(); });
+        }
+      }
+    });
+
+    document.getElementById("refresh-btn").addEventListener("click", loadAll);
+
+    async function loadAll() {
+      if (!db()) return;
+      statusEl.textContent = "Loading…";
+
+      // Reported comments (the priority queue)
+      const reported = await db()
+        .from("comments")
+        .select("*")
+        .eq("reported", true)
+        .order("created_at", { ascending: false });
+
+      // All recent comments (latest 100)
+      const all = await db()
+        .from("comments")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(100);
+
+      if (reported.error || all.error) {
+        statusEl.textContent = "Error loading comments.";
+        return;
+      }
+
+      statusEl.textContent =
+        (reported.data.length) + " reported · " + all.data.length + " recent comments";
+
+      renderList(reportedList, reported.data, true);
+      renderList(allList, all.data, false);
+    }
+
+    function renderList(container, rows, reportedView) {
+      if (!rows.length) {
+        container.innerHTML = '<div class="admin-empty">' +
+          (reportedView ? "Nothing reported. All clear." : "No comments yet.") +
+          "</div>";
+        return;
+      }
+      container.innerHTML = "";
+      rows.forEach(function (c) {
+        const div = document.createElement("div");
+        div.className = "cmt" + (c.reported ? " is-reported" : "");
+        const when = c.created_at ? new Date(c.created_at).toLocaleString() : "";
+        div.innerHTML =
+          '<div class="cmt-top">' +
+            '<span class="cmt-author">' + esc(c.author_name || "Someone") + '</span>' +
+            '<span class="cmt-meme">' + esc(c.meme_id || "") + '</span>' +
+            (c.reported ? '<span class="cmt-flag">reported</span>' : '') +
+            '<span class="cmt-time">' + when + '</span>' +
+          '</div>' +
+          '<div class="cmt-text">' + esc(c.text || "") + '</div>' +
+          '<div class="cmt-actions">' +
+            '<button class="cmt-btn del" data-id="' + c.id + '">Delete</button>' +
+            (c.reported ? '<button class="cmt-btn ok" data-id="' + c.id + '">Clear flag (keep)</button>' : '') +
+          '</div>';
+        container.appendChild(div);
+      });
+
+      container.querySelectorAll(".cmt-btn.del").forEach(function (b) {
+        b.addEventListener("click", function () { delComment(b.getAttribute("data-id")); });
+      });
+      container.querySelectorAll(".cmt-btn.ok").forEach(function (b) {
+        b.addEventListener("click", function () { clearFlag(b.getAttribute("data-id")); });
+      });
+    }
+
+    async function delComment(id) {
+      if (!confirm("Delete this comment permanently?")) return;
+      const { error } = await db().from("comments").delete().eq("id", id);
+      if (error) { alert("Could not delete: " + error.message); return; }
+      loadAll();
+    }
+
+    async function clearFlag(id) {
+      const { error } = await db().from("comments").update({ reported: false }).eq("id", id);
+      if (error) { alert("Could not clear: " + error.message); return; }
+      loadAll();
+    }
+
+    function esc(s) {
+      return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    }
+  </script>
+</body>
+</html>
