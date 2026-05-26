@@ -629,12 +629,23 @@
     if (meme.type === "mp4") {
       const v = document.createElement("video");
       v.className = forCard ? "card-media" : "";
-      v.src = meme.src;
       v.muted = true;
       v.loop = true;
       v.playsInline = true;
-      v.preload = "metadata";
-      if (!forCard) v.controls = true;
+      if (forCard) {
+        // GRID: do NOT download the video up front. With hundreds of videos,
+        // eager loading is what makes the page heavy. We set preload="none"
+        // and only attach the real source when the card scrolls into view
+        // (via IntersectionObserver below). Until then, nothing downloads.
+        v.preload = "none";
+        v.setAttribute("data-src", meme.src);
+        observeLazyVideo(v);
+      } else {
+        // MODAL: the user opened this specific meme, so load it normally.
+        v.src = meme.src;
+        v.preload = "metadata";
+        v.controls = true;
+      }
       return v;
     }
     const img = document.createElement("img");
@@ -643,6 +654,41 @@
     img.alt = meme.title || "meme";
     img.loading = "lazy";
     return img;
+  }
+
+  // Lazy-load grid videos: only attach the source when the card is near
+  // the viewport, and start playing then. Saves loading hundreds of videos
+  // that the user never scrolls to.
+  var _lazyVideoObserver = null;
+  function observeLazyVideo(video) {
+    if (!("IntersectionObserver" in window)) {
+      // Old browser fallback: just load it.
+      video.src = video.getAttribute("data-src");
+      return;
+    }
+    if (!_lazyVideoObserver) {
+      _lazyVideoObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          const vid = entry.target;
+          if (entry.isIntersecting) {
+            // Came into view: attach source (once) and play.
+            if (!vid.src) {
+              const ds = vid.getAttribute("data-src");
+              if (ds) {
+                vid.src = ds;
+                vid.preload = "metadata";
+              }
+            }
+            const p = vid.play();
+            if (p && p.catch) p.catch(function () {});
+          } else {
+            // Scrolled away: pause to save resources.
+            if (!vid.paused) vid.pause();
+          }
+        });
+      }, { rootMargin: "300px" }); // start loading a little before it's visible
+    }
+    _lazyVideoObserver.observe(video);
   }
 
   /* ============================================
