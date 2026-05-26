@@ -26,9 +26,25 @@
     sports:   ["football","soccer","basketball","nfl","nba","game","match","goal"],
     sticker:  ["stickers","whatsapp","wa","static","png"],
     meme:     ["memes","viral","clip","video","format"],
-    hype:     ["lit","fire","energy","banger"],
-    flex:     ["rich","money","boss","drip"],
-    chill:    ["relax","vibe","calm","mood"],
+    hype:     ["lit","fire","energy","banger","idan","steeze","owanbe"],
+    flex:     ["rich","money","boss","drip","soft life","enjoyment","detty december"],
+    chill:    ["relax","vibe","calm","mood","soft life","we move"],
+    // --- Naija slang (mapped to the moods/categories the memes carry) ---
+    wahala:   ["trouble","stress","drama","problem","palava","yawa","kasala"],
+    yawa:     ["wahala","trouble","trouble dey","problem","gbege","scatter"],
+    sapa:     ["broke","money","poor","sad","suffering","hardship","sapa nation"],
+    omo:      ["shock","shocked","wow","surprised","reaction","stress","omo"],
+    japa:     ["run","running","flee","escape","leave","comot","commot"],
+    cruise:   ["funny","joke","play","banter","jare","catch cruise","gist"],
+    gbese:    ["dance","dancing","leg","zanku","legwork","moves"],
+    zanku:    ["dance","dancing","gbese","legwork","moves","gwara","azonto"],
+    choke:    ["wow","amazing","shocked","too much","e choke","overwhelming"],
+    abeg:     ["please","beg","plead","help"],
+    vex:      ["angry","annoyed","mad","upset","vexed","frustrated"],
+    nawa:     ["wow","shocked","unbelievable","na wa","disbelief"],
+    soft:     ["soft life","relax","enjoy","luxury","chill","flex"],
+    detty:    ["party","celebrate","detty december","enjoyment","owanbe","festive"],
+    gree:     ["no gree","stubborn","stand ground","refuse","no gree for anybody"],
   };
 
   const INTENT_PATTERNS = [
@@ -40,7 +56,13 @@
     { re: /\b(react|reaction|shocked|wow|omg|scream|screaming|yikes)\b/i,cat: "reactions" },
     { re: /\b(awkward|cringe|embarrass|uncomfortable|weird|cooked)\b/i, cat: "awkward"   },
     { re: /\b(love|kiss|heart|crush|romance|cute)\b/i,                  cat: "love"      },
-    { re: /\b(dance|birthday|celebrate|party|congrats)\b/i,             cat: "birthday"  },
+    { re: /\b(dance|birthday|celebrate|party|congrats|owanbe|detty)\b/i,  cat: "birthday"  },
+    // --- Naija slang routing ---
+    { re: /\b(gbese|zanku|legwork|azonto|gwara|shaku)\b/i,              cat: "dance"     },
+    { re: /\b(cruise|jare|gist|banter|e choke|choke)\b/i,               cat: "laughing"  },
+    { re: /\b(sapa|broke|suffer|hardship)\b/i,                          cat: "sad"       },
+    { re: /\b(omo|nawa|na wa|wahala|yawa|gbege|kasala|vex|vexed)\b/i,   cat: "reactions" },
+    { re: /\b(japa|comot|commot|escape|flee)\b/i,                       cat: "reactions" },
   ];
 
   function expandQuery(q) {
