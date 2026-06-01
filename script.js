@@ -124,7 +124,7 @@
   const IS_LIBRARY = PAGE === "library";
 
   /* ---------- state ---------- */
-  const PAGE_SIZE = 24;
+  const PAGE_SIZE = 48;
   const state = {
     memes: [],
     jsonMemes: [],
@@ -456,6 +456,8 @@
       btn.setAttribute("aria-selected", cat === state.activeCategory);
       btn.addEventListener("click", () => {
         state.activeCategory = cat;
+        state.page = 1;
+        setPageInUrl(1, true);
         renderFilters();
         renderGrid();
       });
@@ -502,21 +504,52 @@
   /* ============================================
      Render grid — with infinite scroll
      ============================================ */
+  /* ============================================
+     Paginated grid: one page of PAGE_SIZE at a time.
+     Page is read from ?page= in the URL on first load.
+     On home (featured), pagination is bypassed.
+     ============================================ */
+
+  function getPageFromUrl() {
+    try {
+      const p = parseInt(new URLSearchParams(window.location.search).get("page"), 10);
+      return (Number.isFinite(p) && p > 0) ? p : 1;
+    } catch (e) { return 1; }
+  }
+
+  function setPageInUrl(n, replace) {
+    try {
+      const url = new URL(window.location.href);
+      if (n <= 1) url.searchParams.delete("page");
+      else url.searchParams.set("page", String(n));
+      const newUrl = url.pathname + (url.search ? url.search : "") + url.hash;
+      if (replace) window.history.replaceState({}, "", newUrl);
+      else window.history.pushState({}, "", newUrl);
+    } catch (e) {}
+  }
+
   function renderGrid(append) {
     if (!el.grid) return;
 
+    // Home (featured) keeps the original simple render
+    if (IS_HOME) {
+      state.filteredCache = state.memes;
+      el.grid.innerHTML = "";
+      if (el.loading) el.loading.hidden = true;
+      const frag = document.createDocumentFragment();
+      state.memes.forEach((m, i) => frag.appendChild(createCard(m, i)));
+      el.grid.appendChild(frag);
+      return;
+    }
+
     if (!append) {
-      // Fresh render: reset page and clear grid
-      state.page = 1;
-      state.filteredCache = IS_HOME ? state.memes : getFilteredMemes();
+      state.filteredCache = getFilteredMemes();
       el.grid.innerHTML = "";
     }
 
     const list = state.filteredCache;
-    const slice = list.slice(0, state.page * PAGE_SIZE);
-    const indicator = document.getElementById("load-more-indicator");
 
-    if (el.count && !IS_HOME) {
+    if (el.count) {
       const noun = state.activeCategory === "stickers" ? "sticker" : "meme";
       el.count.textContent = list.length === 1 ? `1 ${noun}` : `${list.length} ${noun}s`;
     }
@@ -530,46 +563,120 @@
           if (el.emptySub) el.emptySub.textContent = "Tap the heart on any meme to save it here.";
         } else {
           if (el.emptyTitle) el.emptyTitle.textContent = "No memes found";
-          if (el.emptySub) el.emptySub.textContent = 'Try different words — AI understands "funny naija reaction" or "sad crying".';
+          if (el.emptySub) el.emptySub.textContent = 'Try different words \u2014 search understands "funny naija reaction" or "sad crying".';
         }
       }
-      if (indicator) indicator.style.display = "none";
+      renderPagination(0, 0);
       return;
     }
     if (el.empty) el.empty.hidden = true;
 
-    if (append) {
-      // Append only new cards
-      const startIdx = (state.page - 1) * PAGE_SIZE;
-      const newItems = list.slice(startIdx, state.page * PAGE_SIZE);
-      const frag = document.createDocumentFragment();
-      newItems.forEach((m, i) => frag.appendChild(createCard(m, startIdx + i)));
-      el.grid.appendChild(frag);
-    } else {
-      const frag = document.createDocumentFragment();
-      slice.forEach((m, i) => frag.appendChild(createCard(m, i)));
-      el.grid.appendChild(frag);
-    }
+    const totalPages = Math.max(1, Math.ceil(list.length / PAGE_SIZE));
+    if (state.page > totalPages) state.page = totalPages;
+    if (state.page < 1) state.page = 1;
 
-    if (indicator) {
-      indicator.style.display = slice.length < list.length ? "block" : "none";
-    }
+    const startIdx = (state.page - 1) * PAGE_SIZE;
+    const endIdx = Math.min(startIdx + PAGE_SIZE, list.length);
+    const slice = list.slice(startIdx, endIdx);
+
+    const frag = document.createDocumentFragment();
+    slice.forEach((m, i) => frag.appendChild(createCard(m, startIdx + i)));
+    el.grid.appendChild(frag);
+
+    renderPagination(state.page, totalPages);
   }
 
-  /* Infinite scroll observer */
-  function initInfiniteScroll() {
-    const sentinel = document.getElementById("scroll-sentinel");
-    if (!sentinel || IS_HOME) return;
-    const obs = new IntersectionObserver((entries) => {
-      if (!entries[0].isIntersecting) return;
-      const total = state.filteredCache.length;
-      if (state.page * PAGE_SIZE < total) {
-        state.page++;
-        renderGrid(true);
+  function buildPageNumbers(current, total) {
+    if (total <= 7) {
+      const out = [];
+      for (let i = 1; i <= total; i++) out.push(i);
+      return out;
+    }
+    const set = new Set([1, total, current, current - 1, current + 1]);
+    if (current <= 3) { set.add(2); set.add(3); set.add(4); }
+    if (current >= total - 2) { set.add(total - 1); set.add(total - 2); set.add(total - 3); }
+    const pages = [...set].filter((n) => n >= 1 && n <= total).sort((a, b) => a - b);
+    const out = [];
+    for (let i = 0; i < pages.length; i++) {
+      if (i > 0 && pages[i] - pages[i - 1] > 1) out.push("ellipsis");
+      out.push(pages[i]);
+    }
+    return out;
+  }
+
+  function renderPagination(current, total) {
+    let host = document.getElementById("pagination");
+    if (!host) {
+      const grid = el.grid;
+      if (!grid) return;
+      host = document.createElement("nav");
+      host.id = "pagination";
+      host.className = "pagination";
+      host.setAttribute("aria-label", "Page navigation");
+      grid.parentNode.insertBefore(host, grid.nextSibling);
+    }
+
+    if (!total || total < 2) {
+      host.innerHTML = "";
+      host.hidden = true;
+      return;
+    }
+    host.hidden = false;
+
+    const items = buildPageNumbers(current, total);
+    let html = "";
+
+    html += '<button class="pg-btn pg-prev" ' + (current <= 1 ? "disabled" : "") + ' aria-label="Previous page">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="15 18 9 12 15 6"></polyline></svg>' +
+      '<span>Prev</span></button>';
+
+    items.forEach(function (it) {
+      if (it === "ellipsis") {
+        html += '<span class="pg-ellipsis" aria-hidden="true">\u2026</span>';
+      } else {
+        const active = it === current ? " is-active" : "";
+        const ariaCur = it === current ? ' aria-current="page"' : '';
+        html += '<button class="pg-btn pg-num' + active + '" data-page="' + it + '"' + ariaCur + '>' + it + '</button>';
       }
-    }, { rootMargin: "200px" });
-    obs.observe(sentinel);
+    });
+
+    html += '<button class="pg-btn pg-next" ' + (current >= total ? "disabled" : "") + ' aria-label="Next page">' +
+      '<span>Next</span>' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="9 18 15 12 9 6"></polyline></svg></button>';
+
+    host.innerHTML = html;
+
+    host.querySelectorAll("[data-page]").forEach(function (b) {
+      b.addEventListener("click", function () { goToPage(parseInt(b.getAttribute("data-page"), 10)); });
+    });
+    const prev = host.querySelector(".pg-prev");
+    const next = host.querySelector(".pg-next");
+    if (prev) prev.addEventListener("click", function () { goToPage(current - 1); });
+    if (next) next.addEventListener("click", function () { goToPage(current + 1); });
   }
+
+  function goToPage(n) {
+    const list = state.filteredCache || [];
+    const total = Math.max(1, Math.ceil(list.length / PAGE_SIZE));
+    n = Math.min(Math.max(1, n), total);
+    if (n === state.page) return;
+    state.page = n;
+    setPageInUrl(n, false);
+    renderGrid();
+    const grid = el.grid;
+    if (grid) {
+      const y = grid.getBoundingClientRect().top + window.pageYOffset - 80;
+      window.scrollTo({ top: y, behavior: "smooth" });
+    }
+  }
+
+  window.addEventListener("popstate", function () {
+    if (IS_HOME) return;
+    state.page = getPageFromUrl();
+    renderGrid();
+  });
+
+  function initInfiniteScroll() { /* no-op: paginated now */ }
 
   function createCard(meme, index) {
     const card = document.createElement("article");
@@ -1275,6 +1382,8 @@
           const hint = document.getElementById("ai-hint");
           if (hint) hint.style.display = "none";
         }
+        state.page = 1;
+        setPageInUrl(1, true);
         renderGrid();
       }, 160));
     }
@@ -1423,6 +1532,7 @@
   async function init() {
     loadFavorites();
     bindEvents();
+    state.page = getPageFromUrl();
 
     if (HAS_GRID) {
       await loadMemes();
