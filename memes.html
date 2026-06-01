@@ -39,7 +39,7 @@
     <div class="section-inner">
       <div class="library-head-content">
         <div class="section-eyebrow">The full library</div>
-        <h1 class="library-title">All <span class="library-title-num">8000+</span> memes &amp; stickers</h1>
+        <h1 class="library-title">All <span class="library-title-num">413</span> memes &amp; stickers</h1>
         <p class="section-sub">AI search matches by title and tags — results may vary since videos are matched by filename, not visual content. Use the Origin tab on any meme to add context.</p>
       </div>
     </div>
@@ -81,20 +81,34 @@
     <div id="ai-hint" style="display:none;padding:6px 16px 2px;font-size:12px;color:#c8ff00;font-weight:600;letter-spacing:.04em;"></div>
   </header>
 
-  <main class="main">
-    <div class="grid" id="grid" aria-live="polite"></div>
-    <div id="scroll-sentinel" style="height:1px;margin-top:40px;"></div>
-    <div id="load-more-indicator" style="display:none;text-align:center;padding:24px 0;color:#666;font-size:13px;font-weight:600;letter-spacing:.06em;">Loading more…</div>
+  <!-- Mobile filters button (only visible on small screens) -->
+  <div class="sb-mobile-bar">
+    <button class="sb-mobile-btn" id="sb-open" type="button" aria-label="Open filters">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="7" y1="12" x2="17" y2="12"></line><line x1="10" y1="18" x2="14" y2="18"></line></svg>
+      <span>Filters</span>
+    </button>
+  </div>
 
-    <div class="empty-state" id="empty" hidden>
-      <div class="empty-icon">✦</div>
-      <h2 id="empty-title">No memes found</h2>
-      <p id="empty-sub">Try a different search, switch categories, or upload your own.</p>
-    </div>
+  <main class="main sb-layout">
+    <!-- Sidebar (left rail on desktop, slide-out drawer on mobile) -->
+    <aside id="filter-sidebar" class="filter-sidebar" aria-label="Filters"></aside>
+    <div id="sb-backdrop" class="sb-backdrop" hidden></div>
 
-    <div class="loading-state" id="loading">
-      <div class="loading-spinner"></div>
-      <p>Loading memes...</p>
+    <div class="sb-content">
+      <div class="grid" id="grid" aria-live="polite"></div>
+      <div id="scroll-sentinel" style="height:1px;margin-top:40px;"></div>
+      <div id="load-more-indicator" style="display:none;text-align:center;padding:24px 0;color:#666;font-size:13px;font-weight:600;letter-spacing:.06em;">Loading more…</div>
+
+      <div class="empty-state" id="empty" hidden>
+        <div class="empty-icon">✦</div>
+        <h2 id="empty-title">No memes found</h2>
+        <p id="empty-sub">Try a different search, switch categories, or upload your own.</p>
+      </div>
+
+      <div class="loading-state" id="loading">
+        <div class="loading-spinner"></div>
+        <p>Loading memes...</p>
+      </div>
     </div>
   </main>
 
