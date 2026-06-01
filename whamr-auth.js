@@ -242,6 +242,169 @@
         .pg-prev span, .pg-next span { display: none; }
         .pg-prev, .pg-next { padding: 0 10px; }
       }
+
+      /* ============================================
+         Sticker Pack Builder \u2014 Phase 1
+         ============================================ */
+      .pack-count-badge {
+        display: inline-flex; align-items: center; justify-content: center;
+        min-width: 18px; height: 18px; padding: 0 5px;
+        background: #ff3366; color: #fff;
+        font-size: 10px; font-weight: 700;
+        border-radius: 100px; margin-left: 4px;
+      }
+      #btn-pack.is-active {
+        background: rgba(255, 51, 102, 0.18) !important;
+        color: #ff3366 !important;
+        border-color: #ff3366 !important;
+      }
+      .pack-modal {
+        position: fixed; inset: 0; z-index: 1000;
+        display: flex; align-items: center; justify-content: center;
+        padding: 20px;
+      }
+      .pack-backdrop {
+        position: absolute; inset: 0;
+        background: rgba(5,5,10,0.8); backdrop-filter: blur(6px);
+      }
+      .pack-content {
+        position: relative; z-index: 1;
+        width: 100%; max-width: 720px; max-height: calc(100vh - 40px);
+        background: #14141c; border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 18px; padding: 24px 24px 20px;
+        overflow-y: auto;
+        box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+        display: flex; flex-direction: column;
+      }
+      .pack-close {
+        position: absolute; top: 14px; right: 14px;
+        background: rgba(255,255,255,0.06); border: none;
+        color: #8a8a96; width: 32px; height: 32px;
+        border-radius: 50%; cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+      }
+      .pack-close:hover { background: rgba(255,255,255,0.12); color: #f5f5f7; }
+      .pack-head { margin-bottom: 18px; padding-right: 36px; }
+      .pack-title {
+        font-family: 'Poppins', sans-serif;
+        font-size: 22px; font-weight: 700; color: #f5f5f7;
+        margin: 0 0 4px; letter-spacing: -0.02em;
+      }
+      .pack-sub { font-size: 13.5px; color: #8a8a96; margin: 0; }
+      .pack-meta {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+        margin-bottom: 16px;
+      }
+      .pack-field { display: flex; flex-direction: column; gap: 5px; }
+      .pack-field-label {
+        font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+        text-transform: uppercase; color: #8a8a96;
+      }
+      .pack-field input {
+        padding: 10px 12px; background: #0a0a0f;
+        border: 1px solid rgba(255,255,255,0.12); border-radius: 8px;
+        color: #f5f5f7; font-size: 14px; font-family: inherit;
+      }
+      .pack-field input:focus {
+        outline: none; border-color: #ff3366;
+      }
+      .pack-status {
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 12px; flex-wrap: wrap;
+        padding: 10px 14px; margin-bottom: 14px;
+        background: rgba(255,51,102,0.08);
+        border: 1px solid rgba(255,51,102,0.18);
+        border-radius: 10px;
+      }
+      .pack-count-line { font-size: 14px; color: #c8c8d2; }
+      .pack-count-line strong { color: #ff3366; font-weight: 700; font-size: 15px; }
+      .pack-min { color: #8a8a96; font-size: 12.5px; margin-left: 4px; }
+      .pack-types-line { display: flex; gap: 6px; }
+      .pack-pill {
+        font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em;
+        text-transform: uppercase;
+        background: rgba(255,255,255,0.06); color: #c8c8d2;
+        padding: 3px 9px; border-radius: 100px;
+      }
+      .pack-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+      .pack-card {
+        position: relative;
+        background: #0a0a0f; border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 10px; overflow: hidden;
+        padding: 8px;
+      }
+      .pack-card-media {
+        width: 100%; aspect-ratio: 1; object-fit: cover;
+        border-radius: 6px; background: #14141c;
+        display: block;
+      }
+      .pack-card-title {
+        font-size: 11.5px; color: #c8c8d2;
+        margin-top: 6px;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      .pack-card-tag {
+        position: absolute; top: 11px; left: 11px;
+        font-size: 9px; font-weight: 700; letter-spacing: 0.06em;
+        background: rgba(0,0,0,0.6); color: #fff;
+        padding: 2px 6px; border-radius: 4px;
+      }
+      .pack-card-tag-animated { background: #ff3366; }
+      .pack-card-remove {
+        position: absolute; top: 6px; right: 6px;
+        width: 22px; height: 22px; border-radius: 50%;
+        background: rgba(0,0,0,0.7); color: #fff;
+        border: none; cursor: pointer;
+        font-size: 14px; line-height: 1;
+        display: flex; align-items: center; justify-content: center;
+      }
+      .pack-card-remove:hover { background: #ff3366; }
+      .pack-card-missing .pack-card-media {
+        display: flex; align-items: center; justify-content: center;
+        color: #6a6a78; font-size: 24px;
+      }
+      .pack-empty {
+        text-align: center; padding: 28px 16px;
+        color: #8a8a96; font-size: 14px;
+      }
+      .pack-empty-icon { font-size: 36px; margin-bottom: 8px; }
+      .pack-empty p { margin: 0; line-height: 1.5; }
+      .pack-empty strong { color: #f5f5f7; }
+      .pack-foot {
+        display: flex; gap: 10px; justify-content: flex-end;
+        padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);
+        margin-top: auto;
+      }
+      .pack-btn {
+        padding: 10px 18px; border: none; border-radius: 100px;
+        font-family: inherit; font-size: 13.5px; font-weight: 600;
+        cursor: pointer;
+      }
+      .pack-btn-ghost {
+        background: rgba(255,255,255,0.06); color: #c8c8d2;
+      }
+      .pack-btn-ghost:hover { background: rgba(255,255,255,0.1); color: #f5f5f7; }
+      .pack-btn-primary {
+        background: #ff3366; color: #fff;
+      }
+      .pack-btn-primary:disabled {
+        opacity: 0.5; cursor: not-allowed;
+      }
+      .pack-soon {
+        font-size: 11px; font-weight: 500;
+        opacity: 0.85; margin-left: 4px;
+      }
+      @media (max-width: 640px) {
+        .pack-content { padding: 20px 16px 18px; max-height: calc(100vh - 24px); }
+        .pack-meta { grid-template-columns: 1fr; gap: 10px; }
+        .pack-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+        .pack-title { font-size: 19px; }
+      }
     `;
     document.head.appendChild(s);
   }
