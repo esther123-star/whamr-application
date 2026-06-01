@@ -323,6 +323,278 @@
   }
 
   /* ============================================
+     Sticker Pack Builder — Phase 1
+     - Maintains a "pack-in-progress" list in localStorage
+     - "Add to pack" toggles items in the current pack
+     - The pack-builder modal lets users name the pack,
+       remove items, and (in Phase 2) export it
+     ============================================ */
+  const PACK_KEY = "whamr-pack-v1";
+  const PACK_MAX = 30;
+  const PACK_MIN = 3;
+  // Pack state lives on `state.pack` so the rest of the IIFE can see it.
+  state.pack = loadPack();
+
+  function loadPack() {
+    try {
+      const raw = localStorage.getItem(PACK_KEY);
+      if (!raw) return { name: "", publisher: "", ids: [] };
+      const p = JSON.parse(raw);
+      if (!p || typeof p !== "object") return { name: "", publisher: "", ids: [] };
+      return {
+        name: typeof p.name === "string" ? p.name : "",
+        publisher: typeof p.publisher === "string" ? p.publisher : "",
+        ids: Array.isArray(p.ids) ? p.ids.slice(0, PACK_MAX) : [],
+      };
+    } catch (e) {
+      return { name: "", publisher: "", ids: [] };
+    }
+  }
+
+  function savePack() {
+    try { localStorage.setItem(PACK_KEY, JSON.stringify(state.pack)); } catch (e) {}
+  }
+
+  function inPack(id) { return state.pack.ids.indexOf(id) !== -1; }
+
+  function addToPack(id) {
+    if (inPack(id)) return { ok: false, reason: "already in pack" };
+    if (state.pack.ids.length >= PACK_MAX) return { ok: false, reason: "full" };
+    state.pack.ids.push(id);
+    savePack();
+    updatePackBadge();
+    return { ok: true };
+  }
+
+  function removeFromPack(id) {
+    const i = state.pack.ids.indexOf(id);
+    if (i === -1) return false;
+    state.pack.ids.splice(i, 1);
+    savePack();
+    updatePackBadge();
+    return true;
+  }
+
+  function clearPack() {
+    state.pack.ids = [];
+    savePack();
+    updatePackBadge();
+  }
+
+  function updatePackBadge() {
+    const b = document.getElementById("pack-count-badge");
+    if (!b) return;
+    const n = state.pack.ids.length;
+    if (n > 0) {
+      b.textContent = String(n);
+      b.hidden = false;
+    } else {
+      b.hidden = true;
+    }
+  }
+
+  // Helper: lookup an item by id from any source (json memes or uploads)
+  function findMemeById(id) {
+    if (!state.memes || !id) return null;
+    for (let i = 0; i < state.memes.length; i++) {
+      if (state.memes[i].id === id) return state.memes[i];
+    }
+    return null;
+  }
+
+  // Classify whether an item would be a static or animated sticker
+  // (Phase 2 will do real encoding; Phase 1 just tags it for the data model.)
+  function isAnimatedPackItem(m) {
+    if (!m) return false;
+    const t = (m.type || "").toLowerCase();
+    return t === "mp4" || t === "webm" || t === "mov" || t === "gif";
+  }
+
+  /* ---- Modal button: "Add to pack" / "In pack" toggle ---- */
+  function handlePackButton() {
+    const meme = state.currentModal;
+    if (!meme) return;
+    if (inPack(meme.id)) {
+      removeFromPack(meme.id);
+      showToast("Removed from pack");
+    } else {
+      const res = addToPack(meme.id);
+      if (!res.ok && res.reason === "full") {
+        showToast("Pack is full (max " + PACK_MAX + ")");
+        return;
+      }
+      showToast("Added to pack \u2014 " + state.pack.ids.length + "/" + PACK_MAX);
+    }
+    updatePackButton(meme);
+  }
+
+  function updatePackButton(meme) {
+    const btn = document.getElementById("btn-pack");
+    const label = document.getElementById("pack-label");
+    if (!btn || !label) return;
+    if (meme && inPack(meme.id)) {
+      btn.classList.add("is-active");
+      label.textContent = "In pack";
+    } else {
+      btn.classList.remove("is-active");
+      label.textContent = "Add to pack";
+    }
+  }
+
+  /* ---- Pack builder modal ---- */
+  function openPackBuilder() {
+    const m = document.getElementById("pack-modal");
+    if (!m) return;
+    m.hidden = false;
+    document.body.style.overflow = "hidden";
+    renderPackBuilder();
+    // Restore name/publisher
+    const nameInput = document.getElementById("pack-name");
+    const pubInput = document.getElementById("pack-publisher");
+    if (nameInput) nameInput.value = state.pack.name || "";
+    if (pubInput) pubInput.value = state.pack.publisher || "";
+  }
+
+  function closePackBuilder() {
+    const m = document.getElementById("pack-modal");
+    if (!m) return;
+    m.hidden = true;
+    document.body.style.overflow = "";
+  }
+
+  function renderPackBuilder() {
+    const grid = document.getElementById("pack-grid");
+    const empty = document.getElementById("pack-empty");
+    const count = document.getElementById("pack-count");
+    const minNote = document.getElementById("pack-min-note");
+    const exportBtn = document.getElementById("pack-export");
+    const typesLine = document.getElementById("pack-types-line");
+    if (!grid) return;
+
+    const ids = state.pack.ids;
+    if (count) count.textContent = String(ids.length);
+
+    if (ids.length === 0) {
+      grid.innerHTML = "";
+      if (empty) empty.hidden = false;
+      if (minNote) minNote.textContent = "(need at least " + PACK_MIN + ")";
+      if (typesLine) typesLine.innerHTML = "";
+      if (exportBtn) exportBtn.disabled = true;
+      return;
+    }
+    if (empty) empty.hidden = true;
+
+    // Build cards
+    let staticN = 0, animatedN = 0;
+    grid.innerHTML = "";
+    ids.forEach(function (id) {
+      const m = findMemeById(id);
+      if (!m) {
+        // Item missing from catalog (was removed). Show a placeholder.
+        const card = document.createElement("div");
+        card.className = "pack-card pack-card-missing";
+        card.innerHTML = '<div class="pack-card-media">?</div>' +
+          '<div class="pack-card-title">Missing item</div>' +
+          '<button class="pack-card-remove" data-id="' + id + '">Remove</button>';
+        grid.appendChild(card);
+        return;
+      }
+      const animated = isAnimatedPackItem(m);
+      if (animated) animatedN++; else staticN++;
+
+      const card = document.createElement("div");
+      card.className = "pack-card";
+      // Media preview: use poster image for videos? Phase 1 just shows the src.
+      let mediaHtml = "";
+      if (animated) {
+        mediaHtml = '<video class="pack-card-media" src="' + m.src + '" muted loop playsinline preload="metadata"></video>' +
+          '<span class="pack-card-tag pack-card-tag-animated">ANIM</span>';
+      } else {
+        mediaHtml = '<img class="pack-card-media" src="' + m.src + '" alt="" loading="lazy"/>' +
+          '<span class="pack-card-tag">STKR</span>';
+      }
+      card.innerHTML = mediaHtml +
+        '<div class="pack-card-title">' + escapeHtmlPack(m.title || "(untitled)") + '</div>' +
+        '<button class="pack-card-remove" data-id="' + m.id + '" aria-label="Remove from pack">\u00d7</button>';
+      grid.appendChild(card);
+    });
+
+    // Wire up remove buttons
+    grid.querySelectorAll(".pack-card-remove").forEach(function (b) {
+      b.addEventListener("click", function () {
+        removeFromPack(b.getAttribute("data-id"));
+        renderPackBuilder();
+      });
+    });
+
+    // Auto-play visible videos a little (preview)
+    grid.querySelectorAll("video.pack-card-media").forEach(function (v) {
+      const p = v.play(); if (p && p.catch) p.catch(function(){});
+    });
+
+    // Status line
+    if (typesLine) {
+      typesLine.innerHTML =
+        '<span class="pack-pill">' + staticN + ' static</span>' +
+        '<span class="pack-pill">' + animatedN + ' animated</span>';
+    }
+
+    // Min/max state
+    if (minNote) {
+      if (ids.length < PACK_MIN) {
+        minNote.textContent = "(need at least " + PACK_MIN + " \u2014 " + (PACK_MIN - ids.length) + " more)";
+        minNote.style.color = "#ffe34d";
+      } else {
+        minNote.textContent = "(ready to export once Phase 2 ships)";
+        minNote.style.color = "";
+      }
+    }
+    if (exportBtn) {
+      // Phase 1: always disabled (the encoder isn't built yet).
+      // We tell the user clearly.
+      exportBtn.disabled = true;
+    }
+  }
+
+  function escapeHtmlPack(s) {
+    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  // Wire up the pack-builder modal events (called from bindEvents)
+  function bindPackBuilder() {
+    const openBtn = document.getElementById("open-pack-builder");
+    const closeBtn = document.getElementById("pack-close");
+    const backdrop = document.getElementById("pack-backdrop");
+    const clearBtn = document.getElementById("pack-clear");
+    const nameInput = document.getElementById("pack-name");
+    const pubInput = document.getElementById("pack-publisher");
+    const btnPack = document.getElementById("btn-pack");
+
+    if (openBtn) openBtn.addEventListener("click", openPackBuilder);
+    if (closeBtn) closeBtn.addEventListener("click", closePackBuilder);
+    if (backdrop) backdrop.addEventListener("click", closePackBuilder);
+    if (clearBtn) clearBtn.addEventListener("click", function () {
+      if (state.pack.ids.length === 0) return;
+      if (confirm("Clear all " + state.pack.ids.length + " stickers from this pack?")) {
+        clearPack();
+        renderPackBuilder();
+      }
+    });
+    if (nameInput) nameInput.addEventListener("input", function (e) {
+      state.pack.name = (e.target.value || "").trim();
+      savePack();
+    });
+    if (pubInput) pubInput.addEventListener("input", function (e) {
+      state.pack.publisher = (e.target.value || "").trim();
+      savePack();
+    });
+    if (btnPack) btnPack.addEventListener("click", handlePackButton);
+
+    // Initial badge state
+    updatePackBadge();
+  }
+
+    /* ============================================
      IndexedDB for uploads
      ============================================ */
   const DB_NAME = "whamr-db";
@@ -1108,6 +1380,7 @@
     }
 
     updateFavoriteButton(meme);
+      if (typeof updatePackButton === "function") updatePackButton(meme);
     // Render community tabs
     if (el.tabShare) openCommunityTab("share");
     renderDiscussTab(meme);
@@ -1375,6 +1648,7 @@
      Bind events
      ============================================ */
   function bindEvents() {
+    if (typeof bindPackBuilder === "function") bindPackBuilder();
     if (el.search) {
       el.search.addEventListener("input", debounce((e) => {
         state.searchQuery = e.target.value;
