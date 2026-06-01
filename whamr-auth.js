@@ -246,10 +246,12 @@
       /* ============================================
          Memes-page sidebar (Option C: real filters only)
          ============================================ */
-      /* Two-column layout: sidebar left, grid right */
-      .sb-layout {
-        display: grid;
-        grid-template-columns: 248px minmax(0, 1fr);
+      /* Two-column layout: sidebar left, grid right.
+         Higher specificity + !important on the grid rules so this wins over
+         the existing .main class in style.css (which loads after this). */
+      .main.sb-layout {
+        display: grid !important;
+        grid-template-columns: 248px minmax(0, 1fr) !important;
         gap: 28px;
         align-items: start;
       }
@@ -335,7 +337,7 @@
         background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
       }
       @media (max-width: 900px) {
-        .sb-layout { grid-template-columns: 1fr; gap: 0; }
+        .main.sb-layout { grid-template-columns: 1fr !important; gap: 0; }
         .sb-mobile-bar {
           display: flex; justify-content: flex-start;
           max-width: 1400px; margin: 0 auto;
@@ -350,15 +352,16 @@
         }
         .sb-mobile-btn:hover { border-color: #ff3366; }
         .filter-sidebar {
-          position: fixed; top: 0; left: 0; bottom: 0; z-index: 999;
+          position: fixed !important;
+          top: 0; left: 0; bottom: 0; z-index: 999;
           width: 86%; max-width: 320px; max-height: 100vh;
           border-radius: 0 16px 16px 0;
           border: none; border-right: 1px solid rgba(255,255,255,0.1);
-          transform: translateX(-100%);
+          transform: translateX(-100%) !important;
           transition: transform 0.25s ease-out;
           padding-top: 28px;
         }
-        .filter-sidebar.is-open { transform: translateX(0); }
+        .filter-sidebar.is-open { transform: translateX(0) !important; }
         .sb-backdrop:not([hidden]) { display: block; }
       }
     `;
