@@ -204,6 +204,44 @@
       .discuss-you { font-size: 10px; font-weight: 700; color: #ff3366; background: rgba(255,51,102,0.12); padding: 1px 7px; border-radius: 100px; margin-left: 6px; }
       .discuss-reported { font-size: 10px; font-weight: 700; color: #ffe34d; background: rgba(255,227,77,0.12); padding: 1px 7px; border-radius: 100px; margin-left: 6px; }
       .discuss-login-prompt a { color: #ff3366; text-decoration: none; font-weight: 600; }
+
+      /* ============================================
+         Pagination control for the memes page
+         ============================================ */
+      .pagination {
+        display: flex; flex-wrap: wrap; justify-content: center;
+        align-items: center; gap: 6px;
+        padding: 40px 16px 60px;
+        max-width: 760px; margin: 24px auto 0;
+      }
+      .pg-btn {
+        display: inline-flex; align-items: center; gap: 6px;
+        min-width: 38px; height: 38px; padding: 0 12px;
+        background: #14141c; border: 1px solid rgba(255,255,255,0.1);
+        color: #f5f5f7; font-family: inherit; font-size: 13px; font-weight: 600;
+        border-radius: 10px; cursor: pointer;
+        transition: background 0.12s, border-color 0.12s, color 0.12s, transform 0.1s;
+      }
+      .pg-btn:hover:not(:disabled):not(.is-active) {
+        background: #1c1c26; border-color: rgba(255,255,255,0.2);
+      }
+      .pg-btn:active:not(:disabled) { transform: scale(0.96); }
+      .pg-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+      .pg-btn.is-active {
+        background: #ff3366; border-color: #ff3366; color: #fff;
+        cursor: default;
+      }
+      .pg-num { justify-content: center; padding: 0 10px; }
+      .pg-prev, .pg-next { padding: 0 14px; }
+      .pg-ellipsis {
+        color: #6a6a78; padding: 0 4px; font-weight: 600; user-select: none;
+      }
+      @media (max-width: 640px) {
+        .pagination { gap: 4px; padding: 28px 12px 48px; }
+        .pg-btn { min-width: 34px; height: 34px; font-size: 12.5px; padding: 0 9px; }
+        .pg-prev span, .pg-next span { display: none; }
+        .pg-prev, .pg-next { padding: 0 10px; }
+      }
     `;
     document.head.appendChild(s);
   }
