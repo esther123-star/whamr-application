@@ -132,8 +132,6 @@
     favorites: new Set(),
     activeCategory: "all",
     searchQuery: "",
-    typeFilter: "all",        // "all" | "videos" | "stickers"
-    sortOrder: "default",     // "default" | "az" | "za"
     currentModal: null,
     featuredIds: null, // set on homepage from data-featured-ids
     page: 1,          // infinite scroll page
@@ -462,7 +460,6 @@
         setPageInUrl(1, true);
         renderFilters();
         renderGrid();
-        if (typeof renderSidebar === "function") renderSidebar();
       });
       el.filters.appendChild(btn);
     });
@@ -471,16 +468,6 @@
   /* ============================================
      Filter + AI search
      ============================================ */
-  // Type helpers (mp4/webm/mov/gif are "video-like"; webp/png/jpg/tgs are "sticker-like")
-  function isStickerLike(m) {
-    const t = (m.type || "").toLowerCase();
-    return t === "webp" || t === "png" || t === "jpg" || t === "jpeg" || t === "tgs" || (m.category || "").toLowerCase() === "stickers";
-  }
-  function isVideoLike(m) {
-    const t = (m.type || "").toLowerCase();
-    return t === "mp4" || t === "webm" || t === "mov" || t === "gif";
-  }
-
   function getFilteredMemes() {
     const q = state.searchQuery.trim();
     let list = state.memes;
@@ -492,22 +479,7 @@
       list = list.filter(m => (m.category || "").toLowerCase() === state.activeCategory);
     }
 
-    // Type filter (works in addition to category)
-    if (state.typeFilter === "videos") {
-      list = list.filter(isVideoLike);
-    } else if (state.typeFilter === "stickers") {
-      list = list.filter(isStickerLike);
-    }
-
-    if (!q) {
-      // No search: apply sort if set
-      if (state.sortOrder === "az") {
-        list = [...list].sort((a, b) => (a.title || "").localeCompare(b.title || ""));
-      } else if (state.sortOrder === "za") {
-        list = [...list].sort((a, b) => (b.title || "").localeCompare(a.title || ""));
-      }
-      return list;
-    }
+    if (!q) return list;
 
     // AI search: expand synonyms then score each meme
     const terms = expandQuery(q);
@@ -526,15 +498,12 @@
       }
     }
 
-    let out = matched.map(({ m }) => m);
-    if (state.sortOrder === "az") {
-      out = [...out].sort((a, b) => (a.title || "").localeCompare(b.title || ""));
-    } else if (state.sortOrder === "za") {
-      out = [...out].sort((a, b) => (b.title || "").localeCompare(a.title || ""));
-    }
-    return out;
+    return matched.map(({ m }) => m);
   }
 
+  /* ============================================
+     Render grid — with infinite scroll
+     ============================================ */
   /* ============================================
      Paginated grid: one page of PAGE_SIZE at a time.
      Page is read from ?page= in the URL on first load.
@@ -707,156 +676,7 @@
     renderGrid();
   });
 
-  /* ============================================
-     Sidebar filters (left rail on memes page)
-     ============================================ */
-  // Count items matching the current category & search but ignoring type filter,
-  // so the "Videos / Stickers" counts stay honest within the current view.
-  function _countsForTypeFilter() {
-    // Build a list with only category + search applied (mirror of getFilteredMemes
-    // but skipping the type filter). Then split by isVideoLike / isStickerLike.
-    const q = state.searchQuery.trim();
-    let list = state.memes;
-    if (state.activeCategory === "favorites") {
-      list = list.filter(m => isFavorited(m.id));
-    } else if (state.activeCategory !== "all") {
-      list = list.filter(m => (m.category || "").toLowerCase() === state.activeCategory);
-    }
-    if (q) {
-      const terms = expandQuery(q);
-      list = list.map(m => ({ m, s: aiScore(m, terms) })).filter(({s}) => s >= 0.3).map(x => x.m);
-    }
-    let videos = 0, stickers = 0;
-    list.forEach(m => {
-      if (isVideoLike(m)) videos++;
-      if (isStickerLike(m)) stickers++;
-    });
-    return { total: list.length, videos, stickers };
-  }
-
-  function _countsForCategory(cat) {
-    if (cat === "all") return state.memes.length;
-    if (cat === "favorites") return state.memes.filter(m => isFavorited(m.id)).length;
-    return state.memes.filter(m => (m.category || "").toLowerCase() === cat).length;
-  }
-
-  function renderSidebar() {
-    const sb = document.getElementById("filter-sidebar");
-    if (!sb) return; // sidebar not present on this page
-
-    const counts = _countsForTypeFilter();
-
-    // Category list (build from memes data; same order as renderFilters)
-    const cats = new Set(state.memes.map(m => (m.category || "").toLowerCase()).filter(Boolean));
-    const orderedCats = ["all", "favorites", ...[...cats].sort()];
-
-    // Pretty category labels with emojis
-    const CAT_LABELS = {
-      all: "All items", favorites: "★ Favourites",
-      reactions: "😱 Reactions", naija: "🇳🇬 Naija", dance: "💃 Dance",
-      laughing: "😂 Laughing", awkward: "😬 Awkward", sports: "⚽ Sports",
-      sad: "😭 Sad", love: "❤️ Love", birthday: "🎂 Birthday",
-      random: "✨ Random", stickers: "🎴 Stickers"
-    };
-
-    const catHtml = orderedCats.map(cat => {
-      const isActive = cat === state.activeCategory;
-      const label = CAT_LABELS[cat] || cat.charAt(0).toUpperCase() + cat.slice(1);
-      const count = _countsForCategory(cat);
-      return '<button class="sb-cat' + (isActive ? " is-active" : "") + '" data-cat="' + cat + '">' +
-        '<span class="sb-cat-name">' + label + '</span>' +
-        '<span class="sb-cat-count">' + count.toLocaleString() + '</span>' +
-        '</button>';
-    }).join("");
-
-    sb.innerHTML =
-      '<div class="sb-head">' +
-        '<span class="sb-title">Filters</span>' +
-        '<button class="sb-clear" id="sb-clear">Clear all</button>' +
-      '</div>' +
-
-      '<div class="sb-group">' +
-        '<div class="sb-group-title">Type</div>' +
-        '<label class="sb-check"><input type="radio" name="sb-type" value="all"' + (state.typeFilter === "all" ? " checked" : "") + '> <span>All <em>' + counts.total.toLocaleString() + '</em></span></label>' +
-        '<label class="sb-check"><input type="radio" name="sb-type" value="videos"' + (state.typeFilter === "videos" ? " checked" : "") + '> <span>Videos <em>' + counts.videos.toLocaleString() + '</em></span></label>' +
-        '<label class="sb-check"><input type="radio" name="sb-type" value="stickers"' + (state.typeFilter === "stickers" ? " checked" : "") + '> <span>Stickers <em>' + counts.stickers.toLocaleString() + '</em></span></label>' +
-      '</div>' +
-
-      '<div class="sb-group">' +
-        '<div class="sb-group-title">Category</div>' +
-        '<div class="sb-cat-list">' + catHtml + '</div>' +
-      '</div>' +
-
-      '<div class="sb-group">' +
-        '<div class="sb-group-title">Sort</div>' +
-        '<label class="sb-check"><input type="radio" name="sb-sort" value="default"' + (state.sortOrder === "default" ? " checked" : "") + '> <span>Default</span></label>' +
-        '<label class="sb-check"><input type="radio" name="sb-sort" value="az"' + (state.sortOrder === "az" ? " checked" : "") + '> <span>A \u2192 Z</span></label>' +
-        '<label class="sb-check"><input type="radio" name="sb-sort" value="za"' + (state.sortOrder === "za" ? " checked" : "") + '> <span>Z \u2192 A</span></label>' +
-      '</div>';
-
-    // Wire up controls
-    sb.querySelectorAll('input[name="sb-type"]').forEach(function (r) {
-      r.addEventListener("change", function () {
-        state.typeFilter = r.value;
-        state.page = 1;
-        setPageInUrl(1, true);
-        renderGrid();
-        renderSidebar(); // refresh counts
-        if (typeof renderFilters === "function") renderFilters();
-      });
-    });
-    sb.querySelectorAll(".sb-cat").forEach(function (b) {
-      b.addEventListener("click", function () {
-        state.activeCategory = b.getAttribute("data-cat");
-        state.page = 1;
-        setPageInUrl(1, true);
-        renderGrid();
-        renderSidebar();
-        if (typeof renderFilters === "function") renderFilters();
-      });
-    });
-    sb.querySelectorAll('input[name="sb-sort"]').forEach(function (r) {
-      r.addEventListener("change", function () {
-        state.sortOrder = r.value;
-        state.page = 1;
-        setPageInUrl(1, true);
-        renderGrid();
-      });
-    });
-    const clearBtn = document.getElementById("sb-clear");
-    if (clearBtn) {
-      clearBtn.addEventListener("click", function () {
-        state.activeCategory = "all";
-        state.typeFilter = "all";
-        state.sortOrder = "default";
-        state.searchQuery = "";
-        if (el.search) el.search.value = "";
-        state.page = 1;
-        setPageInUrl(1, true);
-        renderGrid();
-        renderSidebar();
-        if (typeof renderFilters === "function") renderFilters();
-      });
-    }
-  }
-
-  // Mobile drawer toggle (button is added in HTML)
-  function bindSidebarDrawer() {
-    const open = document.getElementById("sb-open");
-    const sb = document.getElementById("filter-sidebar");
-    const backdrop = document.getElementById("sb-backdrop");
-    if (!open || !sb) return;
-    open.addEventListener("click", function () {
-      sb.classList.add("is-open");
-      if (backdrop) backdrop.hidden = false;
-    });
-    if (backdrop) backdrop.addEventListener("click", function () {
-      sb.classList.remove("is-open");
-      backdrop.hidden = true;
-    });
-  }
-
-    function initInfiniteScroll() { /* no-op: paginated now */ }
+  function initInfiniteScroll() { /* no-op: paginated now */ }
 
   function createCard(meme, index) {
     const card = document.createElement("article");
@@ -1364,7 +1184,6 @@
     } else {
       renderGrid();
     }
-    if (typeof renderSidebar === "function") renderSidebar();
     showToast(nowFav ? "Saved to favorites" : "Removed from favorites");
   }
 
@@ -1566,7 +1385,6 @@
         state.page = 1;
         setPageInUrl(1, true);
         renderGrid();
-        if (typeof renderSidebar === "function") renderSidebar();
       }, 160));
     }
     if (el.upload) el.upload.addEventListener("change", handleUpload);
@@ -1718,11 +1536,7 @@
 
     if (HAS_GRID) {
       await loadMemes();
-      if (IS_LIBRARY) {
-        renderFilters();
-        renderSidebar();
-        bindSidebarDrawer();
-      }
+      if (IS_LIBRARY) renderFilters();
       renderGrid();
       initInfiniteScroll();
       checkDeepLink();
