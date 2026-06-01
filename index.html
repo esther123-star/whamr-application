@@ -12,97 +12,425 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="style.css" />
+
   <style>
-    /* Auth area - desktop default */
-    #auth-area {
-      display: inline-flex;
-      align-items: center;
-      gap: 14px;
-      margin-left: 10px;
-    }
-    .auth-greeting {
-      font-size: 14px;
-      color: inherit;
-      white-space: nowrap;
-    }
-    .auth-btn {
-      background: none;
-      border: none;
-      margin: 0;
-      cursor: pointer;
-      font-family: inherit;
-      color: inherit;
+    /* ============================================
+       REDESIGN STYLES — scoped to .v3-* classes so
+       nothing in style.css fights this. Existing
+       featured grid / modal / share-sheet / toast
+       styles in style.css still apply unchanged.
+       ============================================ */
+    :root {
+      --v3-bg:        #0a0a0f;
+      --v3-bg-soft:   #11111a;
+      --v3-bg-card:   #14141c;
+      --v3-line:      rgba(255,255,255,0.08);
+      --v3-line-mid:  rgba(255,255,255,0.14);
+      --v3-text:      #f5f5f7;
+      --v3-text-mid:  #b8b8c2;
+      --v3-text-mute: #6a6a78;
+      --v3-pink:      #ff3366;
+      --v3-pink-soft: rgba(255,51,102,0.12);
+      --v3-yellow:    #ffe34d;
+      --v3-yellow-soft: rgba(255,227,77,0.12);
     }
 
-    /* Sign In - plain text link, no hover */
-    button.auth-btn.auth-sign-in {
-      padding: 8px 4px;
-      font-size: 14px;
+    body { background: var(--v3-bg); color: var(--v3-text); }
+
+    /* Announce bar */
+    .v3-announce {
+      background: linear-gradient(90deg, #1a0a14 0%, #2a0e1e 50%, #1a0a14 100%);
+      border-bottom: 1px solid var(--v3-line);
+      color: var(--v3-text-mid);
+      font-size: 12.5px;
+      letter-spacing: 0.02em;
+      padding: 9px 20px;
+      text-align: center;
       font-weight: 500;
-      transition: none !important;
     }
-    button.auth-btn.auth-sign-in:hover,
-    button.auth-btn.auth-sign-in:focus,
-    button.auth-btn.auth-sign-in:active {
-      opacity: 1 !important;
-      color: inherit !important;
-      background: none !important;
-      transform: none !important;
-      filter: none !important;
-      text-decoration: none !important;
+    .v3-announce strong { color: var(--v3-yellow); font-weight: 600; }
+    .v3-announce .dot { color: var(--v3-pink); margin: 0 8px; }
+
+    /* Nav */
+    .v3-nav {
+      max-width: 1280px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 22px 32px; gap: 24px;
+    }
+    .v3-nav .logo { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -0.04em; color: var(--v3-text); text-decoration: none; }
+    .v3-nav .logo .logo-dot { color: var(--v3-pink); }
+    .v3-nav-links { display: flex; align-items: center; gap: 8px; }
+    .v3-nav-link {
+      font-size: 13.5px; font-weight: 500; color: var(--v3-text-mid);
+      padding: 8px 14px; border-radius: 100px; text-decoration: none;
+      transition: color 0.15s, background 0.15s;
+    }
+    .v3-nav-link:hover { color: var(--v3-text); background: rgba(255,255,255,0.04); }
+    .v3-nav-cta {
+      font-size: 13.5px; font-weight: 600; color: #fff;
+      padding: 10px 20px; border-radius: 100px;
+      background: var(--v3-pink); text-decoration: none;
+      margin-left: 4px;
     }
 
-    /* Sign Up - matches Browse memes pink CTA, with padding, NO hover */
-    button.auth-btn.auth-sign-up {
-      padding: 12px 24px;
-      font-size: 14px;
-      font-weight: 600;
-      border-radius: 999px;
-      cursor: pointer;
-      transition: none !important;
+    /* ===== HERO (asymmetric: content left, trending right) ===== */
+    .v3-hero-wrap {
+      max-width: 1280px; margin: 0 auto;
+      padding: 40px 32px 80px;
+      position: relative;
     }
-    button.auth-btn.auth-sign-up,
-    button.auth-btn.auth-sign-up:hover,
-    button.auth-btn.auth-sign-up:focus,
-    button.auth-btn.auth-sign-up:active {
-      transform: none !important;
-      filter: none !important;
-      opacity: 1 !important;
-      box-shadow: none !important;
+    /* gradient blob behind hero for depth */
+    .v3-hero-wrap::before {
+      content: ""; position: absolute; top: -120px; left: 40%;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle at center, rgba(255,51,102,0.16), transparent 60%);
+      pointer-events: none; z-index: 0;
+    }
+    .v3-hero {
+      display: grid; grid-template-columns: 1.4fr 1fr; gap: 56px;
+      align-items: center; position: relative; z-index: 1;
     }
 
-    /* MOBILE: hide secondary nav links, keep auth buttons */
-    @media (max-width: 768px) {
-      .hero-nav-links {
-        display: flex !important;
-        align-items: center !important;
-        gap: 8px !important;
-      }
-      .hero-nav-links > .hero-nav-link,
-      .hero-nav-links > a.hero-nav-cta {
-        display: none !important;
-      }
-      #auth-area {
-        display: inline-flex !important;
-        gap: 10px !important;
-        margin-left: 0 !important;
-      }
-      button.auth-btn.auth-sign-in {
-        padding: 6px 4px !important;
-        font-size: 13px !important;
-      }
-      button.auth-btn.auth-sign-up {
-        padding: 9px 18px !important;
-        font-size: 13px !important;
-      }
-      .auth-greeting {
-        font-size: 13px !important;
-      }
+    .v3-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'Space Mono', monospace;
+      font-size: 11.5px; font-weight: 700; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--v3-yellow);
+      background: var(--v3-yellow-soft);
+      padding: 7px 14px; border-radius: 100px;
+      border: 1px solid rgba(255,227,77,0.22);
+    }
+    .v3-eyebrow .pulse {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--v3-yellow); position: relative;
+    }
+    .v3-eyebrow .pulse::after {
+      content: ""; position: absolute; inset: -4px; border-radius: 50%;
+      background: var(--v3-yellow); opacity: 0.4;
+      animation: v3-pulse 1.8s infinite ease-out;
+    }
+    @keyframes v3-pulse {
+      0% { transform: scale(0.7); opacity: 0.6; }
+      80%, 100% { transform: scale(1.8); opacity: 0; }
+    }
+
+    .v3-h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: clamp(44px, 6vw, 76px);
+      font-weight: 900; letter-spacing: -0.045em; line-height: 0.98;
+      margin: 24px 0 22px; color: var(--v3-text);
+    }
+    .v3-h1 .accent { color: var(--v3-pink); }
+    .v3-h1 .underline {
+      position: relative; display: inline-block;
+    }
+    .v3-h1 .underline::after {
+      content: ""; position: absolute; left: -2px; right: -2px; bottom: 4px;
+      height: 14px; background: var(--v3-yellow); opacity: 0.35; z-index: -1;
+      transform: skew(-6deg);
+    }
+
+    .v3-sub {
+      font-size: 17px; line-height: 1.6; color: var(--v3-text-mid);
+      max-width: 540px; margin-bottom: 30px;
+    }
+
+    .v3-cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 36px; }
+    .v3-btn {
+      display: inline-flex; align-items: center; gap: 9px;
+      padding: 14px 22px; border-radius: 100px;
+      font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 14.5px;
+      text-decoration: none; cursor: pointer; border: none;
+      transition: transform 0.15s, box-shadow 0.2s;
+    }
+    .v3-btn-primary {
+      background: var(--v3-pink); color: #fff;
+      box-shadow: 0 10px 30px -10px rgba(255,51,102,0.6);
+    }
+    .v3-btn-primary:hover { transform: translateY(-1px); }
+    .v3-btn-ghost {
+      background: transparent; color: var(--v3-text);
+      border: 1px solid var(--v3-line-mid);
+    }
+    .v3-btn-ghost:hover { background: rgba(255,255,255,0.04); }
+
+    .v3-hero-stats {
+      display: flex; gap: 28px; align-items: center;
+      padding-top: 28px; border-top: 1px solid var(--v3-line);
+    }
+    .v3-hstat-num {
+      font-family: 'Poppins', sans-serif; font-weight: 800;
+      font-size: 28px; color: var(--v3-text); letter-spacing: -0.02em;
+    }
+    .v3-hstat-num .accent { color: var(--v3-pink); }
+    .v3-hstat-label {
+      font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--v3-text-mute); font-weight: 500; margin-top: 2px;
+    }
+    .v3-hstat-sep { width: 1px; height: 32px; background: var(--v3-line); }
+
+    /* Trending card on right of hero */
+    .v3-trend-card {
+      background: linear-gradient(180deg, #181822 0%, #11111a 100%);
+      border: 1px solid var(--v3-line-mid);
+      border-radius: 18px; padding: 22px;
+      box-shadow: 0 30px 60px -25px rgba(0,0,0,0.6);
+      position: relative; overflow: hidden;
+    }
+    .v3-trend-card::before {
+      content: ""; position: absolute; top: 0; right: 0; width: 240px; height: 240px;
+      background: radial-gradient(circle, rgba(255,227,77,0.08), transparent 70%);
+      pointer-events: none;
+    }
+    .v3-trend-head {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px; padding-bottom: 14px;
+      border-bottom: 1px solid var(--v3-line); position: relative;
+    }
+    .v3-trend-title {
+      font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 14px;
+      color: var(--v3-text); letter-spacing: -0.01em;
+    }
+    .v3-trend-title .fire { color: var(--v3-yellow); margin-right: 6px; }
+    .v3-trend-link {
+      font-size: 11.5px; font-weight: 600; color: var(--v3-pink);
+      text-decoration: none; letter-spacing: 0.02em;
+    }
+    .v3-trend-row {
+      display: flex; align-items: center; gap: 14px;
+      padding: 12px 4px; border-bottom: 1px solid rgba(255,255,255,0.04);
+      transition: background 0.15s;
+      text-decoration: none; color: inherit;
+    }
+    .v3-trend-row:last-of-type { border-bottom: none; }
+    .v3-trend-row:hover { background: rgba(255,255,255,0.02); }
+    .v3-trend-rank {
+      font-family: 'Space Mono', monospace; font-weight: 700; font-size: 13px;
+      color: var(--v3-text-mute); width: 24px;
+    }
+    .v3-trend-row:nth-child(2) .v3-trend-rank { color: var(--v3-yellow); }
+    .v3-trend-thumb {
+      width: 42px; height: 42px; border-radius: 10px;
+      background: var(--v3-bg-card); display: flex; align-items: center; justify-content: center;
+      font-size: 22px; flex-shrink: 0; overflow: hidden;
+      border: 1px solid var(--v3-line);
+    }
+    .v3-trend-info { flex: 1; min-width: 0; }
+    .v3-trend-name {
+      font-size: 13.5px; font-weight: 600; color: var(--v3-text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .v3-trend-meta { font-size: 11px; color: var(--v3-text-mute); margin-top: 2px; }
+    .v3-trend-foot {
+      font-size: 10.5px; color: var(--v3-text-mute);
+      text-align: center; padding-top: 14px; margin-top: 6px;
+      letter-spacing: 0.04em; font-family: 'Space Mono', monospace;
+    }
+
+    /* ===== STATS STRIP ===== */
+    .v3-strip {
+      background: linear-gradient(90deg, #11111a, #1a1424, #11111a);
+      border-top: 1px solid var(--v3-line);
+      border-bottom: 1px solid var(--v3-line);
+      padding: 36px 32px;
+    }
+    .v3-strip-inner {
+      max-width: 1280px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+    }
+    .v3-strip-stat { text-align: center; }
+    .v3-strip-num {
+      font-family: 'Poppins', sans-serif; font-weight: 800;
+      font-size: 40px; letter-spacing: -0.03em; line-height: 1;
+      color: var(--v3-text); margin-bottom: 6px;
+    }
+    .v3-strip-num.pink { color: var(--v3-pink); }
+    .v3-strip-num.yellow { color: var(--v3-yellow); }
+    .v3-strip-label {
+      font-size: 11.5px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--v3-text-mute); font-weight: 600;
+    }
+
+    /* ===== SECTION HEAD ===== */
+    .v3-sec { max-width: 1280px; margin: 0 auto; padding: 80px 32px; }
+    .v3-sec-head { margin-bottom: 40px; }
+    .v3-sec-head-row { display: flex; align-items: end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+    .v3-sec-eyebrow {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--v3-pink);
+      margin-bottom: 12px;
+    }
+    .v3-sec-title {
+      font-family: 'Poppins', sans-serif; font-weight: 800;
+      font-size: clamp(30px, 4vw, 44px);
+      letter-spacing: -0.035em; line-height: 1.05;
+      color: var(--v3-text); margin: 0;
+    }
+    .v3-sec-sub {
+      font-size: 16px; color: var(--v3-text-mid); line-height: 1.6;
+      max-width: 580px; margin-top: 12px;
+    }
+    .v3-sec-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 13.5px; font-weight: 600; color: var(--v3-pink);
+      text-decoration: none; padding: 8px 0;
+    }
+    .v3-sec-link svg { width: 16px; height: 16px; }
+
+    /* ===== CATEGORIES ===== */
+    .v3-cats {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 14px;
+    }
+    .v3-cat {
+      position: relative; display: block;
+      padding: 28px 22px;
+      background: var(--v3-bg-card);
+      border: 1px solid var(--v3-line);
+      border-radius: 16px;
+      text-decoration: none; color: inherit;
+      overflow: hidden;
+      transition: transform 0.18s, border-color 0.18s;
+    }
+    .v3-cat:hover { transform: translateY(-3px); border-color: var(--v3-line-mid); }
+    .v3-cat-emoji {
+      font-size: 32px; margin-bottom: 14px; display: block;
+      filter: drop-shadow(0 4px 12px rgba(255,51,102,0.25));
+    }
+    .v3-cat-name {
+      font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 15px;
+      color: var(--v3-text); margin-bottom: 4px;
+    }
+    .v3-cat-count {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px; color: var(--v3-text-mute); letter-spacing: 0.06em;
+    }
+    .v3-cat::after {
+      content: ""; position: absolute; top: -20px; right: -20px;
+      width: 80px; height: 80px; border-radius: 50%;
+      background: var(--v3-pink-soft);
+      opacity: 0; transition: opacity 0.25s;
+    }
+    .v3-cat:hover::after { opacity: 1; }
+
+    /* ===== HOW IT WORKS (mockup-style 3 cards with big numbers) ===== */
+    .v3-how-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    }
+    .v3-how-step {
+      position: relative;
+      background: var(--v3-bg-card);
+      border: 1px solid var(--v3-line);
+      border-radius: 18px; padding: 32px 26px 28px;
+      overflow: hidden;
+    }
+    .v3-how-bignum {
+      position: absolute; top: -14px; right: 10px;
+      font-family: 'Poppins', sans-serif; font-weight: 900;
+      font-size: 130px; line-height: 1; letter-spacing: -0.06em;
+      color: rgba(255,51,102,0.06); pointer-events: none;
+      user-select: none;
+    }
+    .v3-how-chip {
+      display: inline-block; font-family: 'Space Mono', monospace;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+      color: var(--v3-pink); background: var(--v3-pink-soft);
+      padding: 5px 12px; border-radius: 100px; margin-bottom: 18px;
+    }
+    .v3-how-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--v3-pink), #c91854);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; margin-bottom: 18px;
+      box-shadow: 0 8px 20px -8px rgba(255,51,102,0.5);
+    }
+    .v3-how-icon svg { width: 22px; height: 22px; }
+    .v3-how-title {
+      font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 19px;
+      color: var(--v3-text); margin: 0 0 10px; letter-spacing: -0.01em;
+    }
+    .v3-how-text { font-size: 14.5px; color: var(--v3-text-mid); line-height: 1.6; margin: 0; }
+
+    /* ===== PLATFORMS ===== */
+    .v3-plat-section {
+      background: linear-gradient(180deg, transparent 0%, #0a0a14 100%);
+      border-top: 1px solid var(--v3-line);
+    }
+    .v3-plats {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 14px;
+    }
+    .v3-plat {
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+      padding: 24px 16px;
+      background: var(--v3-bg-card);
+      border: 1px solid var(--v3-line);
+      border-radius: 14px;
+      transition: transform 0.15s, border-color 0.15s;
+    }
+    .v3-plat:hover { transform: translateY(-2px); border-color: var(--v3-pink); }
+    .v3-plat svg { width: 30px; height: 30px; color: var(--v3-text); }
+    .v3-plat-name {
+      font-size: 12.5px; font-weight: 600; color: var(--v3-text-mid);
+      letter-spacing: 0.02em;
+    }
+
+    /* ===== ABOUT ===== */
+    .v3-about-grid {
+      display: grid; grid-template-columns: 1.4fr 1fr; gap: 56px;
+      align-items: center;
+    }
+    .v3-about-paragraph { font-size: 16px; line-height: 1.7; color: var(--v3-text-mid); margin: 18px 0; max-width: 580px; }
+    .v3-about-facts {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    }
+    .v3-fact {
+      background: var(--v3-bg-card);
+      border: 1px solid var(--v3-line);
+      border-radius: 14px; padding: 22px;
+      text-align: left;
+    }
+    .v3-fact-num {
+      font-family: 'Poppins', sans-serif; font-weight: 800;
+      font-size: 38px; letter-spacing: -0.03em; line-height: 1;
+      color: var(--v3-pink); margin-bottom: 6px;
+    }
+    .v3-fact-num.yellow { color: var(--v3-yellow); }
+    .v3-fact-label { font-size: 12px; color: var(--v3-text-mute); letter-spacing: 0.05em; }
+
+    /* ===== AUTH AREA (matches existing styles in v2 — kept for parity) ===== */
+    #whamr-auth-area { display: inline-flex; align-items: center; gap: 12px; margin-left: 4px; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 980px) {
+      .v3-hero { grid-template-columns: 1fr; gap: 36px; }
+      .v3-about-grid { grid-template-columns: 1fr; gap: 36px; }
+      .v3-how-grid { grid-template-columns: 1fr; }
+      .v3-strip-inner { grid-template-columns: repeat(2, 1fr); gap: 32px; }
+      .v3-hero-stats { gap: 18px; flex-wrap: wrap; }
+    }
+    @media (max-width: 640px) {
+      .v3-nav { padding: 18px 20px; gap: 12px; }
+      .v3-nav-links { gap: 4px; }
+      .v3-nav-link { display: none; }
+      .v3-nav-cta { padding: 9px 16px; font-size: 12.5px; }
+      .v3-hero-wrap { padding: 28px 20px 56px; }
+      .v3-sec { padding: 56px 20px; }
+      .v3-h1 { font-size: 42px; }
+      .v3-sub { font-size: 15.5px; }
+      .v3-strip { padding: 28px 20px; }
+      .v3-strip-num { font-size: 30px; }
+      .v3-sec-head-row { flex-direction: column; align-items: start; }
+      .v3-hstat-sep { display: none; }
     }
   </style>
+
   <script>window.__WHAMR_PAGE = "home";</script>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -111,219 +439,333 @@
 <body>
 
   <!-- ============================================
-       HERO
+       ANNOUNCE BAR
        ============================================ -->
-  <section class="hero" id="hero">
-    <nav class="hero-nav">
-      <a href="index.html" class="hero-brand">
-        <div class="logo">whamr<span class="logo-dot">.</span></div>
+  <div class="v3-announce">
+    <strong>8,363 memes &amp; stickers</strong><span class="dot">●</span> AI search in plain English <span class="dot">●</span> Now with accounts, comments &amp; cloud sync
+  </div>
+
+  <!-- ============================================
+       NAV
+       ============================================ -->
+  <nav class="v3-nav">
+    <a href="index.html" class="logo">whamr<span class="logo-dot">.</span></a>
+    <div class="v3-nav-links">
+      <a href="how-it-works.html" class="v3-nav-link">How it works</a>
+      <a href="memes.html" class="v3-nav-link">All memes</a>
+      <a href="#about" class="v3-nav-link">About</a>
+      <a href="memes.html" class="v3-nav-cta">Browse memes</a>
+      <div id="whamr-auth-area"></div>
+    </div>
+  </nav>
+
+  <!-- ============================================
+       HERO (left content + right trending card)
+       ============================================ -->
+  <section class="v3-hero-wrap">
+    <div class="v3-hero">
+      <div class="v3-hero-left">
+        <div class="v3-eyebrow"><span class="pulse"></span><span>Live · built for the send</span></div>
+
+        <h1 class="v3-h1">
+          Find the perfect meme.<br>
+          <span class="underline"><span class="accent">Send the wham.</span></span>
+        </h1>
+
+        <p class="v3-sub">
+          A fast, modern meme library built for the send. Search in plain English — "funny naija reaction", "sad crying scene", "gbese dance" — and AI finds it. Browse, save your favourites across devices, join the discussion, and share to WhatsApp, Telegram, X, and more in one tap.
+        </p>
+
+        <div class="v3-cta-row">
+          <a href="memes.html" class="v3-btn v3-btn-primary">
+            <span>Browse all memes</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+          <a href="how-it-works.html" class="v3-btn v3-btn-ghost">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span>See how it works</span>
+          </a>
+        </div>
+
+        <div class="v3-hero-stats">
+          <div>
+            <div class="v3-hstat-num"><span class="accent">8.3K</span></div>
+            <div class="v3-hstat-label">Memes &amp; stickers</div>
+          </div>
+          <div class="v3-hstat-sep"></div>
+          <div>
+            <div class="v3-hstat-num">11</div>
+            <div class="v3-hstat-label">Categories</div>
+          </div>
+          <div class="v3-hstat-sep"></div>
+          <div>
+            <div class="v3-hstat-num">9</div>
+            <div class="v3-hstat-label">Share apps</div>
+          </div>
+          <div class="v3-hstat-sep"></div>
+          <div>
+            <div class="v3-hstat-num">AI</div>
+            <div class="v3-hstat-label">Search</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: trending featured card -->
+      <aside class="v3-trend-card">
+        <div class="v3-trend-head">
+          <div class="v3-trend-title"><span class="fire">★</span> Featured picks</div>
+          <a href="memes.html" class="v3-trend-link">See all →</a>
+        </div>
+        <a class="v3-trend-row" href="memes.html">
+          <div class="v3-trend-rank">#1</div>
+          <div class="v3-trend-thumb">😂</div>
+          <div class="v3-trend-info">
+            <div class="v3-trend-name">Naija reactions</div>
+            <div class="v3-trend-meta">Nollywood &amp; everyday gold</div>
+          </div>
+        </a>
+        <a class="v3-trend-row" href="memes.html">
+          <div class="v3-trend-rank">#2</div>
+          <div class="v3-trend-thumb">💃</div>
+          <div class="v3-trend-info">
+            <div class="v3-trend-name">Dance &amp; gbese</div>
+            <div class="v3-trend-meta">Legwork, zanku, the lot</div>
+          </div>
+        </a>
+        <a class="v3-trend-row" href="memes.html">
+          <div class="v3-trend-rank">#3</div>
+          <div class="v3-trend-thumb">🎂</div>
+          <div class="v3-trend-info">
+            <div class="v3-trend-name">Birthday &amp; party</div>
+            <div class="v3-trend-meta">Owambe energy on tap</div>
+          </div>
+        </a>
+        <a class="v3-trend-row" href="memes.html">
+          <div class="v3-trend-rank">#4</div>
+          <div class="v3-trend-thumb">😭</div>
+          <div class="v3-trend-info">
+            <div class="v3-trend-name">Sad &amp; sapa</div>
+            <div class="v3-trend-meta">When the vibe ain't vibing</div>
+          </div>
+        </a>
+        <div class="v3-trend-foot">CURATED · UPDATED REGULARLY</div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ============================================
+       STATS STRIP
+       ============================================ -->
+  <section class="v3-strip">
+    <div class="v3-strip-inner">
+      <div class="v3-strip-stat">
+        <div class="v3-strip-num pink">8,363</div>
+        <div class="v3-strip-label">Memes &amp; stickers</div>
+      </div>
+      <div class="v3-strip-stat">
+        <div class="v3-strip-num">9</div>
+        <div class="v3-strip-label">Share platforms</div>
+      </div>
+      <div class="v3-strip-stat">
+        <div class="v3-strip-num yellow">11</div>
+        <div class="v3-strip-label">Categories</div>
+      </div>
+      <div class="v3-strip-stat">
+        <div class="v3-strip-num">100%</div>
+        <div class="v3-strip-label">Free, no ads</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       FEATURED MEMES (loads via script.js, IDs preserved)
+       ============================================ -->
+  <section class="v3-sec" id="featured">
+    <div class="v3-sec-head v3-sec-head-row">
+      <div>
+        <div class="v3-sec-eyebrow">Featured · a taste</div>
+        <h2 class="v3-sec-title">Pick something. Send it.</h2>
+        <p class="v3-sec-sub">A handful from the vault to get you started. 8,363 memes &amp; stickers across 11 categories — search in plain English to find exactly what you need.</p>
+      </div>
+      <a href="memes.html" class="v3-sec-link">
+        <span>See all 8,363</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
       </a>
-      <div class="hero-nav-links">
-        <a href="how-it-works.html" class="hero-nav-link">How it works</a>
-        <a href="memes.html" class="hero-nav-link">All memes</a>
-        <a href="#about" class="hero-nav-link">About</a>
-        <a href="memes.html" class="hero-nav-cta">Browse memes</a>
-        <div id="whamr-auth-area"></div>
-      </div>
-    </nav>
-
-    <div class="hero-content">
-      <div class="hero-badge">
-        <span class="hero-badge-dot"></span>
-        <span>8000+ memes &amp; stickers · AI search · live now</span>
-      </div>
-
-      <h1 class="hero-title">
-        Find the perfect meme.<br>
-        <span class="hero-title-accent">Send the wham.</span>
-      </h1>
-
-      <p class="hero-sub">
-        A fast, modern meme library built for the send. Search in plain English — "funny naija reaction", "sad crying scene", "dance moves" — and AI finds it instantly. Browse, save your favourites, and share to WhatsApp, Telegram, X, and more in one tap.
-      </p>
-
-      <div class="hero-actions">
-        <a href="memes.html" class="btn-hero btn-hero-primary">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="9 18 15 12 9 6"></polyline>
-          </svg>
-          <span>Browse all memes</span>
-        </a>
-        <a href="how-it-works.html" class="btn-hero btn-hero-ghost">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <polyline points="12 6 12 12 16 14"></polyline>
-          </svg>
-          <span>See how it works</span>
-        </a>
-      </div>
-
-      <div class="hero-stats">
-        <div class="hero-stat">
-          <div class="hero-stat-num">245</div>
-          <div class="hero-stat-label">Meme videos</div>
-        </div>
-        <div class="hero-stat">
-          <div class="hero-stat-num">168</div>
-          <div class="hero-stat-label">Stickers</div>
-        </div>
-        <div class="hero-stat">
-          <div class="hero-stat-num">9</div>
-          <div class="hero-stat-label">Share platforms</div>
-        </div>
-        <div class="hero-stat">
-          <div class="hero-stat-num">AI</div>
-          <div class="hero-stat-label">Smart search</div>
-        </div>
-      </div>
     </div>
 
-    <div class="hero-marquee" aria-hidden="true">
-      <div class="hero-marquee-track">
-        <span class="marquee-tag">REACTIONS</span><span class="marquee-dot">●</span>
-        <span class="marquee-tag">NAIJA</span><span class="marquee-dot">●</span>
-        <span class="marquee-tag">DANCE</span><span class="marquee-dot">●</span>
-        <span class="marquee-tag">LAUGHING</span><span class="marquee-dot">●</span>
-        <span class="marquee-tag">AWKWARD</span><span class="marquee-dot">●</span>
-        <span class="marquee-tag">SPORTS</span><span class="marquee-dot">●</span>
-        <span class="marquee-tag">RANDOM</span><span class="marquee-dot">●</span>
-        <span class="marquee-tag">SAD</span><span class="marquee-dot">●</span>
-        <span class="marquee-tag">REACTIONS</span><span class="marquee-dot">●</span>
-        <span class="marquee-tag">NAIJA</span><span class="marquee-dot">●</span>
-        <span class="marquee-tag">DANCE</span><span class="marquee-dot">●</span>
-        <span class="marquee-tag">LAUGHING</span><span class="marquee-dot">●</span>
-        <span class="marquee-tag">AWKWARD</span><span class="marquee-dot">●</span>
-        <span class="marquee-tag">SPORTS</span><span class="marquee-dot">●</span>
-        <span class="marquee-tag">RANDOM</span><span class="marquee-dot">●</span>
-        <span class="marquee-tag">SAD</span><span class="marquee-dot">●</span>
-      </div>
+    <!-- Working grid: script.js binds to #grid and reads data-featured-ids -->
+    <div class="grid grid-featured" id="grid" data-featured-ids="m001,m003,m028,m031,m005,m016,m004,m006,m011,m018,m002,m059" aria-live="polite"></div>
+
+    <div class="loading-state" id="loading">
+      <div class="loading-spinner"></div>
+      <p>Loading featured memes...</p>
+    </div>
+
+    <div style="text-align:center; margin-top: 40px;">
+      <a href="memes.html" class="v3-btn v3-btn-primary">
+        <span>Browse all memes &amp; stickers</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </a>
     </div>
   </section>
 
   <!-- ============================================
-       FEATURED MEMES (12)
+       CATEGORIES (Browse by vibe)
        ============================================ -->
-  <section class="featured" id="featured">
-    <div class="section-inner">
-      <div class="section-head section-head-row">
-        <div>
-          <div class="section-eyebrow">Featured · a taste</div>
-          <h2 class="section-title">Pick something. Send it.</h2>
-          <p class="section-sub">A curated taste from the vault. 413 memes &amp; stickers across 11 categories — search in plain English to find exactly what you need.</p>
-        </div>
-        <a href="memes.html" class="see-all-link">
-          <span>See all 8000+</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-            <polyline points="12 5 19 12 12 19"></polyline>
-          </svg>
-        </a>
+  <section class="v3-sec" style="padding-top: 20px;">
+    <div class="v3-sec-head v3-sec-head-row">
+      <div>
+        <div class="v3-sec-eyebrow">Categories</div>
+        <h2 class="v3-sec-title">Browse by vibe.</h2>
+        <p class="v3-sec-sub">Eleven flavours covering the everyday — from Nollywood reactions to party dance to that one sad face you send when sapa hits.</p>
       </div>
+      <a href="memes.html" class="v3-sec-link">
+        <span>All categories</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </a>
+    </div>
 
-      <div class="grid grid-featured" id="grid" data-featured-ids="m001,m003,m028,m031,m005,m016,m004,m006,m011,m018,m002,m059" aria-live="polite"></div>
-
-      <div class="loading-state" id="loading">
-        <div class="loading-spinner"></div>
-        <p>Loading featured memes...</p>
-      </div>
-
-      <div class="featured-cta">
-        <a href="memes.html" class="btn-hero btn-hero-primary">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="9 18 15 12 9 6"></polyline>
-          </svg>
-          <span>Browse all memes &amp; stickers</span>
-        </a>
-      </div>
+    <div class="v3-cats">
+      <a class="v3-cat" href="memes.html"><span class="v3-cat-emoji">😱</span><div class="v3-cat-name">Reactions</div><div class="v3-cat-count">EVERYDAY GOLD</div></a>
+      <a class="v3-cat" href="memes.html"><span class="v3-cat-emoji">🇳🇬</span><div class="v3-cat-name">Naija</div><div class="v3-cat-count">NOLLYWOOD &amp; CO.</div></a>
+      <a class="v3-cat" href="memes.html"><span class="v3-cat-emoji">💃</span><div class="v3-cat-name">Dance</div><div class="v3-cat-count">GBESE · ZANKU</div></a>
+      <a class="v3-cat" href="memes.html"><span class="v3-cat-emoji">😂</span><div class="v3-cat-name">Laughing</div><div class="v3-cat-count">CRACK UP</div></a>
+      <a class="v3-cat" href="memes.html"><span class="v3-cat-emoji">😬</span><div class="v3-cat-name">Awkward</div><div class="v3-cat-count">THE CRINGE</div></a>
+      <a class="v3-cat" href="memes.html"><span class="v3-cat-emoji">⚽</span><div class="v3-cat-name">Sports</div><div class="v3-cat-count">GOALS &amp; FAILS</div></a>
+      <a class="v3-cat" href="memes.html"><span class="v3-cat-emoji">😭</span><div class="v3-cat-name">Sad</div><div class="v3-cat-count">WHEN SAPA HITS</div></a>
+      <a class="v3-cat" href="memes.html"><span class="v3-cat-emoji">❤️</span><div class="v3-cat-name">Love</div><div class="v3-cat-count">SOFT &amp; SILLY</div></a>
+      <a class="v3-cat" href="memes.html"><span class="v3-cat-emoji">🎂</span><div class="v3-cat-name">Birthday</div><div class="v3-cat-count">OWANBE TIME</div></a>
+      <a class="v3-cat" href="memes.html"><span class="v3-cat-emoji">✨</span><div class="v3-cat-name">Random</div><div class="v3-cat-count">EVERYTHING ELSE</div></a>
+      <a class="v3-cat" href="memes.html"><span class="v3-cat-emoji">🎴</span><div class="v3-cat-name">Stickers</div><div class="v3-cat-count">7,904 OF THEM</div></a>
     </div>
   </section>
 
   <!-- ============================================
-       HOW IT WORKS (preview, links to full page)
+       HOW IT WORKS
        ============================================ -->
-  <section class="how" id="how">
-    <div class="section-inner">
-      <div class="section-head">
-        <div class="section-eyebrow">How it works</div>
-        <h2 class="section-title">Three taps, then it&rsquo;s sent.</h2>
-        <p class="section-sub">No accounts. No ads. AI search understands plain English — type what you feel, not what you remember.</p>
-      </div>
+  <section class="v3-sec" id="how">
+    <div class="v3-sec-head" style="text-align: center;">
+      <div class="v3-sec-eyebrow" style="display:inline-block">How it works</div>
+      <h2 class="v3-sec-title">Three taps, then it's sent.</h2>
+      <p class="v3-sec-sub" style="margin-left:auto; margin-right:auto; text-align:left;">AI search understands plain English — type what you feel, not what you remember. Save across devices once you sign in.</p>
+    </div>
 
-      <div class="how-steps">
-        <div class="how-step">
-          <div class="how-step-num">01</div>
-          <div class="how-step-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="11" cy="11" r="7"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-          </div>
-          <h3 class="how-step-title">Browse or search</h3>
-          <p class="how-step-text">Scroll the grid, pick a category, or type in plain English. Try "funny naija reaction" or "sad crying" — AI finds it.</p>
-        </div>
-
-        <div class="how-step">
-          <div class="how-step-num">02</div>
-          <div class="how-step-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-            </svg>
-          </div>
-          <h3 class="how-step-title">Save what hits</h3>
-          <p class="how-step-text">Heart any meme to keep it for later in your Favourites tab.</p>
-        </div>
-
-        <div class="how-step">
-          <div class="how-step-num">03</div>
-          <div class="how-step-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="18" cy="5" r="3"></circle>
-              <circle cx="6" cy="12" r="3"></circle>
-              <circle cx="18" cy="19" r="3"></circle>
-              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-            </svg>
-          </div>
-          <h3 class="how-step-title">Send anywhere</h3>
-          <p class="how-step-text">One Share button covers WhatsApp, Telegram, X, and 6 more apps.</p>
-        </div>
-      </div>
-
-      <div class="how-cta">
-        <a href="how-it-works.html" class="learn-more-link">
-          <span>Learn more about how Whamr works</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-            <polyline points="12 5 19 12 12 19"></polyline>
+    <div class="v3-how-grid">
+      <div class="v3-how-step">
+        <div class="v3-how-bignum">01</div>
+        <div class="v3-how-chip">01</div>
+        <div class="v3-how-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="7"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
-        </a>
+        </div>
+        <h3 class="v3-how-title">Browse or search</h3>
+        <p class="v3-how-text">Scroll the grid, pick a category, or type in plain English. Try "funny naija reaction" or "gbese dance" — search understands synonyms and Naija slang.</p>
       </div>
+
+      <div class="v3-how-step">
+        <div class="v3-how-bignum">02</div>
+        <div class="v3-how-chip">02</div>
+        <div class="v3-how-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+        </div>
+        <h3 class="v3-how-title">Save &amp; sync</h3>
+        <p class="v3-how-text">Heart any meme to keep it. Sign in once and your favourites follow you across phones, laptops, and tabs. No re-finding the good ones.</p>
+      </div>
+
+      <div class="v3-how-step">
+        <div class="v3-how-bignum">03</div>
+        <div class="v3-how-chip">03</div>
+        <div class="v3-how-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="18" cy="5" r="3"></circle>
+            <circle cx="6" cy="12" r="3"></circle>
+            <circle cx="18" cy="19" r="3"></circle>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+          </svg>
+        </div>
+        <h3 class="v3-how-title">Send anywhere</h3>
+        <p class="v3-how-text">One Share button covers WhatsApp, Telegram, X, Instagram, Discord and more. Or copy the link and paste it wherever. The meme just lands.</p>
+      </div>
+    </div>
+
+    <div style="text-align:center; margin-top: 36px;">
+      <a href="how-it-works.html" class="v3-sec-link">
+        <span>Read the full walkthrough</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </a>
     </div>
   </section>
 
   <!-- ============================================
-       STICKER TEASER
+       PLATFORMS
        ============================================ -->
-  <section class="sticker-teaser">
-    <div class="section-inner">
-      <div class="teaser-content">
-        <div class="teaser-text">
-          <div class="section-eyebrow teaser-eyebrow">Future plans</div>
-          <h2 class="section-title">Your memes, packed for every messenger.</h2>
-          <p class="section-sub teaser-sub">
-            Down the line, we&rsquo;d love to add a one-tap sticker pack converter so any meme can become a real WhatsApp, Telegram, Signal, or Discord sticker. Big idea, bigger build &mdash; we&rsquo;ll get there.
-          </p>
-          <div class="teaser-platforms">
-            <div class="teaser-platform" title="WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.966-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.693.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></div>
-            <div class="teaser-platform" title="Telegram"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0a12 12 0 00-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg></div>
-            <div class="teaser-platform" title="Signal"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9.12.35a11.835 11.835 0 0 0-2.755.927l.78 1.55A10.075 10.075 0 0 1 9.49 2.07Zm5.755 0L14.51 2.07a10.077 10.077 0 0 1 2.346.757l.78-1.55A11.836 11.836 0 0 0 14.875.35ZM4.897 2.53A12.024 12.024 0 0 0 2.876 4.55l1.236 1.235a10.282 10.282 0 0 1 1.42-1.42zm14.206 0L17.86 3.766a10.282 10.282 0 0 1 1.42 1.42l1.235-1.236a12.024 12.024 0 0 0-2.02-2.02zM2.53 4.897 1.297 6.13a11.836 11.836 0 0 0-.927 2.755l1.665.515A10.077 10.077 0 0 1 3.79 7.05L2.53 4.897zm18.94 0L20.2 7.05a10.077 10.077 0 0 1 1.755 2.35l1.665-.515a11.836 11.836 0 0 0-.927-2.755L21.47 4.897zm-9.4 1.36a5.747 5.747 0 0 0-5.74 5.74 5.747 5.747 0 0 0 .686 2.722l-.853 3.05 3.13-.83a5.747 5.747 0 0 0 2.777.798 5.747 5.747 0 1 0 0-11.48zM.99 11.99v.02h2.01v-.02zm20.02 0v.02H23v-.02zm-19 4.92L.65 17.43a11.836 11.836 0 0 0 1.16 2.604l1.5-1.04a10.077 10.077 0 0 1-1.31-2.084zm17.98 0a10.077 10.077 0 0 1-1.31 2.084l1.5 1.04a11.836 11.836 0 0 0 1.16-2.604l-1.35-.52zM6.13 22.7l-.515 1.665A11.836 11.836 0 0 0 8.37 25h.02v-1.756a10.077 10.077 0 0 1-2.26-.544zm11.74 0a10.077 10.077 0 0 1-2.26.544V25h.02a11.836 11.836 0 0 0 2.755-.635L17.87 22.7Z"/></svg></div>
-            <div class="teaser-platform" title="Discord"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg></div>
-          </div>
+  <section class="v3-plat-section">
+    <div class="v3-sec">
+      <div class="v3-sec-head" style="text-align:center;">
+        <div class="v3-sec-eyebrow" style="display:inline-block">One tap, every app</div>
+        <h2 class="v3-sec-title">Sends anywhere people chat.</h2>
+        <p class="v3-sec-sub" style="margin-left:auto; margin-right:auto;">Whamr generates a share link your phone's native share sheet handles — so every messenger you have is one tap away.</p>
+      </div>
+
+      <div class="v3-plats">
+        <div class="v3-plat">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.966-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.693.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          <div class="v3-plat-name">WhatsApp</div>
         </div>
-        <div class="teaser-visual" aria-hidden="true">
-          <div class="teaser-card teaser-card-1"><div class="teaser-card-tag">.webp</div><div class="teaser-card-emoji">🎉</div></div>
-          <div class="teaser-card teaser-card-2"><div class="teaser-card-tag">.tgs</div><div class="teaser-card-emoji">😂</div></div>
-          <div class="teaser-card teaser-card-3"><div class="teaser-card-tag">.gif</div><div class="teaser-card-emoji">💃</div></div>
+        <div class="v3-plat">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0a12 12 0 00-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+          <div class="v3-plat-name">Telegram</div>
+        </div>
+        <div class="v3-plat">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          <div class="v3-plat-name">X</div>
+        </div>
+        <div class="v3-plat">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+          <div class="v3-plat-name">Instagram</div>
+        </div>
+        <div class="v3-plat">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+          <div class="v3-plat-name">Discord</div>
+        </div>
+        <div class="v3-plat">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9.12.35a11.835 11.835 0 0 0-2.755.927l.78 1.55A10.075 10.075 0 0 1 9.49 2.07Zm5.755 0L14.51 2.07a10.077 10.077 0 0 1 2.346.757l.78-1.55A11.836 11.836 0 0 0 14.875.35ZM4.897 2.53A12.024 12.024 0 0 0 2.876 4.55l1.236 1.235a10.282 10.282 0 0 1 1.42-1.42zm14.206 0L17.86 3.766a10.282 10.282 0 0 1 1.42 1.42l1.235-1.236a12.024 12.024 0 0 0-2.02-2.02zM12.063 6.2A5.797 5.797 0 0 0 6.27 12a5.797 5.797 0 0 0 .693 2.748l-.872 3.099 3.179-.836a5.797 5.797 0 0 0 2.793.789A5.797 5.797 0 0 0 17.86 12a5.797 5.797 0 0 0-5.797-5.8Z"/></svg>
+          <div class="v3-plat-name">Signal</div>
+        </div>
+        <div class="v3-plat">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+          <div class="v3-plat-name">Native share</div>
+        </div>
+        <div class="v3-plat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          <div class="v3-plat-name">Copy link</div>
+        </div>
+        <div class="v3-plat">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          <div class="v3-plat-name">Download</div>
         </div>
       </div>
     </div>
@@ -332,33 +774,32 @@
   <!-- ============================================
        ABOUT
        ============================================ -->
-  <section class="about" id="about">
-    <div class="section-inner">
-      <div class="about-grid">
-        <div class="about-text">
-          <div class="section-eyebrow">About whamr</div>
-          <h2 class="section-title">A meme tool, built for the way we actually share.</h2>
-          <p class="about-paragraph">
-            Most meme apps make you screenshot, save, then dig through your camera roll to send what you found. Whamr cuts the loop. You browse, you tap, the meme lands in WhatsApp ready to go.
-          </p>
-          <p class="about-paragraph">
-            Built mobile-first with a Naija-friendly library at its core. Reactions, dance, awkward moments, Nollywood favourites &mdash; the stuff people actually send. AI search understands synonyms and plain-language queries, so "something funny with a Nigerian" finds the right clip without any extra effort.
-          </p>
-          <div class="about-cta">
-            <a href="memes.html" class="btn-hero btn-hero-primary">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="9 18 15 12 9 6"></polyline>
-              </svg>
-              <span>Start browsing</span>
-            </a>
-          </div>
+  <section class="v3-sec" id="about">
+    <div class="v3-about-grid">
+      <div>
+        <div class="v3-sec-eyebrow">About whamr</div>
+        <h2 class="v3-sec-title">A meme tool, built for the way we actually share.</h2>
+        <p class="v3-about-paragraph">
+          Most meme apps make you screenshot, save, then dig through your camera roll to send what you found. Whamr cuts the loop. You browse, you tap, the meme lands in WhatsApp ready to go.
+        </p>
+        <p class="v3-about-paragraph">
+          Built mobile-first with a Naija-friendly library at its core. Reactions, dance, awkward moments, Nollywood favourites — the stuff people actually send. Search understands synonyms and local slang, so "gbese" pulls up the dancing memes and "sapa" pulls up the broke ones.
+        </p>
+        <div style="margin-top: 28px;">
+          <a href="memes.html" class="v3-btn v3-btn-primary">
+            <span>Start browsing</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
         </div>
-        <div class="about-side">
-          <div class="about-fact"><div class="about-fact-num">100%</div><div class="about-fact-label">Free, no signup</div></div>
-          <div class="about-fact"><div class="about-fact-num">0</div><div class="about-fact-label">Ads on the page</div></div>
-          <div class="about-fact"><div class="about-fact-num">9</div><div class="about-fact-label">Apps to send to</div></div>
-          <div class="about-fact"><div class="about-fact-num">∞</div><div class="about-fact-label">Memes you can save</div></div>
-        </div>
+      </div>
+      <div class="v3-about-facts">
+        <div class="v3-fact"><div class="v3-fact-num">100%</div><div class="v3-fact-label">Free, no signup needed to browse</div></div>
+        <div class="v3-fact"><div class="v3-fact-num yellow">0</div><div class="v3-fact-label">Ads on the page</div></div>
+        <div class="v3-fact"><div class="v3-fact-num">9+</div><div class="v3-fact-label">Apps to send to</div></div>
+        <div class="v3-fact"><div class="v3-fact-num yellow">∞</div><div class="v3-fact-label">Memes you can save</div></div>
       </div>
     </div>
   </section>
@@ -373,21 +814,24 @@
         <p class="footer-tag">Send the wham.</p>
       </div>
       <div class="footer-links">
-  <a href="memes.html">All memes</a>
-  <a href="how-it-works.html">How it works</a>
-  <a href="about.html">About</a>
-  <a href="terms.html">Terms</a>
-  <a href="privacy.html">Privacy</a>
-</div>
+        <a href="memes.html">All memes</a>
+        <a href="how-it-works.html">How it works</a>
+        <a href="about.html">About</a>
+        <a href="terms.html">Terms</a>
+        <a href="privacy.html">Privacy</a>
+      </div>
       <div class="footer-meta">
-        <p>built for the send · <span id="total-count">246</span> in the vault</p>
-        <p class="footer-version">v2.1 · prototype</p>
+        <p>built for the send · <span id="total-count">8,363</span> in the vault</p>
+        <p class="footer-version">v2.2 · live</p>
         <p class="footer-attribution">Stickers by <a href="https://openmoji.org" target="_blank" rel="noopener">OpenMoji</a> &mdash; CC BY-SA 4.0</p>
       </div>
     </div>
   </footer>
 
-  <!-- Modals shared across pages -->
+  <!-- ============================================
+       MODALS — kept verbatim from current site so
+       script.js + comments + favourites all work
+       ============================================ -->
   <div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modal-title">
     <div class="modal-backdrop" id="modal-backdrop"></div>
     <div class="modal-content">
@@ -404,7 +848,6 @@
           </div>
         </div>
         <div class="modal-tags" id="modal-tags"></div>
-        <!-- Community tabs -->
         <div class="modal-tabs" role="tablist">
           <button class="modal-tab active" data-tab="share" role="tab">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
@@ -424,7 +867,6 @@
           </button>
         </div>
 
-        <!-- Panel: Share -->
         <div class="tab-panel" id="tab-share">
           <div class="modal-actions">
             <button class="btn btn-primary" id="btn-share">
@@ -446,7 +888,6 @@
           </div>
         </div>
 
-        <!-- Panel: Discussion -->
         <div class="tab-panel" id="tab-discuss" hidden>
           <div class="community-list" id="discuss-list"></div>
           <form class="community-form" id="discuss-form">
@@ -456,7 +897,6 @@
           </form>
         </div>
 
-        <!-- Panel: Origin & History -->
         <div class="tab-panel" id="tab-origin" hidden>
           <div class="origin-body" id="origin-body"></div>
           <button class="community-edit-btn" id="origin-edit-btn">+ Add / Edit Origin</button>
@@ -471,7 +911,6 @@
           </form>
         </div>
 
-        <!-- Panel: Variants -->
         <div class="tab-panel" id="tab-variants" hidden>
           <div class="community-list" id="variants-list"></div>
           <form class="community-form" id="variant-form">
