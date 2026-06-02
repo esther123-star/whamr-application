@@ -550,9 +550,12 @@
       }
     }
     if (exportBtn) {
-      // Phase 1: always disabled (the encoder isn't built yet).
-      // We tell the user clearly.
-      exportBtn.disabled = true;
+      // Phase 2: enable when we have at least the minimum.
+      exportBtn.disabled = (ids.length < PACK_MIN);
+      // Update label to reflect that export is now real
+      if (exportBtn.innerHTML.indexOf("Phase 2") !== -1) {
+        exportBtn.innerHTML = "Export <span class=\"pack-soon\">(.wastickers)</span>";
+      }
     }
   }
 
@@ -590,8 +593,272 @@
     });
     if (btnPack) btnPack.addEventListener("click", handlePackButton);
 
+    // Phase 2: wire export button to the real export flow
+    const exportBtn = document.getElementById("pack-export");
+    if (exportBtn) exportBtn.addEventListener("click", exportPack);
+
     // Initial badge state
     updatePackBadge();
+  }
+
+    /* ============================================
+     Sticker Pack Export \u2014 Phase 2
+     Generates a valid .wastickers ZIP file:
+       \u2022 Resizes static stickers to 512x512 WebP, <100KB each
+       \u2022 Generates a 96x96 PNG tray icon from the first sticker
+       \u2022 Writes contents.json manifest
+       \u2022 Bundles via JSZip and offers download
+     Skips videos (animated stickers \u2014 Phase 4 work).
+     ============================================ */
+
+  const PACK_STICKER_SIZE = 512;
+  const PACK_TRAY_SIZE = 96;
+  const PACK_STICKER_MAX_BYTES = 100 * 1024;   // WhatsApp limit
+  const PACK_TRAY_MAX_BYTES = 50 * 1024;       // WhatsApp limit
+
+  // Get or create a stable identifier for this pack so re-exports keep the same id.
+  function getOrCreatePackId() {
+    if (state.pack.identifier && typeof state.pack.identifier === "string" && state.pack.identifier.length > 8) {
+      return state.pack.identifier;
+    }
+    // Simple UUID-ish identifier (good enough for WhatsApp; no crypto needed)
+    const id = "whamr-" + Date.now().toString(36) + "-" +
+      Math.random().toString(36).slice(2, 10);
+    state.pack.identifier = id;
+    savePack();
+    return id;
+  }
+
+  // Load an image element from a URL with CORS so we can read pixels via canvas.
+  function loadImage(url) {
+    return new Promise(function (resolve, reject) {
+      const img = new Image();
+      img.crossOrigin = "anonymous"; // R2 needs this; if it fails we fall back below
+      img.onload = function () { resolve(img); };
+      img.onerror = function () {
+        // Retry without crossOrigin in case R2 didn't send CORS headers.
+        // This will taint the canvas but we re-attempt; export will fail there if so.
+        const img2 = new Image();
+        img2.onload = function () { resolve(img2); };
+        img2.onerror = function (e) { reject(new Error("Image load failed: " + url)); };
+        img2.src = url;
+      };
+      img.src = url;
+    });
+  }
+
+  // Draw an image into a square canvas of `size`, with transparent letterboxing,
+  // preserving aspect ratio. Returns the canvas.
+  function squareCanvas(img, size) {
+    const canvas = document.createElement("canvas");
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext("2d");
+    // Clear is transparent by default; explicit for clarity.
+    ctx.clearRect(0, 0, size, size);
+    // Scale so the longer side fits in size, center the result.
+    const ratio = Math.min(size / img.width, size / img.height);
+    const w = Math.round(img.width * ratio);
+    const h = Math.round(img.height * ratio);
+    const x = Math.round((size - w) / 2);
+    const y = Math.round((size - h) / 2);
+    ctx.drawImage(img, x, y, w, h);
+    return canvas;
+  }
+
+  // Encode a canvas to a blob of given mime, iteratively lowering quality
+  // until the blob is <= maxBytes. Returns the blob, or rejects if even at
+  // quality 0.4 we can't fit (very rare for 512x512).
+  function canvasToBlobUnder(canvas, mime, maxBytes) {
+    return new Promise(function (resolve, reject) {
+      const qualities = [0.92, 0.85, 0.75, 0.65, 0.55, 0.45];
+      let i = 0;
+      function tryNext() {
+        const q = qualities[i];
+        try {
+          canvas.toBlob(function (blob) {
+            if (!blob) { reject(new Error("toBlob returned null \u2014 the image may be cross-origin tainted. R2 bucket needs CORS headers (Access-Control-Allow-Origin: *) for sticker export to work.")); return; }
+            if (blob.size <= maxBytes || i === qualities.length - 1) {
+              resolve(blob);
+              return;
+            }
+            i++;
+            tryNext();
+          }, mime, q);
+        } catch (e) {
+          // SecurityError thrown synchronously on tainted canvas in some browsers
+          reject(new Error("Canvas is cross-origin tainted. The R2 bucket needs CORS headers (Access-Control-Allow-Origin: *) so this site can read pixels for export."));
+        }
+      }
+      tryNext();
+    });
+  }
+
+  // Read a Blob as Uint8Array (for JSZip).
+  function blobToUint8(blob) {
+    return new Promise(function (resolve, reject) {
+      const r = new FileReader();
+      r.onload = function () { resolve(new Uint8Array(r.result)); };
+      r.onerror = function () { reject(new Error("FileReader failed")); };
+      r.readAsArrayBuffer(blob);
+    });
+  }
+
+  // Process one meme into a sticker file. Returns { filename, bytes } or null
+  // if it's a video (animated) and should be skipped.
+  async function processOneSticker(meme, index) {
+    if (isAnimatedPackItem(meme)) {
+      return { skipped: true, reason: "animated" };
+    }
+    const img = await loadImage(meme.src);
+    const canvas = squareCanvas(img, PACK_STICKER_SIZE);
+    const blob = await canvasToBlobUnder(canvas, "image/webp", PACK_STICKER_MAX_BYTES);
+    if (blob.size > PACK_STICKER_MAX_BYTES) {
+      return { skipped: true, reason: "too-large" };
+    }
+    const bytes = await blobToUint8(blob);
+    const filename = "sticker_" + String(index + 1).padStart(2, "0") + ".webp";
+    return { filename: filename, bytes: bytes, size: blob.size };
+  }
+
+  // Tray icon: take the first usable sticker, downscale to 96x96 PNG <50KB.
+  async function buildTrayIcon(firstMeme) {
+    const img = await loadImage(firstMeme.src);
+    const canvas = squareCanvas(img, PACK_TRAY_SIZE);
+    const blob = await canvasToBlobUnder(canvas, "image/png", PACK_TRAY_MAX_BYTES);
+    return await blobToUint8(blob);
+  }
+
+  // Build contents.json per WhatsApp's spec
+  function buildContentsJson(packId, name, publisher, stickerFiles) {
+    return JSON.stringify({
+      "android_play_store_link": "",
+      "ios_app_store_link": "",
+      "sticker_packs": [{
+        "identifier": packId,
+        "name": name || "Whamr Pack",
+        "publisher": publisher || "Whamr",
+        "tray_image_file": "tray.png",
+        "image_data_version": "1",
+        "avoid_cache": false,
+        "publisher_email": "",
+        "publisher_website": "",
+        "privacy_policy_website": "",
+        "license_agreement_website": "",
+        "stickers": stickerFiles.map(function (fname) {
+          return { "image_file": fname, "emojis": ["\ud83d\ude00"] }; // default 😀
+        })
+      }]
+    }, null, 2);
+  }
+
+  // The main export flow, called when the user clicks "Export pack".
+  async function exportPack() {
+    if (typeof JSZip === "undefined") {
+      showToast("Sticker pack library didn't load \u2014 please refresh");
+      return;
+    }
+    const ids = state.pack.ids.slice();
+    if (ids.length < PACK_MIN) {
+      showToast("Need at least " + PACK_MIN + " stickers");
+      return;
+    }
+
+    // Pull current name/publisher from the modal inputs (if open)
+    const nameInput = document.getElementById("pack-name");
+    const pubInput = document.getElementById("pack-publisher");
+    const name = (nameInput && nameInput.value.trim()) || state.pack.name || "Whamr Pack";
+    const publisher = (pubInput && pubInput.value.trim()) || state.pack.publisher || "Whamr";
+
+    // UI: show progress
+    const exportBtn = document.getElementById("pack-export");
+    const originalLabel = exportBtn ? exportBtn.innerHTML : "";
+    if (exportBtn) {
+      exportBtn.disabled = true;
+      exportBtn.innerHTML = "Building pack\u2026 0%";
+    }
+
+    const stickerFiles = []; // filenames in order
+    const stickerBlobs = []; // {filename, bytes}
+    const skipped = { animated: 0, tooLarge: 0, error: 0 };
+    let firstUsable = null;
+
+    try {
+      for (let i = 0; i < ids.length; i++) {
+        const meme = findMemeById(ids[i]);
+        if (!meme) { skipped.error++; continue; }
+        try {
+          const result = await processOneSticker(meme, stickerFiles.length);
+          if (result.skipped) {
+            if (result.reason === "animated") skipped.animated++;
+            else if (result.reason === "too-large") skipped.tooLarge++;
+            else skipped.error++;
+            continue;
+          }
+          stickerFiles.push(result.filename);
+          stickerBlobs.push(result);
+          if (!firstUsable) firstUsable = meme;
+        } catch (e) {
+          console.error("Sticker process failed:", e);
+          skipped.error++;
+        }
+        const pct = Math.round(((i + 1) / ids.length) * 90); // reserve last 10% for zip
+        if (exportBtn) exportBtn.innerHTML = "Building pack\u2026 " + pct + "%";
+      }
+
+      if (stickerBlobs.length < PACK_MIN) {
+        showToast("Need at least " + PACK_MIN + " static stickers \u2014 only got " + stickerBlobs.length);
+        return;
+      }
+
+      // Build tray icon from the first usable sticker
+      const trayBytes = await buildTrayIcon(firstUsable);
+
+      // Build contents.json
+      const packId = getOrCreatePackId();
+      const contentsJson = buildContentsJson(packId, name, publisher, stickerFiles);
+
+      // Bundle ZIP
+      if (exportBtn) exportBtn.innerHTML = "Packaging\u2026";
+      const zip = new JSZip();
+      zip.file("contents.json", contentsJson);
+      zip.file("tray.png", trayBytes);
+      stickerBlobs.forEach(function (s) { zip.file(s.filename, s.bytes); });
+
+      const zipBlob = await zip.generateAsync({
+        type: "blob",
+        mimeType: "application/wastickers",
+        compression: "DEFLATE",
+        compressionOptions: { level: 6 }
+      });
+
+      // Trigger download
+      const safeName = (name || "whamr-pack").replace(/[^a-z0-9-_]+/gi, "-").toLowerCase();
+      const url = URL.createObjectURL(zipBlob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = safeName + ".wastickers";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+
+      // Friendly summary
+      let summary = "Pack downloaded \u2014 " + stickerBlobs.length + " stickers";
+      if (skipped.animated) summary += " (\u26a0\ufe0f " + skipped.animated + " animated skipped)";
+      if (skipped.tooLarge) summary += " (" + skipped.tooLarge + " too large)";
+      if (skipped.error) summary += " (" + skipped.error + " failed)";
+      showToast(summary);
+
+    } catch (e) {
+      console.error("Pack export failed:", e);
+      showToast("Pack export failed: " + (e.message || "unknown error"));
+    } finally {
+      if (exportBtn) {
+        exportBtn.disabled = false;
+        exportBtn.innerHTML = originalLabel;
+      }
+    }
   }
 
     /* ============================================
