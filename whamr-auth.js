@@ -83,6 +83,16 @@
         <h2 class="wam-title">Welcome to Whamr</h2>
         <p class="wam-sub">Sign in to save your favourites across devices.</p>
         <div class="wam-status" id="wam-status"></div>
+        <button class="wam-google" id="wam-google" type="button">
+          <svg class="wam-google-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+          </svg>
+          <span>Continue with Google</span>
+        </button>
+        <div class="wam-divider"><span>or with email</span></div>
         <input id="wam-email" type="email" placeholder="Email" autocomplete="email" />
         <input id="wam-password" type="password" placeholder="Password (min 6 characters)" autocomplete="current-password" />
         <div class="wam-actions">
@@ -129,6 +139,23 @@
       if (error) return setStatus("err", error.message);
       setStatus("ok", "Welcome back!");
       setTimeout(close, 700);
+    });
+
+    overlay.querySelector("#wam-google").addEventListener("click", async function () {
+      setStatus("load", "Opening Google sign-in...");
+      try {
+        const { error } = await db.auth.signInWithOAuth({
+          provider: "google",
+          options: {
+            // After Google redirects back, land on the page the user was on.
+            redirectTo: window.location.href
+          }
+        });
+        if (error) return setStatus("err", error.message);
+        // On success, the browser is redirected to Google. No further code runs here.
+      } catch (e) {
+        setStatus("err", (e && e.message) || "Google sign-in failed. Try again.");
+      }
     });
   }
 
@@ -186,6 +213,29 @@
       #whamr-auth-modal .wam-btn { flex: 1; padding: 12px; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; }
       #whamr-auth-modal .wam-primary { background: #ff3366; color: #fff; }
       #whamr-auth-modal .wam-ghost { background: #232330; color: #f5f5f7; }
+      #whamr-auth-modal .wam-google {
+        display: flex; align-items: center; justify-content: center; gap: 10px;
+        width: 100%; padding: 11px 14px;
+        background: #fff; color: #1f1f1f;
+        border: 1px solid rgba(255,255,255,0.15); border-radius: 8px;
+        font-size: 14px; font-weight: 600; font-family: inherit;
+        cursor: pointer; margin-bottom: 12px;
+        transition: filter 0.15s;
+      }
+      #whamr-auth-modal .wam-google:hover { filter: brightness(0.95); }
+      #whamr-auth-modal .wam-google:disabled { opacity: 0.6; cursor: not-allowed; }
+      #whamr-auth-modal .wam-google-icon { flex-shrink: 0; }
+      #whamr-auth-modal .wam-divider {
+        display: flex; align-items: center; gap: 10px;
+        font-size: 11.5px; color: #8a8a96;
+        text-transform: uppercase; letter-spacing: 0.1em;
+        margin: 2px 0 12px;
+      }
+      #whamr-auth-modal .wam-divider::before,
+      #whamr-auth-modal .wam-divider::after {
+        content: ""; flex: 1; height: 1px;
+        background: rgba(255,255,255,0.08);
+      }
       #whamr-auth-modal .wam-status { font-size: 13px; padding: 0; margin: 0 0 10px; min-height: 0; }
       #whamr-auth-modal .wam-status.err { color: #ef4444; }
       #whamr-auth-modal .wam-status.ok { color: #4ade80; }
@@ -273,6 +323,7 @@
         background: #14141c; border: 1px solid rgba(255,255,255,0.1);
         border-radius: 18px; padding: 24px 24px 20px;
         overflow-y: auto;
+        overflow-x: hidden;
         box-shadow: 0 24px 60px rgba(0,0,0,0.6);
         display: flex; flex-direction: column;
       }
@@ -331,6 +382,7 @@
         grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
         gap: 10px;
         margin-bottom: 16px;
+        min-width: 0; /* allow grid items to shrink properly */
       }
       .pack-card {
         position: relative;
@@ -339,9 +391,32 @@
         padding: 8px;
       }
       .pack-card-media {
-        width: 100%; aspect-ratio: 1; object-fit: cover;
-        border-radius: 6px; background: #14141c;
-        display: block;
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        aspect-ratio: 1 / 1 !important;
+        object-fit: cover;
+        border-radius: 6px;
+        background: #14141c;
+        box-sizing: border-box;
+      }
+      /* Container also locks down, in case any inherited style tries to push children out */
+      .pack-card {
+        contain: layout paint;
+        overflow: hidden;
+      }
+      /* Static-icon tile for animated items (no <video> element) */
+      .pack-card-media-anim {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        color: #ff3366;
+        background: linear-gradient(135deg, #1a1424, #14141c);
+        border: 1px solid rgba(255, 51, 102, 0.25);
+      }
+      .pack-card-media-anim svg {
+        opacity: 0.85;
       }
       .pack-card-title {
         font-size: 11.5px; color: #c8c8d2;
