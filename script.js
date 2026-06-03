@@ -1,2088 +1,436 @@
 /* ============================================
-   whamr · script.js
-   Works across pages: index (featured), memes (full library), how-it-works (no grid)
+   whamr-auth.js
+   Shared Supabase auth for the whole Whamr site.
+   Load this on every page (before script.js) like:
+     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+     <script src="whamr-auth.js"></script>
+
+   It gives the rest of the site a simple, consistent way to know
+   who is logged in, and provides a login/signup modal.
    ============================================ */
 
 (function () {
-  "use strict";
+  // ---- Connection (same project you've been testing) ----
+  const SUPABASE_URL = "https://gdjjphqdphgdnbchfcuq.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_8C8vXot7cwmsvV3Q0vK0hg_esjjLLNy";
 
-  /* ============================================
-     AI Search — synonym expansion + fuzzy match
-     ============================================ */
-  const SYNONYMS = {
-    funny:    ["laugh","lol","hilarious","comedy","haha","lmao","rofl","giggle"],
-    laugh:    ["funny","lol","giggle","chuckle","hilarious","haha","lmao"],
-    sad:      ["cry","crying","tears","sob","sobbing","unhappy","upset","meltdown","depress"],
-    happy:    ["excited","joy","celebrate","yay","great","awesome","vibes","winning"],
-    angry:    ["rage","mad","furious","frustrated","annoyed","yikes","livid"],
-    shocked:  ["surprised","wow","omg","whoa","scream","screaming","gasp"],
-    love:     ["heart","kiss","romance","cute","adorable","crush","affection"],
-    dance:    ["dancing","moves","groove","vibes","party","renegade","azonto","gwara"],
-    awkward:  ["cringe","embarrassing","uncomfortable","weird","cooked","regret"],
-    reaction: ["react","response","when","mood","face","epic"],
-    celebrate:["party","win","victory","cheer","birthday","congrats","woohoo"],
-    naija:    ["nigeria","nigerian","nollywood","pidgin","lagos","abuja","yoruba","igbo","african"],
-    nigeria:  ["naija","nigerian","nollywood","lagos"],
-    sports:   ["football","soccer","basketball","nfl","nba","game","match","goal"],
-    sticker:  ["stickers","whatsapp","wa","static","png"],
-    meme:     ["memes","viral","clip","video","format"],
-    hype:     ["lit","fire","energy","banger","idan","steeze","owanbe"],
-    flex:     ["rich","money","boss","drip","soft life","enjoyment","detty december"],
-    chill:    ["relax","vibe","calm","mood","soft life","we move"],
-    // --- Naija slang (mapped to the moods/categories the memes carry) ---
-    wahala:   ["trouble","stress","drama","problem","palava","yawa","kasala"],
-    yawa:     ["wahala","trouble","trouble dey","problem","gbege","scatter"],
-    sapa:     ["broke","money","poor","sad","suffering","hardship","sapa nation"],
-    omo:      ["shock","shocked","wow","surprised","reaction","stress","omo"],
-    japa:     ["run","running","flee","escape","leave","comot","commot"],
-    cruise:   ["funny","joke","play","banter","jare","catch cruise","gist"],
-    gbese:    ["dance","dancing","leg","zanku","legwork","moves"],
-    zanku:    ["dance","dancing","gbese","legwork","moves","gwara","azonto"],
-    choke:    ["wow","amazing","shocked","too much","e choke","overwhelming"],
-    abeg:     ["please","beg","plead","help"],
-    vex:      ["angry","annoyed","mad","upset","vexed","frustrated"],
-    nawa:     ["wow","shocked","unbelievable","na wa","disbelief"],
-    soft:     ["soft life","relax","enjoy","luxury","chill","flex"],
-    detty:    ["party","celebrate","detty december","enjoyment","owanbe","festive"],
-    gree:     ["no gree","stubborn","stand ground","refuse","no gree for anybody"],
+  // Create one shared client for the whole site
+  const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  // We expose a small, friendly toolkit on window.WhamrAuth so any page
+  // (and script.js) can use it without knowing Supabase details.
+  const listeners = [];
+  let currentUser = null;
+
+  const WhamrAuth = {
+    // The shared database client, so other code can read/write data
+    db: db,
+
+    // Who's logged in right now? Returns the user object or null.
+    getUser: function () {
+      return currentUser;
+    },
+
+    // Are we logged in?
+    isLoggedIn: function () {
+      return !!currentUser;
+    },
+
+    // Register a function to run whenever login state changes.
+    // Used by script.js to re-sync favourites on login/logout.
+    onChange: function (fn) {
+      listeners.push(fn);
+      // call immediately with the current state
+      fn(currentUser);
+    },
+
+    // Open the login/signup modal
+    openModal: function () {
+      showModal();
+    },
+
+    // Log out
+    logout: async function () {
+      await db.auth.signOut();
+    },
   };
 
-  const INTENT_PATTERNS = [
-    { re: /\b(dance|dancing|groove|moves|renegade|azonto|gwara)\b/i,     cat: "dance"     },
-    { re: /\b(laugh|lol|funny|hilarious|lmao|haha|giggle|chuckle)\b/i,  cat: "laughing"  },
-    { re: /\b(sad|cry|crying|tears|sob|depress|unhappy|meltdown)\b/i,   cat: "sad"       },
-    { re: /\b(naija|nigeria|nigerian|nollywood|lagos|pidgin|african)\b/i,cat: "naija"     },
-    { re: /\b(sport|football|basketball|soccer|nfl|nba|game|goal)\b/i,  cat: "sports"    },
-    { re: /\b(react|reaction|shocked|wow|omg|scream|screaming|yikes)\b/i,cat: "reactions" },
-    { re: /\b(awkward|cringe|embarrass|uncomfortable|weird|cooked)\b/i, cat: "awkward"   },
-    { re: /\b(love|kiss|heart|crush|romance|cute)\b/i,                  cat: "love"      },
-    { re: /\b(dance|birthday|celebrate|party|congrats|owanbe|detty)\b/i,  cat: "birthday"  },
-    // --- Naija slang routing ---
-    { re: /\b(gbese|zanku|legwork|azonto|gwara|shaku)\b/i,              cat: "dance"     },
-    { re: /\b(cruise|jare|gist|banter|e choke|choke)\b/i,               cat: "laughing"  },
-    { re: /\b(sapa|broke|suffer|hardship)\b/i,                          cat: "sad"       },
-    { re: /\b(omo|nawa|na wa|wahala|yawa|gbege|kasala|vex|vexed)\b/i,   cat: "reactions" },
-    { re: /\b(japa|comot|commot|escape|flee)\b/i,                       cat: "reactions" },
-  ];
+  window.WhamrAuth = WhamrAuth;
 
-  function expandQuery(q) {
-    const words = q.toLowerCase().split(/\s+/);
-    const expanded = new Set(words);
-    words.forEach(w => {
-      if (SYNONYMS[w]) SYNONYMS[w].forEach(s => expanded.add(s));
-      Object.entries(SYNONYMS).forEach(([key, vals]) => {
-        if (vals.includes(w)) expanded.add(key);
-      });
+  // ---- React to auth changes from Supabase ----
+  db.auth.onAuthStateChange(function (event, session) {
+    currentUser = session ? session.user : null;
+    // tell everyone who registered
+    listeners.forEach(function (fn) {
+      try { fn(currentUser); } catch (e) { console.error(e); }
     });
-    return Array.from(expanded);
-  }
-
-  function fuzzyScore(text, term) {
-    const t = text.toLowerCase(), q = term.toLowerCase();
-    if (t === q) return 1;
-    if (t.startsWith(q)) return 0.92;
-    if (t.includes(q)) return 0.85;
-    const words = t.split(/\s+/);
-    for (const w of words) {
-      if (w === q) return 0.9;
-      if (w.startsWith(q) && q.length >= 3) return 0.75;
-    }
-    if (q.length >= 4) {
-      let qi = 0;
-      for (let i = 0; i < t.length && qi < q.length; i++) {
-        if (t[i] === q[qi]) qi++;
-      }
-      const ratio = qi / q.length;
-      if (ratio >= 0.85) return ratio * 0.6;
-    }
-    return 0;
-  }
-
-  function aiScore(meme, terms) {
-    const fields = [meme.title || "", meme.category || "", (meme.tags || []).join(" ")];
-    let best = 0;
-    for (const term of terms) {
-      for (const field of fields) {
-        const s = fuzzyScore(field, term);
-        if (s > best) best = s;
-      }
-    }
-    return best;
-  }
-
-  function detectIntent(q) {
-    for (const { re, cat } of INTENT_PATTERNS) {
-      if (re.test(q)) return cat;
-    }
-    return null;
-  }
-
-  /* ---------- which page are we on ---------- */
-  const PAGE = window.__WHAMR_PAGE || "library";
-  const HAS_GRID = PAGE === "home" || PAGE === "library";
-  const IS_HOME = PAGE === "home";
-  const IS_LIBRARY = PAGE === "library";
-
-  /* ---------- state ---------- */
-  const PAGE_SIZE = 48;
-  const state = {
-    memes: [],
-    jsonMemes: [],
-    uploadedMemes: [],
-    favorites: new Set(),
-    activeCategory: "all",
-    searchQuery: "",
-    currentModal: null,
-    featuredIds: null, // set on homepage from data-featured-ids
-    page: 1,          // infinite scroll page
-    filteredCache: [], // cached filtered list for infinite scroll
-  };
-
-  /* ---------- dom refs (some may be null on certain pages) ---------- */
-  const $ = (id) => document.getElementById(id);
-  const el = {
-    grid: $("grid"),
-    empty: $("empty"),
-    emptyTitle: $("empty-title"),
-    emptySub: $("empty-sub"),
-    loading: $("loading"),
-    search: $("search"),
-    filters: $("filters"),
-    count: $("count"),
-    totalCount: $("total-count"),
-    upload: $("upload"),
-    modal: $("modal"),
-    modalBackdrop: $("modal-backdrop"),
-    modalClose: $("modal-close"),
-    modalMedia: $("modal-media"),
-    modalTitle: $("modal-title"),
-    modalCategory: $("modal-category"),
-    modalType: $("modal-type"),
-    modalTags: $("modal-tags"),
-    btnShare: $("btn-share"),
-    btnFavorite: $("btn-favorite"),
-    favIcon: $("fav-icon"),
-    favLabel: $("fav-label"),
-    btnDownload: $("btn-download"),
-    btnDelete: $("btn-delete"),
-    shareSheet: $("share-sheet"),
-    shareBackdrop: $("share-backdrop"),
-    shareClose: $("share-close"),
-    shareGrid: $("share-grid"),
-    toast: $("toast"),
-    modalTabs: $("modal-tabs") ? document.querySelectorAll(".modal-tab") : null,
-    tabShare: $("tab-share"),
-    tabDiscuss: $("tab-discuss"),
-    tabOrigin: $("tab-origin"),
-    tabVariants: $("tab-variants"),
-    discussList: $("discuss-list"),
-    discussForm: $("discuss-form"),
-    discussName: $("discuss-name"),
-    discussText: $("discuss-text"),
-    discussCount: $("discuss-count"),
-    originBody: $("origin-body"),
-    originEditBtn: $("origin-edit-btn"),
-    originForm: $("origin-form"),
-    originYear: $("origin-year"),
-    originSource: $("origin-source"),
-    originText: $("origin-text"),
-    originCancel: $("origin-cancel"),
-    variantsList: $("variants-list"),
-    variantForm: $("variant-form"),
-    variantTitle: $("variant-title"),
-    variantUrl: $("variant-url"),
-    variantsCount: $("variants-count"),
-  };
-
-  /* ============================================
-     Favorites — localStorage (instant) + Supabase (synced when logged in)
-     ============================================
-     Design: localStorage stays the instant layer so the site feels fast and
-     keeps working for logged-out users exactly as before. If the user is
-     logged in (via WhamrAuth / Supabase), we ALSO sync in the background so
-     favourites follow them across devices. If Supabase is down or the user is
-     logged out, everything still works locally — the cloud is a bonus layer.
-     ============================================ */
-  const FAV_KEY = "whamr-favorites";
-
-  // Is the shared auth layer available on this page?
-  function authReady() {
-    return typeof window !== "undefined" && window.WhamrAuth;
-  }
-  function currentUserId() {
-    if (!authReady()) return null;
-    const u = window.WhamrAuth.getUser();
-    return u ? u.id : null;
-  }
-
-  function loadFavorites() {
-    // Always load the local copy first — instant, no waiting.
-    try {
-      const raw = localStorage.getItem(FAV_KEY);
-      if (raw) state.favorites = new Set(JSON.parse(raw));
-    } catch (e) {
-      state.favorites = new Set();
-    }
-  }
-
-  function saveFavorites() {
-    try { localStorage.setItem(FAV_KEY, JSON.stringify([...state.favorites])); } catch (e) {}
-  }
-
-  function toggleFavorite(id) {
-    if (state.favorites.has(id)) {
-      state.favorites.delete(id);
-      saveFavorites();
-      cloudRemoveFavorite(id); // background, only runs if logged in
-      return false;
-    }
-    state.favorites.add(id);
-    saveFavorites();
-    cloudAddFavorite(id); // background, only runs if logged in
-    return true;
-  }
-
-  function isFavorited(id) { return state.favorites.has(id); }
-
-  /* ---- Supabase sync (all fail silently; never block the UI) ---- */
-
-  // Add one favourite to the cloud (if logged in)
-  async function cloudAddFavorite(id) {
-    const userId = currentUserId();
-    if (!userId) return;
-    try {
-      await window.WhamrAuth.db
-        .from("favorites")
-        .insert({ user_id: userId, meme_id: id });
-    } catch (e) {
-      // ignore — local copy already saved, cloud is best-effort
-    }
-  }
-
-  // Remove one favourite from the cloud (if logged in)
-  async function cloudRemoveFavorite(id) {
-    const userId = currentUserId();
-    if (!userId) return;
-    try {
-      await window.WhamrAuth.db
-        .from("favorites")
-        .delete()
-        .eq("user_id", userId)
-        .eq("meme_id", id);
-    } catch (e) {
-      // ignore
-    }
-  }
-
-  // On login: pull the user's cloud favourites and merge with local,
-  // then push any local-only ones up so both sides end up complete.
-  async function syncFavoritesFromCloud() {
-    const userId = currentUserId();
-    if (!userId) return;
-    try {
-      const { data, error } = await window.WhamrAuth.db
-        .from("favorites")
-        .select("meme_id")
-        .eq("user_id", userId);
-      if (error || !data) return;
-
-      const cloudIds = new Set(data.map(function (r) { return r.meme_id; }));
-      const localIds = new Set(state.favorites);
-
-      // Merge: union of both sides
-      const merged = new Set([...cloudIds, ...localIds]);
-      state.favorites = merged;
-      saveFavorites();
-
-      // Push local-only ones up to the cloud
-      const toPush = [...localIds].filter(function (id) { return !cloudIds.has(id); });
-      if (toPush.length) {
-        const rows = toPush.map(function (id) {
-          return { user_id: userId, meme_id: id };
-        });
-        try {
-          await window.WhamrAuth.db.from("favorites").insert(rows);
-        } catch (e) { /* ignore */ }
-      }
-
-      // Redraw so the merged favourites show up
-      if (typeof renderGrid === "function") renderGrid();
-      if (typeof IS_LIBRARY !== "undefined" && IS_LIBRARY && typeof renderFilters === "function") {
-        renderFilters();
-      }
-    } catch (e) {
-      // ignore — local copy is fine
-    }
-  }
-
-  // When auth state changes (login/logout), re-sync.
-  if (authReady()) {
-    window.WhamrAuth.onChange(function (user) {
-      if (user) syncFavoritesFromCloud();
-    });
-  }
-
-  /* ============================================
-     Sticker Pack Builder — Phase 1
-     - Maintains a "pack-in-progress" list in localStorage
-     - "Add to pack" toggles items in the current pack
-     - The pack-builder modal lets users name the pack,
-       remove items, and (in Phase 2) export it
-     ============================================ */
-  const PACK_KEY = "whamr-pack-v1";
-  const PACK_MAX = 30;
-  const PACK_MIN = 3;
-  // Pack state lives on `state.pack` so the rest of the IIFE can see it.
-  state.pack = loadPack();
-
-  function loadPack() {
-    try {
-      const raw = localStorage.getItem(PACK_KEY);
-      if (!raw) return { name: "", publisher: "", ids: [] };
-      const p = JSON.parse(raw);
-      if (!p || typeof p !== "object") return { name: "", publisher: "", ids: [] };
-      return {
-        name: typeof p.name === "string" ? p.name : "",
-        publisher: typeof p.publisher === "string" ? p.publisher : "",
-        ids: Array.isArray(p.ids) ? p.ids.slice(0, PACK_MAX) : [],
-      };
-    } catch (e) {
-      return { name: "", publisher: "", ids: [] };
-    }
-  }
-
-  function savePack() {
-    try { localStorage.setItem(PACK_KEY, JSON.stringify(state.pack)); } catch (e) {}
-  }
-
-  function inPack(id) { return state.pack.ids.indexOf(id) !== -1; }
-
-  function addToPack(id) {
-    if (inPack(id)) return { ok: false, reason: "already in pack" };
-    if (state.pack.ids.length >= PACK_MAX) return { ok: false, reason: "full" };
-    state.pack.ids.push(id);
-    savePack();
-    updatePackBadge();
-    return { ok: true };
-  }
-
-  function removeFromPack(id) {
-    const i = state.pack.ids.indexOf(id);
-    if (i === -1) return false;
-    state.pack.ids.splice(i, 1);
-    savePack();
-    updatePackBadge();
-    return true;
-  }
-
-  function clearPack() {
-    state.pack.ids = [];
-    savePack();
-    updatePackBadge();
-  }
-
-  function updatePackBadge() {
-    const b = document.getElementById("pack-count-badge");
-    if (!b) return;
-    const n = state.pack.ids.length;
-    if (n > 0) {
-      b.textContent = String(n);
-      b.hidden = false;
-    } else {
-      b.hidden = true;
-    }
-  }
-
-  // Helper: lookup an item by id from any source (json memes or uploads)
-  function findMemeById(id) {
-    if (!state.memes || !id) return null;
-    for (let i = 0; i < state.memes.length; i++) {
-      if (state.memes[i].id === id) return state.memes[i];
-    }
-    return null;
-  }
-
-  // Classify whether an item would be a static or animated sticker
-  // (Phase 2 will do real encoding; Phase 1 just tags it for the data model.)
-  function isAnimatedPackItem(m) {
-    if (!m) return false;
-    const t = (m.type || "").toLowerCase();
-    return t === "mp4" || t === "webm" || t === "mov" || t === "gif";
-  }
-
-  /* ---- Modal button: "Add to pack" / "In pack" toggle ---- */
-  function handlePackButton() {
-    const meme = state.currentModal;
-    if (!meme) return;
-    if (inPack(meme.id)) {
-      removeFromPack(meme.id);
-      showToast("Removed from pack");
-    } else {
-      const res = addToPack(meme.id);
-      if (!res.ok && res.reason === "full") {
-        showToast("Pack is full (max " + PACK_MAX + ")");
-        return;
-      }
-      showToast("Added to pack \u2014 " + state.pack.ids.length + "/" + PACK_MAX);
-    }
-    updatePackButton(meme);
-  }
-
-  function updatePackButton(meme) {
-    const btn = document.getElementById("btn-pack");
-    const label = document.getElementById("pack-label");
-    if (!btn || !label) return;
-    if (meme && inPack(meme.id)) {
-      btn.classList.add("is-active");
-      label.textContent = "In pack";
-    } else {
-      btn.classList.remove("is-active");
-      label.textContent = "Add to pack";
-    }
-  }
-
-  /* ---- Pack builder modal ---- */
-  function openPackBuilder() {
-    const m = document.getElementById("pack-modal");
-    if (!m) return;
-    m.hidden = false;
-    document.body.style.overflow = "hidden";
-    renderPackBuilder();
-    // Restore name/publisher
-    const nameInput = document.getElementById("pack-name");
-    const pubInput = document.getElementById("pack-publisher");
-    if (nameInput) nameInput.value = state.pack.name || "";
-    if (pubInput) pubInput.value = state.pack.publisher || "";
-  }
-
-  function closePackBuilder() {
-    const m = document.getElementById("pack-modal");
-    if (!m) return;
-    m.hidden = true;
-    document.body.style.overflow = "";
-  }
-
-  function renderPackBuilder() {
-    const grid = document.getElementById("pack-grid");
-    const empty = document.getElementById("pack-empty");
-    const count = document.getElementById("pack-count");
-    const minNote = document.getElementById("pack-min-note");
-    const exportBtn = document.getElementById("pack-export");
-    const typesLine = document.getElementById("pack-types-line");
-    if (!grid) return;
-
-    const ids = state.pack.ids;
-    if (count) count.textContent = String(ids.length);
-
-    if (ids.length === 0) {
-      grid.innerHTML = "";
-      if (empty) empty.hidden = false;
-      if (minNote) minNote.textContent = "(need at least " + PACK_MIN + ")";
-      if (typesLine) typesLine.innerHTML = "";
-      if (exportBtn) exportBtn.disabled = true;
-      return;
-    }
-    if (empty) empty.hidden = true;
-
-    // Build cards
-    let staticN = 0, animatedN = 0;
-    grid.innerHTML = "";
-    ids.forEach(function (id) {
-      const m = findMemeById(id);
-      if (!m) {
-        // Item missing from catalog (was removed). Show a placeholder.
-        const card = document.createElement("div");
-        card.className = "pack-card pack-card-missing";
-        card.innerHTML = '<div class="pack-card-media">?</div>' +
-          '<div class="pack-card-title">Missing item</div>' +
-          '<button class="pack-card-remove" data-id="' + id + '">Remove</button>';
-        grid.appendChild(card);
-        return;
-      }
-      const animated = isAnimatedPackItem(m);
-      if (animated) animatedN++; else staticN++;
-
-      const card = document.createElement("div");
-      card.className = "pack-card";
-      // Media preview: use poster image for videos? Phase 1 just shows the src.
-      let mediaHtml = "";
-      if (animated) {
-        mediaHtml = '<video class="pack-card-media" src="' + m.src + '" muted loop playsinline preload="metadata"></video>' +
-          '<span class="pack-card-tag pack-card-tag-animated">ANIM</span>';
-      } else {
-        mediaHtml = '<img class="pack-card-media" src="' + m.src + '" alt="" loading="lazy"/>' +
-          '<span class="pack-card-tag">STKR</span>';
-      }
-      card.innerHTML = mediaHtml +
-        '<div class="pack-card-title">' + escapeHtmlPack(m.title || "(untitled)") + '</div>' +
-        '<button class="pack-card-remove" data-id="' + m.id + '" aria-label="Remove from pack">\u00d7</button>';
-      grid.appendChild(card);
-    });
-
-    // Wire up remove buttons
-    grid.querySelectorAll(".pack-card-remove").forEach(function (b) {
-      b.addEventListener("click", function () {
-        removeFromPack(b.getAttribute("data-id"));
-        renderPackBuilder();
-      });
-    });
-
-    // Auto-play visible videos a little (preview)
-    grid.querySelectorAll("video.pack-card-media").forEach(function (v) {
-      const p = v.play(); if (p && p.catch) p.catch(function(){});
-    });
-
-    // Status line
-    if (typesLine) {
-      typesLine.innerHTML =
-        '<span class="pack-pill">' + staticN + ' static</span>' +
-        '<span class="pack-pill">' + animatedN + ' animated</span>';
-    }
-
-    // Min/max state
-    if (minNote) {
-      if (ids.length < PACK_MIN) {
-        minNote.textContent = "(need at least " + PACK_MIN + " \u2014 " + (PACK_MIN - ids.length) + " more)";
-        minNote.style.color = "#ffe34d";
-      } else {
-        minNote.textContent = "(ready to export once Phase 2 ships)";
-        minNote.style.color = "";
-      }
-    }
-    if (exportBtn) {
-      // Phase 2: enable when we have at least the minimum.
-      exportBtn.disabled = (ids.length < PACK_MIN);
-      // Update label to reflect that export is now real
-      if (exportBtn.innerHTML.indexOf("Phase 2") !== -1) {
-        exportBtn.innerHTML = "Export <span class=\"pack-soon\">(.wastickers)</span>";
-      }
-    }
-  }
-
-  function escapeHtmlPack(s) {
-    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  }
-
-  // Wire up the pack-builder modal events (called from bindEvents)
-  function bindPackBuilder() {
-    const openBtn = document.getElementById("open-pack-builder");
-    const closeBtn = document.getElementById("pack-close");
-    const backdrop = document.getElementById("pack-backdrop");
-    const clearBtn = document.getElementById("pack-clear");
-    const nameInput = document.getElementById("pack-name");
-    const pubInput = document.getElementById("pack-publisher");
-    const btnPack = document.getElementById("btn-pack");
-
-    if (openBtn) openBtn.addEventListener("click", openPackBuilder);
-    if (closeBtn) closeBtn.addEventListener("click", closePackBuilder);
-    if (backdrop) backdrop.addEventListener("click", closePackBuilder);
-    if (clearBtn) clearBtn.addEventListener("click", function () {
-      if (state.pack.ids.length === 0) return;
-      if (confirm("Clear all " + state.pack.ids.length + " stickers from this pack?")) {
-        clearPack();
-        renderPackBuilder();
-      }
-    });
-    if (nameInput) nameInput.addEventListener("input", function (e) {
-      state.pack.name = (e.target.value || "").trim();
-      savePack();
-    });
-    if (pubInput) pubInput.addEventListener("input", function (e) {
-      state.pack.publisher = (e.target.value || "").trim();
-      savePack();
-    });
-    if (btnPack) btnPack.addEventListener("click", handlePackButton);
-
-    // Phase 2: wire export button to the real export flow
-    const exportBtn = document.getElementById("pack-export");
-    if (exportBtn) exportBtn.addEventListener("click", exportPack);
-
-    // Initial badge state
-    updatePackBadge();
-  }
-
-    /* ============================================
-     Sticker Pack Export \u2014 Phase 2
-     Generates a valid .wastickers ZIP file:
-       \u2022 Resizes static stickers to 512x512 WebP, <100KB each
-       \u2022 Generates a 96x96 PNG tray icon from the first sticker
-       \u2022 Writes contents.json manifest
-       \u2022 Bundles via JSZip and offers download
-     Skips videos (animated stickers \u2014 Phase 4 work).
-     ============================================ */
-
-  const PACK_STICKER_SIZE = 512;
-  const PACK_TRAY_SIZE = 96;
-  const PACK_STICKER_MAX_BYTES = 100 * 1024;   // WhatsApp limit
-  const PACK_TRAY_MAX_BYTES = 50 * 1024;       // WhatsApp limit
-
-  // Get or create a stable identifier for this pack so re-exports keep the same id.
-  function getOrCreatePackId() {
-    if (state.pack.identifier && typeof state.pack.identifier === "string" && state.pack.identifier.length > 8) {
-      return state.pack.identifier;
-    }
-    // Simple UUID-ish identifier (good enough for WhatsApp; no crypto needed)
-    const id = "whamr-" + Date.now().toString(36) + "-" +
-      Math.random().toString(36).slice(2, 10);
-    state.pack.identifier = id;
-    savePack();
-    return id;
-  }
-
-  // Load an image element from a URL with CORS so we can read pixels via canvas.
-  function loadImage(url) {
-    return new Promise(function (resolve, reject) {
-      const img = new Image();
-      img.crossOrigin = "anonymous"; // R2 needs this; if it fails we fall back below
-      img.onload = function () { resolve(img); };
-      img.onerror = function () {
-        // Retry without crossOrigin in case R2 didn't send CORS headers.
-        // This will taint the canvas but we re-attempt; export will fail there if so.
-        const img2 = new Image();
-        img2.onload = function () { resolve(img2); };
-        img2.onerror = function (e) { reject(new Error("Image load failed: " + url)); };
-        img2.src = url;
-      };
-      img.src = url;
-    });
-  }
-
-  // Draw an image into a square canvas of `size`, with transparent letterboxing,
-  // preserving aspect ratio. Returns the canvas.
-  function squareCanvas(img, size) {
-    const canvas = document.createElement("canvas");
-    canvas.width = size;
-    canvas.height = size;
-    const ctx = canvas.getContext("2d");
-    // Clear is transparent by default; explicit for clarity.
-    ctx.clearRect(0, 0, size, size);
-    // Scale so the longer side fits in size, center the result.
-    const ratio = Math.min(size / img.width, size / img.height);
-    const w = Math.round(img.width * ratio);
-    const h = Math.round(img.height * ratio);
-    const x = Math.round((size - w) / 2);
-    const y = Math.round((size - h) / 2);
-    ctx.drawImage(img, x, y, w, h);
-    return canvas;
-  }
-
-  // Encode a canvas to a blob of given mime, iteratively lowering quality
-  // until the blob is <= maxBytes. Returns the blob, or rejects if even at
-  // quality 0.4 we can't fit (very rare for 512x512).
-  function canvasToBlobUnder(canvas, mime, maxBytes) {
-    return new Promise(function (resolve, reject) {
-      const qualities = [0.92, 0.85, 0.75, 0.65, 0.55, 0.45];
-      let i = 0;
-      function tryNext() {
-        const q = qualities[i];
-        try {
-          canvas.toBlob(function (blob) {
-            if (!blob) { reject(new Error("toBlob returned null \u2014 the image may be cross-origin tainted. R2 bucket needs CORS headers (Access-Control-Allow-Origin: *) for sticker export to work.")); return; }
-            if (blob.size <= maxBytes || i === qualities.length - 1) {
-              resolve(blob);
-              return;
-            }
-            i++;
-            tryNext();
-          }, mime, q);
-        } catch (e) {
-          // SecurityError thrown synchronously on tainted canvas in some browsers
-          reject(new Error("Canvas is cross-origin tainted. The R2 bucket needs CORS headers (Access-Control-Allow-Origin: *) so this site can read pixels for export."));
-        }
-      }
-      tryNext();
-    });
-  }
-
-  // Read a Blob as Uint8Array (for JSZip).
-  function blobToUint8(blob) {
-    return new Promise(function (resolve, reject) {
-      const r = new FileReader();
-      r.onload = function () { resolve(new Uint8Array(r.result)); };
-      r.onerror = function () { reject(new Error("FileReader failed")); };
-      r.readAsArrayBuffer(blob);
-    });
-  }
-
-  // Process one meme into a sticker file. Returns { filename, bytes } or null
-  // if it's a video (animated) and should be skipped.
-  async function processOneSticker(meme, index) {
-    if (isAnimatedPackItem(meme)) {
-      return { skipped: true, reason: "animated" };
-    }
-    const img = await loadImage(meme.src);
-    const canvas = squareCanvas(img, PACK_STICKER_SIZE);
-    const blob = await canvasToBlobUnder(canvas, "image/webp", PACK_STICKER_MAX_BYTES);
-    if (blob.size > PACK_STICKER_MAX_BYTES) {
-      return { skipped: true, reason: "too-large" };
-    }
-    const bytes = await blobToUint8(blob);
-    const filename = "sticker_" + String(index + 1).padStart(2, "0") + ".webp";
-    return { filename: filename, bytes: bytes, size: blob.size };
-  }
-
-  // Tray icon: take the first usable sticker, downscale to 96x96 PNG <50KB.
-  async function buildTrayIcon(firstMeme) {
-    const img = await loadImage(firstMeme.src);
-    const canvas = squareCanvas(img, PACK_TRAY_SIZE);
-    const blob = await canvasToBlobUnder(canvas, "image/png", PACK_TRAY_MAX_BYTES);
-    return await blobToUint8(blob);
-  }
-
-  // Build contents.json per WhatsApp's spec
-  function buildContentsJson(packId, name, publisher, stickerFiles) {
-    return JSON.stringify({
-      "android_play_store_link": "",
-      "ios_app_store_link": "",
-      "sticker_packs": [{
-        "identifier": packId,
-        "name": name || "Whamr Pack",
-        "publisher": publisher || "Whamr",
-        "tray_image_file": "tray.png",
-        "image_data_version": "1",
-        "avoid_cache": false,
-        "publisher_email": "",
-        "publisher_website": "",
-        "privacy_policy_website": "",
-        "license_agreement_website": "",
-        "stickers": stickerFiles.map(function (fname) {
-          return { "image_file": fname, "emojis": ["\ud83d\ude00"] }; // default 😀
-        })
-      }]
-    }, null, 2);
-  }
-
-  // The main export flow, called when the user clicks "Export pack".
-  async function exportPack() {
-    if (typeof JSZip === "undefined") {
-      showToast("Sticker pack library didn't load \u2014 please refresh");
-      return;
-    }
-    const ids = state.pack.ids.slice();
-    if (ids.length < PACK_MIN) {
-      showToast("Need at least " + PACK_MIN + " stickers");
-      return;
-    }
-
-    // Pull current name/publisher from the modal inputs (if open)
-    const nameInput = document.getElementById("pack-name");
-    const pubInput = document.getElementById("pack-publisher");
-    const name = (nameInput && nameInput.value.trim()) || state.pack.name || "Whamr Pack";
-    const publisher = (pubInput && pubInput.value.trim()) || state.pack.publisher || "Whamr";
-
-    // UI: show progress
-    const exportBtn = document.getElementById("pack-export");
-    const originalLabel = exportBtn ? exportBtn.innerHTML : "";
-    if (exportBtn) {
-      exportBtn.disabled = true;
-      exportBtn.innerHTML = "Building pack\u2026 0%";
-    }
-
-    const stickerFiles = []; // filenames in order
-    const stickerBlobs = []; // {filename, bytes}
-    const skipped = { animated: 0, tooLarge: 0, error: 0 };
-    let firstUsable = null;
-
-    try {
-      for (let i = 0; i < ids.length; i++) {
-        const meme = findMemeById(ids[i]);
-        if (!meme) { skipped.error++; continue; }
-        try {
-          const result = await processOneSticker(meme, stickerFiles.length);
-          if (result.skipped) {
-            if (result.reason === "animated") skipped.animated++;
-            else if (result.reason === "too-large") skipped.tooLarge++;
-            else skipped.error++;
-            continue;
-          }
-          stickerFiles.push(result.filename);
-          stickerBlobs.push(result);
-          if (!firstUsable) firstUsable = meme;
-        } catch (e) {
-          console.error("Sticker process failed:", e);
-          skipped.error++;
-        }
-        const pct = Math.round(((i + 1) / ids.length) * 90); // reserve last 10% for zip
-        if (exportBtn) exportBtn.innerHTML = "Building pack\u2026 " + pct + "%";
-      }
-
-      if (stickerBlobs.length < PACK_MIN) {
-        showToast("Need at least " + PACK_MIN + " static stickers \u2014 only got " + stickerBlobs.length);
-        return;
-      }
-
-      // Build tray icon from the first usable sticker
-      const trayBytes = await buildTrayIcon(firstUsable);
-
-      // Build contents.json
-      const packId = getOrCreatePackId();
-      const contentsJson = buildContentsJson(packId, name, publisher, stickerFiles);
-
-      // Bundle ZIP
-      if (exportBtn) exportBtn.innerHTML = "Packaging\u2026";
-      const zip = new JSZip();
-      zip.file("contents.json", contentsJson);
-      zip.file("tray.png", trayBytes);
-      stickerBlobs.forEach(function (s) { zip.file(s.filename, s.bytes); });
-
-      const zipBlob = await zip.generateAsync({
-        type: "blob",
-        mimeType: "application/wastickers",
-        compression: "DEFLATE",
-        compressionOptions: { level: 6 }
-      });
-
-      // Trigger download
-      const safeName = (name || "whamr-pack").replace(/[^a-z0-9-_]+/gi, "-").toLowerCase();
-      const url = URL.createObjectURL(zipBlob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = safeName + ".wastickers";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
-
-      // Friendly summary
-      let summary = "Pack downloaded \u2014 " + stickerBlobs.length + " stickers";
-      if (skipped.animated) summary += " (\u26a0\ufe0f " + skipped.animated + " animated skipped)";
-      if (skipped.tooLarge) summary += " (" + skipped.tooLarge + " too large)";
-      if (skipped.error) summary += " (" + skipped.error + " failed)";
-      showToast(summary);
-
-    } catch (e) {
-      console.error("Pack export failed:", e);
-      showToast("Pack export failed: " + (e.message || "unknown error"));
-    } finally {
-      if (exportBtn) {
-        exportBtn.disabled = false;
-        exportBtn.innerHTML = originalLabel;
-      }
-    }
-  }
-
-    /* ============================================
-     IndexedDB for uploads
-     ============================================ */
-  const DB_NAME = "whamr-db";
-  const DB_VERSION = 1;
-  const STORE = "memes";
-
-  function openDB() {
-    return new Promise((resolve, reject) => {
-      const req = indexedDB.open(DB_NAME, DB_VERSION);
-      req.onerror = () => reject(req.error);
-      req.onsuccess = () => resolve(req.result);
-      req.onupgradeneeded = (e) => {
-        const db = e.target.result;
-        if (!db.objectStoreNames.contains(STORE)) {
-          db.createObjectStore(STORE, { keyPath: "id" });
-        }
-      };
-    });
-  }
-  async function dbGetAll() {
-    const db = await openDB();
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE, "readonly");
-      const req = tx.objectStore(STORE).getAll();
-      req.onsuccess = () => resolve(req.result || []);
-      req.onerror = () => reject(req.error);
-    });
-  }
-  async function dbAdd(item) {
-    const db = await openDB();
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE, "readwrite");
-      const req = tx.objectStore(STORE).add(item);
-      req.onsuccess = () => resolve(req.result);
-      req.onerror = () => reject(req.error);
-    });
-  }
-  async function dbDelete(id) {
-    const db = await openDB();
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE, "readwrite");
-      const req = tx.objectStore(STORE).delete(id);
-      req.onsuccess = () => resolve();
-      req.onerror = () => reject(req.error);
-    });
-  }
-
-  /* ============================================
-     Load memes
-     ============================================ */
-  async function loadMemes() {
-    try {
-      const res = await fetch("data/memes.json", { cache: "no-store" });
-      if (!res.ok) throw new Error("failed to fetch memes.json");
-      state.jsonMemes = await res.json();
-    } catch (err) {
-      console.warn("Could not load memes.json:", err);
-      state.jsonMemes = [];
-    }
-
-    // Only load uploads on the library page (where they're shown)
-    if (IS_LIBRARY) {
-      try {
-        const uploaded = await dbGetAll();
-        state.uploadedMemes = uploaded.map((u) => ({
-          ...u,
-          src: URL.createObjectURL(u.blob),
-          uploaded: true,
-        }));
-      } catch (err) {
-        state.uploadedMemes = [];
-      }
-    }
-
-    state.memes = [...state.uploadedMemes, ...state.jsonMemes];
-
-    // On homepage, only keep featured
-    if (IS_HOME && el.grid) {
-      const idsAttr = el.grid.getAttribute("data-featured-ids");
-      if (idsAttr) {
-        state.featuredIds = idsAttr.split(",").map(s => s.trim());
-        const featuredMap = new Map(state.memes.map(m => [m.id, m]));
-        state.memes = state.featuredIds
-          .map(id => featuredMap.get(id))
-          .filter(Boolean);
-      }
-    }
-
-    // Update total-count if it's on the page
-    if (el.totalCount) el.totalCount.textContent = state.jsonMemes.length;
-  }
-
-  /* ============================================
-     Categories / filter pills (library only)
-     ============================================ */
-  function computeCategories() {
-    const set = new Set();
-    state.memes.forEach((m) => m.category && set.add(m.category.toLowerCase()));
-    return ["all", "favorites", ...Array.from(set).sort()];
-  }
-
-  function renderFilters() {
-    if (!el.filters) return;
-    const categories = computeCategories();
-    el.filters.innerHTML = "";
-    categories.forEach((cat) => {
-      const btn = document.createElement("button");
-      btn.className = "pill" + (cat === state.activeCategory ? " active" : "");
-      if (cat === "favorites") btn.classList.add("favorites-pill");
-      if (cat === "stickers") btn.classList.add("stickers-pill");
-      if (cat === "favorites") {
-        btn.innerHTML = `
-          <svg viewBox="0 0 24 24" fill="${state.activeCategory === "favorites" ? "currentColor" : "none"}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-          </svg>
-          <span>Favorites</span>
-          <span class="pill-count">${state.favorites.size}</span>
-        `;
-      } else if (cat === "stickers") {
-        btn.innerHTML = `
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M15.5 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3z"></path>
-            <path d="M15 3v6h6"></path>
-          </svg>
-          <span>Stickers</span>
-        `;
-      } else {
-        btn.textContent = cat;
-      }
-      btn.setAttribute("role", "tab");
-      btn.setAttribute("aria-selected", cat === state.activeCategory);
-      btn.addEventListener("click", () => {
-        state.activeCategory = cat;
-        state.page = 1;
-        setPageInUrl(1, true);
-        renderFilters();
-        renderGrid();
-      });
-      el.filters.appendChild(btn);
-    });
-  }
-
-  /* ============================================
-     Filter + AI search
-     ============================================ */
-  function getFilteredMemes() {
-    const q = state.searchQuery.trim();
-    let list = state.memes;
-
-    // Category filter
-    if (state.activeCategory === "favorites") {
-      list = list.filter(m => isFavorited(m.id));
-    } else if (state.activeCategory !== "all") {
-      list = list.filter(m => (m.category || "").toLowerCase() === state.activeCategory);
-    }
-
-    if (!q) return list;
-
-    // AI search: expand synonyms then score each meme
-    const terms = expandQuery(q);
-    const scored = list.map(m => ({ m, s: aiScore(m, terms) }));
-    const matched = scored.filter(({ s }) => s >= 0.3).sort((a, b) => b.s - a.s);
-
-    // Show AI intent hint
-    const hint = document.getElementById("ai-hint");
-    if (hint) {
-      const intent = detectIntent(q);
-      if (intent && matched.length > 0) {
-        hint.textContent = `✦ AI matched: ${intent} — ${matched.length} result${matched.length !== 1 ? "s" : ""} · results match by title & tags, not video content`;
-        hint.style.display = "block";
-      } else {
-        hint.style.display = "none";
-      }
-    }
-
-    return matched.map(({ m }) => m);
-  }
-
-  /* ============================================
-     Render grid — with infinite scroll
-     ============================================ */
-  /* ============================================
-     Paginated grid: one page of PAGE_SIZE at a time.
-     Page is read from ?page= in the URL on first load.
-     On home (featured), pagination is bypassed.
-     ============================================ */
-
-  function getPageFromUrl() {
-    try {
-      const p = parseInt(new URLSearchParams(window.location.search).get("page"), 10);
-      return (Number.isFinite(p) && p > 0) ? p : 1;
-    } catch (e) { return 1; }
-  }
-
-  function setPageInUrl(n, replace) {
-    try {
-      const url = new URL(window.location.href);
-      if (n <= 1) url.searchParams.delete("page");
-      else url.searchParams.set("page", String(n));
-      const newUrl = url.pathname + (url.search ? url.search : "") + url.hash;
-      if (replace) window.history.replaceState({}, "", newUrl);
-      else window.history.pushState({}, "", newUrl);
-    } catch (e) {}
-  }
-
-  function renderGrid(append) {
-    if (!el.grid) return;
-
-    // Home (featured) keeps the original simple render
-    if (IS_HOME) {
-      state.filteredCache = state.memes;
-      el.grid.innerHTML = "";
-      if (el.loading) el.loading.hidden = true;
-      const frag = document.createDocumentFragment();
-      state.memes.forEach((m, i) => frag.appendChild(createCard(m, i)));
-      el.grid.appendChild(frag);
-      return;
-    }
-
-    if (!append) {
-      state.filteredCache = getFilteredMemes();
-      el.grid.innerHTML = "";
-    }
-
-    const list = state.filteredCache;
-
-    if (el.count) {
-      const noun = state.activeCategory === "stickers" ? "sticker" : "meme";
-      el.count.textContent = list.length === 1 ? `1 ${noun}` : `${list.length} ${noun}s`;
-    }
-    if (el.loading) el.loading.hidden = true;
-
-    if (list.length === 0) {
-      if (el.empty) {
-        el.empty.hidden = false;
-        if (state.activeCategory === "favorites") {
-          if (el.emptyTitle) el.emptyTitle.textContent = "No favorites yet";
-          if (el.emptySub) el.emptySub.textContent = "Tap the heart on any meme to save it here.";
-        } else {
-          if (el.emptyTitle) el.emptyTitle.textContent = "No memes found";
-          if (el.emptySub) el.emptySub.textContent = 'Try different words \u2014 search understands "funny naija reaction" or "sad crying".';
-        }
-      }
-      renderPagination(0, 0);
-      return;
-    }
-    if (el.empty) el.empty.hidden = true;
-
-    const totalPages = Math.max(1, Math.ceil(list.length / PAGE_SIZE));
-    if (state.page > totalPages) state.page = totalPages;
-    if (state.page < 1) state.page = 1;
-
-    const startIdx = (state.page - 1) * PAGE_SIZE;
-    const endIdx = Math.min(startIdx + PAGE_SIZE, list.length);
-    const slice = list.slice(startIdx, endIdx);
-
-    const frag = document.createDocumentFragment();
-    slice.forEach((m, i) => frag.appendChild(createCard(m, startIdx + i)));
-    el.grid.appendChild(frag);
-
-    renderPagination(state.page, totalPages);
-  }
-
-  function buildPageNumbers(current, total) {
-    if (total <= 7) {
-      const out = [];
-      for (let i = 1; i <= total; i++) out.push(i);
-      return out;
-    }
-    const set = new Set([1, total, current, current - 1, current + 1]);
-    if (current <= 3) { set.add(2); set.add(3); set.add(4); }
-    if (current >= total - 2) { set.add(total - 1); set.add(total - 2); set.add(total - 3); }
-    const pages = [...set].filter((n) => n >= 1 && n <= total).sort((a, b) => a - b);
-    const out = [];
-    for (let i = 0; i < pages.length; i++) {
-      if (i > 0 && pages[i] - pages[i - 1] > 1) out.push("ellipsis");
-      out.push(pages[i]);
-    }
-    return out;
-  }
-
-  function renderPagination(current, total) {
-    let host = document.getElementById("pagination");
-    if (!host) {
-      const grid = el.grid;
-      if (!grid) return;
-      host = document.createElement("nav");
-      host.id = "pagination";
-      host.className = "pagination";
-      host.setAttribute("aria-label", "Page navigation");
-      grid.parentNode.insertBefore(host, grid.nextSibling);
-    }
-
-    if (!total || total < 2) {
-      host.innerHTML = "";
-      host.hidden = true;
-      return;
-    }
-    host.hidden = false;
-
-    const items = buildPageNumbers(current, total);
-    let html = "";
-
-    html += '<button class="pg-btn pg-prev" ' + (current <= 1 ? "disabled" : "") + ' aria-label="Previous page">' +
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="15 18 9 12 15 6"></polyline></svg>' +
-      '<span>Prev</span></button>';
-
-    items.forEach(function (it) {
-      if (it === "ellipsis") {
-        html += '<span class="pg-ellipsis" aria-hidden="true">\u2026</span>';
-      } else {
-        const active = it === current ? " is-active" : "";
-        const ariaCur = it === current ? ' aria-current="page"' : '';
-        html += '<button class="pg-btn pg-num' + active + '" data-page="' + it + '"' + ariaCur + '>' + it + '</button>';
-      }
-    });
-
-    html += '<button class="pg-btn pg-next" ' + (current >= total ? "disabled" : "") + ' aria-label="Next page">' +
-      '<span>Next</span>' +
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="9 18 15 12 9 6"></polyline></svg></button>';
-
-    host.innerHTML = html;
-
-    host.querySelectorAll("[data-page]").forEach(function (b) {
-      b.addEventListener("click", function () { goToPage(parseInt(b.getAttribute("data-page"), 10)); });
-    });
-    const prev = host.querySelector(".pg-prev");
-    const next = host.querySelector(".pg-next");
-    if (prev) prev.addEventListener("click", function () { goToPage(current - 1); });
-    if (next) next.addEventListener("click", function () { goToPage(current + 1); });
-  }
-
-  function goToPage(n) {
-    const list = state.filteredCache || [];
-    const total = Math.max(1, Math.ceil(list.length / PAGE_SIZE));
-    n = Math.min(Math.max(1, n), total);
-    if (n === state.page) return;
-    state.page = n;
-    setPageInUrl(n, false);
-    renderGrid();
-    const grid = el.grid;
-    if (grid) {
-      const y = grid.getBoundingClientRect().top + window.pageYOffset - 80;
-      window.scrollTo({ top: y, behavior: "smooth" });
-    }
-  }
-
-  window.addEventListener("popstate", function () {
-    if (IS_HOME) return;
-    state.page = getPageFromUrl();
-    renderGrid();
+    // update any auth buttons on the page
+    paintAuthButtons();
   });
 
-  function initInfiniteScroll() { /* no-op: paginated now */ }
-
-  function createCard(meme, index) {
-    const card = document.createElement("article");
-    card.className = "card";
-    if (meme.category) card.setAttribute("data-cat", meme.category);
-    card.style.animationDelay = Math.min(index * 30, 400) + "ms";
-    card.tabIndex = 0;
-    card.setAttribute("role", "button");
-    card.setAttribute("aria-label", `Preview ${meme.title}`);
-
-    const badge = document.createElement("div");
-    badge.className = "card-badge " + meme.type;
-    badge.textContent = meme.type;
-    card.appendChild(badge);
-
-    const heart = document.createElement("button");
-    heart.className = "card-fav" + (isFavorited(meme.id) ? " is-favorited" : "");
-    heart.setAttribute("aria-label", "Add to favorites");
-    heart.innerHTML = `
-      <svg viewBox="0 0 24 24" fill="${isFavorited(meme.id) ? "currentColor" : "none"}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-      </svg>
-    `;
-    heart.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const nowFav = toggleFavorite(meme.id);
-      heart.classList.toggle("is-favorited", nowFav);
-      heart.querySelector("svg").setAttribute("fill", nowFav ? "currentColor" : "none");
-      heart.classList.remove("heart-burst");
-      void heart.offsetWidth;
-      heart.classList.add("heart-burst");
-      if (state.activeCategory === "favorites" && !nowFav) {
-        setTimeout(() => renderGrid(), 200);
-      }
-      renderFilters();
-      showToast(nowFav ? "Saved to favorites" : "Removed from favorites");
-    });
-    card.appendChild(heart);
-
-    if (meme.uploaded) {
-      const tag = document.createElement("div");
-      tag.className = "card-uploaded-tag";
-      tag.textContent = "yours";
-      card.appendChild(tag);
-    }
-
-    const media = createMedia(meme, { forCard: true });
-    card.appendChild(media);
+  /* ============================================
+     The login / signup modal
+     ============================================ */
+  function showModal() {
+    if (document.getElementById("whamr-auth-modal")) return; // already open
 
     const overlay = document.createElement("div");
-    overlay.className = "card-overlay";
-    const title = document.createElement("h3");
-    title.className = "card-title";
-    title.textContent = meme.title;
-    overlay.appendChild(title);
-    if (meme.category) {
-      const sub = document.createElement("div");
-      sub.className = "card-subtitle";
-      sub.textContent = meme.category;
-      overlay.appendChild(sub);
-    }
-    card.appendChild(overlay);
-
-    card.addEventListener("click", () => openModal(meme));
-    card.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openModal(meme); }
-    });
-
-    if (meme.type === "mp4") {
-      card.addEventListener("mouseenter", () => { media.play().catch(() => {}); });
-      card.addEventListener("mouseleave", () => { media.pause(); media.currentTime = 0; });
-    }
-
-    return card;
-  }
-
-  function createMedia(meme, opts = {}) {
-    const { forCard } = opts;
-    if (meme.type === "mp4") {
-      const v = document.createElement("video");
-      v.className = forCard ? "card-media" : "";
-      v.muted = true;
-      v.loop = true;
-      v.playsInline = true;
-      if (forCard) {
-        // GRID: do NOT download the video up front. With hundreds of videos,
-        // eager loading is what makes the page heavy. We set preload="none"
-        // and only attach the real source when the card scrolls into view
-        // (via IntersectionObserver below). Until then, nothing downloads.
-        v.preload = "none";
-        v.setAttribute("data-src", meme.src);
-        observeLazyVideo(v);
-      } else {
-        // MODAL: the user opened this specific meme, so load it normally.
-        v.src = meme.src;
-        v.preload = "metadata";
-        v.controls = true;
-      }
-      return v;
-    }
-    const img = document.createElement("img");
-    img.className = forCard ? "card-media" : "";
-    img.src = meme.src;
-    img.alt = meme.title || "meme";
-    img.loading = "lazy";
-    return img;
-  }
-
-  // Lazy-load grid videos: only attach the source when the card is near
-  // the viewport, and start playing then. Saves loading hundreds of videos
-  // that the user never scrolls to.
-  var _lazyVideoObserver = null;
-  function observeLazyVideo(video) {
-    if (!("IntersectionObserver" in window)) {
-      // Old browser fallback: just load it.
-      video.src = video.getAttribute("data-src");
-      return;
-    }
-    if (!_lazyVideoObserver) {
-      _lazyVideoObserver = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          const vid = entry.target;
-          if (entry.isIntersecting) {
-            // Came into view: attach source (once) and play.
-            if (!vid.src) {
-              const ds = vid.getAttribute("data-src");
-              if (ds) {
-                vid.src = ds;
-                vid.preload = "metadata";
-              }
-            }
-            const p = vid.play();
-            if (p && p.catch) p.catch(function () {});
-          } else {
-            // Scrolled away: pause to save resources.
-            if (!vid.paused) vid.pause();
-          }
-        });
-      }, { rootMargin: "300px" }); // start loading a little before it's visible
-    }
-    _lazyVideoObserver.observe(video);
-  }
-
-  /* ============================================
-     Community data (localStorage per meme)
-     ============================================ */
-  function communityKey(id) { return "whamr-community-" + id; }
-
-  function getCommunity(id) {
-    try {
-      const raw = localStorage.getItem(communityKey(id));
-      return raw ? JSON.parse(raw) : { discussions: [], origin: null, variants: [] };
-    } catch { return { discussions: [], origin: null, variants: [] }; }
-  }
-
-  function saveCommunity(id, data) {
-    try { localStorage.setItem(communityKey(id), JSON.stringify(data)); } catch {}
-  }
-
-  function timeAgo(ts) {
-    const d = (Date.now() - ts) / 1000;
-    if (d < 60)   return "just now";
-    if (d < 3600) return Math.floor(d / 60) + "m ago";
-    if (d < 86400) return Math.floor(d / 3600) + "h ago";
-    return Math.floor(d / 86400) + "d ago";
-  }
-
-  // ----- Public comments (Supabase) -----
-  // Admin user id: this account can delete ANY comment (moderation).
-  const ADMIN_USER_ID = "2f9e8690-d8af-497b-aee2-03cb1816e462";
-
-  function authUser() {
-    return (window.WhamrAuth && window.WhamrAuth.getUser) ? window.WhamrAuth.getUser() : null;
-  }
-  function isAdmin() {
-    const u = authUser();
-    return u && u.id === ADMIN_USER_ID;
-  }
-
-  async function renderDiscussTab(meme) {
-    const list = el.discussList;
-    if (!list) return;
-
-    // Show the form only to logged-in users; otherwise prompt to log in.
-    updateDiscussForm();
-
-    list.innerHTML = '<div class="discuss-empty">Loading comments…</div>';
-
-    if (!(window.WhamrAuth && window.WhamrAuth.db)) {
-      list.innerHTML = '<div class="discuss-empty">Comments unavailable.</div>';
-      return;
-    }
-
-    // Read all comments for this meme, newest first.
-    const { data, error } = await window.WhamrAuth.db
-      .from("comments")
-      .select("*")
-      .eq("meme_id", meme.id)
-      .order("created_at", { ascending: false });
-
-    // Guard: if the modal moved to another meme while we were loading, stop.
-    if (!state.currentModal || state.currentModal.id !== meme.id) return;
-
-    if (error) {
-      list.innerHTML = '<div class="discuss-empty">Could not load comments.</div>';
-      return;
-    }
-
-    if (el.discussCount) el.discussCount.textContent = data.length || "";
-
-    if (!data.length) {
-      list.innerHTML = '<div class="discuss-empty">No comments yet. Be the first to say something.</div>';
-      return;
-    }
-
-    const me = authUser();
-    const admin = isAdmin();
-    list.innerHTML = "";
-    data.forEach(function (post) {
-      const div = document.createElement("div");
-      div.className = "discuss-post";
-      const name = post.author_name || "Someone";
-      const initial = name.charAt(0).toUpperCase();
-      const mine = me && post.user_id === me.id;
-      const canDelete = mine || admin;
-
-      // Action buttons: report (anyone logged in), delete (own or admin)
-      let actions = "";
-      if (me) {
-        if (canDelete) {
-          actions += '<button class="discuss-act discuss-del" data-id="' + post.id + '">Delete</button>';
-        }
-        if (!mine && !post.reported) {
-          actions += '<button class="discuss-act discuss-report" data-id="' + post.id + '">Report</button>';
-        }
-      }
-      const reportedTag = post.reported
-        ? '<span class="discuss-reported">reported</span>'
-        : "";
-
-      div.innerHTML =
-        '<div class="discuss-post-header">' +
-          '<div class="discuss-avatar">' + escapeHtmlC(initial) + '</div>' +
-          '<span class="discuss-name">' + escapeHtmlC(name) + '</span>' +
-          (mine ? '<span class="discuss-you">you</span>' : '') +
-          reportedTag +
-          '<span class="discuss-time">' + timeAgoIso(post.created_at) + '</span>' +
-        '</div>' +
-        '<div class="discuss-text">' + escapeHtmlC(post.text) + '</div>' +
-        (actions ? '<div class="discuss-actions">' + actions + '</div>' : '');
-      list.appendChild(div);
-    });
-
-    // Wire up delete buttons
-    list.querySelectorAll(".discuss-del").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        deleteComment(btn.getAttribute("data-id"), meme);
-      });
-    });
-    // Wire up report buttons
-    list.querySelectorAll(".discuss-report").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        reportComment(btn.getAttribute("data-id"), meme);
-      });
-    });
-  }
-
-  // Show/hide the comment form depending on login state.
-  function updateDiscussForm() {
-    if (!el.discussForm) return;
-    const u = authUser();
-    if (u) {
-      el.discussForm.style.display = "";
-      // Prefill the name field with the user's email handle, lock it.
-      if (el.discussName) {
-        el.discussName.value = u.email ? u.email.split("@")[0] : "";
-        el.discussName.readOnly = true;
-        el.discussName.style.display = "none"; // we use account name, hide the field
-      }
-      if (el.discussText) el.discussText.placeholder = "Add a public comment…";
-    } else {
-      el.discussForm.style.display = "none";
-      // Put a gentle login prompt above the (hidden) form.
-      let prompt = el.discussForm.parentElement.querySelector(".discuss-login-prompt");
-      if (!prompt) {
-        prompt = document.createElement("div");
-        prompt.className = "discuss-login-prompt discuss-empty";
-        prompt.innerHTML = 'Please <a href="#" class="discuss-login-link">log in</a> to comment.';
-        el.discussForm.parentElement.insertBefore(prompt, el.discussForm);
-        const link = prompt.querySelector(".discuss-login-link");
-        if (link) link.addEventListener("click", function (e) {
-          e.preventDefault();
-          if (window.WhamrAuth) window.WhamrAuth.openModal();
-        });
-      }
-      prompt.style.display = "";
-    }
-    // If logged in, remove any lingering prompt
-    if (u) {
-      const prompt = el.discussForm.parentElement.querySelector(".discuss-login-prompt");
-      if (prompt) prompt.style.display = "none";
-    }
-  }
-
-  async function deleteComment(commentId, meme) {
-    if (!window.WhamrAuth || !window.WhamrAuth.db) return;
-    if (!confirm("Delete this comment?")) return;
-    const { error } = await window.WhamrAuth.db
-      .from("comments")
-      .delete()
-      .eq("id", commentId);
-    if (error) {
-      showToast("Could not delete");
-    } else {
-      showToast("Comment deleted");
-      renderDiscussTab(meme);
-    }
-  }
-
-  async function reportComment(commentId, meme) {
-    if (!window.WhamrAuth || !window.WhamrAuth.db) return;
-    const { error } = await window.WhamrAuth.db
-      .from("comments")
-      .update({ reported: true })
-      .eq("id", commentId);
-    if (error) {
-      showToast("Could not report");
-    } else {
-      showToast("Reported. Thank you.");
-      renderDiscussTab(meme);
-    }
-  }
-
-  // Small local helpers (kept separate so we don't touch existing ones)
-  function escapeHtmlC(str) {
-    return String(str)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
-  }
-  function timeAgoIso(iso) {
-    const ts = new Date(iso).getTime();
-    if (isNaN(ts)) return "";
-    return timeAgo(ts);
-  }
-
-  function renderOriginTab(meme) {
-    const data = getCommunity(meme.id);
-    const body = el.originBody;
-    if (!body) return;
-
-    if (!data.origin || !data.origin.text) {
-      body.innerHTML = '<p class="origin-empty">No origin info yet — do you know where this meme came from? Add context below.</p>';
-      return;
-    }
-    const o = data.origin;
-    body.innerHTML = `
-      <div class="origin-entry">
-        <div class="origin-meta">
-          ${o.year ? `<span class="origin-chip">${o.year}</span>` : ""}
-          ${o.source ? `<span class="origin-chip">${o.source}</span>` : ""}
+    overlay.id = "whamr-auth-modal";
+    overlay.innerHTML = `
+      <div class="wam-backdrop"></div>
+      <div class="wam-card">
+        <button class="wam-close" aria-label="Close">&times;</button>
+        <h2 class="wam-title">Welcome to Whamr</h2>
+        <p class="wam-sub">Sign in to save your favourites across devices.</p>
+        <div class="wam-status" id="wam-status"></div>
+        <input id="wam-email" type="email" placeholder="Email" autocomplete="email" />
+        <input id="wam-password" type="password" placeholder="Password (min 6 characters)" autocomplete="current-password" />
+        <div class="wam-actions">
+          <button class="wam-btn wam-primary" id="wam-signup">Sign Up</button>
+          <button class="wam-btn wam-ghost" id="wam-login">Log In</button>
         </div>
-        <div class="origin-text">${o.text.replace(/</g,"&lt;").replace(/\n/g,"<br>")}</div>
-        ${o.editedAt ? `<div class="origin-edited">Last edited ${timeAgo(o.editedAt)}</div>` : ""}
       </div>
     `;
-  }
+    document.body.appendChild(overlay);
+    injectStyles();
 
-  function renderVariantsTab(meme) {
-    const data = getCommunity(meme.id);
-    const list = el.variantsList;
-    if (!list) return;
-    if (el.variantsCount) el.variantsCount.textContent = data.variants.length || "";
+    const close = function () { overlay.remove(); };
+    overlay.querySelector(".wam-backdrop").addEventListener("click", close);
+    overlay.querySelector(".wam-close").addEventListener("click", close);
 
-    if (!data.variants.length) {
-      list.innerHTML = '<div class="variants-empty">No variants linked yet. Know a remix, extended cut, or parody? Add the link below.</div>';
-      return;
-    }
-    list.innerHTML = "";
-    data.variants.forEach(v => {
-      let host = "";
-      try { host = new URL(v.url).hostname.replace("www.", ""); } catch {}
-      const a = document.createElement("a");
-      a.className = "variant-item";
-      a.href = v.url;
-      a.target = "_blank";
-      a.rel = "noopener noreferrer";
-      a.innerHTML = `
-        <span class="variant-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-        </span>
-        <span class="variant-title">${v.title.replace(/</g,"&lt;")}</span>
-        <span class="variant-host">${host}</span>
-      `;
-      list.appendChild(a);
-    });
-  }
-
-  function openCommunityTab(tabName) {
-    document.querySelectorAll(".modal-tab").forEach(t => t.classList.toggle("active", t.dataset.tab === tabName));
-    const panels = { share: el.tabShare, discuss: el.tabDiscuss, origin: el.tabOrigin, variants: el.tabVariants };
-    Object.entries(panels).forEach(([name, panel]) => {
-      if (panel) panel.hidden = (name !== tabName);
-    });
-  }
-
-  /* ============================================
-     Modal
-     ============================================ */
-  function openModal(meme, options = {}) {
-    if (!el.modal) return;
-    state.currentModal = meme;
-
-    el.modalMedia.innerHTML = "";
-    el.modalMedia.appendChild(createMedia(meme, { forCard: false }));
-
-    if (el.modalTitle) el.modalTitle.textContent = meme.title;
-    if (el.modalCategory) el.modalCategory.textContent = meme.category || "uncategorized";
-    if (el.modalType) el.modalType.textContent = meme.type;
-
-    if (el.modalTags) {
-      el.modalTags.innerHTML = "";
-      (meme.tags || []).forEach((t) => {
-        const chip = document.createElement("span");
-        chip.className = "tag-chip";
-        chip.textContent = t;
-        el.modalTags.appendChild(chip);
-      });
-    }
-
-    updateFavoriteButton(meme);
-      if (typeof updatePackButton === "function") updatePackButton(meme);
-    // Render community tabs
-    if (el.tabShare) openCommunityTab("share");
-    renderDiscussTab(meme);
-    renderOriginTab(meme);
-    renderVariantsTab(meme);
-    if (el.btnDelete) el.btnDelete.hidden = !meme.uploaded;
-    el.modal.hidden = false;
-    document.body.style.overflow = "hidden";
-
-    if (!options.skipUrlUpdate && IS_LIBRARY) {
-      const url = new URL(window.location.href);
-      url.searchParams.set("m", meme.id);
-      window.history.replaceState({ memeId: meme.id }, "", url.toString());
-    }
-  }
-
-  function closeModal() {
-    if (!el.modal) return;
-    const video = el.modalMedia.querySelector("video");
-    if (video) video.pause();
-    el.modal.hidden = true;
-    el.modalMedia.innerHTML = "";
-    state.currentModal = null;
-    document.body.style.overflow = "";
-    if (IS_LIBRARY) {
-      const url = new URL(window.location.href);
-      if (url.searchParams.has("m")) {
-        url.searchParams.delete("m");
-        window.history.replaceState({}, "", url.toString());
-      }
-    }
-  }
-
-  function updateFavoriteButton(meme) {
-    if (!el.btnFavorite) return;
-    const fav = isFavorited(meme.id);
-    el.btnFavorite.classList.toggle("is-favorited", fav);
-    if (el.favIcon) el.favIcon.setAttribute("fill", fav ? "currentColor" : "none");
-    if (el.favLabel) el.favLabel.textContent = fav ? "Saved" : "Save";
-  }
-
-  /* ============================================
-     Modal actions
-     ============================================ */
-  async function handleDownload() {
-    const m = state.currentModal;
-    if (!m) return;
-    try {
-      const res = await fetch(m.src);
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      const ext = m.type === "mp4" ? "mp4" : "gif";
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${slugify(m.title)}.${ext}`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      showToast("Download started");
-    } catch (err) {
-      showToast("Download failed");
-    }
-  }
-
-  function handleFavorite() {
-    const m = state.currentModal;
-    if (!m) return;
-    const nowFav = toggleFavorite(m.id);
-    updateFavoriteButton(m);
-    renderFilters();
-    if (state.activeCategory === "favorites" && !nowFav) {
-      setTimeout(() => renderGrid(), 200);
-    } else {
-      renderGrid();
-    }
-    showToast(nowFav ? "Saved to favorites" : "Removed from favorites");
-  }
-
-  async function handleDelete() {
-    const m = state.currentModal;
-    if (!m || !m.uploaded) return;
-    if (!confirm(`Delete "${m.title}"? This can't be undone.`)) return;
-    try {
-      await dbDelete(m.id);
-      URL.revokeObjectURL(m.src);
-      state.uploadedMemes = state.uploadedMemes.filter((x) => x.id !== m.id);
-      state.memes = [...state.uploadedMemes, ...state.jsonMemes];
-      if (state.favorites.has(m.id)) {
-        state.favorites.delete(m.id);
-        saveFavorites();
-      }
-      closeModal();
-      renderFilters();
-      renderGrid();
-      showToast("Deleted");
-    } catch (err) {
-      showToast("Delete failed");
-    }
-  }
-
-  /* ============================================
-     Share sheet
-     ============================================ */
-  function getShareUrl(meme) {
-    // Always link to the library page so the modal opens with the meme
-    const base = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, "/");
-    return base + "memes.html?m=" + meme.id;
-  }
-  function getShareText(meme) {
-    return `${meme.title} — on Whamr`;
-  }
-
-  const SHARE_TARGETS = [
-    { name: "WhatsApp", icon: "whatsapp", build: (url, text) => `https://wa.me/?text=${encodeURIComponent(text + " " + url)}` },
-    { name: "Telegram", icon: "telegram", build: (url, text) => `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}` },
-    { name: "X", icon: "x", build: (url, text) => `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}` },
-    { name: "Facebook", icon: "facebook", build: (url) => `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}` },
-    { name: "Reddit", icon: "reddit", build: (url, text) => `https://reddit.com/submit?url=${encodeURIComponent(url)}&title=${encodeURIComponent(text)}` },
-    { name: "LinkedIn", icon: "linkedin", build: (url) => `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}` },
-    { name: "Pinterest", icon: "pinterest", build: (url, text) => `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(url)}&description=${encodeURIComponent(text)}` },
-    { name: "Email", icon: "email", build: (url, text) => `mailto:?subject=${encodeURIComponent(text)}&body=${encodeURIComponent(text + "\n\n" + url)}` },
-  ];
-
-  const ICON_SVGS = {
-    whatsapp: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.966-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.693.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>',
-    telegram: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0a12 12 0 00-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>',
-    x: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>',
-    facebook: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>',
-    reddit: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 01-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 01.042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 014.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 01.14-.197.35.35 0 01.238-.042l2.906.617a1.214 1.214 0 011.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 00-.231.094.33.33 0 000 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 00.029-.463.33.33 0 00-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 00-.232-.095z"/></svg>',
-    linkedin: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.063 2.063 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>',
-    pinterest: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.746-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12.017 24c6.624 0 11.99-5.367 11.99-11.986C24.007 5.367 18.641.001 12.017.001z"/></svg>',
-    email: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>',
-    copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>',
-    native: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>',
-  };
-
-  function openShareSheet() {
-    const m = state.currentModal;
-    if (!m || !el.shareSheet) return;
-    if (m.uploaded) {
-      showToast("Uploaded memes stay on your device — can't be shared publicly");
-      return;
-    }
-    const url = getShareUrl(m);
-    const text = getShareText(m);
-    el.shareGrid.innerHTML = "";
-
-    if (navigator.share) {
-      const btn = document.createElement("button");
-      btn.className = "share-option";
-      btn.innerHTML = `<div class="share-option-icon icon-native">${ICON_SVGS.native}</div><span>More...</span>`;
-      btn.addEventListener("click", async () => {
-        try { await navigator.share({ title: m.title, text, url }); closeShareSheet(); } catch (err) {}
-      });
-      el.shareGrid.appendChild(btn);
-    }
-
-    SHARE_TARGETS.forEach((t) => {
-      const a = document.createElement("a");
-      a.className = "share-option";
-      a.href = t.build(url, text);
-      a.target = "_blank";
-      a.rel = "noopener noreferrer";
-      a.innerHTML = `<div class="share-option-icon icon-${t.icon}">${ICON_SVGS[t.icon]}</div><span>${t.name}</span>`;
-      a.addEventListener("click", () => setTimeout(closeShareSheet, 200));
-      el.shareGrid.appendChild(a);
-    });
-
-    const copyBtn = document.createElement("button");
-    copyBtn.className = "share-option";
-    copyBtn.innerHTML = `<div class="share-option-icon icon-copy">${ICON_SVGS.copy}</div><span>Copy link</span>`;
-    copyBtn.addEventListener("click", async () => {
-      try { await navigator.clipboard.writeText(url); showToast("Link copied to clipboard"); closeShareSheet(); }
-      catch (err) { showToast("Could not copy"); }
-    });
-    el.shareGrid.appendChild(copyBtn);
-
-    el.shareSheet.hidden = false;
-  }
-
-  function closeShareSheet() {
-    if (el.shareSheet) el.shareSheet.hidden = true;
-  }
-
-  /* ============================================
-     Upload (library only)
-     ============================================ */
-  async function handleUpload(e) {
-    const files = Array.from(e.target.files || []);
-    if (!files.length) return;
-    let added = 0;
-    for (const file of files) {
-      const name = file.name.toLowerCase();
-      const isMp4 = file.type === "video/mp4" || name.endsWith(".mp4");
-      const isGif = file.type === "image/gif" || name.endsWith(".gif");
-      const isPng = file.type === "image/png" || name.endsWith(".png");
-      const isWebp = file.type === "image/webp" || name.endsWith(".webp");
-      if (!isMp4 && !isGif && !isPng && !isWebp) continue;
-      const id = "u_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8);
-      let type = "mp4";
-      if (isGif) type = "gif";
-      else if (isPng) type = "png";
-      else if (isWebp) type = "webp";
-      const title = file.name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ");
-      // Stickers (PNG/WebP) go in stickers category, videos/gifs go in uploads
-      const category = (isPng || isWebp) ? "stickers" : "uploads";
-      const tags = (isPng || isWebp) ? ["uploaded", "sticker"] : ["uploaded"];
-      const item = { id, title, type, blob: file, category, tags };
-      try {
-        await dbAdd(item);
-        state.uploadedMemes.unshift({ ...item, src: URL.createObjectURL(file), uploaded: true });
-        added++;
-      } catch (err) {}
-    }
-    state.memes = [...state.uploadedMemes, ...state.jsonMemes];
-    renderFilters();
-    renderGrid();
-    e.target.value = "";
-    if (added) showToast(`Added ${added} item${added > 1 ? "s" : ""}`);
-  }
-
-  /* ============================================
-     Deep-link
-     ============================================ */
-  function checkDeepLink() {
-    if (!IS_LIBRARY) return;
-    const url = new URL(window.location.href);
-    const memeId = url.searchParams.get("m");
-    if (!memeId) return;
-    const meme = state.memes.find((m) => m.id === memeId);
-    if (meme) {
-      setTimeout(() => openModal(meme, { skipUrlUpdate: true }), 300);
-    } else {
-      url.searchParams.delete("m");
-      window.history.replaceState({}, "", url.toString());
-    }
-  }
-
-  /* ============================================
-     Helpers
-     ============================================ */
-  function slugify(str) {
-    return (str || "meme").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60);
-  }
-
-  let toastTimer;
-  function showToast(msg) {
-    if (!el.toast) return;
-    el.toast.textContent = msg;
-    el.toast.hidden = false;
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => { el.toast.hidden = true; }, 2200);
-  }
-
-  function debounce(fn, ms) {
-    let t;
-    return function (...args) {
-      clearTimeout(t);
-      t = setTimeout(() => fn.apply(this, args), ms);
+    const statusEl = overlay.querySelector("#wam-status");
+    const setStatus = function (kind, msg) {
+      statusEl.className = "wam-status " + kind;
+      statusEl.textContent = msg;
     };
+
+    const getCreds = function () {
+      return {
+        email: overlay.querySelector("#wam-email").value.trim(),
+        password: overlay.querySelector("#wam-password").value,
+      };
+    };
+
+    overlay.querySelector("#wam-signup").addEventListener("click", async function () {
+      const { email, password } = getCreds();
+      if (!email || !password) return setStatus("err", "Enter an email and password.");
+      setStatus("load", "Creating your account...");
+      const { error } = await db.auth.signUp({ email: email, password: password });
+      if (error) return setStatus("err", error.message);
+      setStatus("ok", "Account created. You're in!");
+      setTimeout(close, 900);
+    });
+
+    overlay.querySelector("#wam-login").addEventListener("click", async function () {
+      const { email, password } = getCreds();
+      if (!email || !password) return setStatus("err", "Enter an email and password.");
+      setStatus("load", "Logging in...");
+      const { error } = await db.auth.signInWithPassword({ email: email, password: password });
+      if (error) return setStatus("err", error.message);
+      setStatus("ok", "Welcome back!");
+      setTimeout(close, 700);
+    });
   }
 
   /* ============================================
-     Bind events
+     Auth buttons in the nav
+     Any element with id="whamr-auth-area" gets filled automatically.
      ============================================ */
-  function bindEvents() {
-    if (typeof bindPackBuilder === "function") bindPackBuilder();
-    if (el.search) {
-      el.search.addEventListener("input", debounce((e) => {
-        state.searchQuery = e.target.value;
-        if (!e.target.value.trim()) {
-          const hint = document.getElementById("ai-hint");
-          if (hint) hint.style.display = "none";
-        }
-        state.page = 1;
-        setPageInUrl(1, true);
-        renderGrid();
-      }, 160));
-    }
-    if (el.upload) el.upload.addEventListener("change", handleUpload);
-    if (el.modalClose) el.modalClose.addEventListener("click", closeModal);
-    if (el.modalBackdrop) el.modalBackdrop.addEventListener("click", closeModal);
-    if (el.btnShare) el.btnShare.addEventListener("click", openShareSheet);
-    if (el.btnFavorite) el.btnFavorite.addEventListener("click", handleFavorite);
-    if (el.btnDownload) el.btnDownload.addEventListener("click", handleDownload);
-    if (el.btnDelete) el.btnDelete.addEventListener("click", handleDelete);
-    if (el.shareClose) el.shareClose.addEventListener("click", closeShareSheet);
-    if (el.shareBackdrop) el.shareBackdrop.addEventListener("click", closeShareSheet);
-
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
-        if (el.shareSheet && !el.shareSheet.hidden) closeShareSheet();
-        else if (el.modal && !el.modal.hidden) closeModal();
+  function paintAuthButtons() {
+    const areas = document.querySelectorAll("#whamr-auth-area");
+    areas.forEach(function (area) {
+      if (currentUser) {
+        const name = currentUser.email ? currentUser.email.split("@")[0] : "you";
+        area.innerHTML =
+          '<span class="wam-greeting">Hi, ' + escapeHtml(name) + '</span>' +
+          '<button class="wam-navbtn" id="wam-logout-btn">Log out</button>';
+        const btn = area.querySelector("#wam-logout-btn");
+        if (btn) btn.addEventListener("click", function () { WhamrAuth.logout(); });
+      } else {
+        area.innerHTML =
+          '<button class="wam-navbtn wam-navbtn-primary" id="wam-open-btn">Sign In</button>';
+        const btn = area.querySelector("#wam-open-btn");
+        if (btn) btn.addEventListener("click", function () { WhamrAuth.openModal(); });
       }
     });
+  }
 
-    window.addEventListener("popstate", () => {
-      if (!IS_LIBRARY) return;
-      const url = new URL(window.location.href);
-      const memeId = url.searchParams.get("m");
-      if (memeId) {
-        const meme = state.memes.find((m) => m.id === memeId);
-        if (meme) openModal(meme, { skipUrlUpdate: true });
-      } else if (el.modal && !el.modal.hidden) {
-        closeModal();
-      }
-    });
+  // Paint buttons once the page is ready
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", paintAuthButtons);
+  } else {
+    paintAuthButtons();
+  }
 
-    // Tab switching
-    document.querySelectorAll(".modal-tab").forEach(tab => {
-      tab.addEventListener("click", () => openCommunityTab(tab.dataset.tab));
-    });
-
-    // Discussion form submit -> save a public comment to Supabase
-    if (el.discussForm) {
-      el.discussForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const meme = state.currentModal;
-        if (!meme) return;
-
-        const u = authUser();
-        if (!u) {
-          if (window.WhamrAuth) window.WhamrAuth.openModal();
-          return;
-        }
-
-        const text = (el.discussText.value || "").trim();
-        if (!text) return;
-
-        if (!window.WhamrAuth || !window.WhamrAuth.db) {
-          showToast("Comments unavailable");
-          return;
-        }
-
-        const authorName = u.email ? u.email.split("@")[0] : "Someone";
-
-        const { error } = await window.WhamrAuth.db
-          .from("comments")
-          .insert({
-            meme_id: meme.id,
-            user_id: u.id,
-            author_name: authorName,
-            text: text,
-          });
-
-        if (error) {
-          showToast("Could not post comment");
-          return;
-        }
-
-        el.discussText.value = "";
-        renderDiscussTab(meme);
-        showToast("Comment posted");
-      });
-    }
-
-    // Origin form
-    if (el.originEditBtn) {
-      el.originEditBtn.addEventListener("click", () => {
-        if (el.originForm) el.originForm.hidden = !el.originForm.hidden;
-        const meme = state.currentModal;
-        if (meme && el.originForm && !el.originForm.hidden) {
-          const data = getCommunity(meme.id);
-          if (data.origin) {
-            if (el.originYear) el.originYear.value = data.origin.year || "";
-            if (el.originSource) el.originSource.value = data.origin.source || "";
-            if (el.originText) el.originText.value = data.origin.text || "";
-          }
-        }
-      });
-    }
-    if (el.originCancel) {
-      el.originCancel.addEventListener("click", () => {
-        if (el.originForm) el.originForm.hidden = true;
-      });
-    }
-    if (el.originForm) {
-      el.originForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const meme = state.currentModal;
-        if (!meme) return;
-        const text = (el.originText ? el.originText.value : "").trim();
-        if (!text) return;
-        const data = getCommunity(meme.id);
-        data.origin = {
-          year:     (el.originYear ? el.originYear.value : "").trim(),
-          source:   (el.originSource ? el.originSource.value : "").trim(),
-          text,
-          editedAt: Date.now(),
-        };
-        saveCommunity(meme.id, data);
-        if (el.originForm) el.originForm.hidden = true;
-        renderOriginTab(meme);
-        showToast("Origin saved");
-      });
-    }
-
-    // Variant form
-    if (el.variantForm) {
-      el.variantForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const meme = state.currentModal;
-        if (!meme) return;
-        const url = (el.variantUrl ? el.variantUrl.value : "").trim();
-        if (!url) return;
-        const title = (el.variantTitle ? el.variantTitle.value : "").trim() || url;
-        const data = getCommunity(meme.id);
-        data.variants.push({ id: Date.now().toString(36), title, url, ts: Date.now() });
-        saveCommunity(meme.id, data);
-        if (el.variantTitle) el.variantTitle.value = "";
-        if (el.variantUrl) el.variantUrl.value = "";
-        renderVariantsTab(meme);
-        if (el.variantsCount) el.variantsCount.textContent = data.variants.length;
-        showToast("Variant link added");
-      });
-    }
+  function escapeHtml(str) {
+    return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
 
   /* ============================================
-     Init
+     Modal + button styles (matches Whamr dark theme)
      ============================================ */
-  async function init() {
-    loadFavorites();
-    bindEvents();
-    state.page = getPageFromUrl();
+  function injectStyles() {
+    if (document.getElementById("wam-styles")) return;
+    const s = document.createElement("style");
+    s.id = "wam-styles";
+    s.textContent = `
+      #whamr-auth-modal { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+      #whamr-auth-modal .wam-backdrop { position: absolute; inset: 0; background: rgba(5,5,10,0.8); backdrop-filter: blur(8px); }
+      #whamr-auth-modal .wam-card { position: relative; background: #14141c; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 28px 24px; width: 100%; max-width: 360px; box-shadow: 0 24px 80px rgba(0,0,0,0.6); }
+      #whamr-auth-modal .wam-close { position: absolute; top: 14px; right: 16px; background: none; border: none; color: #8a8a96; font-size: 24px; cursor: pointer; line-height: 1; }
+      #whamr-auth-modal .wam-title { font-family: 'Poppins', system-ui, sans-serif; font-size: 22px; font-weight: 700; color: #f5f5f7; margin: 0 0 4px; }
+      #whamr-auth-modal .wam-sub { font-size: 13.5px; color: #8a8a96; margin: 0 0 18px; }
+      #whamr-auth-modal input { width: 100%; padding: 12px 14px; background: #0a0a0f; border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; color: #f5f5f7; font-size: 15px; font-family: inherit; margin-bottom: 10px; box-sizing: border-box; }
+      #whamr-auth-modal input:focus { outline: none; border-color: #ff3366; }
+      #whamr-auth-modal .wam-actions { display: flex; gap: 8px; margin-top: 4px; }
+      #whamr-auth-modal .wam-btn { flex: 1; padding: 12px; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; }
+      #whamr-auth-modal .wam-primary { background: #ff3366; color: #fff; }
+      #whamr-auth-modal .wam-ghost { background: #232330; color: #f5f5f7; }
+      #whamr-auth-modal .wam-status { font-size: 13px; padding: 0; margin: 0 0 10px; min-height: 0; }
+      #whamr-auth-modal .wam-status.err { color: #ef4444; }
+      #whamr-auth-modal .wam-status.ok { color: #4ade80; }
+      #whamr-auth-modal .wam-status.load { color: #8a8a96; }
+      #whamr-auth-area { display: inline-flex; align-items: center; gap: 12px; }
+      .wam-greeting { font-size: 14px; color: #8a8a96; white-space: nowrap; }
+      .wam-navbtn { padding: 9px 18px; border-radius: 100px; border: 1px solid rgba(255,255,255,0.12); background: #14141c; color: #f5f5f7; font-size: 13.5px; font-weight: 600; cursor: pointer; font-family: inherit; }
+      .wam-navbtn-primary { background: #ff3366; border-color: #ff3366; color: #fff; }
 
-    if (HAS_GRID) {
-      await loadMemes();
-      if (IS_LIBRARY) renderFilters();
-      renderGrid();
-      initInfiniteScroll();
-      checkDeepLink();
-    }
+      /* Public comment system styles */
+      .discuss-actions { display: flex; gap: 8px; margin-top: 8px; }
+      .discuss-act { background: none; border: 1px solid rgba(255,255,255,0.15); color: #8a8a96; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 100px; cursor: pointer; font-family: inherit; }
+      .discuss-act:hover { color: #f5f5f7; border-color: rgba(255,255,255,0.3); }
+      .discuss-del:hover { color: #ef4444; border-color: #ef4444; }
+      .discuss-report:hover { color: #ffe34d; border-color: #ffe34d; }
+      .discuss-you { font-size: 10px; font-weight: 700; color: #ff3366; background: rgba(255,51,102,0.12); padding: 1px 7px; border-radius: 100px; margin-left: 6px; }
+      .discuss-reported { font-size: 10px; font-weight: 700; color: #ffe34d; background: rgba(255,227,77,0.12); padding: 1px 7px; border-radius: 100px; margin-left: 6px; }
+      .discuss-login-prompt a { color: #ff3366; text-decoration: none; font-weight: 600; }
+
+      /* ============================================
+         Pagination control for the memes page
+         ============================================ */
+      .pagination {
+        display: flex; flex-wrap: wrap; justify-content: center;
+        align-items: center; gap: 6px;
+        padding: 40px 16px 60px;
+        max-width: 760px; margin: 24px auto 0;
+      }
+      .pg-btn {
+        display: inline-flex; align-items: center; gap: 6px;
+        min-width: 38px; height: 38px; padding: 0 12px;
+        background: #14141c; border: 1px solid rgba(255,255,255,0.1);
+        color: #f5f5f7; font-family: inherit; font-size: 13px; font-weight: 600;
+        border-radius: 10px; cursor: pointer;
+        transition: background 0.12s, border-color 0.12s, color 0.12s, transform 0.1s;
+      }
+      .pg-btn:hover:not(:disabled):not(.is-active) {
+        background: #1c1c26; border-color: rgba(255,255,255,0.2);
+      }
+      .pg-btn:active:not(:disabled) { transform: scale(0.96); }
+      .pg-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+      .pg-btn.is-active {
+        background: #ff3366; border-color: #ff3366; color: #fff;
+        cursor: default;
+      }
+      .pg-num { justify-content: center; padding: 0 10px; }
+      .pg-prev, .pg-next { padding: 0 14px; }
+      .pg-ellipsis {
+        color: #6a6a78; padding: 0 4px; font-weight: 600; user-select: none;
+      }
+      @media (max-width: 640px) {
+        .pagination { gap: 4px; padding: 28px 12px 48px; }
+        .pg-btn { min-width: 34px; height: 34px; font-size: 12.5px; padding: 0 9px; }
+        .pg-prev span, .pg-next span { display: none; }
+        .pg-prev, .pg-next { padding: 0 10px; }
+      }
+
+      /* ============================================
+         Sticker Pack Builder \u2014 Phase 1
+         ============================================ */
+      .pack-count-badge {
+        display: inline-flex; align-items: center; justify-content: center;
+        min-width: 18px; height: 18px; padding: 0 5px;
+        background: #ff3366; color: #fff;
+        font-size: 10px; font-weight: 700;
+        border-radius: 100px; margin-left: 4px;
+      }
+      #btn-pack.is-active {
+        background: rgba(255, 51, 102, 0.18) !important;
+        color: #ff3366 !important;
+        border-color: #ff3366 !important;
+      }
+      .pack-modal {
+        position: fixed; inset: 0; z-index: 1000;
+        display: flex; align-items: center; justify-content: center;
+        padding: 20px;
+      }
+      .pack-backdrop {
+        position: absolute; inset: 0;
+        background: rgba(5,5,10,0.8); backdrop-filter: blur(6px);
+      }
+      .pack-content {
+        position: relative; z-index: 1;
+        width: 100%; max-width: 720px; max-height: calc(100vh - 40px);
+        background: #14141c; border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 18px; padding: 24px 24px 20px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+        display: flex; flex-direction: column;
+      }
+      .pack-close {
+        position: absolute; top: 14px; right: 14px;
+        background: rgba(255,255,255,0.06); border: none;
+        color: #8a8a96; width: 32px; height: 32px;
+        border-radius: 50%; cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+      }
+      .pack-close:hover { background: rgba(255,255,255,0.12); color: #f5f5f7; }
+      .pack-head { margin-bottom: 18px; padding-right: 36px; }
+      .pack-title {
+        font-family: 'Poppins', sans-serif;
+        font-size: 22px; font-weight: 700; color: #f5f5f7;
+        margin: 0 0 4px; letter-spacing: -0.02em;
+      }
+      .pack-sub { font-size: 13.5px; color: #8a8a96; margin: 0; }
+      .pack-meta {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+        margin-bottom: 16px;
+      }
+      .pack-field { display: flex; flex-direction: column; gap: 5px; }
+      .pack-field-label {
+        font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+        text-transform: uppercase; color: #8a8a96;
+      }
+      .pack-field input {
+        padding: 10px 12px; background: #0a0a0f;
+        border: 1px solid rgba(255,255,255,0.12); border-radius: 8px;
+        color: #f5f5f7; font-size: 14px; font-family: inherit;
+      }
+      .pack-field input:focus {
+        outline: none; border-color: #ff3366;
+      }
+      .pack-status {
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 12px; flex-wrap: wrap;
+        padding: 10px 14px; margin-bottom: 14px;
+        background: rgba(255,51,102,0.08);
+        border: 1px solid rgba(255,51,102,0.18);
+        border-radius: 10px;
+      }
+      .pack-count-line { font-size: 14px; color: #c8c8d2; }
+      .pack-count-line strong { color: #ff3366; font-weight: 700; font-size: 15px; }
+      .pack-min { color: #8a8a96; font-size: 12.5px; margin-left: 4px; }
+      .pack-types-line { display: flex; gap: 6px; }
+      .pack-pill {
+        font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em;
+        text-transform: uppercase;
+        background: rgba(255,255,255,0.06); color: #c8c8d2;
+        padding: 3px 9px; border-radius: 100px;
+      }
+      .pack-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 10px;
+        margin-bottom: 16px;
+        min-width: 0; /* allow grid items to shrink properly */
+      }
+      .pack-card {
+        position: relative;
+        background: #0a0a0f; border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 10px; overflow: hidden;
+        padding: 8px;
+      }
+      .pack-card-media {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        aspect-ratio: 1 / 1 !important;
+        object-fit: cover;
+        border-radius: 6px;
+        background: #14141c;
+        box-sizing: border-box;
+      }
+      /* Container also locks down, in case any inherited style tries to push children out */
+      .pack-card {
+        contain: layout paint;
+        overflow: hidden;
+      }
+      /* Static-icon tile for animated items (no <video> element) */
+      .pack-card-media-anim {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        color: #ff3366;
+        background: linear-gradient(135deg, #1a1424, #14141c);
+        border: 1px solid rgba(255, 51, 102, 0.25);
+      }
+      .pack-card-media-anim svg {
+        opacity: 0.85;
+      }
+      .pack-card-title {
+        font-size: 11.5px; color: #c8c8d2;
+        margin-top: 6px;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      .pack-card-tag {
+        position: absolute; top: 11px; left: 11px;
+        font-size: 9px; font-weight: 700; letter-spacing: 0.06em;
+        background: rgba(0,0,0,0.6); color: #fff;
+        padding: 2px 6px; border-radius: 4px;
+      }
+      .pack-card-tag-animated { background: #ff3366; }
+      .pack-card-remove {
+        position: absolute; top: 6px; right: 6px;
+        width: 22px; height: 22px; border-radius: 50%;
+        background: rgba(0,0,0,0.7); color: #fff;
+        border: none; cursor: pointer;
+        font-size: 14px; line-height: 1;
+        display: flex; align-items: center; justify-content: center;
+      }
+      .pack-card-remove:hover { background: #ff3366; }
+      .pack-card-missing .pack-card-media {
+        display: flex; align-items: center; justify-content: center;
+        color: #6a6a78; font-size: 24px;
+      }
+      .pack-empty {
+        text-align: center; padding: 28px 16px;
+        color: #8a8a96; font-size: 14px;
+      }
+      .pack-empty-icon { font-size: 36px; margin-bottom: 8px; }
+      .pack-empty p { margin: 0; line-height: 1.5; }
+      .pack-empty strong { color: #f5f5f7; }
+      .pack-foot {
+        display: flex; gap: 10px; justify-content: flex-end;
+        padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06);
+        margin-top: auto;
+      }
+      .pack-btn {
+        padding: 10px 18px; border: none; border-radius: 100px;
+        font-family: inherit; font-size: 13.5px; font-weight: 600;
+        cursor: pointer;
+      }
+      .pack-btn-ghost {
+        background: rgba(255,255,255,0.06); color: #c8c8d2;
+      }
+      .pack-btn-ghost:hover { background: rgba(255,255,255,0.1); color: #f5f5f7; }
+      .pack-btn-primary {
+        background: #ff3366; color: #fff;
+      }
+      .pack-btn-primary:disabled {
+        opacity: 0.5; cursor: not-allowed;
+      }
+      .pack-soon {
+        font-size: 11px; font-weight: 500;
+        opacity: 0.85; margin-left: 4px;
+      }
+      @media (max-width: 640px) {
+        .pack-content { padding: 20px 16px 18px; max-height: calc(100vh - 24px); }
+        .pack-meta { grid-template-columns: 1fr; gap: 10px; }
+        .pack-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+        .pack-title { font-size: 19px; }
+      }
+    `;
+    document.head.appendChild(s);
   }
-
-  init();
 })();
