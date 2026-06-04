@@ -441,181 +441,24 @@
     }
   }
 
-  /* ---- Pack builder modal ---- */
-  function openPackBuilder() {
-    const m = document.getElementById("pack-modal");
-    if (!m) return;
-    // Safety reset: clear any stuck overflow from a previous broken close.
-    document.body.style.overflow = "";
-    m.hidden = false;
-    document.body.style.overflow = "hidden";
-    document.body.dataset.packModalOpen = "1";
-    renderPackBuilder();
-    // Restore name/publisher
-    const nameInput = document.getElementById("pack-name");
-    const pubInput = document.getElementById("pack-publisher");
-    if (nameInput) nameInput.value = state.pack.name || "";
-    if (pubInput) pubInput.value = state.pack.publisher || "";
-  }
-
-  function closePackBuilder() {
-    const m = document.getElementById("pack-modal");
-    if (m) m.hidden = true;
-    // Always restore body scroll, even if the modal element disappeared
-    document.body.style.overflow = "";
-    document.body.style.removeProperty("overflow");
-    delete document.body.dataset.packModalOpen;
-  }
-
-  // Safety net: if the user presses Escape while the pack modal is stuck,
-  // close it and restore scrolling.
-  document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" && document.body.dataset.packModalOpen === "1") {
-      closePackBuilder();
-    }
-  });
-
-  function renderPackBuilder() {
-    const grid = document.getElementById("pack-grid");
-    const empty = document.getElementById("pack-empty");
-    const count = document.getElementById("pack-count");
-    const minNote = document.getElementById("pack-min-note");
-    const exportBtn = document.getElementById("pack-export");
-    const typesLine = document.getElementById("pack-types-line");
-    if (!grid) return;
-
-    const ids = state.pack.ids;
-    if (count) count.textContent = String(ids.length);
-
-    if (ids.length === 0) {
-      grid.innerHTML = "";
-      if (empty) empty.hidden = false;
-      if (minNote) minNote.textContent = "(need at least " + PACK_MIN + ")";
-      if (typesLine) typesLine.innerHTML = "";
-      if (exportBtn) exportBtn.disabled = true;
-      return;
-    }
-    if (empty) empty.hidden = true;
-
-    // Build cards
-    let staticN = 0, animatedN = 0;
-    grid.innerHTML = "";
-    ids.forEach(function (id) {
-      const m = findMemeById(id);
-      if (!m) {
-        // Item missing from catalog (was removed). Show a placeholder.
-        const card = document.createElement("div");
-        card.className = "pack-card pack-card-missing";
-        card.innerHTML = '<div class="pack-card-media">?</div>' +
-          '<div class="pack-card-title">Missing item</div>' +
-          '<button class="pack-card-remove" data-id="' + id + '">Remove</button>';
-        grid.appendChild(card);
-        return;
-      }
-      const animated = isAnimatedPackItem(m);
-      if (animated) animatedN++; else staticN++;
-
-      const card = document.createElement("div");
-      card.className = "pack-card" + (animated ? " pack-card-anim" : "");
-      // Animated items get a STATIC icon tile (no <video> element to avoid layout/sizing issues).
-      // Static stickers show as an image. Either way, the media element is sized
-      // by the .pack-card-media CSS so it cannot overflow.
-      let mediaHtml = "";
-      if (animated) {
-        mediaHtml = '<div class="pack-card-media pack-card-media-anim" aria-label="Animated sticker">' +
-          '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-            '<polygon points="6 4 20 12 6 20 6 4"></polygon>' +
-          '</svg>' +
-          '</div>' +
-          '<span class="pack-card-tag pack-card-tag-animated">ANIM</span>';
-      } else {
-        mediaHtml = '<img class="pack-card-media" src="' + m.src + '" alt="" loading="lazy"/>' +
-          '<span class="pack-card-tag">STKR</span>';
-      }
-      card.innerHTML = mediaHtml +
-        '<div class="pack-card-title">' + escapeHtmlPack(m.title || "(untitled)") + '</div>' +
-        '<button class="pack-card-remove" data-id="' + m.id + '" aria-label="Remove from pack">\u00d7</button>';
-      grid.appendChild(card);
-    });
-
-    // Wire up remove buttons
-    grid.querySelectorAll(".pack-card-remove").forEach(function (b) {
-      b.addEventListener("click", function () {
-        removeFromPack(b.getAttribute("data-id"));
-        renderPackBuilder();
-      });
-    });
-
-    // (Previously auto-played video previews; removed because animated items now
-    //  render as static tiles to avoid layout/sizing issues.)
-
-    // Status line
-    if (typesLine) {
-      typesLine.innerHTML =
-        '<span class="pack-pill">' + staticN + ' static</span>' +
-        '<span class="pack-pill">' + animatedN + ' animated</span>';
-    }
-
-    // Min/max state
-    if (minNote) {
-      if (ids.length < PACK_MIN) {
-        minNote.textContent = "(need at least " + PACK_MIN + " \u2014 " + (PACK_MIN - ids.length) + " more)";
-        minNote.style.color = "#ffe34d";
-      } else {
-        minNote.textContent = "(ready to export once Phase 2 ships)";
-        minNote.style.color = "";
-      }
-    }
-    if (exportBtn) {
-      // Phase 2: enable when we have at least the minimum.
-      exportBtn.disabled = (ids.length < PACK_MIN);
-      // Update label to reflect that export is now real
-      if (exportBtn.innerHTML.indexOf("Phase 2") !== -1) {
-        exportBtn.innerHTML = "Export <span class=\"pack-soon\">(.wastickers)</span>";
-      }
-    }
-  }
-
-  function escapeHtmlPack(s) {
-    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  }
+  /* ---- Pack builder now lives at /pack.html as a real page ----
+     The render/open/close logic that used to be a modal has moved
+     to pack.html's own script. Here we just keep the helpers that
+     OTHER pages need (the badge, the "Add to pack" button toggle).
+  */
 
   // Wire up the pack-builder modal events (called from bindEvents)
   function bindPackBuilder() {
-    const openBtn = document.getElementById("open-pack-builder");
-    const closeBtn = document.getElementById("pack-close");
-    const backdrop = document.getElementById("pack-backdrop");
-    const clearBtn = document.getElementById("pack-clear");
-    const nameInput = document.getElementById("pack-name");
-    const pubInput = document.getElementById("pack-publisher");
+    // The "Add to pack" button lives inside the meme modal on memes.html.
+    // Wire it if present.
     const btnPack = document.getElementById("btn-pack");
-
-    if (openBtn) openBtn.addEventListener("click", openPackBuilder);
-    if (closeBtn) closeBtn.addEventListener("click", closePackBuilder);
-    if (backdrop) backdrop.addEventListener("click", closePackBuilder);
-    if (clearBtn) clearBtn.addEventListener("click", function () {
-      if (state.pack.ids.length === 0) return;
-      if (confirm("Clear all " + state.pack.ids.length + " stickers from this pack?")) {
-        clearPack();
-        renderPackBuilder();
-      }
-    });
-    if (nameInput) nameInput.addEventListener("input", function (e) {
-      state.pack.name = (e.target.value || "").trim();
-      savePack();
-    });
-    if (pubInput) pubInput.addEventListener("input", function (e) {
-      state.pack.publisher = (e.target.value || "").trim();
-      savePack();
-    });
     if (btnPack) btnPack.addEventListener("click", handlePackButton);
 
-    // Phase 2: wire export button to the real export flow
-    const exportBtn = document.getElementById("pack-export");
-    if (exportBtn) exportBtn.addEventListener("click", exportPack);
-
-    // Initial badge state
+    // The Pack count badge in the nav. We keep it in sync as the pack changes.
     updatePackBadge();
+
+    // The pack-builder modal is gone (moved to pack.html). No other binding needed here.
+    // pack.html has its own script that renders + exports.
   }
 
     /* ============================================
