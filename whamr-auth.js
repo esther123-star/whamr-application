@@ -390,21 +390,36 @@
         border-radius: 10px; overflow: hidden;
         padding: 8px;
       }
+      /* Bulletproof pack card and media sizing.
+         Multiple layers of constraint so nothing can escape the card. */
+      .pack-card {
+        position: relative !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+        contain: layout paint size !important;
+      }
       .pack-card-media {
         display: block !important;
         width: 100% !important;
         max-width: 100% !important;
         height: auto !important;
+        max-height: 100% !important;
         aspect-ratio: 1 / 1 !important;
-        object-fit: cover;
+        object-fit: cover !important;
         border-radius: 6px;
         background: #14141c;
-        box-sizing: border-box;
+        box-sizing: border-box !important;
       }
-      /* Container also locks down, in case any inherited style tries to push children out */
-      .pack-card {
-        contain: layout paint;
-        overflow: hidden;
+      /* Also constrain ANY img or video that ends up inside a pack-card,
+         even if our class names are overridden somehow. */
+      .pack-card img,
+      .pack-card video {
+        max-width: 100% !important;
+        max-height: 100% !important;
+        width: 100% !important;
+        height: auto !important;
       }
       /* Static-icon tile for animated items (no <video> element) */
       .pack-card-media-anim {
