@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your sticker pack · Whamr</title>
+  <meta name="description" content="Build and export your WhatsApp sticker pack from Whamr." />
+  <meta name="theme-color" content="#0a0a0f" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- All styles for this page live here, scoped under .pk- so nothing can
+       conflict with style.css. Intentionally self-contained. -->
+  <style>
+    :root {
+      --pk-bg: #0a0a0f;
+      --pk-surface: #14141c;
+      --pk-surface-2: #1c1c26;
+      --pk-line: rgba(255,255,255,0.08);
+      --pk-line-mid: rgba(255,255,255,0.14);
+      --pk-text: #f5f5f7;
+      --pk-text-mid: #b8b8c2;
+      --pk-text-mute: #6a6a78;
+      --pk-pink: #ff3366;
+      --pk-pink-soft: rgba(255, 51, 102, 0.12);
+      --pk-yellow: #ffe34d;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      background: var(--pk-bg);
+      color: var(--pk-text);
+      font-family: 'Poppins', -apple-system, sans-serif;
+      font-size: 15px; line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .pk-header {
+      max-width: 1100px; margin: 0 auto;
+      padding: 24px 24px 12px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; flex-wrap: wrap;
+    }
+    .pk-logo {
+      font-weight: 800; font-size: 22px; letter-spacing: -0.04em;
+      color: var(--pk-text); text-decoration: none;
+    }
+    .pk-logo-dot { color: var(--pk-pink); }
+    .pk-back {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13.5px; font-weight: 500;
+      color: var(--pk-text-mid); text-decoration: none;
+      padding: 8px 14px; border-radius: 100px;
+      transition: color 0.15s, background 0.15s;
+    }
+    .pk-back:hover { color: var(--pk-text); background: rgba(255,255,255,0.04); }
+
+    /* Page intro */
+    .pk-wrap { max-width: 1100px; margin: 0 auto; padding: 16px 24px 80px; }
+    .pk-title {
+      font-size: clamp(26px, 4vw, 36px);
+      font-weight: 800; letter-spacing: -0.03em;
+      margin: 8px 0 4px;
+    }
+    .pk-sub {
+      color: var(--pk-text-mid); font-size: 15px;
+      margin: 0 0 24px; max-width: 640px;
+    }
+
+    /* Meta inputs (name + publisher) */
+    .pk-meta {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+      margin-bottom: 18px;
+    }
+    .pk-field { display: flex; flex-direction: column; gap: 6px; }
+    .pk-field-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--pk-text-mute);
+    }
+    .pk-field input {
+      padding: 12px 14px;
+      background: var(--pk-surface); color: var(--pk-text);
+      border: 1px solid var(--pk-line-mid); border-radius: 10px;
+      font-size: 14.5px; font-family: inherit;
+    }
+    .pk-field input:focus {
+      outline: none; border-color: var(--pk-pink);
+    }
+
+    /* Status strip */
+    .pk-status {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; flex-wrap: wrap;
+      padding: 14px 18px; margin-bottom: 20px;
+      background: var(--pk-pink-soft);
+      border: 1px solid rgba(255,51,102,0.2);
+      border-radius: 12px;
+    }
+    .pk-count-line { font-size: 14.5px; color: var(--pk-text-mid); }
+    .pk-count-line strong { color: var(--pk-pink); font-weight: 700; font-size: 16px; }
+    .pk-min-note { color: var(--pk-text-mute); font-size: 13px; margin-left: 6px; }
+    .pk-min-note.is-warn { color: var(--pk-yellow); }
+    .pk-pills { display: flex; gap: 6px; }
+    .pk-pill {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: rgba(255,255,255,0.06); color: var(--pk-text-mid);
+      padding: 5px 10px; border-radius: 100px;
+    }
+
+    /* The actual sticker grid */
+    .pk-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .pk-card {
+      position: relative;
+      background: var(--pk-surface);
+      border: 1px solid var(--pk-line);
+      border-radius: 12px;
+      overflow: hidden;
+      padding: 0;
+    }
+    /* The media area is a SQUARE box that contains the image/icon strictly. */
+    .pk-card-box {
+      position: relative;
+      width: 100%;
+      padding-top: 100%; /* aspect-ratio 1:1 via padding-bottom trick (max compat) */
+      background: var(--pk-bg);
+      overflow: hidden;
+    }
+    .pk-card-img {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .pk-card-anim {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #1a1424, #0f0f17);
+      color: var(--pk-pink);
+    }
+    .pk-card-anim svg { width: 36px; height: 36px; opacity: 0.85; }
+    .pk-card-tag {
+      position: absolute; top: 8px; left: 8px;
+      font-size: 9px; font-weight: 700; letter-spacing: 0.08em;
+      background: rgba(0,0,0,0.7); color: #fff;
+      padding: 3px 7px; border-radius: 4px;
+    }
+    .pk-card-tag-anim { background: var(--pk-pink); }
+    .pk-card-foot {
+      padding: 9px 11px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 6px;
+    }
+    .pk-card-title {
+      font-size: 12px; color: var(--pk-text-mid);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      flex: 1; min-width: 0;
+    }
+    .pk-card-remove {
+      width: 24px; height: 24px; flex-shrink: 0;
+      background: rgba(255,255,255,0.06);
+      color: var(--pk-text-mid);
+      border: none; border-radius: 50%;
+      cursor: pointer; font-size: 14px; line-height: 1;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .pk-card-remove:hover { background: var(--pk-pink); color: #fff; }
+
+    /* Empty state */
+    .pk-empty {
+      text-align: center;
+      padding: 60px 24px;
+      background: var(--pk-surface);
+      border: 1px dashed var(--pk-line-mid);
+      border-radius: 16px;
+      margin-bottom: 24px;
+    }
+    .pk-empty-icon { font-size: 48px; margin-bottom: 12px; }
+    .pk-empty-title {
+      font-size: 18px; font-weight: 700; margin: 0 0 6px;
+      color: var(--pk-text);
+    }
+    .pk-empty-sub { color: var(--pk-text-mid); margin: 0 0 16px; font-size: 14px; }
+    .pk-empty-cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 11px 22px; border-radius: 100px;
+      background: var(--pk-pink); color: #fff;
+      text-decoration: none; font-weight: 600; font-size: 14px;
+    }
+
+    /* Action bar */
+    .pk-actions {
+      display: flex; gap: 10px; flex-wrap: wrap;
+      padding-top: 18px;
+      border-top: 1px solid var(--pk-line);
+    }
+    .pk-btn {
+      padding: 12px 22px; border-radius: 100px;
+      font-family: inherit; font-size: 14px; font-weight: 600;
+      cursor: pointer; border: none;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .pk-btn-primary {
+      background: var(--pk-pink); color: #fff;
+    }
+    .pk-btn-primary:hover { filter: brightness(1.08); }
+    .pk-btn-primary:disabled {
+      background: var(--pk-surface-2);
+      color: var(--pk-text-mute);
+      cursor: not-allowed;
+    }
+    .pk-btn-ghost {
+      background: transparent; color: var(--pk-text-mid);
+      border: 1px solid var(--pk-line-mid);
+    }
+    .pk-btn-ghost:hover { background: rgba(255,255,255,0.04); color: var(--pk-text); }
+
+    /* Toast */
+    .pk-toast {
+      position: fixed; bottom: 20px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--pk-surface-2);
+      border: 1px solid var(--pk-line-mid);
+      color: var(--pk-text);
+      padding: 12px 18px; border-radius: 100px;
+      font-size: 13.5px; font-weight: 500;
+      z-index: 1000;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      max-width: calc(100vw - 40px);
+    }
+    .pk-toast[hidden] { display: none; }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .pk-header { padding: 16px 16px 8px; }
+      .pk-wrap { padding: 12px 16px 60px; }
+      .pk-meta { grid-template-columns: 1fr; gap: 10px; }
+      .pk-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="pk-header">
+    <a href="index.html" class="pk-logo">whamr<span class="pk-logo-dot">.</span></a>
+    <a href="memes.html" class="pk-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      <span>Add more stickers</span>
+    </a>
+  </header>
+
+  <main class="pk-wrap">
+    <h1 class="pk-title">Your sticker pack</h1>
+    <p class="pk-sub">Pick 3 to 30 static stickers, give your pack a name, then export it as a <code>.wastickers</code> file for WhatsApp.</p>
+
+    <div class="pk-meta">
+      <label class="pk-field">
+        <span class="pk-field-label">Pack name</span>
+        <input id="pk-name" type="text" placeholder="e.g. Naija Reactions" maxlength="60" />
+      </label>
+      <label class="pk-field">
+        <span class="pk-field-label">Your name (publisher)</span>
+        <input id="pk-publisher" type="text" placeholder="e.g. Hannah" maxlength="60" />
+      </label>
+    </div>
+
+    <div class="pk-status">
+      <div class="pk-count-line">
+        <strong id="pk-count">0</strong> of 30 selected
+        <span class="pk-min-note" id="pk-min-note">(need at least 3)</span>
+      </div>
+      <div class="pk-pills" id="pk-pills"></div>
+    </div>
+
+    <div class="pk-grid" id="pk-grid"></div>
+
+    <div class="pk-empty" id="pk-empty" hidden>
+      <div class="pk-empty-icon">🎴</div>
+      <h3 class="pk-empty-title">No stickers in your pack yet</h3>
+      <p class="pk-empty-sub">Open any meme and tap <strong>Add to pack</strong> to start.</p>
+      <a class="pk-empty-cta" href="memes.html">Browse stickers</a>
+    </div>
+
+    <div class="pk-actions" id="pk-actions" hidden>
+      <button class="pk-btn pk-btn-ghost" id="pk-clear" type="button">Clear all</button>
+      <button class="pk-btn pk-btn-primary" id="pk-export" type="button" disabled>
+        Export <span style="opacity:0.8;font-weight:500;">(.wastickers)</span>
+      </button>
+    </div>
+  </main>
+
+  <div class="pk-toast" id="pk-toast" hidden></div>
+
+  <!-- JSZip for the .wastickers bundle. Same CDN as memes.html. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+  <!-- This page's logic. Self-contained — no shared script.js needed. -->
+  <script>
+  (function () {
+    "use strict";
+
+    // ---- Shared with the rest of the site via localStorage ----
+    var PACK_KEY = "whamr-pack-v1";
+    var PACK_MAX = 30;
+    var PACK_MIN = 3;
+
+    function loadPack() {
+      try {
+        var raw = localStorage.getItem(PACK_KEY);
+        if (!raw) return { name: "", publisher: "", ids: [], identifier: null };
+        var p = JSON.parse(raw);
+        if (!p || typeof p !== "object") return { name: "", publisher: "", ids: [], identifier: null };
+        return {
+          name: typeof p.name === "string" ? p.name : "",
+          publisher: typeof p.publisher === "string" ? p.publisher : "",
+          ids: Array.isArray(p.ids) ? p.ids.slice(0, PACK_MAX) : [],
+          identifier: typeof p.identifier === "string" ? p.identifier : null
+        };
+      } catch (e) { return { name: "", publisher: "", ids: [], identifier: null }; }
+    }
+    function savePack() {
+      try { localStorage.setItem(PACK_KEY, JSON.stringify(pack)); } catch (e) {}
+    }
+
+    var pack = loadPack();
+    var memes = []; // loaded from data/memes.json
+
+    // ---- Helpers ----
+    function findMeme(id) {
+      for (var i = 0; i < memes.length; i++) if (memes[i].id === id) return memes[i];
+      return null;
+    }
+    function isAnim(m) {
+      var t = (m && m.type || "").toLowerCase();
+      return t === "mp4" || t === "webm" || t === "mov" || t === "gif";
+    }
+    function escapeHtml(s) {
+      return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    var toastTimer = null;
+    function toast(msg, ms) {
+      var t = document.getElementById("pk-toast");
+      t.textContent = msg;
+      t.hidden = false;
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () { t.hidden = true; }, ms || 3200);
+    }
+
+    // ---- Render ----
+    function render() {
+      var grid = document.getElementById("pk-grid");
+      var empty = document.getElementById("pk-empty");
+      var actions = document.getElementById("pk-actions");
+      var count = document.getElementById("pk-count");
+      var minNote = document.getElementById("pk-min-note");
+      var pills = document.getElementById("pk-pills");
+      var exportBtn = document.getElementById("pk-export");
+
+      count.textContent = String(pack.ids.length);
+
+      if (pack.ids.length === 0) {
+        grid.innerHTML = "";
+        empty.hidden = false;
+        actions.hidden = true;
+        minNote.textContent = "(need at least " + PACK_MIN + ")";
+        minNote.classList.remove("is-warn");
+        pills.innerHTML = "";
+        return;
+      }
+      empty.hidden = true;
+      actions.hidden = false;
+
+      var staticN = 0, animN = 0;
+      var html = "";
+      pack.ids.forEach(function (id) {
+        var m = findMeme(id);
+        if (!m) {
+          html += '<div class="pk-card">' +
+            '<div class="pk-card-box"><div class="pk-card-anim">?</div></div>' +
+            '<div class="pk-card-foot">' +
+              '<div class="pk-card-title">Missing item</div>' +
+              '<button class="pk-card-remove" data-id="' + id + '" aria-label="Remove">\u00d7</button>' +
+            '</div>' +
+            '</div>';
+          return;
+        }
+        var animated = isAnim(m);
+        if (animated) animN++; else staticN++;
+        var media = animated
+          ? '<div class="pk-card-anim"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 4 20 12 6 20 6 4"></polygon></svg></div>'
+          : '<img class="pk-card-img" src="' + m.src + '" alt="" loading="lazy" crossorigin="anonymous"/>';
+        var tagCls = animated ? "pk-card-tag pk-card-tag-anim" : "pk-card-tag";
+        var tagText = animated ? "ANIM" : "STKR";
+        html += '<div class="pk-card">' +
+          '<div class="pk-card-box">' +
+            media +
+            '<span class="' + tagCls + '">' + tagText + '</span>' +
+          '</div>' +
+          '<div class="pk-card-foot">' +
+            '<div class="pk-card-title">' + escapeHtml(m.title || "(untitled)") + '</div>' +
+            '<button class="pk-card-remove" data-id="' + m.id + '" aria-label="Remove">\u00d7</button>' +
+          '</div>' +
+          '</div>';
+      });
+      grid.innerHTML = html;
+
+      // Wire remove buttons
+      var removes = grid.querySelectorAll(".pk-card-remove");
+      for (var i = 0; i < removes.length; i++) {
+        removes[i].addEventListener("click", function () {
+          var id = this.getAttribute("data-id");
+          pack.ids = pack.ids.filter(function (x) { return x !== id; });
+          savePack();
+          render();
+        });
+      }
+
+      // Status
+      pills.innerHTML =
+        '<span class="pk-pill">' + staticN + ' static</span>' +
+        (animN ? '<span class="pk-pill">' + animN + ' animated</span>' : '');
+
+      // Min note + export enable
+      if (pack.ids.length < PACK_MIN) {
+        var more = PACK_MIN - pack.ids.length;
+        minNote.textContent = "(need " + more + " more to export)";
+        minNote.classList.add("is-warn");
+        exportBtn.disabled = true;
+      } else {
+        minNote.textContent = "(ready to export)";
+        minNote.classList.remove("is-warn");
+        exportBtn.disabled = false;
+      }
+    }
+
+    // ---- Export to .wastickers ----
+    var STICKER_SIZE = 512;
+    var TRAY_SIZE = 96;
+    var STICKER_MAX = 100 * 1024;
+    var TRAY_MAX = 50 * 1024;
+
+    function getOrCreatePackId() {
+      if (pack.identifier && pack.identifier.length > 8) return pack.identifier;
+      pack.identifier = "whamr-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 10);
+      savePack();
+      return pack.identifier;
+    }
+
+    function loadImage(url) {
+      return new Promise(function (resolve, reject) {
+        var img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = function () { resolve(img); };
+        img.onerror = function () { reject(new Error("Image load failed: " + url)); };
+        img.src = url;
+      });
+    }
+    function squareCanvas(img, size) {
+      var c = document.createElement("canvas");
+      c.width = size; c.height = size;
+      var ctx = c.getContext("2d");
+      ctx.clearRect(0, 0, size, size);
+      var r = Math.min(size / img.width, size / img.height);
+      var w = Math.round(img.width * r);
+      var h = Math.round(img.height * r);
+      ctx.drawImage(img, Math.round((size - w) / 2), Math.round((size - h) / 2), w, h);
+      return c;
+    }
+    function canvasToBlobUnder(canvas, mime, max) {
+      return new Promise(function (resolve, reject) {
+        var qs = [0.92, 0.85, 0.75, 0.65, 0.55, 0.45];
+        var i = 0;
+        function next() {
+          try {
+            canvas.toBlob(function (blob) {
+              if (!blob) return reject(new Error("Canvas is cross-origin tainted. The R2 bucket needs CORS headers set in Cloudflare for export to work."));
+              if (blob.size <= max || i === qs.length - 1) return resolve(blob);
+              i++; next();
+            }, mime, qs[i]);
+          } catch (e) {
+            reject(new Error("Cross-origin canvas blocked. R2 bucket needs CORS headers."));
+          }
+        }
+        next();
+      });
+    }
+    function blobToBytes(blob) {
+      return new Promise(function (resolve, reject) {
+        var r = new FileReader();
+        r.onload = function () { resolve(new Uint8Array(r.result)); };
+        r.onerror = function () { reject(new Error("FileReader failed")); };
+        r.readAsArrayBuffer(blob);
+      });
+    }
+
+    async function exportPack() {
+      if (typeof JSZip === "undefined") {
+        toast("Sticker library didn't load. Refresh the page and try again.");
+        return;
+      }
+      if (pack.ids.length < PACK_MIN) {
+        toast("Need at least " + PACK_MIN + " stickers.");
+        return;
+      }
+
+      var name = (document.getElementById("pk-name").value || "").trim() || pack.name || "Whamr Pack";
+      var publisher = (document.getElementById("pk-publisher").value || "").trim() || pack.publisher || "Whamr";
+
+      var btn = document.getElementById("pk-export");
+      var originalHTML = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = "Building… 0%";
+
+      var stickerFiles = [];
+      var stickerBytes = [];
+      var skipped = { anim: 0, big: 0, err: 0 };
+      var firstUsable = null;
+
+      try {
+        for (var i = 0; i < pack.ids.length; i++) {
+          var m = findMeme(pack.ids[i]);
+          if (!m) { skipped.err++; continue; }
+          if (isAnim(m)) { skipped.anim++; continue; }
+          try {
+            var img = await loadImage(m.src);
+            var canvas = squareCanvas(img, STICKER_SIZE);
+            var blob = await canvasToBlobUnder(canvas, "image/webp", STICKER_MAX);
+            if (blob.size > STICKER_MAX) { skipped.big++; continue; }
+            var bytes = await blobToBytes(blob);
+            var fname = "sticker_" + String(stickerFiles.length + 1).padStart(2, "0") + ".webp";
+            stickerFiles.push(fname);
+            stickerBytes.push({ name: fname, bytes: bytes });
+            if (!firstUsable) firstUsable = m;
+          } catch (e) {
+            console.error("Sticker failed:", e);
+            skipped.err++;
+            // If the error is the CORS one, abort early — every other sticker will fail too
+            if ((e.message || "").indexOf("CORS") !== -1 || (e.message || "").indexOf("tainted") !== -1) {
+              throw e;
+            }
+          }
+          btn.innerHTML = "Building… " + Math.round(((i + 1) / pack.ids.length) * 85) + "%";
+        }
+
+        if (stickerBytes.length < PACK_MIN) {
+          toast("Only " + stickerBytes.length + " usable stickers — need at least " + PACK_MIN);
+          return;
+        }
+
+        btn.innerHTML = "Building tray icon…";
+        var trayImg = await loadImage(firstUsable.src);
+        var trayCanvas = squareCanvas(trayImg, TRAY_SIZE);
+        var trayBlob = await canvasToBlobUnder(trayCanvas, "image/png", TRAY_MAX);
+        var trayBytes = await blobToBytes(trayBlob);
+
+        btn.innerHTML = "Packaging…";
+        var packId = getOrCreatePackId();
+        var contents = {
+          "android_play_store_link": "",
+          "ios_app_store_link": "",
+          "sticker_packs": [{
+            "identifier": packId,
+            "name": name,
+            "publisher": publisher,
+            "tray_image_file": "tray.png",
+            "image_data_version": "1",
+            "avoid_cache": false,
+            "publisher_email": "",
+            "publisher_website": "",
+            "privacy_policy_website": "",
+            "license_agreement_website": "",
+            "stickers": stickerFiles.map(function (f) { return { "image_file": f, "emojis": ["\ud83d\ude00"] }; })
+          }]
+        };
+
+        var zip = new JSZip();
+        zip.file("contents.json", JSON.stringify(contents, null, 2));
+        zip.file("tray.png", trayBytes);
+        stickerBytes.forEach(function (s) { zip.file(s.name, s.bytes); });
+
+        var zipBlob = await zip.generateAsync({
+          type: "blob",
+          mimeType: "application/wastickers",
+          compression: "DEFLATE",
+          compressionOptions: { level: 6 }
+        });
+
+        var safeName = (name || "whamr-pack").replace(/[^a-z0-9-_]+/gi, "-").toLowerCase();
+        var url = URL.createObjectURL(zipBlob);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = safeName + ".wastickers";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+
+        var msg = "Downloaded — " + stickerBytes.length + " stickers";
+        if (skipped.anim) msg += " · " + skipped.anim + " animated skipped";
+        if (skipped.big) msg += " · " + skipped.big + " too large";
+        if (skipped.err) msg += " · " + skipped.err + " failed";
+        toast(msg, 5000);
+      } catch (e) {
+        console.error("Export failed:", e);
+        toast("Export failed: " + (e.message || "unknown error"), 6000);
+      } finally {
+        btn.disabled = (pack.ids.length < PACK_MIN);
+        btn.innerHTML = originalHTML;
+      }
+    }
+
+    // ---- Boot ----
+    async function init() {
+      // Restore name/publisher into inputs
+      document.getElementById("pk-name").value = pack.name || "";
+      document.getElementById("pk-publisher").value = pack.publisher || "";
+
+      // Save inputs on change
+      document.getElementById("pk-name").addEventListener("input", function (e) {
+        pack.name = (e.target.value || "").trim();
+        savePack();
+      });
+      document.getElementById("pk-publisher").addEventListener("input", function (e) {
+        pack.publisher = (e.target.value || "").trim();
+        savePack();
+      });
+
+      // Clear all
+      document.getElementById("pk-clear").addEventListener("click", function () {
+        if (pack.ids.length === 0) return;
+        if (confirm("Clear all " + pack.ids.length + " stickers from this pack?")) {
+          pack.ids = [];
+          savePack();
+          render();
+        }
+      });
+
+      // Export
+      document.getElementById("pk-export").addEventListener("click", exportPack);
+
+      // Load memes catalog so we can render details
+      try {
+        var resp = await fetch("data/memes.json", { cache: "default" });
+        if (resp.ok) memes = await resp.json();
+      } catch (e) {
+        console.error("Couldn't load memes.json", e);
+      }
+      render();
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", init);
+    } else {
+      init();
+    }
+  })();
+  </script>
+</body>
+</html>
