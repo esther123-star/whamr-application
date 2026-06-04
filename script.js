@@ -445,8 +445,11 @@
   function openPackBuilder() {
     const m = document.getElementById("pack-modal");
     if (!m) return;
+    // Safety reset: clear any stuck overflow from a previous broken close.
+    document.body.style.overflow = "";
     m.hidden = false;
     document.body.style.overflow = "hidden";
+    document.body.dataset.packModalOpen = "1";
     renderPackBuilder();
     // Restore name/publisher
     const nameInput = document.getElementById("pack-name");
@@ -457,10 +460,20 @@
 
   function closePackBuilder() {
     const m = document.getElementById("pack-modal");
-    if (!m) return;
-    m.hidden = true;
+    if (m) m.hidden = true;
+    // Always restore body scroll, even if the modal element disappeared
     document.body.style.overflow = "";
+    document.body.style.removeProperty("overflow");
+    delete document.body.dataset.packModalOpen;
   }
+
+  // Safety net: if the user presses Escape while the pack modal is stuck,
+  // close it and restore scrolling.
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && document.body.dataset.packModalOpen === "1") {
+      closePackBuilder();
+    }
+  });
 
   function renderPackBuilder() {
     const grid = document.getElementById("pack-grid");
