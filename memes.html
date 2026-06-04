@@ -31,10 +31,10 @@
     </a>
     <div class="page-nav-links">
       <a href="how-it-works.html" class="hero-nav-link">How it works</a>
-      <button id="open-pack-builder" class="hero-nav-link" type="button" style="background:none;border:none;cursor:pointer;font:inherit;color:inherit;padding:0;display:inline-flex;align-items:center;gap:6px;">
+      <a href="pack.html" class="hero-nav-link" style="display:inline-flex;align-items:center;gap:6px;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
         <span>Pack <span id="pack-count-badge" class="pack-count-badge" hidden>0</span></span>
-      </button>
+      </a>
     </div>
   </nav>
 
@@ -233,57 +233,6 @@
       <p class="share-sub">Share this meme anywhere</p>
       <div class="share-grid" id="share-grid"></div>
       <button class="share-close" id="share-close">Cancel</button>
-    </div>
-  </div>
-
-  <!-- ============================================
-       Sticker Pack Builder modal
-       (Phase 1: pick memes, name pack, see preview.
-        Phase 2 will add file generation. Phase 3, install.)
-       ============================================ -->
-  <div class="pack-modal" id="pack-modal" hidden role="dialog" aria-modal="true" aria-labelledby="pack-modal-title">
-    <div class="pack-backdrop" id="pack-backdrop"></div>
-    <div class="pack-content">
-      <button class="pack-close" id="pack-close" aria-label="Close pack builder">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-      </button>
-
-      <header class="pack-head">
-        <h2 class="pack-title" id="pack-modal-title">Build a sticker pack</h2>
-        <p class="pack-sub">Pick 3-30 stickers, name your pack, and (next phase) export it for WhatsApp.</p>
-      </header>
-
-      <div class="pack-meta">
-        <label class="pack-field">
-          <span class="pack-field-label">Pack name</span>
-          <input type="text" id="pack-name" placeholder="e.g. Naija Reactions" maxlength="60" />
-        </label>
-        <label class="pack-field">
-          <span class="pack-field-label">Your name (publisher)</span>
-          <input type="text" id="pack-publisher" placeholder="e.g. Hannah" maxlength="60" />
-        </label>
-      </div>
-
-      <div class="pack-status" id="pack-status">
-        <div class="pack-count-line">
-          <strong id="pack-count">0</strong> of 30 selected <span class="pack-min" id="pack-min-note">(need at least 3)</span>
-        </div>
-        <div class="pack-types-line" id="pack-types-line"></div>
-      </div>
-
-      <div class="pack-grid" id="pack-grid"></div>
-
-      <div class="pack-empty" id="pack-empty">
-        <div class="pack-empty-icon">🎴</div>
-        <p>No stickers in your pack yet. Open any meme and tap <strong>Add to pack</strong>.</p>
-      </div>
-
-      <footer class="pack-foot">
-        <button class="pack-btn pack-btn-ghost" id="pack-clear" type="button">Clear all</button>
-        <button class="pack-btn pack-btn-primary" id="pack-export" type="button" disabled>
-          Export <span class="pack-soon">(.wastickers)</span>
-        </button>
-      </footer>
     </div>
   </div>
 
