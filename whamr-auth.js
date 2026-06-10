@@ -10,63 +10,145 @@
    ============================================ */
 
 (function () {
-  // ---- Connection (same project you've been testing) ----
+  // ---- Connections ----
+  // Supabase client stays for Google sign-in + favourites/comments sync.
   const SUPABASE_URL = "https://gdjjphqdphgdnbchfcuq.supabase.co";
   const SUPABASE_KEY = "sb_publishable_8C8vXot7cwmsvV3Q0vK0hg_esjjLLNy";
-
-  // Create one shared client for the whole site
   const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  // We expose a small, friendly toolkit on window.WhamrAuth so any page
-  // (and script.js) can use it without knowing Supabase details.
+  // Backend API handles email/password auth (its own users + JWTs).
+  const API_BASE =
+    location.hostname === "localhost" || location.hostname === "127.0.0.1"
+      ? "http://localhost:4000"
+      : "https://whamr-be.onrender.com";
+  const TOKEN_KEY = "whamr-auth-tokens";
+
+  // Two possible identities. The backend JWT user (email/password) takes
+  // precedence; the Supabase user (Google) is the fallback.
+  // NOTE: favourites & comments sync use the Supabase session, so they only
+  // work for Google sign-ins until those features are migrated to the backend.
   const listeners = [];
   let currentUser = null;
+  let backendUser = null;
+  let supabaseUser = null;
+
+  // ---- Backend token storage (localStorage) ----
+  function loadTokens() {
+    try { return JSON.parse(localStorage.getItem(TOKEN_KEY)) || null; } catch (e) { return null; }
+  }
+  function saveTokens(t) { try { localStorage.setItem(TOKEN_KEY, JSON.stringify(t)); } catch (e) {} }
+  function clearTokens() { try { localStorage.removeItem(TOKEN_KEY); } catch (e) {} }
+
+  // Call the backend with the access token; on 401, try one refresh then retry.
+  async function apiFetch(path, options, allowRefresh) {
+    if (allowRefresh === undefined) allowRefresh = true;
+    options = options || {};
+    const tokens = loadTokens();
+    const headers = Object.assign({ "Content-Type": "application/json" }, options.headers || {});
+    if (tokens && tokens.accessToken) headers["Authorization"] = "Bearer " + tokens.accessToken;
+    const res = await fetch(API_BASE + path, Object.assign({}, options, { headers: headers }));
+    if (res.status === 401 && allowRefresh && tokens && tokens.refreshToken) {
+      const ok = await tryRefresh(tokens.refreshToken);
+      if (ok) return apiFetch(path, options, false);
+    }
+    return res;
+  }
+
+  async function tryRefresh(refreshToken) {
+    try {
+      const res = await fetch(API_BASE + "/api/auth/refresh", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refreshToken: refreshToken })
+      });
+      if (!res.ok) { clearTokens(); backendUser = null; return false; }
+      const data = await res.json();
+      const prev = loadTokens() || {};
+      saveTokens({ accessToken: data.accessToken, refreshToken: data.refreshToken, user: prev.user });
+      return true;
+    } catch (e) { return false; }
+  }
+
+  function reconcile() {
+    currentUser = backendUser || supabaseUser;
+    listeners.forEach(function (fn) { try { fn(currentUser); } catch (e) { console.error(e); } });
+    paintAuthButtons();
+  }
+
+  // ---- Email/password auth against the backend ----
+  async function backendAuth(path, email, password) {
+    const res = await apiFetch(path, { method: "POST", body: JSON.stringify({ email: email, password: password }) }, false);
+    let data = {};
+    try { data = await res.json(); } catch (e) {}
+    if (!res.ok) {
+      let msg = data.error || "Something went wrong.";
+      if (Array.isArray(data.details) && data.details.length) {
+        msg = data.details.map(function (d) { return d.message; }).join(" ");
+      }
+      throw new Error(msg);
+    }
+    saveTokens({ accessToken: data.accessToken, refreshToken: data.refreshToken, user: data.user });
+    backendUser = data.user;
+    reconcile();
+    return data.user;
+  }
 
   const WhamrAuth = {
-    // The shared database client, so other code can read/write data
+    // Shared Supabase client (favourites/comments/Google).
     db: db,
+    // Backend helpers, so other code can make authenticated API calls.
+    apiBase: API_BASE,
+    apiFetch: apiFetch,
 
-    // Who's logged in right now? Returns the user object or null.
-    getUser: function () {
-      return currentUser;
-    },
+    getUser: function () { return currentUser; },
+    isLoggedIn: function () { return !!currentUser; },
+    onChange: function (fn) { listeners.push(fn); fn(currentUser); },
+    openModal: function () { showModal(); },
 
-    // Are we logged in?
-    isLoggedIn: function () {
-      return !!currentUser;
-    },
+    // Email/password -> backend.
+    signup: function (email, password) { return backendAuth("/api/auth/register", email, password); },
+    login: function (email, password) { return backendAuth("/api/auth/login", email, password); },
 
-    // Register a function to run whenever login state changes.
-    // Used by script.js to re-sync favourites on login/logout.
-    onChange: function (fn) {
-      listeners.push(fn);
-      // call immediately with the current state
-      fn(currentUser);
-    },
-
-    // Open the login/signup modal
-    openModal: function () {
-      showModal();
-    },
-
-    // Log out
     logout: async function () {
-      await db.auth.signOut();
+      const tokens = loadTokens();
+      if (tokens && tokens.refreshToken) {
+        try {
+          await fetch(API_BASE + "/api/auth/logout", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ refreshToken: tokens.refreshToken })
+          });
+        } catch (e) {}
+      }
+      clearTokens();
+      backendUser = null;
+      try { await db.auth.signOut(); } catch (e) {} // also clear any Google session
+      reconcile();
     },
   };
 
   window.WhamrAuth = WhamrAuth;
 
-  // ---- React to auth changes from Supabase ----
+  // Supabase (Google) session changes -> fallback identity.
   db.auth.onAuthStateChange(function (event, session) {
-    currentUser = session ? session.user : null;
-    // tell everyone who registered
-    listeners.forEach(function (fn) {
-      try { fn(currentUser); } catch (e) { console.error(e); }
-    });
-    // update any auth buttons on the page
-    paintAuthButtons();
+    supabaseUser = session ? session.user : null;
+    reconcile();
   });
+
+  // Restore a backend session on load (validate the token, refreshing if needed).
+  (async function restoreBackendSession() {
+    const tokens = loadTokens();
+    if (!tokens || !tokens.accessToken) return;
+    try {
+      const res = await apiFetch("/api/auth/me", { method: "GET" });
+      if (res.ok) { const d = await res.json(); backendUser = d.user; }
+      else { clearTokens(); backendUser = null; }
+    } catch (e) {
+      // Offline — trust the stored user optimistically until next call.
+      backendUser = tokens.user || null;
+    }
+    reconcile();
+  })();
 
   /* ============================================
      The login / signup modal
@@ -94,7 +176,7 @@
         </button>
         <div class="wam-divider"><span>or with email</span></div>
         <input id="wam-email" type="email" placeholder="Email" autocomplete="email" />
-        <input id="wam-password" type="password" placeholder="Password (min 6 characters)" autocomplete="current-password" />
+        <input id="wam-password" type="password" placeholder="Password (min 8 characters)" autocomplete="current-password" />
         <div class="wam-actions">
           <button class="wam-btn wam-primary" id="wam-signup">Sign Up</button>
           <button class="wam-btn wam-ghost" id="wam-login">Log In</button>
@@ -124,21 +206,28 @@
     overlay.querySelector("#wam-signup").addEventListener("click", async function () {
       const { email, password } = getCreds();
       if (!email || !password) return setStatus("err", "Enter an email and password.");
+      if (password.length < 8) return setStatus("err", "Password must be at least 8 characters.");
       setStatus("load", "Creating your account...");
-      const { error } = await db.auth.signUp({ email: email, password: password });
-      if (error) return setStatus("err", error.message);
-      setStatus("ok", "Account created. You're in!");
-      setTimeout(close, 900);
+      try {
+        await WhamrAuth.signup(email, password);
+        setStatus("ok", "Account created. You're in!");
+        setTimeout(close, 900);
+      } catch (e) {
+        setStatus("err", e.message || "Sign up failed.");
+      }
     });
 
     overlay.querySelector("#wam-login").addEventListener("click", async function () {
       const { email, password } = getCreds();
       if (!email || !password) return setStatus("err", "Enter an email and password.");
       setStatus("load", "Logging in...");
-      const { error } = await db.auth.signInWithPassword({ email: email, password: password });
-      if (error) return setStatus("err", error.message);
-      setStatus("ok", "Welcome back!");
-      setTimeout(close, 700);
+      try {
+        await WhamrAuth.login(email, password);
+        setStatus("ok", "Welcome back!");
+        setTimeout(close, 700);
+      } catch (e) {
+        setStatus("err", e.message || "Login failed.");
+      }
     });
 
     overlay.querySelector("#wam-google").addEventListener("click", async function () {
