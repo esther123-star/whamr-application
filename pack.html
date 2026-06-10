@@ -260,7 +260,7 @@
 
   <main class="pk-wrap">
     <h1 class="pk-title">Your sticker pack</h1>
-    <p class="pk-sub">Pick 3 to 30 static stickers, give your pack a name, then export it as a <code>.wastickers</code> file for WhatsApp.</p>
+    <p class="pk-sub">Pick 3 to 30 stickers (static or animated), give your pack a name, then export it as a <code>.wastickers</code> file for WhatsApp. Static and animated stickers are bundled as separate packs automatically.</p>
 
     <div class="pk-meta">
       <label class="pk-field">
@@ -446,8 +446,23 @@
     // ---- Export to .wastickers ----
     var STICKER_SIZE = 512;
     var TRAY_SIZE = 96;
-    var STICKER_MAX = 100 * 1024;
+    var STICKER_MAX = 100 * 1024;        // WhatsApp static sticker limit
+    var ANIM_MAX = 500 * 1024;           // WhatsApp animated sticker limit
     var TRAY_MAX = 50 * 1024;
+
+    // Detect an animated WebP from its bytes. Animated WebPs use the extended
+    // "VP8X" chunk with the animation flag (0x02) set; simple VP8/VP8L are
+    // always static. We can't re-encode animation in a <canvas>, so animated
+    // stickers are passed through as their original bytes instead.
+    function isAnimatedWebp(u8) {
+      if (!u8 || u8.length < 21) return false;
+      // "RIFF" .... "WEBP"
+      if (u8[0] !== 0x52 || u8[1] !== 0x49 || u8[2] !== 0x46 || u8[3] !== 0x46) return false;
+      if (u8[8] !== 0x57 || u8[9] !== 0x45 || u8[10] !== 0x42 || u8[11] !== 0x50) return false;
+      // chunk fourCC at byte 12 must be "VP8X"; flags byte is at offset 20.
+      if (u8[12] !== 0x56 || u8[13] !== 0x50 || u8[14] !== 0x38 || u8[15] !== 0x58) return false;
+      return (u8[20] & 0x02) !== 0;
+    }
 
     function getOrCreatePackId() {
       if (pack.identifier && pack.identifier.length > 8) return pack.identifier;
@@ -503,6 +518,48 @@
       });
     }
 
+    // Build a 96x96 PNG tray icon from a sticker blob (first frame for animated).
+    async function buildTrayFromBlob(blob) {
+      var url = URL.createObjectURL(blob);
+      try {
+        var img = await loadImage(url);
+        var canvas = squareCanvas(img, TRAY_SIZE);
+        var trayBlob = await canvasToBlobUnder(canvas, "image/png", TRAY_MAX);
+        return await blobToBytes(trayBlob);
+      } finally {
+        setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+      }
+    }
+
+    // Fetch a sticker and prepare its bytes. Animated WebPs are passed through
+    // untouched (preserving the animation); static images are normalized to a
+    // 512x512 WebP under 100KB via canvas. Returns { animated, bytes, blob } or
+    // { skip: reason }.
+    async function processSticker(m) {
+      var res = await fetch(m.src, { mode: "cors" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      var blob = await res.blob();
+      var buf = new Uint8Array(await blob.arrayBuffer());
+
+      if (isAnimatedWebp(buf)) {
+        if (buf.length > ANIM_MAX) return { skip: "bigAnim" };
+        return { animated: true, bytes: buf, blob: blob };
+      }
+
+      // Static: re-encode via canvas. Drawing from a same-origin object URL
+      // (not the cross-origin src) keeps the canvas untainted.
+      var url = URL.createObjectURL(blob);
+      try {
+        var img = await loadImage(url);
+        var canvas = squareCanvas(img, STICKER_SIZE);
+        var out = await canvasToBlobUnder(canvas, "image/webp", STICKER_MAX);
+        if (out.size > STICKER_MAX) return { skip: "big" };
+        return { animated: false, bytes: await blobToBytes(out), blob: out };
+      } finally {
+        setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+      }
+    }
+
     async function exportPack() {
       if (typeof JSZip === "undefined") {
         toast("Sticker library didn't load. Refresh the page and try again.");
@@ -521,72 +578,90 @@
       btn.disabled = true;
       btn.innerHTML = "Building… 0%";
 
-      var stickerFiles = [];
-      var stickerBytes = [];
-      var skipped = { anim: 0, big: 0, err: 0 };
-      var firstUsable = null;
+      var staticG = [];   // { bytes, blob }
+      var animG = [];     // { bytes, blob }
+      var skipped = { vid: 0, big: 0, bigAnim: 0, err: 0 };
+      var corsFailed = false;
 
       try {
         for (var i = 0; i < pack.ids.length; i++) {
           var m = findMeme(pack.ids[i]);
           if (!m) { skipped.err++; continue; }
-          if (isAnim(m)) { skipped.anim++; continue; }
+          if (isAnim(m)) { skipped.vid++; continue; } // mp4/webm/gif videos
           try {
-            var img = await loadImage(m.src);
-            var canvas = squareCanvas(img, STICKER_SIZE);
-            var blob = await canvasToBlobUnder(canvas, "image/webp", STICKER_MAX);
-            if (blob.size > STICKER_MAX) { skipped.big++; continue; }
-            var bytes = await blobToBytes(blob);
-            var fname = "sticker_" + String(stickerFiles.length + 1).padStart(2, "0") + ".webp";
-            stickerFiles.push(fname);
-            stickerBytes.push({ name: fname, bytes: bytes });
-            if (!firstUsable) firstUsable = m;
+            var r = await processSticker(m);
+            if (r.skip === "bigAnim") { skipped.bigAnim++; }
+            else if (r.skip === "big") { skipped.big++; }
+            else if (r.animated) { animG.push({ bytes: r.bytes, blob: r.blob }); }
+            else { staticG.push({ bytes: r.bytes, blob: r.blob }); }
           } catch (e) {
-            console.error("Sticker failed:", e);
+            console.error("Sticker failed:", m && m.id, e);
             skipped.err++;
-            // If the error is the CORS one, abort early — every other sticker will fail too
-            if ((e.message || "").indexOf("CORS") !== -1 || (e.message || "").indexOf("tainted") !== -1) {
+            // Abort early on a CORS/network failure: every sticker shares the host.
+            if (/Failed to fetch|NetworkError|CORS|tainted/i.test(e.message || "")) {
+              corsFailed = true;
               throw e;
             }
           }
-          btn.innerHTML = "Building… " + Math.round(((i + 1) / pack.ids.length) * 85) + "%";
+          btn.innerHTML = "Building... " + Math.round(((i + 1) / pack.ids.length) * 80) + "%";
         }
 
-        if (stickerBytes.length < PACK_MIN) {
-          toast("Only " + stickerBytes.length + " usable stickers — need at least " + PACK_MIN);
-          return;
-        }
+        // WhatsApp packs are all-static OR all-animated, 3-30 each. Build one
+        // pack object per non-empty group; drop a group under the minimum.
+        var droppedStatic = Math.max(0, staticG.length - PACK_MAX);
+        var droppedAnim = Math.max(0, animG.length - PACK_MAX);
+        var sG = staticG.slice(0, PACK_MAX);
+        var aG = animG.slice(0, PACK_MAX);
 
-        btn.innerHTML = "Building tray icon…";
-        var trayImg = await loadImage(firstUsable.src);
-        var trayCanvas = squareCanvas(trayImg, TRAY_SIZE);
-        var trayBlob = await canvasToBlobUnder(trayCanvas, "image/png", TRAY_MAX);
-        var trayBytes = await blobToBytes(trayBlob);
-
-        btn.innerHTML = "Packaging…";
         var packId = getOrCreatePackId();
-        var contents = {
-          "android_play_store_link": "",
-          "ios_app_store_link": "",
-          "sticker_packs": [{
-            "identifier": packId,
-            "name": name,
+        var zip = new JSZip();
+        var packsMeta = [];
+        var fileSeq = 0;
+
+        async function addPack(group, isAnimated, suffix) {
+          if (group.length < PACK_MIN) return { tooFew: group.length };
+          btn.innerHTML = "Building tray icon...";
+          var trayName = "tray_" + suffix + ".png";
+          zip.file(trayName, await buildTrayFromBlob(group[0].blob));
+          var stickers = group.map(function (g) {
+            var fname = suffix + "_" + String(++fileSeq).padStart(3, "0") + ".webp";
+            zip.file(fname, g.bytes);
+            return { "image_file": fname, "emojis": ["\ud83d\ude00"] };
+          });
+          packsMeta.push({
+            "identifier": packId + "-" + suffix,
+            "name": name + (isAnimated ? " (animated)" : ""),
             "publisher": publisher,
-            "tray_image_file": "tray.png",
+            "tray_image_file": trayName,
             "image_data_version": "1",
             "avoid_cache": false,
+            "animated_sticker_pack": isAnimated,
             "publisher_email": "",
             "publisher_website": "",
             "privacy_policy_website": "",
             "license_agreement_website": "",
-            "stickers": stickerFiles.map(function (f) { return { "image_file": f, "emojis": ["\ud83d\ude00"] }; })
-          }]
-        };
+            "stickers": stickers
+          });
+          return { ok: true };
+        }
 
-        var zip = new JSZip();
-        zip.file("contents.json", JSON.stringify(contents, null, 2));
-        zip.file("tray.png", trayBytes);
-        stickerBytes.forEach(function (s) { zip.file(s.name, s.bytes); });
+        var sRes = await addPack(sG, false, "static");
+        var aRes = await addPack(aG, true, "anim");
+
+        if (packsMeta.length === 0) {
+          var why = [];
+          if (sRes.tooFew) why.push(sRes.tooFew + " static");
+          if (aRes.tooFew) why.push(aRes.tooFew + " animated");
+          toast("Not enough usable stickers - need at least " + PACK_MIN + " of the same kind" + (why.length ? " (had " + why.join(", ") + ")" : ""), 6000);
+          return;
+        }
+
+        btn.innerHTML = "Packaging...";
+        zip.file("contents.json", JSON.stringify({
+          "android_play_store_link": "",
+          "ios_app_store_link": "",
+          "sticker_packs": packsMeta
+        }, null, 2));
 
         var zipBlob = await zip.generateAsync({
           type: "blob",
@@ -605,14 +680,25 @@
         document.body.removeChild(a);
         setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
 
-        var msg = "Downloaded — " + stickerBytes.length + " stickers";
-        if (skipped.anim) msg += " · " + skipped.anim + " animated skipped";
-        if (skipped.big) msg += " · " + skipped.big + " too large";
-        if (skipped.err) msg += " · " + skipped.err + " failed";
-        toast(msg, 5000);
+        var parts = [];
+        if (sRes.ok) parts.push(sG.length + " static");
+        if (aRes.ok) parts.push(aG.length + " animated");
+        var msg = "Downloaded - " + parts.join(" + ") + (packsMeta.length > 1 ? " (2 packs)" : "");
+        if (skipped.vid) msg += " | " + skipped.vid + " video skipped";
+        if (skipped.bigAnim) msg += " | " + skipped.bigAnim + " animated >500KB";
+        if (skipped.big) msg += " | " + skipped.big + " >100KB";
+        if (droppedStatic || droppedAnim) msg += " | capped at " + PACK_MAX + "/pack";
+        if (sRes.tooFew) msg += " | " + sRes.tooFew + " static dropped (<" + PACK_MIN + ")";
+        if (aRes.tooFew) msg += " | " + aRes.tooFew + " animated dropped (<" + PACK_MIN + ")";
+        if (skipped.err) msg += " | " + skipped.err + " failed";
+        toast(msg, 6000);
       } catch (e) {
         console.error("Export failed:", e);
-        toast("Export failed: " + (e.message || "unknown error"), 6000);
+        if (corsFailed || /Failed to fetch|CORS|tainted/i.test(e.message || "")) {
+          toast("Export blocked: media host (R2) is missing CORS headers. Run: npm run cors (in scripts/).", 7000);
+        } else {
+          toast("Export failed: " + (e.message || "unknown error"), 6000);
+        }
       } finally {
         btn.disabled = (pack.ids.length < PACK_MIN);
         btn.innerHTML = originalHTML;
