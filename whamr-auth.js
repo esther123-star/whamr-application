@@ -109,6 +109,16 @@
     signup: function (email, password) { return backendAuth("/api/auth/register", email, password); },
     login: function (email, password) { return backendAuth("/api/auth/login", email, password); },
 
+    // Request a password reset email. The backend always responds 200 with a
+    // generic message (no account enumeration), so we don't reveal existence.
+    forgotPassword: async function (email) {
+      await fetch(API_BASE + "/api/auth/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email })
+      });
+    },
+
     logout: async function () {
       const tokens = loadTokens();
       if (tokens && tokens.refreshToken) {
@@ -181,6 +191,7 @@
           <button class="wam-btn wam-primary" id="wam-signup">Sign Up</button>
           <button class="wam-btn wam-ghost" id="wam-login">Log In</button>
         </div>
+        <button class="wam-forgot" id="wam-forgot" type="button">Forgot password?</button>
       </div>
     `;
     document.body.appendChild(overlay);
@@ -227,6 +238,19 @@
         setTimeout(close, 700);
       } catch (e) {
         setStatus("err", e.message || "Login failed.");
+      }
+    });
+
+    overlay.querySelector("#wam-forgot").addEventListener("click", async function () {
+      const { email } = getCreds();
+      if (!email) return setStatus("err", "Enter your email above, then tap “Forgot password?”.");
+      if (!/.+@.+\..+/.test(email)) return setStatus("err", "Enter a valid email address.");
+      setStatus("load", "Sending reset link...");
+      try {
+        await WhamrAuth.forgotPassword(email);
+        setStatus("ok", "If that email is registered, a reset link is on its way.");
+      } catch (e) {
+        setStatus("err", "Couldn't send the reset link. Try again.");
       }
     });
 
@@ -302,6 +326,8 @@
       #whamr-auth-modal .wam-btn { flex: 1; padding: 12px; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; }
       #whamr-auth-modal .wam-primary { background: #ff3366; color: #fff; }
       #whamr-auth-modal .wam-ghost { background: #232330; color: #f5f5f7; }
+      #whamr-auth-modal .wam-forgot { display: block; width: 100%; margin: 12px 0 0; padding: 4px; background: none; border: none; color: #8a8a96; font-size: 12.5px; font-family: inherit; text-align: center; cursor: pointer; }
+      #whamr-auth-modal .wam-forgot:hover { color: #ff3366; text-decoration: underline; }
       #whamr-auth-modal .wam-google {
         display: flex; align-items: center; justify-content: center; gap: 10px;
         width: 100%; padding: 11px 14px;
