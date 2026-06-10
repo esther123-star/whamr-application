@@ -6,6 +6,7 @@
   "scripts": {
     "upload": "node upload-to-r2.js",
     "catalog": "node generate-catalog.js",
+    "cors": "node set-r2-cors.js",
     "deploy": "node upload-to-r2.js && node generate-catalog.js"
   },
   "dependencies": {

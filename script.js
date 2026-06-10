@@ -1552,6 +1552,13 @@
   /* ============================================
      Modal actions
      ============================================ */
+  // Map an item's type to the correct file extension. Stickers are webp/png —
+  // the old code saved everything that wasn't mp4 as ".gif", corrupting them.
+  const EXT_BY_TYPE = { mp4: "mp4", webm: "webm", mov: "mov", gif: "gif", png: "png", webp: "webp" };
+  function extForType(type) {
+    return EXT_BY_TYPE[String(type || "").toLowerCase()] || "bin";
+  }
+
   async function handleDownload() {
     const m = state.currentModal;
     if (!m) return;
@@ -1559,7 +1566,7 @@
       const res = await fetch(m.src);
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
-      const ext = m.type === "mp4" ? "mp4" : "gif";
+      const ext = extForType(m.type);
       const a = document.createElement("a");
       a.href = url;
       a.download = `${slugify(m.title)}.${ext}`;
@@ -1569,7 +1576,7 @@
       URL.revokeObjectURL(url);
       showToast("Download started");
     } catch (err) {
-      showToast("Download failed");
+      showToast("Download failed — the media host may be missing CORS headers");
     }
   }
 
@@ -1645,6 +1652,59 @@
     native: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>',
   };
 
+  // A "sticker" is a static image (webp/png) — the only thing WhatsApp can
+  // receive as an actual sticker. Videos/gifs are shared as links instead.
+  function isStickerItem(m) {
+    const t = String(m && m.type || "").toLowerCase();
+    return t === "webp" || t === "png";
+  }
+
+  // Send a single sticker to WhatsApp (or any app) as the ACTUAL sticker file,
+  // not a link. Uses the Web Share API Level 2 (file sharing); falls back to a
+  // download when file-sharing isn't supported (most desktop browsers).
+  async function sendStickerFile(m) {
+    if (!m) return;
+    try {
+      let blob;
+      if (m.blob) {
+        // Uploaded items already hold a File/Blob locally.
+        blob = m.blob;
+      } else {
+        showToast("Preparing sticker…");
+        const res = await fetch(m.src, { mode: "cors" });
+        if (!res.ok) throw new Error("fetch failed: " + res.status);
+        blob = await res.blob();
+      }
+
+      const ext = m.type === "png" ? "png" : "webp";
+      const file = new File([blob], `${slugify(m.title || "sticker")}.${ext}`, {
+        type: blob.type || "image/webp",
+      });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], title: m.title || "Sticker" });
+        closeShareSheet();
+        return;
+      }
+
+      // No file-share support: download the sticker so it can be attached manually.
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = file.name;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+      closeShareSheet();
+      showToast("Sharing files isn't supported here — sticker downloaded. Open WhatsApp and attach it.");
+    } catch (err) {
+      if (err && err.name === "AbortError") return; // user dismissed the share sheet
+      console.error("sendStickerFile failed:", err);
+      showToast("Couldn't send sticker — the media host may be missing CORS headers.");
+    }
+  }
+
   function openShareSheet() {
     const m = state.currentModal;
     if (!m || !el.shareSheet) return;
@@ -1654,19 +1714,36 @@
     }
     const url = getShareUrl(m);
     const text = getShareText(m);
+    const sticker = isStickerItem(m);
     el.shareGrid.innerHTML = "";
+
+    // For stickers, lead with a real "Send to WhatsApp" that shares the actual
+    // sticker file (not a link). This is the primary, most-wanted action.
+    if (sticker) {
+      const waBtn = document.createElement("button");
+      waBtn.className = "share-option share-option-primary";
+      waBtn.innerHTML = `<div class="share-option-icon icon-whatsapp">${ICON_SVGS.whatsapp}</div><span>Send to WhatsApp</span>`;
+      waBtn.addEventListener("click", () => sendStickerFile(m));
+      el.shareGrid.appendChild(waBtn);
+    }
 
     if (navigator.share) {
       const btn = document.createElement("button");
       btn.className = "share-option";
-      btn.innerHTML = `<div class="share-option-icon icon-native">${ICON_SVGS.native}</div><span>More...</span>`;
+      const label = sticker ? "Send sticker via…" : "More...";
+      btn.innerHTML = `<div class="share-option-icon icon-native">${ICON_SVGS.native}</div><span>${label}</span>`;
       btn.addEventListener("click", async () => {
+        // For stickers, share the file through the native sheet (any app).
+        if (sticker) { sendStickerFile(m); return; }
         try { await navigator.share({ title: m.title, text, url }); closeShareSheet(); } catch (err) {}
       });
       el.shareGrid.appendChild(btn);
     }
 
     SHARE_TARGETS.forEach((t) => {
+      // The link-based WhatsApp target is replaced by the file send above for
+      // stickers, so a sticker never goes out as a bare link.
+      if (sticker && t.name === "WhatsApp") return;
       const a = document.createElement("a");
       a.className = "share-option";
       a.href = t.build(url, text);

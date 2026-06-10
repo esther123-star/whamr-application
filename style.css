@@ -2020,6 +2020,16 @@ a { color: inherit; }
 .icon-copy { background: var(--accent); }
 .icon-native { background: linear-gradient(135deg, var(--accent), #ff7744); }
 
+/* Primary "Send to WhatsApp" file-send for stickers — make it pop. */
+.share-option-primary {
+  background: rgba(37, 211, 102, 0.12);
+  border-color: rgba(37, 211, 102, 0.4);
+}
+.share-option-primary:hover {
+  background: rgba(37, 211, 102, 0.2);
+  border-color: #25d366;
+}
+
 .share-close {
   width: 100%;
   padding: 12px;

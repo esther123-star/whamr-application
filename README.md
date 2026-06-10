@@ -145,6 +145,36 @@ This is a pure static site. Works on:
 - **Grid density**: in `.grid` inside `style.css`, change `minmax(260px, 1fr)` — smaller number = denser grid.
 - **Categories**: just add them to your `memes.json` entries. Pills appear automatically.
 
+## Sticker packs & WhatsApp
+
+The library includes static **stickers** (`type: "webp"`/`"png"`) alongside the
+video memes. Two ways to get them into WhatsApp:
+
+- **Send a single sticker** — open any sticker, tap **Share → Send to WhatsApp**.
+  This shares the actual sticker *file* (via the Web Share API), not a link, so
+  WhatsApp receives the real image. On desktop / browsers without file-share
+  support it falls back to downloading the `.webp`.
+- **Build a pack** — tap **Add to pack** on stickers, then open `pack.html` to
+  name it and **Export** a `.wastickers` archive (512×512 WebP, ≤100KB each,
+  with a tray icon and `contents.json`). Import it into WhatsApp with a sticker
+  app such as Sticker Maker / Wemoji.
+
+### ⚠️ R2 CORS is required (one-time)
+
+Both features read sticker bytes in the browser (`fetch`/`<canvas>`), which is
+blocked cross-origin unless the R2 bucket returns CORS headers. The public R2
+bucket does **not** send them by default, so export/send will silently fail
+until you set the policy once:
+
+```bash
+cd scripts
+npm install            # if not already
+npm run cors           # uses .env.r2 — needs a token allowed to edit bucket config
+```
+
+Restrict origins instead of the default `*` with
+`CORS_ALLOWED_ORIGINS=https://your-site.app npm run cors`.
+
 ## Notes on the current features
 
 **Favorites** are stored in `localStorage` under the key `whamr-favorites`. Clearing browser data wipes them.
