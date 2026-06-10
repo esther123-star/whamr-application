@@ -155,13 +155,15 @@ video memes. Two ways to get them into WhatsApp:
   WhatsApp receives the real image. On desktop / browsers without file-share
   support it falls back to downloading the `.webp`.
 - **Build a pack** — tap **Add to pack** on stickers, then open `pack.html` to
-  name it and **Export** a `.wastickers` archive. Static and animated stickers
-  are detected automatically (from the WebP bytes) and bundled as **separate
-  packs** in one archive, since WhatsApp packs must be all-static or
-  all-animated. Static stickers are normalized to 512×512 WebP ≤100KB; animated
-  stickers are passed through untouched (≤500KB; larger ones are skipped, as
-  animation can't be re-encoded in the browser). Each pack needs 3–30 stickers.
-  Import into WhatsApp with a sticker app such as Sticker Maker / Wemoji.
+  name it and **Export**. Static and animated stickers are detected
+  automatically (from the WebP bytes). Because WhatsApp packs must be all-static
+  or all-animated, a mixed selection exports as **two separate `.wastickers`
+  files** (`<name>-static.wastickers` and `<name>-animated.wastickers`) — each a
+  clean single-pack archive that any importer accepts. Static stickers are
+  normalized to 512×512 WebP ≤100KB; animated stickers are passed through
+  untouched (≤500KB; larger ones are skipped, as animation can't be re-encoded
+  in the browser). Each pack needs 3–30 stickers. Import into WhatsApp with a
+  sticker app such as Sticker Maker / Wemoji.
 
 ### ⚠️ R2 CORS is required (one-time)
 

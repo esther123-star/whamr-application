@@ -606,90 +606,98 @@
           btn.innerHTML = "Building... " + Math.round(((i + 1) / pack.ids.length) * 80) + "%";
         }
 
-        // WhatsApp packs are all-static OR all-animated, 3-30 each. Build one
-        // pack object per non-empty group; drop a group under the minimum.
+        // WhatsApp packs are all-static OR all-animated, 3-30 each. Static and
+        // animated are exported as SEPARATE single-pack .wastickers files so
+        // every importer (even ones that only read the first pack) works.
         var droppedStatic = Math.max(0, staticG.length - PACK_MAX);
         var droppedAnim = Math.max(0, animG.length - PACK_MAX);
         var sG = staticG.slice(0, PACK_MAX);
         var aG = animG.slice(0, PACK_MAX);
 
         var packId = getOrCreatePackId();
-        var zip = new JSZip();
-        var packsMeta = [];
-        var fileSeq = 0;
+        var safeName = (name || "whamr-pack").replace(/[^a-z0-9-_]+/gi, "-").toLowerCase();
 
-        async function addPack(group, isAnimated, suffix) {
-          if (group.length < PACK_MIN) return { tooFew: group.length };
-          btn.innerHTML = "Building tray icon...";
-          var trayName = "tray_" + suffix + ".png";
-          zip.file(trayName, await buildTrayFromBlob(group[0].blob));
-          var stickers = group.map(function (g) {
-            var fname = suffix + "_" + String(++fileSeq).padStart(3, "0") + ".webp";
+        // Build a complete single-pack .wastickers blob for one group.
+        async function buildArchive(group, isAnimated, suffix) {
+          var zip = new JSZip();
+          zip.file("tray.png", await buildTrayFromBlob(group[0].blob));
+          var stickers = group.map(function (g, idx) {
+            var fname = "sticker_" + String(idx + 1).padStart(3, "0") + ".webp";
             zip.file(fname, g.bytes);
             return { "image_file": fname, "emojis": ["\ud83d\ude00"] };
           });
-          packsMeta.push({
-            "identifier": packId + "-" + suffix,
-            "name": name + (isAnimated ? " (animated)" : ""),
-            "publisher": publisher,
-            "tray_image_file": trayName,
-            "image_data_version": "1",
-            "avoid_cache": false,
-            "animated_sticker_pack": isAnimated,
-            "publisher_email": "",
-            "publisher_website": "",
-            "privacy_policy_website": "",
-            "license_agreement_website": "",
-            "stickers": stickers
+          zip.file("contents.json", JSON.stringify({
+            "android_play_store_link": "",
+            "ios_app_store_link": "",
+            "sticker_packs": [{
+              "identifier": packId + "-" + suffix,
+              "name": name + (isAnimated ? " (animated)" : ""),
+              "publisher": publisher,
+              "tray_image_file": "tray.png",
+              "image_data_version": "1",
+              "avoid_cache": false,
+              "animated_sticker_pack": isAnimated,
+              "publisher_email": "",
+              "publisher_website": "",
+              "privacy_policy_website": "",
+              "license_agreement_website": "",
+              "stickers": stickers
+            }]
+          }, null, 2));
+          return await zip.generateAsync({
+            type: "blob",
+            mimeType: "application/wastickers",
+            compression: "DEFLATE",
+            compressionOptions: { level: 6 }
           });
-          return { ok: true };
         }
 
-        var sRes = await addPack(sG, false, "static");
-        var aRes = await addPack(aG, true, "anim");
+        function triggerDownload(blob, filename) {
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement("a");
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+        }
 
-        if (packsMeta.length === 0) {
+        var doStatic = sG.length >= PACK_MIN;
+        var doAnim = aG.length >= PACK_MIN;
+
+        if (!doStatic && !doAnim) {
           var why = [];
-          if (sRes.tooFew) why.push(sRes.tooFew + " static");
-          if (aRes.tooFew) why.push(aRes.tooFew + " animated");
+          if (staticG.length) why.push(staticG.length + " static");
+          if (animG.length) why.push(animG.length + " animated");
           toast("Not enough usable stickers - need at least " + PACK_MIN + " of the same kind" + (why.length ? " (had " + why.join(", ") + ")" : ""), 6000);
           return;
         }
 
         btn.innerHTML = "Packaging...";
-        zip.file("contents.json", JSON.stringify({
-          "android_play_store_link": "",
-          "ios_app_store_link": "",
-          "sticker_packs": packsMeta
-        }, null, 2));
+        var both = doStatic && doAnim;
 
-        var zipBlob = await zip.generateAsync({
-          type: "blob",
-          mimeType: "application/wastickers",
-          compression: "DEFLATE",
-          compressionOptions: { level: 6 }
-        });
-
-        var safeName = (name || "whamr-pack").replace(/[^a-z0-9-_]+/gi, "-").toLowerCase();
-        var url = URL.createObjectURL(zipBlob);
-        var a = document.createElement("a");
-        a.href = url;
-        a.download = safeName + ".wastickers";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+        if (doStatic) {
+          var sBlob = await buildArchive(sG, false, "static");
+          triggerDownload(sBlob, safeName + (both ? "-static" : "") + ".wastickers");
+        }
+        if (doAnim) {
+          var aBlob = await buildArchive(aG, true, "anim");
+          // Stagger the second download so the browser does not block it.
+          if (both) await new Promise(function (res) { setTimeout(res, 800); });
+          triggerDownload(aBlob, safeName + (both ? "-animated" : "") + ".wastickers");
+        }
 
         var parts = [];
-        if (sRes.ok) parts.push(sG.length + " static");
-        if (aRes.ok) parts.push(aG.length + " animated");
-        var msg = "Downloaded - " + parts.join(" + ") + (packsMeta.length > 1 ? " (2 packs)" : "");
+        if (doStatic) parts.push(sG.length + " static");
+        if (doAnim) parts.push(aG.length + " animated");
+        var msg = "Downloaded - " + parts.join(" + ") + (both ? " (2 files)" : "");
         if (skipped.vid) msg += " | " + skipped.vid + " video skipped";
         if (skipped.bigAnim) msg += " | " + skipped.bigAnim + " animated >500KB";
         if (skipped.big) msg += " | " + skipped.big + " >100KB";
         if (droppedStatic || droppedAnim) msg += " | capped at " + PACK_MAX + "/pack";
-        if (sRes.tooFew) msg += " | " + sRes.tooFew + " static dropped (<" + PACK_MIN + ")";
-        if (aRes.tooFew) msg += " | " + aRes.tooFew + " animated dropped (<" + PACK_MIN + ")";
+        if (!doStatic && staticG.length) msg += " | " + staticG.length + " static dropped (<" + PACK_MIN + ")";
+        if (!doAnim && animG.length) msg += " | " + animG.length + " animated dropped (<" + PACK_MIN + ")";
         if (skipped.err) msg += " | " + skipped.err + " failed";
         toast(msg, 6000);
       } catch (e) {
