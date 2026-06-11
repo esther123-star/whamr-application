@@ -244,10 +244,27 @@
 
   function isFavorited(id) { return state.favorites.has(id); }
 
-  /* ---- Supabase sync (all fail silently; never block the UI) ---- */
+  /* ---- Cloud sync (all fail silently; never block the UI) ----
+     Two backends, chosen by identity:
+       • email/password (backend JWT) users  -> the API (/api/favorites)
+       • Google (Supabase session) users      -> the Supabase client directly
+     localStorage is always the instant layer; the cloud is a best-effort bonus. */
+  function isBackendUser() {
+    return !!(window.WhamrAuth && window.WhamrAuth.isBackendUser && window.WhamrAuth.isBackendUser());
+  }
 
   // Add one favourite to the cloud (if logged in)
   async function cloudAddFavorite(id) {
+    if (!authReady()) return;
+    if (isBackendUser()) {
+      try {
+        await window.WhamrAuth.apiFetch("/api/favorites", {
+          method: "POST",
+          body: JSON.stringify({ meme_id: id }),
+        });
+      } catch (e) { /* ignore — local copy already saved */ }
+      return;
+    }
     const userId = currentUserId();
     if (!userId) return;
     try {
@@ -261,6 +278,15 @@
 
   // Remove one favourite from the cloud (if logged in)
   async function cloudRemoveFavorite(id) {
+    if (!authReady()) return;
+    if (isBackendUser()) {
+      try {
+        await window.WhamrAuth.apiFetch("/api/favorites/" + encodeURIComponent(id), {
+          method: "DELETE",
+        });
+      } catch (e) { /* ignore */ }
+      return;
+    }
     const userId = currentUserId();
     if (!userId) return;
     try {
@@ -277,16 +303,26 @@
   // On login: pull the user's cloud favourites and merge with local,
   // then push any local-only ones up so both sides end up complete.
   async function syncFavoritesFromCloud() {
-    const userId = currentUserId();
-    if (!userId) return;
+    if (!authReady()) return;
     try {
-      const { data, error } = await window.WhamrAuth.db
-        .from("favorites")
-        .select("meme_id")
-        .eq("user_id", userId);
-      if (error || !data) return;
+      // 1) Read the cloud's favourites from whichever backend this user uses.
+      let cloudIds;
+      if (isBackendUser()) {
+        const res = await window.WhamrAuth.apiFetch("/api/favorites", { method: "GET" });
+        if (!res.ok) return;
+        const d = await res.json();
+        cloudIds = new Set(d.meme_ids || []);
+      } else {
+        const userId = currentUserId();
+        if (!userId) return;
+        const { data, error } = await window.WhamrAuth.db
+          .from("favorites")
+          .select("meme_id")
+          .eq("user_id", userId);
+        if (error || !data) return;
+        cloudIds = new Set(data.map(function (r) { return r.meme_id; }));
+      }
 
-      const cloudIds = new Set(data.map(function (r) { return r.meme_id; }));
       const localIds = new Set(state.favorites);
 
       // Merge: union of both sides
@@ -294,15 +330,25 @@
       state.favorites = merged;
       saveFavorites();
 
-      // Push local-only ones up to the cloud
+      // 2) Push local-only favourites up to the cloud.
       const toPush = [...localIds].filter(function (id) { return !cloudIds.has(id); });
       if (toPush.length) {
-        const rows = toPush.map(function (id) {
-          return { user_id: userId, meme_id: id };
-        });
-        try {
-          await window.WhamrAuth.db.from("favorites").insert(rows);
-        } catch (e) { /* ignore */ }
+        if (isBackendUser()) {
+          for (let i = 0; i < toPush.length; i++) {
+            try {
+              await window.WhamrAuth.apiFetch("/api/favorites", {
+                method: "POST",
+                body: JSON.stringify({ meme_id: toPush[i] }),
+              });
+            } catch (e) { /* ignore */ }
+          }
+        } else {
+          const userId = currentUserId();
+          const rows = toPush.map(function (id) { return { user_id: userId, meme_id: id }; });
+          try {
+            await window.WhamrAuth.db.from("favorites").insert(rows);
+          } catch (e) { /* ignore */ }
+        }
       }
 
       // Redraw so the merged favourites show up
@@ -1243,16 +1289,24 @@
     return Math.floor(d / 86400) + "d ago";
   }
 
-  // ----- Public comments (Supabase) -----
-  // Admin user id: this account can delete ANY comment (moderation).
-  const ADMIN_USER_ID = "2f9e8690-d8af-497b-aee2-03cb1816e462";
+  // ----- Public comments -----
+  // Reads come from Supabase directly (fast, public, one unified thread). Writes
+  // route by identity: email/password users post/delete/report via the backend
+  // API; Google users keep using the Supabase client. Both land in the same
+  // `comments` table, so everyone sees one thread.
+  //
+  // Accounts allowed to delete ANY comment (moderation). Includes the original
+  // Supabase (Google) admin uid. Add a backend (email/password) admin user id
+  // here too to moderate from an email/password account — the backend enforces
+  // the same list server-side via its ADMIN_USER_IDS env var.
+  const ADMIN_USER_IDS = ["2f9e8690-d8af-497b-aee2-03cb1816e462"];
 
   function authUser() {
     return (window.WhamrAuth && window.WhamrAuth.getUser) ? window.WhamrAuth.getUser() : null;
   }
   function isAdmin() {
     const u = authUser();
-    return u && u.id === ADMIN_USER_ID;
+    return !!(u && ADMIN_USER_IDS.indexOf(u.id) !== -1);
   }
 
   async function renderDiscussTab(meme) {
@@ -1381,31 +1435,49 @@
   }
 
   async function deleteComment(commentId, meme) {
-    if (!window.WhamrAuth || !window.WhamrAuth.db) return;
     if (!confirm("Delete this comment?")) return;
-    const { error } = await window.WhamrAuth.db
-      .from("comments")
-      .delete()
-      .eq("id", commentId);
-    if (error) {
-      showToast("Could not delete");
-    } else {
+    try {
+      if (isBackendUser()) {
+        const res = await window.WhamrAuth.apiFetch(
+          "/api/comments/" + encodeURIComponent(commentId),
+          { method: "DELETE" }
+        );
+        if (!res.ok) { showToast("Could not delete"); return; }
+      } else {
+        if (!window.WhamrAuth || !window.WhamrAuth.db) return;
+        const { error } = await window.WhamrAuth.db
+          .from("comments")
+          .delete()
+          .eq("id", commentId);
+        if (error) { showToast("Could not delete"); return; }
+      }
       showToast("Comment deleted");
       renderDiscussTab(meme);
+    } catch (e) {
+      showToast("Could not delete");
     }
   }
 
   async function reportComment(commentId, meme) {
-    if (!window.WhamrAuth || !window.WhamrAuth.db) return;
-    const { error } = await window.WhamrAuth.db
-      .from("comments")
-      .update({ reported: true })
-      .eq("id", commentId);
-    if (error) {
-      showToast("Could not report");
-    } else {
+    try {
+      if (isBackendUser()) {
+        const res = await window.WhamrAuth.apiFetch(
+          "/api/comments/" + encodeURIComponent(commentId) + "/report",
+          { method: "POST" }
+        );
+        if (!res.ok) { showToast("Could not report"); return; }
+      } else {
+        if (!window.WhamrAuth || !window.WhamrAuth.db) return;
+        const { error } = await window.WhamrAuth.db
+          .from("comments")
+          .update({ reported: true })
+          .eq("id", commentId);
+        if (error) { showToast("Could not report"); return; }
+      }
       showToast("Reported. Thank you.");
       renderDiscussTab(meme);
+    } catch (e) {
+      showToast("Could not report");
     }
   }
 
@@ -1932,23 +2004,33 @@
         const text = (el.discussText.value || "").trim();
         if (!text) return;
 
-        if (!window.WhamrAuth || !window.WhamrAuth.db) {
-          showToast("Comments unavailable");
-          return;
-        }
-
-        const authorName = u.email ? u.email.split("@")[0] : "Someone";
-
-        const { error } = await window.WhamrAuth.db
-          .from("comments")
-          .insert({
-            meme_id: meme.id,
-            user_id: u.id,
-            author_name: authorName,
-            text: text,
-          });
-
-        if (error) {
+        try {
+          if (isBackendUser()) {
+            // email/password user -> post via the backend API (keyed on the
+            // backend user id; author_name is derived server-side).
+            const res = await window.WhamrAuth.apiFetch("/api/comments", {
+              method: "POST",
+              body: JSON.stringify({ meme_id: meme.id, text: text }),
+            });
+            if (!res.ok) { showToast("Could not post comment"); return; }
+          } else {
+            // Google user -> post via Supabase directly.
+            if (!window.WhamrAuth || !window.WhamrAuth.db) {
+              showToast("Comments unavailable");
+              return;
+            }
+            const authorName = u.email ? u.email.split("@")[0] : "Someone";
+            const { error } = await window.WhamrAuth.db
+              .from("comments")
+              .insert({
+                meme_id: meme.id,
+                user_id: u.id,
+                author_name: authorName,
+                text: text,
+              });
+            if (error) { showToast("Could not post comment"); return; }
+          }
+        } catch (err) {
           showToast("Could not post comment");
           return;
         }

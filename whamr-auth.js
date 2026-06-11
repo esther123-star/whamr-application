@@ -102,6 +102,11 @@
 
     getUser: function () { return currentUser; },
     isLoggedIn: function () { return !!currentUser; },
+    // True when the current user is an email/password (backend JWT) account, as
+    // opposed to a Google/Supabase session. Favourites & comments use this to
+    // pick their storage path: backend users sync via the API, Google users via
+    // the Supabase client.
+    isBackendUser: function () { return !!backendUser; },
     onChange: function (fn) { listeners.push(fn); fn(currentUser); },
     openModal: function () { showModal(); },
 
