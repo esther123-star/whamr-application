@@ -1,6 +1,12 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/r2/:path*",
+      "destination": "https://pub-16e03d1bc3f74001b6190ac5b3c763dd.r2.dev/:path*"
+    }
+  ],
   "headers": [
     {
       "source": "/assets/(.*)",

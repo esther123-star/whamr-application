@@ -471,6 +471,20 @@
       return pack.identifier;
     }
 
+    // R2's public bucket sends no CORS headers, so the browser can't read sticker
+    // bytes cross-origin. Vercel proxies the bucket same-origin at /r2/* (see
+    // vercel.json); map an absolute R2 URL to that path for byte reads so fetch()
+    // and the canvas aren't blocked. Falls back to the original URL off http(s).
+    var R2_MEDIA_HOST = "pub-16e03d1bc3f74001b6190ac5b3c763dd.r2.dev";
+    function sameOriginMedia(url) {
+      try {
+        if (location.protocol !== "http:" && location.protocol !== "https:") return url;
+        var u = new URL(url, location.href);
+        if (u.hostname === R2_MEDIA_HOST) return "/r2" + u.pathname + u.search;
+        return url;
+      } catch (e) { return url; }
+    }
+
     function loadImage(url) {
       return new Promise(function (resolve, reject) {
         var img = new Image();
@@ -536,7 +550,8 @@
     // 512x512 WebP under 100KB via canvas. Returns { animated, bytes, blob } or
     // { skip: reason }.
     async function processSticker(m) {
-      var res = await fetch(m.src, { mode: "cors" });
+      // Read bytes via the same-origin proxy so R2's missing CORS doesn't block us.
+      var res = await fetch(sameOriginMedia(m.src), { mode: "cors" });
       if (!res.ok) throw new Error("HTTP " + res.status);
       var blob = await res.blob();
       var buf = new Uint8Array(await blob.arrayBuffer());

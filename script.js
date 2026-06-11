@@ -570,7 +570,7 @@
     if (isAnimatedPackItem(meme)) {
       return { skipped: true, reason: "animated" };
     }
-    const img = await loadImage(meme.src);
+    const img = await loadImage(sameOriginMedia(meme.src));
     const canvas = squareCanvas(img, PACK_STICKER_SIZE);
     const blob = await canvasToBlobUnder(canvas, "image/webp", PACK_STICKER_MAX_BYTES);
     if (blob.size > PACK_STICKER_MAX_BYTES) {
@@ -583,7 +583,7 @@
 
   // Tray icon: take the first usable sticker, downscale to 96x96 PNG <50KB.
   async function buildTrayIcon(firstMeme) {
-    const img = await loadImage(firstMeme.src);
+    const img = await loadImage(sameOriginMedia(firstMeme.src));
     const canvas = squareCanvas(img, PACK_TRAY_SIZE);
     const blob = await canvasToBlobUnder(canvas, "image/png", PACK_TRAY_MAX_BYTES);
     return await blobToUint8(blob);
@@ -1652,6 +1652,22 @@
     native: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>',
   };
 
+  // R2's public bucket sends NO CORS headers, so the browser can't read sticker
+  // bytes cross-origin (fetch().blob() / canvas both get blocked). Vercel proxies
+  // the bucket same-origin at /r2/* (see vercel.json), which sidesteps CORS
+  // entirely. Map an absolute R2 URL to that same-origin path for byte reads only
+  // — display <img>s keep pointing at R2 directly (cached, no proxy bandwidth).
+  // Falls back to the original URL off http(s) (e.g. local file://).
+  const R2_MEDIA_HOST = "pub-16e03d1bc3f74001b6190ac5b3c763dd.r2.dev";
+  function sameOriginMedia(url) {
+    try {
+      if (location.protocol !== "http:" && location.protocol !== "https:") return url;
+      const u = new URL(url, location.href);
+      if (u.hostname === R2_MEDIA_HOST) return "/r2" + u.pathname + u.search;
+      return url;
+    } catch (e) { return url; }
+  }
+
   // A "sticker" is a static image (webp/png) — the only thing WhatsApp can
   // receive as an actual sticker. Videos/gifs are shared as links instead.
   function isStickerItem(m) {
@@ -1671,7 +1687,8 @@
         blob = m.blob;
       } else {
         showToast("Preparing sticker…");
-        const res = await fetch(m.src, { mode: "cors" });
+        // Read bytes via the same-origin proxy so R2's missing CORS doesn't block us.
+        const res = await fetch(sameOriginMedia(m.src), { mode: "cors" });
         if (!res.ok) throw new Error("fetch failed: " + res.status);
         blob = await res.blob();
       }
