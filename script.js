@@ -1301,7 +1301,7 @@
   // the same list server-side via its ADMIN_USER_IDS env var.
   const ADMIN_USER_IDS = [
     "2f9e8690-d8af-497b-aee2-03cb1816e462", // original Supabase (Google) admin
-    "a91ea675-04c9-4f54-8735-236c97f6add8", // backend (email/password) moderator
+    "46c04b3e-052d-4eaf-9b23-dcc0f044d423", // Felix — backend (email/password) admin
   ];
 
   function authUser() {
