@@ -1299,7 +1299,10 @@
   // Supabase (Google) admin uid. Add a backend (email/password) admin user id
   // here too to moderate from an email/password account — the backend enforces
   // the same list server-side via its ADMIN_USER_IDS env var.
-  const ADMIN_USER_IDS = ["2f9e8690-d8af-497b-aee2-03cb1816e462"];
+  const ADMIN_USER_IDS = [
+    "2f9e8690-d8af-497b-aee2-03cb1816e462", // original Supabase (Google) admin
+    "a91ea675-04c9-4f54-8735-236c97f6add8", // backend (email/password) moderator
+  ];
 
   function authUser() {
     return (window.WhamrAuth && window.WhamrAuth.getUser) ? window.WhamrAuth.getUser() : null;
