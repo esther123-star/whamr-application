@@ -234,11 +234,18 @@ module.exports = async function handler(req, res) {
     ? '<img src="' + esc(meme.src) + '" alt="' + esc(meme.title) + '" />'
     : '<video src="' + esc(meme.src) + '" autoplay muted loop playsinline controls></video>';
 
+  // Images use the meme itself as the preview. Videos have no poster frame, so
+  // we point og:image at a dynamically-rendered branded card (/api/og) — the
+  // link still also carries og:video for players that use it.
+  const ogImage = isImage
+    ? meme.src
+    : base + '/api/og?t=' + encodeURIComponent(meme.title) + '&c=' + encodeURIComponent(meme.category || '');
+
   const html = page({
     title: esc(meme.title) + ' · Whamr',
     description: desc,
     canonical: canonical,
-    ogImage: isImage ? meme.src : '',
+    ogImage: ogImage,
     ogVideo: isImage ? '' : meme.src,
     bodyTitle: meme.title,
     bodySub: '',

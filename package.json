@@ -1,0 +1,9 @@
+{
+  "name": "whamr-fe",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Whamr static frontend + Vercel functions (share-link OG renderer).",
+  "dependencies": {
+    "@vercel/og": "^0.6.0"
+  }
+}
