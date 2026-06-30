@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pricing · Whamr</title>
+  <meta name="description" content="Whamr is free to browse and send. Go Creator for analytics and monetisation, or API for programmatic access." />
+  <meta name="theme-color" content="#0a0a0f" />
+  <meta property="og:title" content="Plans &amp; Pricing · Whamr" />
+  <meta property="og:description" content="Free to send. Creator and API plans for the people building on top." />
+  <meta property="og:type" content="website" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .pr-wrap { max-width: 1040px; margin: 0 auto; padding: 8px 32px 80px; position: relative; z-index: 2; }
+    .pr-toggle {
+      display: flex; align-items: center; justify-content: center; gap: 14px; margin: 0 0 40px;
+      font-size: 14px; color: var(--text-muted);
+    }
+    .pr-toggle .on { color: var(--text); font-weight: 600; }
+    .pr-switch {
+      position: relative; width: 52px; height: 28px; border-radius: 100px;
+      background: var(--surface-active); border: 1px solid var(--border-strong); transition: background var(--transition);
+    }
+    .pr-switch::after {
+      content: ""; position: absolute; top: 2px; left: 2px; width: 22px; height: 22px;
+      border-radius: 50%; background: var(--accent); transition: transform var(--transition);
+    }
+    .pr-switch.annual::after { transform: translateX(24px); }
+    .pr-save { font-size: 11px; font-weight: 700; color: var(--accent-yellow); background: rgba(255,227,77,0.1);
+      border: 1px solid rgba(255,227,77,0.22); padding: 3px 9px; border-radius: 100px; letter-spacing: 0.04em; }
+
+    .pr-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 64px; }
+    .pr-card {
+      display: flex; flex-direction: column; padding: 30px 26px;
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+      transition: all var(--transition);
+    }
+    .pr-card:hover { border-color: var(--border-strong); transform: translateY(-3px); box-shadow: var(--shadow-card); }
+    .pr-card.featured { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent-soft), var(--shadow-card); }
+    .pr-tag-pop { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--accent); background: var(--accent-soft); border: 1px solid rgba(255,51,102,0.25);
+      padding: 3px 10px; border-radius: 100px; align-self: flex-start; margin-bottom: 14px; }
+    .pr-plan { font-family: var(--font-sans); font-weight: 700; font-size: 18px; color: var(--text); margin: 0 0 6px; }
+    .pr-plan-desc { font-size: 13px; color: var(--text-muted); margin: 0 0 20px; min-height: 36px; }
+    .pr-price { display: flex; align-items: baseline; gap: 4px; margin-bottom: 4px; }
+    .pr-amount { font-family: var(--font-sans); font-weight: 800; font-size: 42px; letter-spacing: -0.03em; color: var(--text); }
+    .pr-per { font-size: 14px; color: var(--text-muted); }
+    .pr-billed { font-size: 12px; color: var(--text-subtle); min-height: 18px; margin-bottom: 22px; }
+    .pr-cta { text-align: center; margin-bottom: 24px; width: 100%; justify-content: center; }
+    .pr-feats { list-style: none; margin: 0; padding: 0; }
+    .pr-feats li { position: relative; padding-left: 26px; font-size: 14px; line-height: 1.5;
+      color: var(--text-muted); margin-bottom: 12px; }
+    .pr-feats li::before { content: "✓"; position: absolute; left: 0; top: 0; color: var(--accent); font-weight: 700; }
+    .pr-feats li strong { color: var(--text); font-weight: 600; }
+
+    .pr-section-title { text-align: center; font-family: var(--font-sans); font-weight: 800;
+      font-size: clamp(22px,3vw,28px); letter-spacing: -0.02em; color: var(--text); margin: 0 0 28px; }
+    .pr-faq { max-width: 720px; margin: 0 auto; }
+    .pr-faq details {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 0 20px; margin-bottom: 12px; transition: border-color var(--transition);
+    }
+    .pr-faq details[open] { border-color: var(--border-strong); }
+    .pr-faq summary {
+      cursor: pointer; list-style: none; padding: 18px 0; font-weight: 600; font-size: 15px;
+      color: var(--text); display: flex; justify-content: space-between; align-items: center; gap: 16px;
+    }
+    .pr-faq summary::-webkit-details-marker { display: none; }
+    .pr-faq summary::after { content: "+"; color: var(--accent); font-size: 22px; font-weight: 400; line-height: 1; }
+    .pr-faq details[open] summary::after { content: "−"; }
+    .pr-faq details p { margin: 0; padding: 0 0 20px; font-size: 14px; line-height: 1.65; color: var(--text-muted); }
+    @media (max-width: 820px) { .pr-grid { grid-template-columns: 1fr; max-width: 420px; margin-inline: auto; } }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="page-nav">
+    <a href="index.html" class="page-nav-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      Home
+    </a>
+    <a href="index.html" class="page-nav-brand">
+      <div class="logo">whamr<span class="logo-dot">.</span></div>
+    </a>
+    <div class="page-nav-links">
+      <a href="memes.html" class="hero-nav-link">All memes</a>
+      <a href="how-it-works.html" class="hero-nav-link">How it works</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="page-hero">
+    <div class="page-hero-content">
+      <div class="section-eyebrow">Pricing</div>
+      <h1 class="page-hero-title">Free to <span class="page-hero-title-accent">send.</span></h1>
+      <p class="page-hero-sub">Browsing and sending memes is always free. Upgrade when you want creator analytics, monetisation, or API access.</p>
+    </div>
+  </section>
+
+  <main class="pr-wrap">
+
+    <!-- BILLING TOGGLE -->
+    <div class="pr-toggle">
+      <span id="lblMonthly" class="on">Monthly</span>
+      <button class="pr-switch" id="prSwitch" aria-label="Toggle annual billing"></button>
+      <span id="lblAnnual">Annual</span>
+      <span class="pr-save">Save 20%</span>
+    </div>
+
+    <!-- PLANS -->
+    <div class="pr-grid">
+      <!-- Free -->
+      <div class="pr-card">
+        <span class="pr-plan" style="margin-top:30px;">Free</span>
+        <p class="pr-plan-desc">Everything you need to find and send.</p>
+        <div class="pr-price"><span class="pr-amount">$0</span><span class="pr-per">/forever</span></div>
+        <div class="pr-billed">No card required.</div>
+        <a href="memes.html" class="btn-hero btn-hero-ghost pr-cta">Start browsing</a>
+        <ul class="pr-feats">
+          <li>Full meme &amp; sticker library</li>
+          <li><strong>AI natural-language search</strong></li>
+          <li>9-platform share sheet</li>
+          <li>Cloud-synced favourites</li>
+          <li>Sticker pack builder (up to 30)</li>
+        </ul>
+      </div>
+
+      <!-- Creator -->
+      <div class="pr-card featured">
+        <span class="pr-tag-pop">Most popular</span>
+        <span class="pr-plan">Creator</span>
+        <p class="pr-plan-desc">For creators who want reach, data and tips.</p>
+        <div class="pr-price"><span class="pr-amount" data-m="$7" data-a="$5.60">$7</span><span class="pr-per">/mo</span></div>
+        <div class="pr-billed" data-m="Billed monthly" data-a="Billed annually ($67/yr)">Billed monthly</div>
+        <a href="memes.html" class="btn-hero btn-hero-primary pr-cta">Start 14-day trial</a>
+        <ul class="pr-feats">
+          <li>Everything in Free, plus:</li>
+          <li><strong>Creator analytics</strong> — sends, reach, top memes</li>
+          <li>Verified creator badge eligibility</li>
+          <li>Tip jar &amp; earnings wallet</li>
+          <li>Priority in search &amp; trending</li>
+          <li>Unlimited collections</li>
+        </ul>
+      </div>
+
+      <!-- API -->
+      <div class="pr-card">
+        <span class="pr-plan" style="margin-top:30px;">API</span>
+        <p class="pr-plan-desc">Programmatic access for apps &amp; bots.</p>
+        <div class="pr-price"><span class="pr-amount" data-m="$29" data-a="$23.20">$29</span><span class="pr-per">/mo</span></div>
+        <div class="pr-billed" data-m="Billed monthly" data-a="Billed annually ($278/yr)">Billed monthly</div>
+        <a href="mailto:hello@whamr.app?subject=Whamr%20API%20access" class="btn-hero btn-hero-ghost pr-cta">Contact us</a>
+        <ul class="pr-feats">
+          <li>Everything in Creator, plus:</li>
+          <li><strong>REST API</strong> — search &amp; send endpoints</li>
+          <li>WhatsApp sticker-send integration</li>
+          <li>100k requests / month</li>
+          <li>Webhooks &amp; bulk export</li>
+          <li>Priority support</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <h2 class="pr-section-title">Pricing questions</h2>
+    <div class="pr-faq">
+      <details open>
+        <summary>Is Whamr really free?</summary>
+        <p>Yes. Browsing the full library, searching, sharing to any platform, saving favourites and building sticker packs are all free, forever, with no card required. Paid plans only add creator and developer tooling on top.</p>
+      </details>
+      <details>
+        <summary>What do I get with Creator?</summary>
+        <p>Creator unlocks analytics on your uploads (sends, reach, your best-performing memes), eligibility for the verified badge, a tip jar with an earnings wallet, and priority placement in search and trending.</p>
+      </details>
+      <details>
+        <summary>Can I cancel anytime?</summary>
+        <p>Absolutely. Plans are month-to-month (or annual if you choose). Cancel whenever you like and you keep access until the end of your billing period. No lock-in.</p>
+      </details>
+      <details>
+        <summary>How does annual billing save me money?</summary>
+        <p>Switching to annual takes 20% off the monthly rate — Creator works out to about $5.60/mo and API to about $23.20/mo, billed once a year.</p>
+      </details>
+      <details>
+        <summary>What's included in the API plan?</summary>
+        <p>The API plan gives you programmatic search and send endpoints, the WhatsApp sticker-send integration, 100k requests a month, webhooks, bulk export, and priority support. Get in touch and we'll set you up with keys.</p>
+      </details>
+      <details>
+        <summary>Do creators keep their earnings?</summary>
+        <p>Yes. Tips go to creators on a 90/10 split (you keep 90%). Earnings collect in your wallet and you withdraw to your bank when you're ready.</p>
+      </details>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="logo footer-logo">whamr<span class="logo-dot">.</span></div>
+        <p class="footer-tag">Send the wham.</p>
+      </div>
+      <div class="footer-links">
+        <a href="memes.html">All memes</a>
+        <a href="how-it-works.html">How it works</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="help.html">Help</a>
+        <a href="about.html">About</a>
+        <a href="terms.html">Terms</a>
+        <a href="privacy.html">Privacy</a>
+      </div>
+      <div class="footer-meta">
+        <p>built for the send</p>
+        <p class="footer-version">v2.1 · prototype</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var sw = document.getElementById('prSwitch');
+      var lblM = document.getElementById('lblMonthly');
+      var lblA = document.getElementById('lblAnnual');
+      var annual = false;
+      sw.addEventListener('click', function () {
+        annual = !annual;
+        sw.classList.toggle('annual', annual);
+        lblM.classList.toggle('on', !annual);
+        lblA.classList.toggle('on', annual);
+        document.querySelectorAll('[data-m]').forEach(function (el) {
+          el.textContent = annual ? el.getAttribute('data-a') : el.getAttribute('data-m');
+        });
+      });
+    })();
+  </script>
+
+</body>
+</html>

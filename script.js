@@ -1563,6 +1563,8 @@
   function openModal(meme, options = {}) {
     if (!el.modal) return;
     state.currentModal = meme;
+    // Expose the open meme so collections.js (loaded separately) can act on it.
+    window.WhamrModalMeme = meme;
 
     el.modalMedia.innerHTML = "";
     el.modalMedia.appendChild(createMedia(meme, { forCard: false }));
@@ -1606,6 +1608,7 @@
     el.modal.hidden = true;
     el.modalMedia.innerHTML = "";
     state.currentModal = null;
+    window.WhamrModalMeme = null;
     document.body.style.overflow = "";
     if (IS_LIBRARY) {
       const url = new URL(window.location.href);

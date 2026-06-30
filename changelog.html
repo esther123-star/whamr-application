@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Changelog · Whamr</title>
+  <meta name="description" content="Every Whamr improvement, version by version. What's new and what's next." />
+  <meta name="theme-color" content="#0a0a0f" />
+  <meta property="og:title" content="What's New · Whamr" />
+  <meta property="og:description" content="Every Whamr improvement, version by version." />
+  <meta property="og:type" content="website" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .cl-wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 20px 32px 80px;
+      position: relative;
+      z-index: 2;
+    }
+    .cl-timeline {
+      position: relative;
+      padding-left: 28px;
+    }
+    .cl-timeline::before {
+      content: "";
+      position: absolute;
+      left: 6px;
+      top: 8px;
+      bottom: 8px;
+      width: 2px;
+      background: linear-gradient(180deg, var(--accent), var(--border-strong) 60%, transparent);
+    }
+    .cl-entry { position: relative; margin-bottom: 40px; }
+    .cl-entry::before {
+      content: "";
+      position: absolute;
+      left: -28px;
+      top: 6px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 3px solid var(--bg);
+      box-shadow: 0 0 0 1px var(--accent-soft);
+    }
+    .cl-entry-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .cl-version {
+      font-family: var(--font-sans);
+      font-weight: 800;
+      font-size: 20px;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+    .cl-date { font-size: 13px; color: var(--text-subtle); }
+    .cl-badge {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 100px;
+    }
+    .cl-badge.major { background: var(--accent-soft); color: var(--accent); border: 1px solid rgba(255,51,102,0.25); }
+    .cl-badge.feature { background: rgba(255,227,77,0.1); color: var(--accent-yellow); border: 1px solid rgba(255,227,77,0.22); }
+    .cl-badge.improvement { background: rgba(96,165,250,0.1); color: #93c5fd; border: 1px solid rgba(96,165,250,0.22); }
+    .cl-badge.fix { background: rgba(52,211,153,0.1); color: #6ee7b7; border: 1px solid rgba(52,211,153,0.22); }
+    .cl-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+    }
+    .cl-card ul { margin: 0; padding: 0; list-style: none; }
+    .cl-card li {
+      position: relative;
+      padding-left: 22px;
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+    .cl-card li:last-child { margin-bottom: 0; }
+    .cl-card li::before {
+      content: "";
+      position: absolute;
+      left: 4px;
+      top: 10px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0.7;
+    }
+    .cl-card li strong { color: var(--text); font-weight: 600; }
+    .cl-subscribe {
+      margin: 8px auto 0;
+      max-width: 520px;
+      text-align: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px;
+    }
+    .cl-subscribe h3 { margin: 0 0 6px; font-size: 18px; font-weight: 700; color: var(--text); }
+    .cl-subscribe p { margin: 0 0 18px; font-size: 14px; color: var(--text-muted); }
+    .cl-sub-form { display: flex; gap: 10px; max-width: 400px; margin: 0 auto; }
+    .cl-sub-form input {
+      flex: 1; background: var(--bg); border: 1px solid var(--border-strong);
+      border-radius: 100px; padding: 12px 18px; color: var(--text); font-size: 14px; outline: none;
+    }
+    .cl-sub-form input:focus { border-color: var(--accent); }
+    @media (max-width: 480px) { .cl-sub-form { flex-direction: column; } }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="page-nav">
+    <a href="index.html" class="page-nav-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      Home
+    </a>
+    <a href="index.html" class="page-nav-brand">
+      <div class="logo">whamr<span class="logo-dot">.</span></div>
+    </a>
+    <div class="page-nav-links">
+      <a href="memes.html" class="hero-nav-link">All memes</a>
+      <a href="how-it-works.html" class="hero-nav-link">How it works</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="page-hero">
+    <div class="page-hero-content">
+      <div class="section-eyebrow">Changelog</div>
+      <h1 class="page-hero-title">What's <span class="page-hero-title-accent">new.</span></h1>
+      <p class="page-hero-sub">Every improvement we ship, version by version. The whole history of Whamr getting faster and better at the send.</p>
+    </div>
+  </section>
+
+  <main class="cl-wrap">
+    <div class="cl-timeline">
+
+      <div class="cl-entry">
+        <div class="cl-entry-head">
+          <span class="cl-version">v2.1</span>
+          <span class="cl-badge feature">Feature</span>
+          <span class="cl-date">June 2026</span>
+        </div>
+        <div class="cl-card">
+          <ul>
+            <li><strong>Send stickers straight to WhatsApp.</strong> A new direct sticker-send pipeline (currently in Meta's review queue for native rendering).</li>
+            <li><strong>Cloud-synced favourites.</strong> Heart a meme on one device, find it on the next — synced when you're signed in.</li>
+            <li><strong>Public discussion threads</strong> on every meme, with reporting and moderation.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="cl-entry">
+        <div class="cl-entry-head">
+          <span class="cl-version">v2.0</span>
+          <span class="cl-badge major">Major</span>
+          <span class="cl-date">May 2026</span>
+        </div>
+        <div class="cl-card">
+          <ul>
+            <li><strong>Whamr v2 redesign.</strong> New dark interface, faster grid, and the sunset brand system.</li>
+            <li><strong>Sticker pack builder.</strong> Bundle up to 30 stickers and export a ready-to-install WhatsApp pack.</li>
+            <li><strong>9-platform share sheet</strong> — WhatsApp, Telegram, X, Instagram, Discord, Signal, native share, copy link, and download.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="cl-entry">
+        <div class="cl-entry-head">
+          <span class="cl-version">v1.5</span>
+          <span class="cl-badge feature">Feature</span>
+          <span class="cl-date">April 2026</span>
+        </div>
+        <div class="cl-card">
+          <ul>
+            <li><strong>AI natural-language search.</strong> Search in plain words — Naija slang like "sapa", "wahala" and "japa" maps to the right memes.</li>
+            <li><strong>Synonym expansion &amp; fuzzy matching</strong> so typos and near-misses still find what you mean.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="cl-entry">
+        <div class="cl-entry-head">
+          <span class="cl-version">v1.2</span>
+          <span class="cl-badge improvement">Improvement</span>
+          <span class="cl-date">March 2026</span>
+        </div>
+        <div class="cl-card">
+          <ul>
+            <li><strong>Cloudflare R2 hosting.</strong> Moved all media to R2 for faster, cheaper global delivery.</li>
+            <li><strong>Accounts &amp; Google sign-in</strong> with secure password reset.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="cl-entry">
+        <div class="cl-entry-head">
+          <span class="cl-version">v1.0</span>
+          <span class="cl-badge major">Launch</span>
+          <span class="cl-date">February 2026</span>
+        </div>
+        <div class="cl-card">
+          <ul>
+            <li><strong>Whamr launches.</strong> A real, properly-tagged library of Naija and global memes, built for one thing: the send.</li>
+            <li>11 categories, thousands of video clips and WebP stickers, no account required to browse.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="cl-subscribe">
+      <h3>Get the next update</h3>
+      <p>We'll email you when something worth shouting about ships. No spam.</p>
+      <form class="cl-sub-form" onsubmit="this.querySelector('input').value='';this.querySelector('button').textContent='Subscribed ✓';return false;">
+        <input type="email" placeholder="you@email.com" aria-label="Email address" required />
+        <button type="submit" class="btn-hero btn-hero-primary" style="white-space:nowrap;">Notify me</button>
+      </form>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="logo footer-logo">whamr<span class="logo-dot">.</span></div>
+        <p class="footer-tag">Send the wham.</p>
+      </div>
+      <div class="footer-links">
+        <a href="memes.html">All memes</a>
+        <a href="how-it-works.html">How it works</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="help.html">Help</a>
+        <a href="about.html">About</a>
+        <a href="terms.html">Terms</a>
+        <a href="privacy.html">Privacy</a>
+      </div>
+      <div class="footer-meta">
+        <p>built for the send</p>
+        <p class="footer-version">v2.1 · prototype</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

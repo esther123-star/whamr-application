@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Help Centre · Whamr</title>
+  <meta name="description" content="Answers about sharing, uploading, creator tools and your account. Search the Whamr help centre." />
+  <meta name="theme-color" content="#0a0a0f" />
+  <meta property="og:title" content="Help Centre · Whamr" />
+  <meta property="og:description" content="Answers about sharing, uploading, creator tools and your account." />
+  <meta property="og:type" content="website" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .hp-wrap { max-width: 820px; margin: 0 auto; padding: 8px 32px 80px; position: relative; z-index: 2; }
+    .hp-search {
+      display: flex; align-items: center; gap: 10px; max-width: 520px; margin: 0 auto 48px;
+      background: var(--surface); border: 1px solid var(--border-strong); border-radius: 100px; padding: 6px 18px;
+      transition: border-color var(--transition);
+    }
+    .hp-search:focus-within { border-color: var(--accent); }
+    .hp-search svg { width: 18px; height: 18px; color: var(--text-muted); flex-shrink: 0; }
+    .hp-search input { flex: 1; background: none; border: none; outline: none; color: var(--text); font-size: 15px; padding: 12px 0; }
+    .hp-search input::placeholder { color: var(--text-subtle); }
+
+    .hp-topics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 56px; }
+    .hp-topic {
+      padding: 22px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      transition: all var(--transition); cursor: pointer;
+    }
+    .hp-topic:hover { border-color: var(--accent-soft); transform: translateY(-3px); box-shadow: var(--shadow-card); }
+    .hp-topic .ico { font-size: 26px; display: block; margin-bottom: 12px; }
+    .hp-topic h3 { margin: 0 0 4px; font-size: 15px; font-weight: 700; color: var(--text); }
+    .hp-topic p { margin: 0; font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+
+    .hp-group-title { font-family: var(--font-sans); font-weight: 700; font-size: 16px; color: var(--text);
+      margin: 0 0 14px; padding-top: 8px; }
+    .hp-faq details {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 0 20px; margin-bottom: 10px; transition: border-color var(--transition);
+    }
+    .hp-faq details[open] { border-color: var(--border-strong); }
+    .hp-faq summary {
+      cursor: pointer; list-style: none; padding: 16px 0; font-weight: 600; font-size: 15px;
+      color: var(--text); display: flex; justify-content: space-between; align-items: center; gap: 16px;
+    }
+    .hp-faq summary::-webkit-details-marker { display: none; }
+    .hp-faq summary::after { content: "+"; color: var(--accent); font-size: 22px; font-weight: 400; line-height: 1; }
+    .hp-faq details[open] summary::after { content: "−"; }
+    .hp-faq details p { margin: 0; padding: 0 0 18px; font-size: 14px; line-height: 1.65; color: var(--text-muted); }
+    .hp-empty { text-align: center; color: var(--text-muted); padding: 32px 0; display: none; }
+
+    .hp-contact { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 48px; }
+    .hp-contact-card {
+      padding: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+      text-align: center;
+    }
+    .hp-contact-card .ico { font-size: 28px; display: block; margin-bottom: 10px; }
+    .hp-contact-card h3 { margin: 0 0 6px; font-size: 16px; font-weight: 700; color: var(--text); }
+    .hp-contact-card p { margin: 0 0 16px; font-size: 13px; color: var(--text-muted); }
+    @media (max-width: 640px) { .hp-topics { grid-template-columns: 1fr 1fr; } .hp-contact { grid-template-columns: 1fr; } }
+    @media (max-width: 420px) { .hp-topics { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="page-nav">
+    <a href="index.html" class="page-nav-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      Home
+    </a>
+    <a href="index.html" class="page-nav-brand">
+      <div class="logo">whamr<span class="logo-dot">.</span></div>
+    </a>
+    <div class="page-nav-links">
+      <a href="memes.html" class="hero-nav-link">All memes</a>
+      <a href="how-it-works.html" class="hero-nav-link">How it works</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="page-hero">
+    <div class="page-hero-content">
+      <div class="section-eyebrow">Help Centre</div>
+      <h1 class="page-hero-title">How can we <span class="page-hero-title-accent">help?</span></h1>
+      <p class="page-hero-sub">Search for an answer, browse a topic, or reach out — we're quick.</p>
+    </div>
+  </section>
+
+  <main class="hp-wrap">
+
+    <!-- SEARCH -->
+    <div class="hp-search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="search" id="hpSearch" placeholder="Search help articles…" aria-label="Search help" autocomplete="off" />
+    </div>
+
+    <!-- TOPICS -->
+    <div class="hp-topics">
+      <div class="hp-topic" data-jump="g-sharing"><span class="ico">📤</span><h3>Sharing &amp; sending</h3><p>Send memes to any app in one tap.</p></div>
+      <div class="hp-topic" data-jump="g-stickers"><span class="ico">📦</span><h3>Sticker packs</h3><p>Build and install WhatsApp packs.</p></div>
+      <div class="hp-topic" data-jump="g-search"><span class="ico">🔍</span><h3>Search &amp; finding</h3><p>Find the exact meme, fast.</p></div>
+      <div class="hp-topic" data-jump="g-account"><span class="ico">👤</span><h3>Account &amp; favourites</h3><p>Sign in, sync, reset password.</p></div>
+      <div class="hp-topic" data-jump="g-creator"><span class="ico">⭐</span><h3>Creator tools</h3><p>Analytics, tips and verification.</p></div>
+      <div class="hp-topic" data-jump="g-community"><span class="ico">💬</span><h3>Community</h3><p>Comments, reporting and rules.</p></div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="hp-faq" id="hpFaq">
+
+      <div class="hp-group" id="g-sharing">
+        <h2 class="hp-group-title">Sharing &amp; sending</h2>
+        <details open><summary>How do I send a meme to WhatsApp?</summary><p>Open any meme, tap the share button, and choose WhatsApp from the share sheet. Whamr hands the file straight to WhatsApp so you can pick a chat and send — no download step needed on most devices.</p></details>
+        <details><summary>Which platforms can I share to?</summary><p>Nine: WhatsApp, Telegram, X, Instagram, Discord, Signal, your device's native share menu, copy link, and direct download.</p></details>
+        <details><summary>Do I need an account to send?</summary><p>No. Browsing, searching and sending are all free with no sign-in. You only need an account if you want favourites to sync across devices or to use creator tools.</p></details>
+      </div>
+
+      <div class="hp-group" id="g-stickers">
+        <h2 class="hp-group-title">Sticker packs</h2>
+        <details><summary>How do I build a sticker pack?</summary><p>Go to the pack builder, add up to 30 stickers, give the pack a name and publisher, then export. Whamr generates a ready-to-install WhatsApp pack (a <strong>.wastickers</strong> file) with the correct sizes and tray icon.</p></details>
+        <details><summary>Why are some memes skipped from packs?</summary><p>WhatsApp sticker packs support still images (converted to 512×512 WebP). Video memes are skipped for now — animated-sticker export is on the roadmap.</p></details>
+      </div>
+
+      <div class="hp-group" id="g-search">
+        <h2 class="hp-group-title">Search &amp; finding</h2>
+        <details><summary>How does the AI search work?</summary><p>Type in plain language — even Naija slang like "sapa", "wahala" or "japa". Whamr expands synonyms and uses fuzzy matching, so typos and near-misses still surface the right memes by title, category and tags.</p></details>
+        <details><summary>Can I browse by category?</summary><p>Yes. Use the category pills on the library page to filter across all 11 categories, from Naija and Reactions to Dance, Sports and Birthday.</p></details>
+      </div>
+
+      <div class="hp-group" id="g-account">
+        <h2 class="hp-group-title">Account &amp; favourites</h2>
+        <details><summary>How do I reset my password?</summary><p>On the sign-in screen choose "Forgot password", enter your email, and we'll send a reset link. Open it and set a new password. The link is single-use and expires after 60 minutes for security.</p></details>
+        <details><summary>Do my favourites sync across devices?</summary><p>Yes — when you're signed in, hearting a meme saves it to your account and it appears on any device you log into. Signed-out favourites are kept locally and merged in when you sign in.</p></details>
+        <details><summary>Can I sign in with Google?</summary><p>Yes. You can use Google sign-in or an email and password — both give you synced favourites and access to the same account features.</p></details>
+      </div>
+
+      <div class="hp-group" id="g-creator">
+        <h2 class="hp-group-title">Creator tools</h2>
+        <details><summary>What do creator tools include?</summary><p>On the Creator plan you get analytics on your uploads, eligibility for the verified badge, a tip jar with an earnings wallet, and priority placement in search and trending. See the <a href="pricing.html" style="color:var(--accent);">pricing page</a> for details.</p></details>
+        <details><summary>How do tips and earnings work?</summary><p>Supporters can tip your memes. Tips go to you on a 90/10 split (you keep 90%), collect in your wallet, and you withdraw to your bank when you're ready.</p></details>
+      </div>
+
+      <div class="hp-group" id="g-community">
+        <h2 class="hp-group-title">Community</h2>
+        <details><summary>How do I report a comment or meme?</summary><p>Use the report option on any comment or piece of content. Reports go to our moderation queue and are reviewed quickly. You can report anonymously.</p></details>
+        <details><summary>Who can delete comments?</summary><p>You can always delete your own comments. Moderators can remove comments that break the community guidelines.</p></details>
+      </div>
+
+      <div class="hp-empty" id="hpEmpty">No articles match that search. Try different words, or <a href="mailto:hello@whamr.app" style="color:var(--accent);">email us</a>.</div>
+    </div>
+
+    <!-- CONTACT -->
+    <div class="hp-contact">
+      <div class="hp-contact-card">
+        <span class="ico">💬</span>
+        <h3>Still stuck?</h3>
+        <p>Chat with us and we'll sort it out fast.</p>
+        <a href="mailto:hello@whamr.app?subject=Whamr%20support" class="btn-hero btn-hero-primary" style="justify-content:center;">Start a chat</a>
+      </div>
+      <div class="hp-contact-card">
+        <span class="ico">✉️</span>
+        <h3>Email us</h3>
+        <p>Prefer email? We usually reply within a day.</p>
+        <a href="mailto:hello@whamr.app" class="btn-hero btn-hero-ghost" style="justify-content:center;">hello@whamr.app</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="logo footer-logo">whamr<span class="logo-dot">.</span></div>
+        <p class="footer-tag">Send the wham.</p>
+      </div>
+      <div class="footer-links">
+        <a href="memes.html">All memes</a>
+        <a href="how-it-works.html">How it works</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="help.html">Help</a>
+        <a href="about.html">About</a>
+        <a href="terms.html">Terms</a>
+        <a href="privacy.html">Privacy</a>
+      </div>
+      <div class="footer-meta">
+        <p>built for the send</p>
+        <p class="footer-version">v2.1 · prototype</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var input = document.getElementById('hpSearch');
+      var faq = document.getElementById('hpFaq');
+      var groups = Array.prototype.slice.call(faq.querySelectorAll('.hp-group'));
+      var empty = document.getElementById('hpEmpty');
+
+      // Jump from topic cards to the matching FAQ group
+      document.querySelectorAll('.hp-topic').forEach(function (card) {
+        card.addEventListener('click', function () {
+          var el = document.getElementById(card.getAttribute('data-jump'));
+          if (el) {
+            el.querySelectorAll('details').forEach(function (d) { d.open = true; });
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      });
+
+      // Live filter of FAQ items
+      input.addEventListener('input', function () {
+        var q = input.value.trim().toLowerCase();
+        var anyVisible = false;
+        groups.forEach(function (group) {
+          var groupHasMatch = false;
+          group.querySelectorAll('details').forEach(function (d) {
+            var text = d.textContent.toLowerCase();
+            var match = !q || text.indexOf(q) !== -1;
+            d.style.display = match ? '' : 'none';
+            if (match) { groupHasMatch = true; if (q) d.open = true; }
+          });
+          group.style.display = groupHasMatch ? '' : 'none';
+          if (groupHasMatch) anyVisible = true;
+        });
+        empty.style.display = anyVisible ? 'none' : 'block';
+      });
+    })();
+  </script>
+
+</body>
+</html>
