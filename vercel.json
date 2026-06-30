@@ -3,6 +3,10 @@
   "trailingSlash": false,
   "rewrites": [
     {
+      "source": "/c/:id",
+      "destination": "/api/c?id=:id"
+    },
+    {
       "source": "/r2/:path*",
       "destination": "https://pub-16e03d1bc3f74001b6190ac5b3c763dd.r2.dev/:path*"
     }

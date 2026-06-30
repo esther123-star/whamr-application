@@ -1698,8 +1698,16 @@
      Share sheet
      ============================================ */
   function getShareUrl(meme) {
-    // Always link to the library page so the modal opens with the meme
-    const base = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, "/");
+    const origin = window.location.origin;
+    const isLocal = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+    // Catalog memes get the rich, unfurling public share page (/c/:id) so the
+    // link previews the actual meme in WhatsApp/X/etc. Local uploads have no
+    // public page, and /c/ needs the Vercel function (not present in local dev),
+    // so both fall back to the in-app deep link.
+    if (meme && meme.id && !meme.uploaded && !isLocal) {
+      return origin + "/c/" + encodeURIComponent(meme.id);
+    }
+    const base = origin + window.location.pathname.replace(/\/[^\/]*$/, "/");
     return base + "memes.html?m=" + meme.id;
   }
   function getShareText(meme) {
