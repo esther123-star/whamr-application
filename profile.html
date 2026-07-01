@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile · Whamr</title>
+  <meta name="description" content="A Whamr profile — collections, likes and the memes they send." />
+  <meta name="theme-color" content="#0a0a0f" />
+  <meta property="og:title" content="Profile · Whamr" />
+  <meta property="og:description" content="A Whamr profile — collections and the memes they send." />
+  <meta property="og:type" content="profile" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="whamr-auth.js"></script>
+  <style>
+    .pf-wrap { max-width: 960px; margin: 0 auto; padding: 0 20px 70px; position: relative; z-index: 2; }
+    .pf-state { text-align: center; padding: 70px 20px; color: var(--text-muted); }
+    .pf-state h3 { color: var(--text); font-size: 18px; font-weight: 700; margin: 0 0 8px; }
+    .pf-state p { margin: 0 auto 20px; max-width: 400px; font-size: 14px; line-height: 1.6; }
+
+    .pf-cover { height: 200px; border-radius: var(--radius-lg); background: linear-gradient(135deg, #2a0a14, #ff3366 55%, #ffe34d); background-size: cover; background-position: center; position: relative; margin-bottom: -56px; }
+    .pf-head { display: flex; align-items: flex-end; gap: 20px; padding: 0 24px; position: relative; flex-wrap: wrap; }
+    .pf-avatar { width: 112px; height: 112px; border-radius: 50%; border: 4px solid var(--bg); background: var(--surface); object-fit: cover; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 44px; font-weight: 800; color: #fff; overflow: hidden; }
+    .pf-headinfo { flex: 1; min-width: 200px; padding-bottom: 6px; }
+    .pf-name { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; color: var(--text); margin: 0; }
+    .pf-handle { font-size: 14px; color: var(--text-muted); margin: 2px 0 0; }
+    .pf-actions { display: flex; gap: 8px; padding-bottom: 8px; flex-wrap: wrap; }
+    .pf-meta { padding: 18px 24px 0; }
+    .pf-bio { font-size: 15px; line-height: 1.6; color: var(--text); margin: 0 0 14px; max-width: 620px; white-space: pre-wrap; }
+    .pf-stats { display: flex; gap: 24px; }
+    .pf-stat b { font-size: 18px; font-weight: 800; color: var(--text); font-family: var(--font-sans); }
+    .pf-stat span { font-size: 13px; color: var(--text-muted); margin-left: 5px; }
+    .pf-joined { font-size: 12px; color: var(--text-subtle); margin-top: 12px; }
+
+    .pf-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin: 28px 24px 0; }
+    .pf-tab { padding: 12px 18px; background: none; border: none; border-bottom: 2px solid transparent; color: var(--text-muted); font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .pf-tab.active { color: var(--text); border-bottom-color: var(--accent); }
+    .pf-panel { padding: 22px 24px 0; }
+
+    .pf-col-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .pf-col-card { display: block; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; text-decoration: none; transition: all var(--transition); }
+    .pf-col-card:hover { border-color: var(--border-strong); transform: translateY(-3px); box-shadow: var(--shadow-card); }
+    .pf-mosaic { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2px; aspect-ratio: 16/10; background: #0a0a0f; }
+    .pf-mosaic.single { grid-template-columns: 1fr; grid-template-rows: 1fr; }
+    .pf-mosaic .wc-thumb, .pf-mosaic .pf-tile-empty { width: 100%; height: 100%; }
+    .pf-tile-empty { background: linear-gradient(135deg, #1a1a24, #0f0f16); }
+    .pf-col-body { padding: 12px 15px 14px; }
+    .pf-col-name { font-size: 14px; font-weight: 700; color: var(--text); margin: 0 0 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .pf-col-meta { font-size: 12px; color: var(--text-muted); }
+
+    .pf-liked-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; }
+    .pf-liked { position: relative; aspect-ratio: 1; border-radius: var(--radius); overflow: hidden; background: var(--surface); border: 1px solid var(--border); }
+    .pf-liked .wc-thumb { width: 100%; height: 100%; object-fit: cover; }
+
+    /* Edit modal */
+    #pf-edit { position: fixed; inset: 0; z-index: 1100; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    #pf-edit .pf-back { position: absolute; inset: 0; background: rgba(5,5,10,0.8); backdrop-filter: blur(8px); }
+    #pf-edit .pf-card { position: relative; background: #14141c; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 26px 24px; width: 100%; max-width: 460px; max-height: 88vh; overflow-y: auto; box-shadow: 0 24px 80px rgba(0,0,0,0.6); }
+    #pf-edit h3 { margin: 0 0 16px; font-size: 19px; font-weight: 700; color: var(--text); }
+    #pf-edit label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin: 0 0 6px; }
+    #pf-edit input, #pf-edit textarea { width: 100%; background: #0a0a0f; border: 1px solid var(--border-strong); border-radius: 10px; color: var(--text); font-family: inherit; font-size: 14px; padding: 10px 13px; margin-bottom: 14px; box-sizing: border-box; }
+    #pf-edit input:focus, #pf-edit textarea:focus { outline: none; border-color: var(--accent); }
+    #pf-edit .pf-hint { font-size: 11px; color: var(--text-subtle); margin: -10px 0 14px; }
+    #pf-edit .pf-row { display: flex; gap: 8px; }
+    #pf-edit .pf-err { color: var(--danger); font-size: 13px; margin: 0 0 12px; min-height: 0; }
+    @media (max-width: 720px) { .pf-col-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 480px) { .pf-col-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="page-nav">
+    <div id="whamr-auth-area"></div>
+    <a href="memes.html" class="page-nav-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      <span>Memes</span>
+    </a>
+    <a href="index.html" class="page-nav-brand"><div class="logo">whamr<span class="logo-dot">.</span></div></a>
+    <div class="page-nav-links">
+      <a href="memes.html" class="hero-nav-link">All memes</a>
+      <a href="collections.html" class="hero-nav-link">Collections</a>
+    </div>
+  </nav>
+
+  <main class="pf-wrap" id="pf-root" style="padding-top:28px;">
+    <div class="pf-state">Loading…</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand"><div class="logo footer-logo">whamr<span class="logo-dot">.</span></div><p class="footer-tag">Send the wham.</p></div>
+      <div class="footer-links"><a href="memes.html">All memes</a><a href="collections.html">Collections</a><a href="pricing.html">Pricing</a><a href="help.html">Help</a><a href="about.html">About</a></div>
+      <div class="footer-meta"><p>built for the send</p></div>
+    </div>
+  </footer>
+
+  <script src="collections.js"></script>
+  <script>
+  (function () {
+    var C = window.WhamrCollections;
+    var Auth = window.WhamrAuth;
+    var root = document.getElementById("pf-root");
+
+    function esc(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+    function qp(n) { return new URLSearchParams(location.search).get(n); }
+    function initialOf(p) { var s = (p.display_name || p.username || p.full_name || "W"); return s.trim().charAt(0).toUpperCase() || "W"; }
+    function nameOf(p) { return p.display_name || p.username || (p.full_name) || "Whamr user"; }
+    function joined(d) { try { return "Joined " + new Date(d).toLocaleDateString(undefined, { month: "long", year: "numeric" }); } catch (e) { return ""; } }
+
+    function currentHandle() {
+      var h = qp("u");
+      if (h) return h;
+      var u = Auth.getUser();
+      if (u && Auth.isBackendUser()) return u.username || u.id;
+      return null;
+    }
+
+    function api(method, path, body) {
+      return Auth.apiFetch(path, { method: method, body: body ? JSON.stringify(body) : undefined })
+        .then(function (res) {
+          return res.json().catch(function () { return {}; }).then(function (d) {
+            if (!res.ok) { var e = new Error(d.error || ("Request failed (" + res.status + ").")); e.status = res.status; throw e; }
+            return d;
+          });
+        });
+    }
+
+    function avatarEl(p) {
+      if (p.avatar_url) {
+        return '<img class="pf-avatar" src="' + esc(p.avatar_url) + '" alt="' + esc(nameOf(p)) + '" />';
+      }
+      return '<div class="pf-avatar" style="background:linear-gradient(135deg,#ff3366,#ff7744);">' + esc(initialOf(p)) + '</div>';
+    }
+
+    function renderProfile(p) {
+      var canFollow = Auth.isLoggedIn() && Auth.isBackendUser() && !p.is_self;
+      var actions = "";
+      if (p.is_self) {
+        actions = '<button class="btn-hero btn-hero-ghost" id="pf-edit-btn" style="display:inline-flex">Edit profile</button>';
+      } else {
+        actions =
+          '<button class="btn-hero ' + (p.is_following ? 'btn-hero-ghost' : 'btn-hero-primary') + '" id="pf-follow-btn" style="display:inline-flex">' +
+            (p.is_following ? 'Following' : 'Follow') + '</button>' +
+          '<button class="btn-hero btn-hero-ghost" style="display:inline-flex;opacity:0.5;cursor:not-allowed" title="Direct messages coming soon" disabled>Message</button>';
+      }
+
+      root.innerHTML =
+        '<div class="pf-cover"' + (p.cover_url ? ' style="background-image:url(\'' + esc(p.cover_url) + '\')"' : '') + '></div>' +
+        '<div class="pf-head">' +
+          avatarEl(p) +
+          '<div class="pf-headinfo"><h1 class="pf-name">' + esc(nameOf(p)) + '</h1>' +
+            (p.username ? '<p class="pf-handle">@' + esc(p.username) + '</p>' : '') + '</div>' +
+          '<div class="pf-actions">' + actions + '</div>' +
+        '</div>' +
+        '<div class="pf-meta">' +
+          (p.bio ? '<p class="pf-bio">' + esc(p.bio) + '</p>' : '') +
+          '<div class="pf-stats">' +
+            '<div class="pf-stat"><b>' + (p.followers || 0) + '</b><span>followers</span></div>' +
+            '<div class="pf-stat"><b>' + (p.following || 0) + '</b><span>following</span></div>' +
+            '<div class="pf-stat"><b>' + (p.collections ? p.collections.length : 0) + '</b><span>collections</span></div>' +
+          '</div>' +
+          '<p class="pf-joined">' + esc(joined(p.created_at)) + '</p>' +
+        '</div>' +
+        '<div class="pf-tabs">' +
+          '<button class="pf-tab active" data-tab="collections">Collections</button>' +
+          (p.is_self ? '<button class="pf-tab" data-tab="liked">Liked</button>' : '') +
+        '</div>' +
+        '<div class="pf-panel" id="pf-panel-collections"></div>' +
+        (p.is_self ? '<div class="pf-panel" id="pf-panel-liked" hidden></div>' : '');
+
+      renderCollections(p);
+      wireActions(p);
+      wireTabs(p);
+    }
+
+    function renderCollections(p) {
+      var panel = document.getElementById("pf-panel-collections");
+      var cols = p.collections || [];
+      if (!cols.length) {
+        panel.innerHTML = '<div class="pf-state"><p>' + (p.is_self ? "No public collections yet. Make a collection public to show it here." : "No public collections yet.") + '</p></div>';
+        return;
+      }
+      var grid = document.createElement("div");
+      grid.className = "pf-col-grid";
+      cols.forEach(function (c) {
+        var a = document.createElement("a");
+        a.className = "pf-col-card";
+        a.href = "collections.html?c=" + c.id;
+        var mos = document.createElement("div");
+        mos.className = "pf-mosaic" + ((c.cover_meme_ids || []).length <= 1 ? " single" : "");
+        var n = (c.cover_meme_ids || []).length <= 1 ? 1 : 4;
+        for (var i = 0; i < n; i++) {
+          var id = (c.cover_meme_ids || [])[i];
+          if (id) mos.appendChild(C.thumbEl(C.memeById(id)));
+          else { var e = document.createElement("div"); e.className = "pf-tile-empty"; mos.appendChild(e); }
+        }
+        a.appendChild(mos);
+        var body = document.createElement("div");
+        body.className = "pf-col-body";
+        body.innerHTML = '<div class="pf-col-name">' + esc(c.name) + '</div><div class="pf-col-meta">' + (c.item_count || 0) + ' meme' + (c.item_count === 1 ? "" : "s") + '</div>';
+        a.appendChild(body);
+        grid.appendChild(a);
+      });
+      panel.innerHTML = "";
+      panel.appendChild(grid);
+    }
+
+    function renderLiked(panel) {
+      panel.innerHTML = '<div class="pf-state">Loading liked memes…</div>';
+      api("GET", "/api/favorites").then(function (d) {
+        var ids = (d.meme_ids || []);
+        if (!ids.length) { panel.innerHTML = '<div class="pf-state"><p>No liked memes yet. Tap the heart on any meme to save it.</p></div>'; return; }
+        var grid = document.createElement("div");
+        grid.className = "pf-liked-grid";
+        ids.slice(0, 60).forEach(function (id) {
+          var meme = C.memeById(id);
+          var tile = document.createElement("div");
+          tile.className = "pf-liked";
+          tile.appendChild(C.thumbEl(meme));
+          var link = document.createElement("a");
+          link.href = meme ? ("/c/" + encodeURIComponent(id)) : ("memes.html?m=" + encodeURIComponent(id));
+          link.style.cssText = "position:absolute;inset:0;";
+          tile.appendChild(link);
+          grid.appendChild(tile);
+        });
+        panel.innerHTML = "";
+        panel.appendChild(grid);
+      }).catch(function (err) {
+        panel.innerHTML = '<div class="pf-state"><p>' + esc(err.message || "Could not load liked memes.") + '</p></div>';
+      });
+    }
+
+    function wireTabs(p) {
+      var likedLoaded = false;
+      Array.prototype.forEach.call(document.querySelectorAll(".pf-tab"), function (tab) {
+        tab.addEventListener("click", function () {
+          document.querySelectorAll(".pf-tab").forEach(function (t) { t.classList.remove("active"); });
+          tab.classList.add("active");
+          var which = tab.getAttribute("data-tab");
+          var cp = document.getElementById("pf-panel-collections");
+          var lp = document.getElementById("pf-panel-liked");
+          if (cp) cp.hidden = which !== "collections";
+          if (lp) {
+            lp.hidden = which !== "liked";
+            if (which === "liked" && !likedLoaded) { likedLoaded = true; renderLiked(lp); }
+          }
+        });
+      });
+    }
+
+    function wireActions(p) {
+      var editBtn = document.getElementById("pf-edit-btn");
+      if (editBtn) editBtn.addEventListener("click", function () { openEdit(p); });
+
+      var followBtn = document.getElementById("pf-follow-btn");
+      if (followBtn) followBtn.addEventListener("click", function () {
+        if (!Auth.isLoggedIn()) { Auth.openModal(); return; }
+        if (!Auth.isBackendUser()) { C.toast("Following needs an email account right now."); return; }
+        var handle = p.username || p.id;
+        var nowFollowing = !p.is_following;
+        followBtn.disabled = true;
+        var req = nowFollowing
+          ? api("POST", "/api/profiles/" + encodeURIComponent(handle) + "/follow")
+          : api("DELETE", "/api/profiles/" + encodeURIComponent(handle) + "/follow");
+        req.then(function () {
+          p.is_following = nowFollowing;
+          p.followers = (p.followers || 0) + (nowFollowing ? 1 : -1);
+          renderProfile(p);
+        }).catch(function (err) { followBtn.disabled = false; C.toast(err.message || "Could not update follow."); });
+      });
+    }
+
+    function openEdit(p) {
+      if (document.getElementById("pf-edit")) return;
+      var ov = document.createElement("div");
+      ov.id = "pf-edit";
+      ov.innerHTML =
+        '<div class="pf-back"></div>' +
+        '<div class="pf-card">' +
+          '<h3>Edit profile</h3>' +
+          '<p class="pf-err" id="pf-err"></p>' +
+          '<label>Display name</label><input id="pf-dn" maxlength="50" value="' + esc(p.display_name || "") + '" />' +
+          '<label>Username</label><input id="pf-un" maxlength="20" value="' + esc(p.username || "") + '" placeholder="letters, numbers, _" />' +
+          '<div class="pf-hint">Your public handle: whamr.app/profile?u=<b>username</b></div>' +
+          '<label>Bio</label><textarea id="pf-bio" rows="3" maxlength="300">' + esc(p.bio || "") + '</textarea>' +
+          '<label>Avatar image URL</label><input id="pf-av" maxlength="600" value="' + esc(p.avatar_url || "") + '" placeholder="https://… .jpg/.png" />' +
+          '<label>Cover image URL</label><input id="pf-cv" maxlength="600" value="' + esc(p.cover_url || "") + '" placeholder="https://… .jpg/.png" />' +
+          '<div class="pf-row"><button class="btn-hero btn-hero-primary" id="pf-save" style="display:inline-flex">Save</button>' +
+          '<button class="btn-hero btn-hero-ghost" id="pf-cancel" style="display:inline-flex">Cancel</button></div>' +
+        '</div>';
+      document.body.appendChild(ov);
+      var close = function () { ov.remove(); };
+      ov.querySelector(".pf-back").addEventListener("click", close);
+      ov.querySelector("#pf-cancel").addEventListener("click", close);
+      var errEl = ov.querySelector("#pf-err");
+
+      ov.querySelector("#pf-save").addEventListener("click", function () {
+        errEl.textContent = "";
+        var patch = {};
+        var dn = ov.querySelector("#pf-dn").value.trim();
+        var un = ov.querySelector("#pf-un").value.trim();
+        var bio = ov.querySelector("#pf-bio").value.trim();
+        var av = ov.querySelector("#pf-av").value.trim();
+        var cv = ov.querySelector("#pf-cv").value.trim();
+        patch.display_name = dn || null;
+        if (un) patch.username = un; // only send when set (clearing a handle isn't supported)
+        patch.bio = bio || null;
+        patch.avatar_url = av || null;
+        patch.cover_url = cv || null;
+        var saveBtn = ov.querySelector("#pf-save");
+        saveBtn.disabled = true;
+        api("PATCH", "/api/profiles/me", patch).then(function () {
+          close();
+          C.toast("Profile updated");
+          // Re-route to the (possibly new) handle.
+          var newHandle = patch.username || p.username || p.id;
+          history.replaceState({}, "", "profile.html?u=" + encodeURIComponent(newHandle));
+          route();
+        }).catch(function (err) {
+          saveBtn.disabled = false;
+          errEl.textContent = err.message || "Could not save profile.";
+        });
+      });
+    }
+
+    function route() {
+      var handle = currentHandle();
+      if (!handle) {
+        if (!Auth.isLoggedIn()) {
+          root.innerHTML = '<div class="pf-state"><h3>Sign in to see your profile</h3><p>Your profile, collections and likes live on your account.</p></div>';
+          var b = document.createElement("button"); b.className = "btn-hero btn-hero-primary"; b.style.cssText = "display:inline-flex"; b.textContent = "Sign in";
+          b.onclick = function () { Auth.openModal(); };
+          root.querySelector(".pf-state").appendChild(b);
+        } else {
+          root.innerHTML = '<div class="pf-state"><h3>Profiles need an email account</h3><p>You\'re signed in with Google. Profiles currently work with an email &amp; password account.</p></div>';
+        }
+        return;
+      }
+      root.innerHTML = '<div class="pf-state">Loading…</div>';
+      Promise.all([C.loadCatalog(), api("GET", "/api/profiles/" + encodeURIComponent(handle))]).then(function (out) {
+        renderProfile(out[1].profile);
+      }).catch(function (err) {
+        var msg = err.status === 404 ? "This profile doesn't exist." : (err.message || "Could not load this profile.");
+        root.innerHTML = '<div class="pf-state"><h3>Not found</h3><p>' + esc(msg) + '</p></div>';
+      });
+    }
+
+    Auth.onChange(function () { route(); });
+  })();
+  </script>
+
+</body>
+</html>
