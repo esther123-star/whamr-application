@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings · Whamr</title>
+  <meta name="description" content="Manage your Whamr account — profile, password, subscription, and account deletion." />
+  <meta name="theme-color" content="#0a0a0f" />
+  <meta name="robots" content="noindex" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="whamr-auth.js"></script>
+  <style>
+    .st-wrap { max-width: 900px; margin: 0 auto; padding: 8px 20px 70px; position: relative; z-index: 2; }
+    .st-layout { display: grid; grid-template-columns: 200px 1fr; gap: 26px; }
+    .st-side { display: flex; flex-direction: column; gap: 4px; position: sticky; top: 20px; align-self: start; }
+    .st-navbtn { text-align: left; padding: 10px 14px; background: none; border: none; border-radius: 10px; color: var(--text-muted); font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .st-navbtn:hover { background: var(--surface); color: var(--text); }
+    .st-navbtn.active { background: var(--accent-soft); color: var(--accent); }
+    .st-panel { display: none; }
+    .st-panel.active { display: block; }
+    .st-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px 26px; margin-bottom: 18px; }
+    .st-section h2 { font-size: 17px; font-weight: 700; color: var(--text); margin: 0 0 4px; }
+    .st-section .st-desc { font-size: 13px; color: var(--text-muted); margin: 0 0 18px; }
+    .st-field { margin-bottom: 16px; }
+    .st-field label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin: 0 0 6px; }
+    .st-field input, .st-field textarea { width: 100%; background: var(--bg); border: 1px solid var(--border-strong); border-radius: 10px; color: var(--text); font-family: inherit; font-size: 14px; padding: 11px 13px; box-sizing: border-box; }
+    .st-field input:focus, .st-field textarea:focus { outline: none; border-color: var(--accent); }
+    .st-field input[readonly] { color: var(--text-muted); cursor: default; }
+    .st-hint { font-size: 11px; color: var(--text-subtle); margin-top: 5px; }
+    .st-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .st-chip { display: inline-flex; align-items: center; gap: 6px; padding: 8px 13px; background: var(--bg); border: 1px solid var(--border-strong); border-radius: 100px; color: var(--text); font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .st-chip.on { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+    .st-msg { font-size: 13px; margin: 0 0 12px; min-height: 0; }
+    .st-msg.ok { color: #4ade80; }
+    .st-msg.err { color: var(--danger); }
+    .st-danger { border-color: rgba(239,68,68,0.35); }
+    .st-danger h2 { color: var(--danger); }
+    .st-plan { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 14px; }
+    .st-plan b { color: var(--text); }
+    .st-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+    .st-state h3 { color: var(--text); font-size: 18px; margin: 0 0 8px; }
+    @media (max-width: 680px) {
+      .st-layout { grid-template-columns: 1fr; }
+      .st-side { flex-direction: row; flex-wrap: wrap; position: static; margin-bottom: 12px; }
+    }
+    /* toast */
+    #st-toast { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%) translateY(20px); z-index: 1200; background: #14141c; border: 1px solid rgba(255,255,255,0.14); color: #f5f5f7; font-size: 13.5px; font-weight: 600; padding: 11px 18px; border-radius: 100px; box-shadow: 0 12px 40px rgba(0,0,0,0.5); opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; }
+    #st-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+  <nav class="page-nav">
+    <div id="whamr-auth-area"></div>
+    <a href="memes.html" class="page-nav-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg><span>Memes</span></a>
+    <a href="index.html" class="page-nav-brand"><div class="logo">whamr<span class="logo-dot">.</span></div></a>
+    <div class="page-nav-links"><a href="profile.html" class="hero-nav-link">Profile</a><a href="collections.html" class="hero-nav-link">Collections</a></div>
+  </nav>
+
+  <section class="page-hero">
+    <div class="page-hero-content">
+      <div class="section-eyebrow">Settings</div>
+      <h1 class="page-hero-title">Your <span class="page-hero-title-accent">account.</span></h1>
+    </div>
+  </section>
+
+  <main class="st-wrap" id="st-root"><div class="st-state">Loading…</div></main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand"><div class="logo footer-logo">whamr<span class="logo-dot">.</span></div><p class="footer-tag">Send the wham.</p></div>
+      <div class="footer-links"><a href="memes.html">All memes</a><a href="profile.html">Profile</a><a href="pricing.html">Pricing</a><a href="help.html">Help</a></div>
+      <div class="footer-meta"><p>built for the send</p></div>
+    </div>
+  </footer>
+
+  <script>
+  (function () {
+    var Auth = window.WhamrAuth;
+    var root = document.getElementById("st-root");
+
+    var CATEGORIES = ["naija","reactions","laughing","dance","love","sad","birthday","sports","awkward","random","stickers"];
+
+    function esc(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+    function toast(m) { var t = document.getElementById("st-toast"); if (!t) { t = document.createElement("div"); t.id = "st-toast"; document.body.appendChild(t); } t.textContent = m; t.classList.add("show"); setTimeout(function () { t.classList.remove("show"); }, 2400); }
+    function api(method, path, body) {
+      return Auth.apiFetch(path, { method: method, body: body ? JSON.stringify(body) : undefined })
+        .then(function (res) { return res.json().catch(function () { return {}; }).then(function (d) { if (!res.ok) { var e = new Error(d.error || ("Request failed (" + res.status + ").")); e.status = res.status; throw e; } return d; }); });
+    }
+    function joined(d) { try { return new Date(d).toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" }); } catch (e) { return "—"; } }
+
+    function render() {
+      var u = Auth.getUser() || {};
+      var interests = Array.isArray(u.interests) ? u.interests : [];
+      var chips = CATEGORIES.map(function (c) {
+        return '<button type="button" class="st-chip' + (interests.indexOf(c) !== -1 ? " on" : "") + '" data-slug="' + c + '">' + c + '</button>';
+      }).join("");
+
+      root.innerHTML =
+        '<div class="st-layout">' +
+        '<div class="st-side">' +
+          '<button class="st-navbtn active" data-p="profile">Profile</button>' +
+          '<button class="st-navbtn" data-p="account">Account</button>' +
+          '<button class="st-navbtn" data-p="subscription">Subscription</button>' +
+          '<button class="st-navbtn" data-p="danger">Danger zone</button>' +
+        '</div>' +
+        '<div class="st-content">' +
+
+        // Profile
+        '<div class="st-panel active" data-panel="profile"><div class="st-section">' +
+          '<h2>Profile</h2><p class="st-desc">How you appear across Whamr.</p>' +
+          '<p class="st-msg" id="pf-msg"></p>' +
+          '<div class="st-field"><label>Display name</label><input id="pf-dn" maxlength="50" value="' + esc(u.display_name || "") + '" /></div>' +
+          '<div class="st-field"><label>Username</label><input id="pf-un" maxlength="20" value="' + esc(u.username || "") + '" placeholder="letters, numbers, _" /><div class="st-hint">whamr.app/profile?u=<b>username</b></div></div>' +
+          '<div class="st-field"><label>Bio</label><textarea id="pf-bio" rows="3" maxlength="300">' + esc(u.bio || "") + '</textarea></div>' +
+          '<div class="st-field"><label>Avatar image URL</label><input id="pf-av" maxlength="600" value="' + esc(u.avatar_url || "") + '" placeholder="https://…" /></div>' +
+          '<div class="st-field"><label>Cover image URL</label><input id="pf-cv" maxlength="600" value="' + esc(u.cover_url || "") + '" placeholder="https://…" /></div>' +
+          '<div class="st-field"><label>Interests</label><div class="st-chips" id="pf-chips">' + chips + '</div></div>' +
+          '<button class="btn-hero btn-hero-primary" id="pf-save" style="display:inline-flex">Save changes</button>' +
+        '</div></div>' +
+
+        // Account
+        '<div class="st-panel" data-panel="account">' +
+          '<div class="st-section"><h2>Account</h2><p class="st-desc">Your login details.</p>' +
+            '<div class="st-field"><label>Email</label><input value="' + esc(u.email || "") + '" readonly /></div>' +
+            '<div class="st-field"><label>Member since</label><input value="' + esc(joined(u.created_at)) + '" readonly /></div>' +
+          '</div>' +
+          '<div class="st-section"><h2>Change password</h2><p class="st-desc">You\'ll be asked to sign in again after changing it.</p>' +
+            '<p class="st-msg" id="pw-msg"></p>' +
+            '<div class="st-field"><label>Current password</label><input id="pw-cur" type="password" autocomplete="current-password" /></div>' +
+            '<div class="st-field"><label>New password</label><input id="pw-new" type="password" autocomplete="new-password" placeholder="min 8 characters" /></div>' +
+            '<div class="st-field"><label>Confirm new password</label><input id="pw-cf" type="password" autocomplete="new-password" /></div>' +
+            '<button class="btn-hero btn-hero-primary" id="pw-save" style="display:inline-flex">Change password</button>' +
+          '</div>' +
+        '</div>' +
+
+        // Subscription
+        '<div class="st-panel" data-panel="subscription"><div class="st-section">' +
+          '<h2>Subscription</h2><p class="st-desc">Your current plan.</p>' +
+          '<div class="st-plan"><div><b>Free</b><div class="st-hint" style="margin-top:2px">Full library, AI search, favourites, collections &amp; sharing.</div></div></div>' +
+          '<a href="pricing.html" class="btn-hero btn-hero-ghost" style="display:inline-flex">Compare plans</a>' +
+        '</div></div>' +
+
+        // Danger zone
+        '<div class="st-panel" data-panel="danger"><div class="st-section st-danger">' +
+          '<h2>Delete account</h2><p class="st-desc">Permanently deletes your account, collections, comments, follows and notifications. This cannot be undone.</p>' +
+          '<p class="st-msg" id="del-msg"></p>' +
+          '<div class="st-field"><label>Confirm your password to delete</label><input id="del-pw" type="password" autocomplete="current-password" /></div>' +
+          '<button class="btn-hero" id="del-btn" style="display:inline-flex;background:var(--danger);color:#fff;border-color:var(--danger)">Delete my account</button>' +
+        '</div></div>' +
+
+        '</div></div>';
+
+      wire();
+    }
+
+    function wire() {
+      // Sidebar nav
+      Array.prototype.forEach.call(root.querySelectorAll(".st-navbtn"), function (btn) {
+        btn.addEventListener("click", function () {
+          Array.prototype.forEach.call(root.querySelectorAll(".st-navbtn"), function (b) { b.classList.remove("active"); });
+          Array.prototype.forEach.call(root.querySelectorAll(".st-panel"), function (p) { p.classList.remove("active"); });
+          btn.classList.add("active");
+          root.querySelector('.st-panel[data-panel="' + btn.getAttribute("data-p") + '"]').classList.add("active");
+        });
+      });
+
+      // Interests chips
+      Array.prototype.forEach.call(root.querySelectorAll("#pf-chips .st-chip"), function (chip) {
+        chip.addEventListener("click", function () { chip.classList.toggle("on"); });
+      });
+
+      // Save profile
+      root.querySelector("#pf-save").addEventListener("click", function () {
+        var msg = root.querySelector("#pf-msg"); msg.className = "st-msg"; msg.textContent = "";
+        var interests = Array.prototype.map.call(root.querySelectorAll("#pf-chips .st-chip.on"), function (c) { return c.getAttribute("data-slug"); });
+        var patch = {
+          display_name: root.querySelector("#pf-dn").value.trim() || null,
+          bio: root.querySelector("#pf-bio").value.trim() || null,
+          avatar_url: root.querySelector("#pf-av").value.trim() || null,
+          cover_url: root.querySelector("#pf-cv").value.trim() || null,
+          interests: interests,
+        };
+        var un = root.querySelector("#pf-un").value.trim();
+        if (un) patch.username = un;
+        var btn = root.querySelector("#pf-save"); btn.disabled = true;
+        api("PATCH", "/api/profiles/me", patch).then(function () {
+          btn.disabled = false; msg.className = "st-msg ok"; msg.textContent = "Saved."; toast("Profile saved");
+          // Refresh the cached user so a reload shows the new values.
+          Auth.apiFetch("/api/auth/me", { method: "GET" }).then(function (r) { return r.json(); }).then(function () {}).catch(function () {});
+        }).catch(function (err) { btn.disabled = false; msg.className = "st-msg err"; msg.textContent = err.message || "Could not save."; });
+      });
+
+      // Change password
+      root.querySelector("#pw-save").addEventListener("click", function () {
+        var msg = root.querySelector("#pw-msg"); msg.className = "st-msg"; msg.textContent = "";
+        var cur = root.querySelector("#pw-cur").value;
+        var nw = root.querySelector("#pw-new").value;
+        var cf = root.querySelector("#pw-cf").value;
+        if (!cur || !nw) { msg.className = "st-msg err"; msg.textContent = "Fill in both password fields."; return; }
+        if (nw.length < 8) { msg.className = "st-msg err"; msg.textContent = "New password must be at least 8 characters."; return; }
+        if (nw !== cf) { msg.className = "st-msg err"; msg.textContent = "New passwords don't match."; return; }
+        var email = (Auth.getUser() || {}).email;
+        var btn = root.querySelector("#pw-save"); btn.disabled = true;
+        api("POST", "/api/auth/change-password", { currentPassword: cur, newPassword: nw }).then(function () {
+          // token_version bumped server-side — re-establish the session with the new password.
+          return Auth.login(email, nw);
+        }).then(function () {
+          btn.disabled = false; msg.className = "st-msg ok"; msg.textContent = "Password changed."; toast("Password changed");
+          root.querySelector("#pw-cur").value = root.querySelector("#pw-new").value = root.querySelector("#pw-cf").value = "";
+        }).catch(function (err) { btn.disabled = false; msg.className = "st-msg err"; msg.textContent = err.message || "Could not change password."; });
+      });
+
+      // Delete account
+      root.querySelector("#del-btn").addEventListener("click", function () {
+        var msg = root.querySelector("#del-msg"); msg.className = "st-msg"; msg.textContent = "";
+        var pw = root.querySelector("#del-pw").value;
+        if (!pw) { msg.className = "st-msg err"; msg.textContent = "Enter your password to confirm."; return; }
+        if (!window.confirm("Permanently delete your account and all your data? This cannot be undone.")) return;
+        var btn = root.querySelector("#del-btn"); btn.disabled = true; btn.textContent = "Deleting…";
+        api("DELETE", "/api/auth/account", { password: pw }).then(function () {
+          return Auth.logout();
+        }).then(function () {
+          window.location.href = "index.html";
+        }).catch(function (err) { btn.disabled = false; btn.textContent = "Delete my account"; msg.className = "st-msg err"; msg.textContent = err.message || "Could not delete account."; });
+      });
+    }
+
+    function route() {
+      if (!Auth.isLoggedIn()) {
+        root.innerHTML = '<div class="st-state"><h3>Sign in to manage your account</h3></div>';
+        var b = document.createElement("button"); b.className = "btn-hero btn-hero-primary"; b.style.cssText = "display:inline-flex"; b.textContent = "Sign in";
+        b.onclick = function () { Auth.openModal(); };
+        root.querySelector(".st-state").appendChild(b);
+        return;
+      }
+      if (!Auth.isBackendUser()) {
+        root.innerHTML = '<div class="st-state"><h3>Settings need an email account</h3><p>You\'re signed in with Google — your account is managed through Google. Whamr profile settings require an email &amp; password account.</p></div>';
+        return;
+      }
+      render();
+    }
+
+    Auth.onChange(function () { route(); });
+  })();
+  </script>
+
+</body>
+</html>
