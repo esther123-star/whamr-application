@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notifications · Whamr</title>
+  <meta name="description" content="Your Whamr notifications — new followers and activity in threads you're in." />
+  <meta name="theme-color" content="#0a0a0f" />
+  <meta name="robots" content="noindex" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="whamr-auth.js"></script>
+  <style>
+    .nt-wrap { max-width: 720px; margin: 0 auto; padding: 8px 20px 70px; position: relative; z-index: 2; }
+    .nt-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+    .nt-tabs { display: flex; gap: 4px; }
+    .nt-tab { padding: 8px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 100px; color: var(--text-muted); font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .nt-tab.active { background: var(--accent-soft); border-color: rgba(255,51,102,0.3); color: var(--accent); }
+    .nt-markall { background: none; border: none; color: var(--text-muted); font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .nt-markall:hover { color: var(--accent); }
+
+    .nt-list { display: flex; flex-direction: column; gap: 8px; }
+    .nt-item { display: flex; align-items: center; gap: 14px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); text-decoration: none; transition: border-color var(--transition); }
+    .nt-item:hover { border-color: var(--border-strong); }
+    .nt-item.unread { background: rgba(255,51,102,0.06); border-color: rgba(255,51,102,0.18); }
+    .nt-ava { width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800; color: #fff; background: linear-gradient(135deg, #ff3366, #ff7744); }
+    .nt-ava.comment { background: linear-gradient(135deg, #229ED9, #1e6fb8); }
+    .nt-body { flex: 1; min-width: 0; }
+    .nt-text { font-size: 14px; color: var(--text); line-height: 1.45; margin: 0; }
+    .nt-text b { font-weight: 700; }
+    .nt-time { font-size: 12px; color: var(--text-subtle); margin-top: 3px; }
+    .nt-thumb { width: 44px; height: 44px; border-radius: 10px; overflow: hidden; flex-shrink: 0; background: #0a0a0f; }
+    .nt-thumb .wc-thumb { width: 100%; height: 100%; object-fit: cover; }
+    .nt-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+
+    .nt-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+    .nt-state h3 { color: var(--text); font-size: 18px; font-weight: 700; margin: 0 0 8px; }
+    .nt-state p { margin: 0 auto 18px; max-width: 380px; font-size: 14px; line-height: 1.6; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="page-nav">
+    <div id="whamr-auth-area"></div>
+    <a href="memes.html" class="page-nav-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      <span>Memes</span>
+    </a>
+    <a href="index.html" class="page-nav-brand"><div class="logo">whamr<span class="logo-dot">.</span></div></a>
+    <div class="page-nav-links">
+      <a href="collections.html" class="hero-nav-link">Collections</a>
+      <a href="profile.html" class="hero-nav-link">Profile</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="page-hero">
+    <div class="page-hero-content">
+      <div class="section-eyebrow">Notifications</div>
+      <h1 class="page-hero-title">What you <span class="page-hero-title-accent">missed.</span></h1>
+      <p class="page-hero-sub">New followers and fresh activity in comment threads you're part of.</p>
+    </div>
+  </section>
+
+  <main class="nt-wrap" id="nt-root">
+    <div class="nt-state">Loading…</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand"><div class="logo footer-logo">whamr<span class="logo-dot">.</span></div><p class="footer-tag">Send the wham.</p></div>
+      <div class="footer-links"><a href="memes.html">All memes</a><a href="collections.html">Collections</a><a href="profile.html">Profile</a><a href="help.html">Help</a></div>
+      <div class="footer-meta"><p>built for the send</p></div>
+    </div>
+  </footer>
+
+  <script src="collections.js"></script>
+  <script src="notifications.js"></script>
+  <script>
+  (function () {
+    var Auth = window.WhamrAuth;
+    var N = window.WhamrNotifications;
+    var C = window.WhamrCollections;
+    var root = document.getElementById("nt-root");
+    var activeTab = "all";
+
+    function esc(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+    function initialOf(name) { return (String(name || "?").trim().charAt(0) || "?").toUpperCase(); }
+    function ago(d) {
+      var s = Math.floor((Date.now() - new Date(d).getTime()) / 1000);
+      if (s < 60) return "just now";
+      var m = Math.floor(s / 60); if (m < 60) return m + "m ago";
+      var h = Math.floor(m / 60); if (h < 24) return h + "h ago";
+      var dy = Math.floor(h / 24); if (dy < 7) return dy + "d ago";
+      try { return new Date(d).toLocaleDateString(); } catch (e) { return dy + "d ago"; }
+    }
+
+    function shell() {
+      root.innerHTML =
+        '<div class="nt-bar">' +
+          '<div class="nt-tabs">' +
+            '<button class="nt-tab" data-tab="all">All</button>' +
+            '<button class="nt-tab" data-tab="follow">Follows</button>' +
+            '<button class="nt-tab" data-tab="comment">Comments</button>' +
+          '</div>' +
+          '<button class="nt-markall" id="nt-markall">Mark all read</button>' +
+        '</div>' +
+        '<div class="nt-list" id="nt-list"><div class="nt-state">Loading…</div></div>';
+
+      Array.prototype.forEach.call(root.querySelectorAll(".nt-tab"), function (tab) {
+        if (tab.getAttribute("data-tab") === activeTab) tab.classList.add("active");
+        tab.addEventListener("click", function () {
+          activeTab = tab.getAttribute("data-tab");
+          Array.prototype.forEach.call(root.querySelectorAll(".nt-tab"), function (t) { t.classList.remove("active"); });
+          tab.classList.add("active");
+          loadList();
+        });
+      });
+      root.querySelector("#nt-markall").addEventListener("click", function () {
+        N.markAllRead().then(function () { N.refreshBadge(); loadList(); }).catch(function () { C.toast("Could not mark all read."); });
+      });
+    }
+
+    function itemEl(n) {
+      var isFollow = n.type === "follow";
+      var a = document.createElement("a");
+      a.className = "nt-item" + (n.read ? "" : " unread");
+      a.href = isFollow
+        ? ("profile.html?u=" + encodeURIComponent(n.actor_id || ""))
+        : (n.meme_id ? ("/c/" + encodeURIComponent(n.meme_id)) : "#");
+
+      var ava = document.createElement("div");
+      ava.className = "nt-ava" + (isFollow ? "" : " comment");
+      ava.textContent = isFollow ? initialOf(n.actor_name) : "💬";
+      a.appendChild(ava);
+
+      var body = document.createElement("div");
+      body.className = "nt-body";
+      var text = isFollow
+        ? ("<b>" + esc(n.actor_name || "Someone") + "</b> started following you")
+        : ("<b>" + esc(n.actor_name || "Someone") + "</b> commented on a meme you're in");
+      body.innerHTML = '<p class="nt-text">' + text + '</p><div class="nt-time">' + esc(ago(n.created_at)) + '</div>';
+      a.appendChild(body);
+
+      // Comment notifications: show the meme thumbnail.
+      if (!isFollow && n.meme_id) {
+        var thumb = document.createElement("div");
+        thumb.className = "nt-thumb";
+        thumb.appendChild(C.thumbEl(C.memeById(n.meme_id)));
+        a.appendChild(thumb);
+      }
+      if (!n.read) { var dot = document.createElement("div"); dot.className = "nt-dot"; a.appendChild(dot); }
+
+      // Mark read on click (navigation continues).
+      a.addEventListener("click", function () {
+        if (!n.read) { N.markRead(n.id).then(function () { N.refreshBadge(); }).catch(function () {}); }
+      });
+      return a;
+    }
+
+    function loadList() {
+      var list = root.querySelector("#nt-list");
+      list.innerHTML = '<div class="nt-state">Loading…</div>';
+      var type = activeTab === "all" ? null : activeTab;
+      Promise.all([C.loadCatalog(), N.list(type)]).then(function (out) {
+        var ns = out[1];
+        if (!ns.length) {
+          var msg = activeTab === "follow" ? "No new followers yet."
+            : activeTab === "comment" ? "No comment activity yet."
+            : "You're all caught up. Follow some creators and join a few comment threads.";
+          list.innerHTML = '<div class="nt-state"><h3>Nothing here</h3><p>' + msg + '</p></div>';
+          return;
+        }
+        list.innerHTML = "";
+        ns.forEach(function (n) { list.appendChild(itemEl(n)); });
+      }).catch(function (err) {
+        list.innerHTML = '<div class="nt-state"><p>' + esc(err.message || "Could not load notifications.") + '</p></div>';
+      });
+    }
+
+    function route() {
+      if (!Auth.isLoggedIn()) {
+        root.innerHTML = '<div class="nt-state"><h3>Sign in to see notifications</h3><p>Your notifications live on your account.</p></div>';
+        var b = document.createElement("button"); b.className = "btn-hero btn-hero-primary"; b.style.cssText = "display:inline-flex"; b.textContent = "Sign in";
+        b.onclick = function () { Auth.openModal(); };
+        root.querySelector(".nt-state").appendChild(b);
+        return;
+      }
+      if (!Auth.isBackendUser()) {
+        root.innerHTML = '<div class="nt-state"><h3>Notifications need an email account</h3><p>You\'re signed in with Google. Notifications currently work with an email &amp; password account.</p></div>';
+        return;
+      }
+      shell();
+      loadList();
+    }
+
+    Auth.onChange(function () { route(); });
+  })();
+  </script>
+
+</body>
+</html>
