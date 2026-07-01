@@ -226,8 +226,9 @@
       setStatus("load", "Creating your account...");
       try {
         await WhamrAuth.signup(email, password);
-        setStatus("ok", "Account created. You're in!");
-        setTimeout(close, 900);
+        setStatus("ok", "Account created! Setting things up…");
+        // New accounts go through the welcome/onboarding flow.
+        setTimeout(function () { window.location.href = "onboarding.html"; }, 700);
       } catch (e) {
         setStatus("err", e.message || "Sign up failed.");
       }

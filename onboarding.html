@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to Whamr</title>
+  <meta name="description" content="Set up your Whamr — pick what you love, claim your handle, and follow a few creators." />
+  <meta name="theme-color" content="#0a0a0f" />
+  <meta name="robots" content="noindex" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="whamr-auth.js"></script>
+  <style>
+    .ob-wrap { max-width: 640px; margin: 0 auto; padding: 40px 20px 70px; position: relative; z-index: 2; }
+    .ob-progress { display: flex; gap: 6px; margin-bottom: 30px; }
+    .ob-progress span { flex: 1; height: 4px; border-radius: 100px; background: var(--surface-active); transition: background var(--transition); }
+    .ob-progress span.done { background: var(--accent); }
+    .ob-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 36px 32px; }
+    .ob-emoji { font-size: 48px; margin-bottom: 12px; }
+    .ob-h { font-size: clamp(22px, 4vw, 30px); font-weight: 800; letter-spacing: -0.02em; color: var(--text); margin: 0 0 8px; }
+    .ob-h .accent { background: linear-gradient(135deg, var(--accent), #ff7744, var(--accent-yellow)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .ob-sub { font-size: 15px; line-height: 1.6; color: var(--text-muted); margin: 0 0 26px; }
+
+    .ob-chips { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 28px; }
+    .ob-chip { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; background: var(--bg); border: 1px solid var(--border-strong); border-radius: 100px; color: var(--text); font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; transition: all var(--transition); }
+    .ob-chip.on { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+    .ob-chip .em { font-size: 17px; }
+
+    .ob-field { margin-bottom: 18px; }
+    .ob-field label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin: 0 0 6px; }
+    .ob-field input { width: 100%; background: var(--bg); border: 1px solid var(--border-strong); border-radius: 10px; color: var(--text); font-family: inherit; font-size: 15px; padding: 12px 14px; box-sizing: border-box; }
+    .ob-field input:focus { outline: none; border-color: var(--accent); }
+    .ob-hint { font-size: 12px; color: var(--text-subtle); margin-top: 6px; }
+    .ob-err { color: var(--danger); font-size: 13px; margin: 0 0 14px; min-height: 0; }
+
+    .ob-suggest { display: flex; flex-direction: column; gap: 10px; margin-bottom: 26px; }
+    .ob-person { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); }
+    .ob-ava { width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 800; color: #fff; background: linear-gradient(135deg, #ff3366, #ff7744); object-fit: cover; }
+    .ob-person-info { flex: 1; min-width: 0; }
+    .ob-person-name { font-size: 14px; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ob-person-meta { font-size: 12px; color: var(--text-muted); }
+    .ob-followbtn { padding: 8px 16px; border-radius: 100px; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid var(--accent); background: var(--accent); color: #fff; }
+    .ob-followbtn.following { background: transparent; color: var(--text); border-color: var(--border-strong); }
+
+    .ob-quick { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 26px; }
+    .ob-quick a { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 20px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); text-decoration: none; color: var(--text); transition: all var(--transition); }
+    .ob-quick a:hover { border-color: var(--accent-soft); transform: translateY(-2px); }
+    .ob-quick .em { font-size: 24px; }
+    .ob-quick span { font-size: 13px; font-weight: 600; }
+
+    .ob-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .ob-skip { background: none; border: none; color: var(--text-muted); font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .ob-skip:hover { color: var(--text); }
+    .ob-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+    .ob-state h3 { color: var(--text); font-size: 18px; margin: 0 0 8px; }
+    @media (max-width: 480px) { .ob-quick { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <nav class="page-nav">
+    <div id="whamr-auth-area"></div>
+    <a href="memes.html" class="page-nav-back"><span>Skip for now →</span></a>
+    <a href="index.html" class="page-nav-brand"><div class="logo">whamr<span class="logo-dot">.</span></div></a>
+    <div class="page-nav-links"></div>
+  </nav>
+
+  <main class="ob-wrap" id="ob-root">
+    <div class="ob-state">Loading…</div>
+  </main>
+
+  <script>
+  (function () {
+    var Auth = window.WhamrAuth;
+    var root = document.getElementById("ob-root");
+
+    var CATEGORIES = [
+      { slug: "naija", label: "Naija", em: "🇳🇬" }, { slug: "reactions", label: "Reactions", em: "😮" },
+      { slug: "laughing", label: "Laughing", em: "😂" }, { slug: "dance", label: "Dance", em: "💃" },
+      { slug: "love", label: "Love", em: "❤️" }, { slug: "sad", label: "Sad", em: "😢" },
+      { slug: "birthday", label: "Birthday", em: "🎂" }, { slug: "sports", label: "Sports", em: "🏆" },
+      { slug: "awkward", label: "Awkward", em: "😬" }, { slug: "random", label: "Random", em: "🎲" },
+      { slug: "stickers", label: "Stickers", em: "✨" },
+    ];
+    var STEPS = ["welcome", "interests", "profile", "suggestions", "done"];
+    var state = { step: 0, interests: [] };
+
+    function esc(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+    function initialOf(s) { return (String(s || "W").trim().charAt(0) || "W").toUpperCase(); }
+    function api(method, path, body) {
+      return Auth.apiFetch(path, { method: method, body: body ? JSON.stringify(body) : undefined })
+        .then(function (res) { return res.json().catch(function () { return {}; }).then(function (d) { if (!res.ok) { var e = new Error(d.error || ("Request failed (" + res.status + ").")); e.status = res.status; throw e; } return d; }); });
+    }
+
+    function progressHtml() {
+      var s = '<div class="ob-progress">';
+      for (var i = 0; i < STEPS.length; i++) s += '<span class="' + (i <= state.step ? "done" : "") + '"></span>';
+      return s + '</div>';
+    }
+
+    function go(delta) { state.step = Math.max(0, Math.min(STEPS.length - 1, state.step + delta)); render(); }
+
+    function render() {
+      var name = STEPS[state.step];
+      if (name === "welcome") return renderWelcome();
+      if (name === "interests") return renderInterests();
+      if (name === "profile") return renderProfile();
+      if (name === "suggestions") return renderSuggestions();
+      if (name === "done") return renderDone();
+    }
+
+    function renderWelcome() {
+      var u = Auth.getUser() || {};
+      var hi = u.email ? u.email.split("@")[0] : "there";
+      root.innerHTML = progressHtml() +
+        '<div class="ob-card" style="text-align:center">' +
+        '<div class="ob-emoji">👋</div>' +
+        '<h1 class="ob-h">Welcome, <span class="accent">' + esc(hi) + '</span></h1>' +
+        '<p class="ob-sub">Let\'s set up your Whamr in a few quick steps — pick what you love, claim your handle, and follow a few creators. Takes under a minute.</p>' +
+        '<button class="btn-hero btn-hero-primary" id="ob-start" style="display:inline-flex">Let\'s go →</button>' +
+        '</div>';
+      document.getElementById("ob-start").onclick = function () { go(1); };
+    }
+
+    function renderInterests() {
+      var chips = CATEGORIES.map(function (c) {
+        var on = state.interests.indexOf(c.slug) !== -1;
+        return '<button class="ob-chip' + (on ? " on" : "") + '" data-slug="' + c.slug + '"><span class="em">' + c.em + '</span>' + c.label + '</button>';
+      }).join("");
+      root.innerHTML = progressHtml() +
+        '<div class="ob-card">' +
+        '<div class="ob-emoji">🎯</div><h1 class="ob-h">What do you love?</h1>' +
+        '<p class="ob-sub">Pick a few categories so we can tune your Whamr. You can change these anytime.</p>' +
+        '<div class="ob-chips">' + chips + '</div>' +
+        '<div class="ob-actions"><button class="ob-skip" id="ob-back">← Back</button>' +
+        '<button class="btn-hero btn-hero-primary" id="ob-next" style="display:inline-flex">Continue</button></div>' +
+        '</div>';
+      Array.prototype.forEach.call(root.querySelectorAll(".ob-chip"), function (chip) {
+        chip.onclick = function () {
+          var slug = chip.getAttribute("data-slug");
+          var i = state.interests.indexOf(slug);
+          if (i === -1) state.interests.push(slug); else state.interests.splice(i, 1);
+          chip.classList.toggle("on");
+        };
+      });
+      document.getElementById("ob-back").onclick = function () { go(-1); };
+      document.getElementById("ob-next").onclick = function () { go(1); };
+    }
+
+    function renderProfile() {
+      var u = Auth.getUser() || {};
+      root.innerHTML = progressHtml() +
+        '<div class="ob-card">' +
+        '<div class="ob-emoji">✏️</div><h1 class="ob-h">Set up your profile</h1>' +
+        '<p class="ob-sub">This is how you\'ll show up on Whamr. All optional — you can skip and do it later.</p>' +
+        '<p class="ob-err" id="ob-err"></p>' +
+        '<div class="ob-field"><label>Display name</label><input id="ob-dn" maxlength="50" value="' + esc(u.display_name || "") + '" placeholder="Your name" /></div>' +
+        '<div class="ob-field"><label>Username</label><input id="ob-un" maxlength="20" value="' + esc(u.username || "") + '" placeholder="letters, numbers, _" /><div class="ob-hint">Your handle: whamr.app/profile?u=<b>username</b></div></div>' +
+        '<div class="ob-field"><label>Avatar image URL (optional)</label><input id="ob-av" maxlength="600" value="' + esc(u.avatar_url || "") + '" placeholder="https://… .jpg/.png" /></div>' +
+        '<div class="ob-actions"><button class="ob-skip" id="ob-back">← Back</button>' +
+        '<div style="display:flex;gap:8px"><button class="ob-skip" id="ob-skip">Skip</button>' +
+        '<button class="btn-hero btn-hero-primary" id="ob-next" style="display:inline-flex">Continue</button></div></div>' +
+        '</div>';
+      document.getElementById("ob-back").onclick = function () { go(-1); };
+      document.getElementById("ob-skip").onclick = function () { go(1); };
+      document.getElementById("ob-next").onclick = function () {
+        var errEl = document.getElementById("ob-err"); errEl.textContent = "";
+        var patch = {};
+        var dn = document.getElementById("ob-dn").value.trim();
+        var un = document.getElementById("ob-un").value.trim();
+        var av = document.getElementById("ob-av").value.trim();
+        if (dn) patch.display_name = dn;
+        if (un) patch.username = un;
+        if (av) patch.avatar_url = av;
+        if (Object.keys(patch).length === 0) { go(1); return; }
+        var btn = document.getElementById("ob-next"); btn.disabled = true;
+        api("PATCH", "/api/profiles/me", patch).then(function () { go(1); })
+          .catch(function (err) { btn.disabled = false; errEl.textContent = err.message || "Could not save."; });
+      };
+    }
+
+    function renderSuggestions() {
+      root.innerHTML = progressHtml() +
+        '<div class="ob-card">' +
+        '<div class="ob-emoji">⭐</div><h1 class="ob-h">Follow a few creators</h1>' +
+        '<p class="ob-sub">Get memes from people you like in your notifications. Follow anyone that looks good.</p>' +
+        '<div class="ob-suggest" id="ob-suggest"><div class="ob-state">Finding people…</div></div>' +
+        '<div class="ob-actions"><button class="ob-skip" id="ob-back">← Back</button>' +
+        '<button class="btn-hero btn-hero-primary" id="ob-next" style="display:inline-flex">Continue</button></div>' +
+        '</div>';
+      document.getElementById("ob-back").onclick = function () { go(-1); };
+      document.getElementById("ob-next").onclick = function () { go(1); };
+
+      var box = document.getElementById("ob-suggest");
+      api("GET", "/api/profiles/suggested").then(function (d) {
+        var people = d.suggestions || [];
+        if (!people.length) { box.innerHTML = '<div class="ob-state"><p>No suggestions yet — Whamr is young! You\'ll find people to follow as you browse.</p></div>'; return; }
+        box.innerHTML = "";
+        people.forEach(function (p) {
+          var row = document.createElement("div"); row.className = "ob-person";
+          var nm = p.display_name || p.username || "Whamr user";
+          var ava = p.avatar_url ? ('<img class="ob-ava" src="' + esc(p.avatar_url) + '" alt="" />') : ('<div class="ob-ava">' + esc(initialOf(nm)) + '</div>');
+          row.innerHTML = ava +
+            '<div class="ob-person-info"><div class="ob-person-name">' + esc(nm) + '</div>' +
+            '<div class="ob-person-meta">' + (p.username ? "@" + esc(p.username) + " · " : "") + (p.followers || 0) + ' followers</div></div>' +
+            '<button class="ob-followbtn">Follow</button>';
+          var btn = row.querySelector(".ob-followbtn");
+          var following = false;
+          btn.onclick = function () {
+            btn.disabled = true;
+            var handle = p.username || p.id;
+            var req = following ? api("DELETE", "/api/profiles/" + encodeURIComponent(handle) + "/follow")
+              : api("POST", "/api/profiles/" + encodeURIComponent(handle) + "/follow");
+            req.then(function () { following = !following; btn.disabled = false; btn.textContent = following ? "Following" : "Follow"; btn.classList.toggle("following", following); })
+              .catch(function () { btn.disabled = false; });
+          };
+          box.appendChild(row);
+        });
+      }).catch(function (err) { box.innerHTML = '<div class="ob-state"><p>' + esc(err.message || "Could not load suggestions.") + '</p></div>'; });
+    }
+
+    function finish() {
+      // Persist interests + mark onboarding complete, then head to the library.
+      var done = function () { window.location.href = "memes.html"; };
+      var tasks = [];
+      if (state.interests.length) tasks.push(api("PATCH", "/api/profiles/me", { interests: state.interests }));
+      tasks.push(api("POST", "/api/profiles/me/onboarded"));
+      Promise.all(tasks.map(function (t) { return t.catch(function () {}); })).then(done);
+    }
+
+    function renderDone() {
+      root.innerHTML = progressHtml() +
+        '<div class="ob-card" style="text-align:center">' +
+        '<div class="ob-emoji">🎉</div><h1 class="ob-h">Your Whamr is <span class="accent">ready</span></h1>' +
+        '<p class="ob-sub">That\'s it. Jump in and start sending.</p>' +
+        '<div class="ob-quick">' +
+        '<a href="memes.html"><span class="em">🖼️</span><span>Browse memes</span></a>' +
+        '<a href="profile.html"><span class="em">👤</span><span>Your profile</span></a>' +
+        '<a href="collections.html"><span class="em">📁</span><span>Collections</span></a>' +
+        '</div>' +
+        '<button class="btn-hero btn-hero-primary" id="ob-finish" style="display:inline-flex">Enter Whamr →</button>' +
+        '</div>';
+      document.getElementById("ob-finish").onclick = function () {
+        var btn = document.getElementById("ob-finish"); btn.disabled = true; btn.textContent = "Setting up…";
+        finish();
+      };
+    }
+
+    function route() {
+      if (!Auth.isLoggedIn()) {
+        root.innerHTML = '<div class="ob-state"><h3>Sign in to get started</h3><p>Create an account to set up your Whamr.</p></div>';
+        var b = document.createElement("button"); b.className = "btn-hero btn-hero-primary"; b.style.cssText = "display:inline-flex"; b.textContent = "Sign in";
+        b.onclick = function () { Auth.openModal(); };
+        root.querySelector(".ob-state").appendChild(b);
+        return;
+      }
+      if (!Auth.isBackendUser()) {
+        root.innerHTML = '<div class="ob-state"><h3>Onboarding needs an email account</h3><p>You\'re signed in with Google. Profile setup currently works with an email &amp; password account. <a href="memes.html" style="color:var(--accent)">Skip to the memes →</a></p></div>';
+        return;
+      }
+      render();
+    }
+
+    var started = false;
+    Auth.onChange(function () { if (!started) { started = true; route(); } else if (!Auth.isLoggedIn()) { route(); } });
+  })();
+  </script>
+
+</body>
+</html>
